@@ -54,10 +54,10 @@ describe("mt-sidebar", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders as a complementary landmark with a default accessible name", async () => {
+  it("renders as a complementary landmark without an accessible name by default", async () => {
     render(MtSidebar);
 
-    expect(screen.getByRole("complementary", { name: "Sidebar" })).toBeInTheDocument();
+    expect(screen.getByRole("complementary")).not.toHaveAttribute("aria-label");
   });
 
   it("uses the given aria label", async () => {

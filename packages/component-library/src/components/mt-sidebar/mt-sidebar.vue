@@ -49,7 +49,8 @@ import { hasSlotContent } from "@/utils/slot";
 withDefaults(
   defineProps<{
     /**
-     * Accessible name of the sidebar, announced by screen readers.
+     * Accessible name of the sidebar landmark. Only needed when the page has more than one sidebar,
+     * so screen reader users can tell them apart.
      */
     ariaLabel?: string;
     /**
@@ -58,7 +59,7 @@ withDefaults(
     width?: string;
   }>(),
   {
-    ariaLabel: "Sidebar",
+    ariaLabel: undefined,
     width: "300px",
   },
 );

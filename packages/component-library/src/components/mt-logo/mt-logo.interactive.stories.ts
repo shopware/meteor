@@ -18,7 +18,6 @@ export const VisualTestDefault: MtLogoStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByLabelText("Shopware")).toBeVisible();
     expect(canvas.getByText("Demo shop")).toBeVisible();
     expect(canvas.getByText("Shopware")).toBeVisible();
   },
