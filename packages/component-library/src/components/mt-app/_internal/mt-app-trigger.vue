@@ -17,13 +17,12 @@
 <script setup lang="ts">
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
-import type { MtAppPanel } from "../composables/useMtApp";
 
 /**
  * The header button that opens the drawer of a panel in the mobile layout.
  */
 defineProps<{
-  panel: MtAppPanel;
+  panel: string;
   /** The accessible name of the button. */
   label: string;
   /** Whether the drawer is open. */
