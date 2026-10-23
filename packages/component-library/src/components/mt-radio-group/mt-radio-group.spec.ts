@@ -325,6 +325,31 @@ describe("mt-radio-group", () => {
     expect(screen.getByLabelText("Option 1")).toBeChecked();
   });
 
+  it("selects an option once when clicking its label", async () => {
+    // ARRANGE
+    const onSelectionChange = vi.fn();
+
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupItem },
+      setup: () => ({ selection: ref("basic"), onSelectionChange }),
+      template: `
+        <MtRadioGroupRoot v-model="selection" @update:modelValue="onSelectionChange">
+          <MtRadioGroupItem id="basic" value="basic" label="Basic" />
+          <MtRadioGroupItem id="pro" value="pro" label="Pro" />
+        </MtRadioGroupRoot>
+      `,
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Pro"));
+    await userEvent.click(screen.getByText("Pro"));
+
+    // ASSERT
+    expect(screen.getByRole("radio", { name: "Basic" })).not.toBeChecked();
+    expect(screen.getByRole("radio", { name: "Pro" })).toBeChecked();
+    expect(onSelectionChange).toHaveBeenCalledExactlyOnceWith("pro");
+  });
+
   it("shows the correct option as checked based on modelValue", async () => {
     // ARRANGE
     await render(MtRadioGroupRoot, {

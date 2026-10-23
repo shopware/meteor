@@ -10,7 +10,7 @@ import MtRadioGroupIndicator from "./mt-radio-group-indicator.vue";
 import ExampleRadioOption from "./_internal/example-radio-option.vue";
 import type { StoryObj, Meta } from "@storybook/vue3";
 import { fn } from "@storybook/test";
-import meta, { WithCardItems } from "./mt-radio-group.stories";
+import meta, { Default, WithCardItems } from "./mt-radio-group.stories";
 import {
   expectHintIconAlignedWithFirstLine,
   multiLinePropHint,
@@ -170,6 +170,42 @@ export const TestSelectsCardItemsWithKeyboard: Story = {
     expect(canvas.getByRole("radio", { name: "Standard delivery" })).toHaveFocus();
     expect(canvas.getByRole("radio", { name: "Standard delivery" })).toBeChecked();
     expect(args.change).toHaveBeenLastCalledWith("standard");
+  },
+};
+
+export const TestSelectsItems: Story = {
+  ...Default,
+  name: "Selects standard items with their labels and radio controls",
+  args: {
+    ...Default.args,
+    change: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByText("Option 2"));
+
+    expect(canvas.getByRole("radio", { name: "Option 2" })).toBeChecked();
+    expect(args.change).toHaveBeenCalledWith("value2");
+    expect(args.change).toHaveBeenCalledTimes(1);
+
+    await userEvent.click(canvas.getByText("Option 2"));
+
+    expect(args.change).toHaveBeenCalledTimes(1);
+
+    // The visible radio control sits next to the label, which covers the whole item,
+    // so pointer input on the control reaches the label.
+    const control = canvasElement.querySelector("#option-3 + .mt-radio-group-indicator__control");
+    const { left, top, width, height } = control!.getBoundingClientRect();
+    const pointerTarget = document.elementFromPoint(left + width / 2, top + height / 2);
+
+    expect(pointerTarget).toBe(canvas.getByText("Option 3"));
+
+    await userEvent.click(pointerTarget!);
+
+    expect(canvas.getByRole("radio", { name: "Option 3" })).toBeChecked();
+    expect(args.change).toHaveBeenLastCalledWith("value3");
+    expect(args.change).toHaveBeenCalledTimes(2);
   },
 };
 
