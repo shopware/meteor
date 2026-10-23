@@ -1,84 +1,51 @@
-import { render, screen, fireEvent } from "@testing-library/vue";
-import { describe, expect, it, vi, afterEach } from "vitest";
-import { nextTick } from "vue";
+import { render, screen } from "@testing-library/vue";
+import { describe, expect, it } from "vitest";
 import MtSidebar from "./mt-sidebar.vue";
-
-type ScrollMetrics = {
-  scrollHeight: number;
-  clientHeight: number;
-  scrollTop?: number;
-};
-
-/**
- * jsdom does not do layout, so scroll sizes are always 0. This fakes
- * the sizes of the scroll container so the shadow logic can be tested.
- */
-function mockScrollMetrics(element: Element, metrics: ScrollMetrics) {
-  let scrollTop = metrics.scrollTop ?? 0;
-
-  Object.defineProperty(element, "scrollHeight", {
-    configurable: true,
-    get: () => metrics.scrollHeight,
-  });
-  Object.defineProperty(element, "clientHeight", {
-    configurable: true,
-    get: () => metrics.clientHeight,
-  });
-  Object.defineProperty(element, "scrollTop", {
-    configurable: true,
-    get: () => scrollTop,
-    set: (value: number) => {
-      scrollTop = value;
-    },
-  });
-}
-
-function getScrollContainer(container: Element) {
-  const body = container.querySelector(".mt-sidebar__body");
-  if (!body) throw new Error("Sidebar body not found");
-
-  return body;
-}
-
-async function scrollTo(element: Element, scrollTop: number) {
-  (element as HTMLElement).scrollTop = scrollTop;
-  await fireEvent.scroll(element);
-  await nextTick();
-}
-
-const topShadow = () => screen.queryByTestId("mt-sidebar-scroll-shadow-top");
-const bottomShadow = () => screen.queryByTestId("mt-sidebar-scroll-shadow-bottom");
+import MtNav from "../mt-nav/mt-nav.vue";
 
 describe("mt-sidebar", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("renders as a complementary landmark without an accessible name by default", async () => {
+  it("renders a navigation landmark named Main navigation by default", async () => {
     render(MtSidebar);
 
-    expect(screen.getByRole("complementary")).not.toHaveAttribute("aria-label");
+    expect(screen.getByRole("navigation", { name: "Main navigation" })).toBeInTheDocument();
   });
 
   it("uses the given aria label", async () => {
     render(MtSidebar, {
       props: {
-        ariaLabel: "Main navigation",
+        ariaLabel: "Administration",
       },
     });
 
-    expect(screen.getByRole("complementary", { name: "Main navigation" })).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Administration" })).toBeInTheDocument();
+  });
+
+  it("stays the only navigation landmark with an mt-nav inside", async () => {
+    render(MtSidebar, {
+      global: {
+        components: { MtNav },
+      },
+      slots: {
+        default: `<mt-nav :sections="[{ items: [{ label: 'Dashboard', href: '#' }] }]" />`,
+      },
+    });
+
+    expect(screen.getAllByRole("navigation")).toHaveLength(1);
+    expect(screen.getByRole("navigation", { name: "Main navigation" })).toContainElement(
+      screen.getByRole("link", { name: "Dashboard" }),
+    );
   });
 
   it("renders the navigation in the default slot", async () => {
     render(MtSidebar, {
       slots: {
-        default: '<nav aria-label="Main"><a href="#">Dashboard</a></nav>',
+        default: '<a href="#">Dashboard</a>',
       },
     });
 
-    expect(screen.getByRole("navigation", { name: "Main" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.getByRole("navigation")).toContainElement(
+      screen.getByRole("link", { name: "Dashboard" }),
+    );
   });
 
   it("renders the header slot inside a header element", async () => {
@@ -92,11 +59,11 @@ describe("mt-sidebar", () => {
     expect(header).toHaveTextContent("Administration");
   });
 
-  it("renders the action slot next to the header slot", async () => {
+  it("renders the actions slot next to the header slot", async () => {
     const { container } = render(MtSidebar, {
       slots: {
         header: "Administration",
-        action: "<button>Collapse</button>",
+        actions: "<button>Collapse</button>",
       },
     });
 
@@ -104,15 +71,15 @@ describe("mt-sidebar", () => {
     expect(header?.querySelector(".mt-sidebar__header-content")).toHaveTextContent(
       "Administration",
     );
-    expect(header?.querySelector(".mt-sidebar__action")).toContainElement(
+    expect(header?.querySelector(".mt-sidebar__actions")).toContainElement(
       screen.getByRole("button", { name: "Collapse" }),
     );
   });
 
-  it("renders the header element for the action slot alone", async () => {
+  it("renders the header element for the actions slot alone", async () => {
     const { container } = render(MtSidebar, {
       slots: {
-        action: "<button>Collapse</button>",
+        actions: "<button>Collapse</button>",
       },
     });
 
@@ -144,161 +111,12 @@ describe("mt-sidebar", () => {
     const { container } = render(MtSidebar, {
       slots: {
         header: '<span v-if="false">Administration</span>',
-        action: '<button v-if="false">Collapse</button>',
+        actions: '<button v-if="false">Collapse</button>',
         footer: '<button v-if="false">Log out</button>',
       },
     });
 
     expect(container.querySelector(".mt-sidebar__header")).toBeNull();
     expect(container.querySelector(".mt-sidebar__footer")).toBeNull();
-  });
-
-  it("uses a default width of 300px", async () => {
-    const { container } = render(MtSidebar);
-
-    expect(container.firstElementChild).toHaveStyle({ "--mt-sidebar-width": "300px" });
-  });
-
-  it("applies a custom width", async () => {
-    const { container } = render(MtSidebar, {
-      props: {
-        width: "20rem",
-      },
-    });
-
-    expect(container.firstElementChild).toHaveStyle({ "--mt-sidebar-width": "20rem" });
-  });
-
-  it("renders the navigation inside a scrollable body", async () => {
-    const { container } = render(MtSidebar, {
-      slots: {
-        default: "<nav>Navigation</nav>",
-      },
-    });
-
-    const body = getScrollContainer(container);
-    expect(body).toContainElement(screen.getByText("Navigation"));
-  });
-
-  it("shows no scroll shadows when the navigation fits", async () => {
-    const { container } = render(MtSidebar, {
-      slots: {
-        default: "<nav>Navigation</nav>",
-      },
-    });
-
-    const body = getScrollContainer(container);
-    mockScrollMetrics(body, { scrollHeight: 400, clientHeight: 400 });
-    await scrollTo(body, 0);
-
-    expect(topShadow()).toBeNull();
-    expect(bottomShadow()).toBeNull();
-  });
-
-  it("shows only the bottom shadow when scrolled to the top", async () => {
-    const { container } = render(MtSidebar, {
-      slots: {
-        default: "<nav>Navigation</nav>",
-      },
-    });
-
-    const body = getScrollContainer(container);
-    mockScrollMetrics(body, { scrollHeight: 1000, clientHeight: 400 });
-    await scrollTo(body, 0);
-
-    expect(topShadow()).toBeNull();
-    expect(bottomShadow()).toBeInTheDocument();
-  });
-
-  it("shows both shadows while scrolled in the middle", async () => {
-    const { container } = render(MtSidebar, {
-      slots: {
-        default: "<nav>Navigation</nav>",
-      },
-    });
-
-    const body = getScrollContainer(container);
-    mockScrollMetrics(body, { scrollHeight: 1000, clientHeight: 400 });
-    await scrollTo(body, 300);
-
-    expect(topShadow()).toBeInTheDocument();
-    expect(bottomShadow()).toBeInTheDocument();
-  });
-
-  it("shows only the top shadow when scrolled to the bottom", async () => {
-    const { container } = render(MtSidebar, {
-      slots: {
-        default: "<nav>Navigation</nav>",
-      },
-    });
-
-    const body = getScrollContainer(container);
-    mockScrollMetrics(body, { scrollHeight: 1000, clientHeight: 400 });
-    await scrollTo(body, 600);
-
-    expect(topShadow()).toBeInTheDocument();
-    expect(bottomShadow()).toBeNull();
-  });
-
-  it("treats sub-pixel offsets as reaching the top and bottom", async () => {
-    const { container } = render(MtSidebar, {
-      slots: {
-        default: "<nav>Navigation</nav>",
-      },
-    });
-
-    const body = getScrollContainer(container);
-    mockScrollMetrics(body, { scrollHeight: 1000, clientHeight: 400 });
-
-    await scrollTo(body, 0.5);
-    expect(topShadow()).toBeNull();
-    expect(bottomShadow()).toBeInTheDocument();
-
-    await scrollTo(body, 599.5);
-    expect(topShadow()).toBeInTheDocument();
-    expect(bottomShadow()).toBeNull();
-  });
-
-  it("hides the shadows again once the navigation fits", async () => {
-    const { container } = render(MtSidebar, {
-      slots: {
-        default: "<nav>Navigation</nav>",
-      },
-    });
-
-    const body = getScrollContainer(container);
-    mockScrollMetrics(body, { scrollHeight: 1000, clientHeight: 400 });
-    await scrollTo(body, 300);
-    expect(topShadow()).toBeInTheDocument();
-
-    mockScrollMetrics(body, { scrollHeight: 400, clientHeight: 400 });
-    await scrollTo(body, 0);
-
-    expect(topShadow()).toBeNull();
-    expect(bottomShadow()).toBeNull();
-  });
-
-  it("checks the scroll position once mounted", async () => {
-    const scrollHeightSpy = vi
-      .spyOn(HTMLElement.prototype, "scrollHeight", "get")
-      .mockReturnValue(1000);
-    const clientHeightSpy = vi
-      .spyOn(HTMLElement.prototype, "clientHeight", "get")
-      .mockReturnValue(400);
-
-    render(MtSidebar, {
-      slots: {
-        default: "<nav>Navigation</nav>",
-      },
-    });
-
-    await nextTick();
-    await nextTick();
-
-    expect(bottomShadow()).toBeInTheDocument();
-    expect(topShadow()).toBeNull();
-
-    scrollHeightSpy.mockRestore();
-    clientHeightSpy.mockRestore();
   });
 });

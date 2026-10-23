@@ -1,6 +1,10 @@
 <template>
-  <nav class="mt-nav" :aria-labelledby="navigationLabelId">
-    <h2 :id="navigationLabelId" class="visually-hidden">
+  <component
+    :is="isInLandmark ? 'div' : 'nav'"
+    class="mt-nav"
+    :aria-labelledby="isInLandmark ? undefined : navigationLabelId"
+  >
+    <h2 v-if="!isInLandmark" :id="navigationLabelId" class="visually-hidden">
       {{ label ?? t("navigationLabel") }}
     </h2>
 
@@ -12,7 +16,7 @@
         :section-index="index"
       />
     </div>
-  </nav>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -20,11 +24,12 @@
  * Experimental: the API of mt-nav may still change in a future release.
  */
 
-import { computed, provide, ref, useId, watch } from "vue";
+import { computed, inject, provide, ref, useId, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import MtNavSection from "./_internal/mt-nav-section.vue";
 import {
   NAV_CONTEXT,
+  NAV_LANDMARK,
   branchKey,
   hasNestedItems,
   isItemActive,
@@ -56,7 +61,8 @@ const props = withDefaults(
      */
     linkComponent?: NavLinkComponent;
     /**
-     * Accessible name of the navigation. Defaults to the translated "Main navigation".
+     * Accessible name of the navigation. Defaults to the translated "Main navigation". Inside
+     * `mt-sidebar`, the sidebar is the navigation landmark and names it instead.
      */
     label?: string;
     /**
@@ -93,6 +99,9 @@ const { t } = useI18n({
 });
 
 const navigationLabelId = `mt-nav-label-${useId()}`;
+
+// A surrounding landmark, such as mt-sidebar, already is the navigation
+const isInLandmark = inject(NAV_LANDMARK, false);
 
 const navBodyElement = ref<HTMLElement | null>(null);
 

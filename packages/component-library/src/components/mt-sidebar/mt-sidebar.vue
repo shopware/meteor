@@ -1,60 +1,49 @@
 <template>
-  <aside class="mt-sidebar" :style="{ '--mt-sidebar-width': width }" :aria-label="ariaLabel">
+  <nav class="mt-sidebar" :style="{ '--mt-sidebar-width': width }" :aria-label="label">
     <header
-      v-if="hasSlotContent($slots.header) || hasSlotContent($slots.action)"
+      v-if="hasSlotContent($slots.header) || hasSlotContent($slots.actions)"
       class="mt-sidebar__header"
     >
       <div v-if="hasSlotContent($slots.header)" class="mt-sidebar__header-content">
         <slot name="header" />
       </div>
 
-      <div v-if="hasSlotContent($slots.action)" class="mt-sidebar__action">
-        <slot name="action" />
+      <div v-if="hasSlotContent($slots.actions)" class="mt-sidebar__actions">
+        <slot name="actions" />
       </div>
     </header>
 
-    <div ref="scrollContainerRef" class="mt-sidebar__body" @scroll.passive="updateScrollShadows">
-      <transition name="mt-sidebar-shadow-fade">
-        <div
-          v-if="canScrollUp"
-          class="mt-sidebar__scroll-shadow mt-sidebar__scroll-shadow--top"
-          data-testid="mt-sidebar-scroll-shadow-top"
-        />
-      </transition>
-
-      <div ref="contentRef" class="mt-sidebar__content">
-        <slot />
-      </div>
-
-      <transition name="mt-sidebar-shadow-fade">
-        <div
-          v-if="canScrollDown"
-          class="mt-sidebar__scroll-shadow mt-sidebar__scroll-shadow--bottom"
-          data-testid="mt-sidebar-scroll-shadow-bottom"
-        />
-      </transition>
+    <div class="mt-sidebar__body">
+      <slot />
     </div>
 
     <footer v-if="hasSlotContent($slots.footer)" class="mt-sidebar__footer">
       <slot name="footer" />
     </footer>
-  </aside>
+  </nav>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useResizeObserver } from "@vueuse/core";
+import { computed, provide } from "vue";
+import { useI18n } from "vue-i18n";
+import { NAV_LANDMARK } from "../mt-nav/_internal/mt-nav-context";
 import { hasSlotContent } from "@/utils/slot";
 
-withDefaults(
+/**
+ * The main navigation of an application: a fixed header, the navigation, which scrolls on its
+ * own, and a fixed footer. It is the navigation landmark, so an `mt-nav` inside it adds none.
+ *
+ * @experimental The API may still change in a future release.
+ */
+const props = withDefaults(
   defineProps<{
     /**
-     * Accessible name of the sidebar landmark. Only needed when the page has more than one sidebar,
-     * so screen reader users can tell them apart.
+     * Accessible name of the navigation landmark. Defaults to the translated "Main navigation".
      */
     ariaLabel?: string;
     /**
-     * Width of the sidebar as a CSS length, for example "300px" or "100%".
+     * Width of the sidebar as a CSS length, for example "300px". It gets narrower only when its
+     * container is narrower.
      */
     width?: string;
   }>(),
@@ -72,9 +61,9 @@ defineSlots<{
   /**
    * Next to the header, for example a button that collapses the sidebar.
    */
-  action?: null;
+  actions?: null;
   /**
-   * The navigation, for example mt-nav. Scrolls on its own.
+   * The navigation, for example mt-nav. It fills the space between header and footer.
    */
   default?: null;
   /**
@@ -83,29 +72,20 @@ defineSlots<{
   footer?: null;
 }>();
 
-const scrollContainerRef = ref<HTMLElement | null>(null);
-const contentRef = ref<HTMLElement | null>(null);
+const { t } = useI18n({
+  messages: {
+    en: {
+      label: "Main navigation",
+    },
+    de: {
+      label: "Hauptnavigation",
+    },
+  },
+});
 
-const canScrollUp = ref(false);
-const canScrollDown = ref(false);
+const label = computed(() => props.ariaLabel ?? t("label"));
 
-const thresholdInPx = 1;
-
-function updateScrollShadows() {
-  const element = scrollContainerRef.value;
-  if (!element) return;
-
-  const { scrollHeight, clientHeight, scrollTop } = element;
-
-  canScrollUp.value = scrollTop > thresholdInPx;
-  canScrollDown.value = scrollHeight - clientHeight - scrollTop > thresholdInPx;
-}
-
-onMounted(updateScrollShadows);
-
-// Recheck when the sidebar or its content changes size, e.g. when
-// a navigation group is expanded or the window gets smaller.
-useResizeObserver([scrollContainerRef, contentRef], updateScrollShadows);
+provide(NAV_LANDMARK, true);
 </script>
 
 <style scoped>
@@ -113,8 +93,8 @@ useResizeObserver([scrollContainerRef, contentRef], updateScrollShadows);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 100%;
-  max-width: var(--mt-sidebar-width);
+  width: var(--mt-sidebar-width);
+  max-width: 100%;
   height: 100%;
   min-height: 0;
   padding: var(--scale-size-24) var(--scale-size-12) var(--scale-size-8);
@@ -141,77 +121,18 @@ useResizeObserver([scrollContainerRef, contentRef], updateScrollShadows);
   min-width: 0;
 }
 
-.mt-sidebar__action {
+.mt-sidebar__actions {
   display: flex;
   flex-shrink: 0;
   margin-inline-start: auto;
 }
 
 .mt-sidebar__body {
-  position: relative;
-  flex: 1 1 0;
-  min-height: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scroll-padding-block: var(--scale-size-20);
-  scrollbar-width: none;
-}
-
-.mt-sidebar__body::-webkit-scrollbar {
-  display: none;
-}
-
-.mt-sidebar__content {
   display: flex;
+  flex: 1 1 0;
   flex-direction: column;
   gap: var(--scale-size-16);
-}
-
-.mt-sidebar__scroll-shadow {
-  position: sticky;
-  z-index: 1;
-  height: var(--scale-size-20);
-  pointer-events: none;
-}
-
-.mt-sidebar__scroll-shadow--top {
-  top: 0;
-  margin-block-end: calc(var(--scale-size-20) * -1);
-  background: linear-gradient(
-    to bottom,
-    var(--color-elevation-surface-sunken) var(--scale-size-4),
-    transparent
-  );
-}
-
-.mt-sidebar__scroll-shadow--bottom {
-  bottom: 0;
-  margin-block-start: calc(var(--scale-size-20) * -1);
-  background: linear-gradient(
-    to top,
-    var(--color-elevation-surface-sunken) var(--scale-size-4),
-    transparent
-  );
-}
-
-.mt-sidebar-shadow-fade-enter-active {
-  transition: opacity 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
-}
-
-.mt-sidebar-shadow-fade-leave-active {
-  transition: opacity 200ms cubic-bezier(0.3, 0, 0.8, 0.15);
-}
-
-.mt-sidebar-shadow-fade-enter-from,
-.mt-sidebar-shadow-fade-leave-to {
-  opacity: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mt-sidebar-shadow-fade-enter-active,
-  .mt-sidebar-shadow-fade-leave-active {
-    transition: none;
-  }
+  min-height: 0;
+  overflow-y: auto;
 }
 </style>

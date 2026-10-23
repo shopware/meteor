@@ -15,7 +15,7 @@ import {
 
 export type MtSidebarMeta = SlottedMeta<
   typeof MtSidebar,
-  "header" | "action" | "default" | "footer"
+  "header" | "actions" | "default" | "footer"
 >;
 
 const meta: MtSidebarMeta = {
@@ -24,13 +24,13 @@ const meta: MtSidebarMeta = {
   args: {
     width: "300px",
     header: "",
-    action: "",
+    actions: "",
     default: "",
     footer: "",
   },
   argTypes: {
     header: { control: { type: "text" } },
-    action: { control: { type: "text" } },
+    actions: { control: { type: "text" } },
     default: { control: { type: "text" } },
     footer: { control: { type: "text" } },
   },
@@ -47,8 +47,8 @@ const meta: MtSidebarMeta = {
       ${demoHeaderTemplate}
     </template>
 
-    <template v-if="args.action" #action>
-      <div v-html="args.action"></div>
+    <template v-if="args.actions" #actions>
+      <div v-html="args.actions"></div>
     </template>
 
     <template v-if="args.default" #default>
@@ -85,7 +85,13 @@ export const Default: MtSidebarStory = {
   <mt-nav :sections="sections" />
 
   <template #footer>
-    <mt-user-menu first-name="Max" last-name="Mustermann" role="Administrator" />
+    <mt-user-menu first-name="Max" last-name="Mustermann" subtitle="Administrator">
+      <mt-action-menu-group>
+        <mt-action-menu-item icon="regular-sign-out" variant="critical" @select="logout">
+          Log out
+        </mt-action-menu-item>
+      </mt-action-menu-group>
+    </mt-user-menu>
   </template>
 </mt-sidebar>`,
       },
@@ -117,14 +123,14 @@ export const ShortNavigation: MtSidebarStory = {
     docs: {
       description: {
         story:
-          "When the navigation fits, nothing scrolls and no scroll shadows are shown. The footer still sits at the bottom of the sidebar.",
+          "When the navigation fits, nothing scrolls. The footer still sits at the bottom of the sidebar.",
       },
     },
   },
 };
 
-export const WithAction: MtSidebarStory = {
-  name: "With action",
+export const WithActions: MtSidebarStory = {
+  name: "With actions",
   render: () => ({
     components: { ...demoComponents, MtButton, MtIcon },
     setup: () => ({ sections: demoSections, linkComponent: demoLinkComponent }),
@@ -135,7 +141,7 @@ export const WithAction: MtSidebarStory = {
       ${demoHeaderTemplate}
     </template>
 
-    <template #action>
+    <template #actions>
       <mt-button variant="tertiary" size="default" square aria-label="Minimize menu">
         <template #iconFront>
           <mt-icon name="regular-panel-left" size="var(--scale-size-16)" decorative />
@@ -155,7 +161,7 @@ export const WithAction: MtSidebarStory = {
     docs: {
       description: {
         story:
-          "The `action` slot sits next to the header, for example for a button that collapses the sidebar.",
+          "The `actions` slot sits next to the header, for example for a button that collapses the sidebar.",
       },
       source: {
         language: "html",
@@ -164,7 +170,7 @@ export const WithAction: MtSidebarStory = {
     <mt-logo title="Demo shop" subtitle="Shopware" />
   </template>
 
-  <template #action>
+  <template #actions>
     <mt-button variant="tertiary" square aria-label="Minimize menu" @click="onCollapse">
       <template #iconFront>
         <mt-icon name="regular-panel-left" size="var(--scale-size-16)" decorative />
