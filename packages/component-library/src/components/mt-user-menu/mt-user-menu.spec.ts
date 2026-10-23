@@ -2,15 +2,15 @@ import { render, screen } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import MtUserMenu from "./mt-user-menu.vue";
+import MtActionMenuItem from "../mt-action-menu-item/mt-action-menu-item.vue";
 
-function renderUserMenu(props: Record<string, unknown> = {}, slots: Record<string, string> = {}) {
+function renderUserMenu(props: Record<string, unknown> = {}) {
   return render(MtUserMenu, {
     props: { firstName: "Max", lastName: "Mustermann", ...props },
-    slots,
   });
 }
 
-async function openMenu(name = "User menu: Max Mustermann") {
+async function openMenu(name = "Max Mustermann") {
   screen.getByRole("button", { name }).focus();
   await userEvent.keyboard("{Enter}");
 
@@ -28,7 +28,7 @@ describe("mt-user-menu", () => {
     renderUserMenu({ lastName: undefined });
 
     expect(screen.getByText("Max")).toBeVisible();
-    expect(screen.getByRole("button", { name: "User menu: Max" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Max" })).toBeInTheDocument();
   });
 
   it("renders the initials in the avatar", () => {
@@ -37,32 +37,24 @@ describe("mt-user-menu", () => {
     expect(screen.getByTestId("mt-avatar-initials")).toHaveTextContent("MM");
   });
 
-  it("renders the role below the name", () => {
-    const { container } = renderUserMenu({ role: "Administrator" });
+  it("renders the subtitle below the name", () => {
+    const { container } = renderUserMenu({ subtitle: "Administrator" });
 
-    expect(container.querySelector(".mt-user-menu__role")).toHaveTextContent("Administrator");
+    expect(container.querySelector(".mt-user-menu__subtitle")).toHaveTextContent("Administrator");
   });
 
-  it("renders no role when none is given", () => {
+  it("renders no subtitle when none is given", () => {
     const { container } = renderUserMenu();
 
-    expect(container.querySelector(".mt-user-menu__role")).not.toBeInTheDocument();
+    expect(container.querySelector(".mt-user-menu__subtitle")).not.toBeInTheDocument();
   });
 
-  it("names the menu button after the user", () => {
-    renderUserMenu();
+  it("names the menu button after its visible name and subtitle", () => {
+    renderUserMenu({ subtitle: "Administrator" });
 
-    const button = screen.getByRole("button", { name: "User menu: Max Mustermann" });
+    const button = screen.getByRole("button", { name: "Max Mustermann Administrator" });
     expect(button).toHaveAttribute("aria-haspopup", "menu");
     expect(button).toHaveAttribute("aria-expanded", "false");
-  });
-
-  it("adds the role to the name of the menu button", () => {
-    renderUserMenu({ role: "Administrator" });
-
-    expect(
-      screen.getByRole("button", { name: "User menu: Max Mustermann, Administrator" }),
-    ).toBeInTheDocument();
   });
 
   it("hides the avatar from screen readers, as the button is named after the user", () => {
@@ -74,65 +66,38 @@ describe("mt-user-menu", () => {
     );
   });
 
-  it("uses the given accessible name for the menu button", () => {
-    renderUserMenu({ menuLabel: "Account" });
-
-    expect(screen.getByRole("button", { name: "Account" })).toBeInTheDocument();
-  });
-
-  it("opens the user menu with the logout entry", async () => {
-    renderUserMenu();
-
-    const menu = await openMenu();
-
-    expect(menu).toContainElement(screen.getByRole("menuitem", { name: "Log out" }));
-  });
-
-  it("uses the given label for the logout entry", async () => {
-    renderUserMenu({ logoutLabel: "Sign out" });
-
-    await openMenu();
-
-    expect(screen.getByRole("menuitem", { name: "Sign out" })).toBeInTheDocument();
-  });
-
-  it("emits logout when the logout entry is chosen", async () => {
-    const handler = vi.fn();
-    renderUserMenu({ onLogout: handler });
-    await openMenu();
-
-    await userEvent.click(screen.getByRole("menuitem", { name: "Log out" }));
-
-    expect(handler).toHaveBeenCalledOnce();
-  });
-
-  it("shows the version at the bottom of the menu", async () => {
-    renderUserMenu({ version: "6.7.0.0" });
-
-    const menu = await openMenu();
-
-    expect(menu).toHaveTextContent("Version 6.7.0.0");
-  });
-
-  it("shows no version when none is given", async () => {
-    renderUserMenu();
-
-    const menu = await openMenu();
-
-    expect(menu).not.toHaveTextContent("Version");
-  });
-
-  it("places further entries from the default slot above the logout entry", async () => {
-    renderUserMenu(
-      {},
-      {
-        default: '<div role="menuitem">Profile</div>',
+  it("opens a menu with the entries of the default slot", async () => {
+    const onSelect = vi.fn();
+    render(MtUserMenu, {
+      props: { firstName: "Max", lastName: "Mustermann" },
+      slots: {
+        default: {
+          components: { MtActionMenuItem },
+          setup: () => ({ onSelect }),
+          template: `
+            <mt-action-menu-item>Your profile</mt-action-menu-item>
+            <mt-action-menu-item @select="onSelect">Log out</mt-action-menu-item>
+          `,
+        },
       },
-    );
+    });
 
-    await openMenu();
+    const menu = await openMenu();
 
     const entries = screen.getAllByRole("menuitem");
-    expect(entries.map((entry) => entry.textContent?.trim())).toEqual(["Profile", "Log out"]);
+    expect(entries.map((entry) => entry.textContent?.trim())).toEqual(["Your profile", "Log out"]);
+    expect(menu).toContainElement(entries[1]);
+
+    await userEvent.click(entries[1]);
+
+    expect(onSelect).toHaveBeenCalledOnce();
+  });
+
+  it("has no entries of its own", async () => {
+    renderUserMenu();
+
+    await openMenu();
+
+    expect(screen.queryAllByRole("menuitem")).toHaveLength(0);
   });
 });

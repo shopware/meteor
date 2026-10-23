@@ -2,7 +2,7 @@
   <div class="mt-user-menu">
     <dropdown-menu-root>
       <dropdown-menu-trigger as-child>
-        <button type="button" class="mt-user-menu__trigger" :aria-label="triggerLabel">
+        <button type="button" class="mt-user-menu__trigger">
           <mt-avatar
             class="mt-user-menu__avatar"
             aria-hidden="true"
@@ -17,13 +17,13 @@
               {{ fullName }}
             </mt-text>
             <mt-text
-              v-if="role"
+              v-if="subtitle"
               as="div"
               size="2xs"
               color="color-text-secondary-default"
-              class="mt-user-menu__role"
+              class="mt-user-menu__subtitle"
             >
-              {{ role }}
+              {{ subtitle }}
             </mt-text>
           </div>
 
@@ -36,31 +36,7 @@
 
       <dropdown-menu-portal>
         <mt-action-menu match-trigger-width side="top">
-          <mt-action-menu-group v-if="hasSlotContent($slots.default)">
-            <!-- @slot Further entries of the user menu, placed above the logout entry. Use mt-action-menu-item -->
-            <slot />
-          </mt-action-menu-group>
-
-          <mt-action-menu-group>
-            <mt-action-menu-item
-              icon="regular-sign-out"
-              variant="critical"
-              @select="emit('logout')"
-            >
-              {{ logoutLabel ?? t("logoutLabel") }}
-            </mt-action-menu-item>
-          </mt-action-menu-group>
-
-          <mt-action-menu-group v-if="version">
-            <mt-text
-              as="div"
-              size="2xs"
-              color="color-text-secondary-default"
-              class="mt-user-menu__version"
-            >
-              {{ t("version", { version }) }}
-            </mt-text>
-          </mt-action-menu-group>
+          <slot />
         </mt-action-menu>
       </dropdown-menu-portal>
     </dropdown-menu-root>
@@ -69,16 +45,18 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
 import { DropdownMenuPortal, DropdownMenuRoot, DropdownMenuTrigger } from "reka-ui";
 import MtActionMenu from "../mt-action-menu/mt-action-menu.vue";
-import MtActionMenuGroup from "../mt-action-menu-group/mt-action-menu-group.vue";
-import MtActionMenuItem from "../mt-action-menu-item/mt-action-menu-item.vue";
 import MtAvatar from "../mt-avatar/mt-avatar.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "../mt-text/mt-text.vue";
-import { hasSlotContent } from "@/utils/slot";
 
+/**
+ * The logged-in user as a button with avatar, name and an optional subtitle, which opens a menu
+ * with the entries of the app.
+ *
+ * @experimental The API may still change in a future release.
+ */
 const props = withDefaults(
   defineProps<{
     /**
@@ -92,72 +70,28 @@ const props = withDefaults(
     /**
      * Second line below the name, for example the role of the user.
      */
-    role?: string;
+    subtitle?: string;
     /**
      * Image shown in the avatar instead of the initials.
      */
     imageUrl?: string;
-    /**
-     * Version shown at the bottom of the user menu, for example "6.7.0.0".
-     */
-    version?: string;
-    /**
-     * Accessible name of the button that opens the user menu. It replaces the visible name and role for
-     * screen readers. Defaults to the translated "User menu: <name>", followed by the role when there is one.
-     */
-    menuLabel?: string;
-    /**
-     * Label of the logout entry. Defaults to the translated "Log out".
-     */
-    logoutLabel?: string;
   }>(),
   {
     lastName: undefined,
-    role: undefined,
+    subtitle: undefined,
     imageUrl: undefined,
-    version: undefined,
-    menuLabel: undefined,
-    logoutLabel: undefined,
   },
 );
 
-const emit = defineEmits<{
-  /**
-   * Emitted when the logout entry of the user menu is chosen.
-   */
-  (e: "logout"): void;
-}>();
-
 defineSlots<{
+  /**
+   * The entries of the menu, such as a profile link and the logout. Use mt-action-menu-group and
+   * mt-action-menu-item.
+   */
   default?: null;
 }>();
 
-const { t } = useI18n({
-  messages: {
-    en: {
-      menuLabel: "User menu: {name}",
-      menuLabelWithRole: "User menu: {name}, {role}",
-      logoutLabel: "Log out",
-      version: "Version {version}",
-    },
-    de: {
-      menuLabel: "Benutzermenü: {name}",
-      menuLabelWithRole: "Benutzermenü: {name}, {role}",
-      logoutLabel: "Abmelden",
-      version: "Version {version}",
-    },
-  },
-});
-
 const fullName = computed(() => [props.firstName, props.lastName].filter(Boolean).join(" "));
-
-const triggerLabel = computed(() => {
-  if (props.menuLabel) return props.menuLabel;
-
-  return props.role
-    ? t("menuLabelWithRole", { name: fullName.value, role: props.role })
-    : t("menuLabel", { name: fullName.value });
-});
 </script>
 
 <style scoped>
@@ -201,7 +135,7 @@ const triggerLabel = computed(() => {
 }
 
 .mt-user-menu__name,
-.mt-user-menu__role {
+.mt-user-menu__subtitle {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -217,9 +151,5 @@ const triggerLabel = computed(() => {
   width: var(--scale-size-20);
   height: var(--scale-size-20);
   color: var(--color-icon-primary-default);
-}
-
-.mt-user-menu__version {
-  margin: var(--scale-size-8);
 }
 </style>

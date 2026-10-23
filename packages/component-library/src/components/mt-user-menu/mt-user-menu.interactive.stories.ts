@@ -2,8 +2,7 @@ import { expect, userEvent, within } from "@storybook/test";
 
 import meta, {
   LongName,
-  WithFurtherEntries,
-  WithoutRole,
+  WithoutSubtitle,
   type MtUserMenuMeta,
   type MtUserMenuStory,
 } from "./mt-user-menu.stories";
@@ -17,16 +16,14 @@ export default {
 async function openMenu(canvasElement: HTMLElement) {
   const canvas = within(canvasElement);
 
-  await userEvent.click(
-    canvas.getByRole("button", { name: "User menu: Max Mustermann, Administrator" }),
-  );
+  await userEvent.click(canvas.getByRole("button", { name: "Max Mustermann Administrator" }));
 
   // The menu is rendered at the end of the document, outside the canvas
   return within(document.body).findByRole("menu");
 }
 
 export const VisualTestDefault: MtUserMenuStory = {
-  name: "Render footer with name and role",
+  name: "Render user menu with name and subtitle",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -35,9 +32,9 @@ export const VisualTestDefault: MtUserMenuStory = {
   },
 };
 
-export const VisualTestWithoutRole: MtUserMenuStory = {
-  ...WithoutRole,
-  name: "Render footer without role",
+export const VisualTestWithoutSubtitle: MtUserMenuStory = {
+  ...WithoutSubtitle,
+  name: "Render user menu without subtitle",
 };
 
 export const VisualTestLongName: MtUserMenuStory = {
@@ -56,33 +53,11 @@ export const VisualTestOpenMenu: MtUserMenuStory = {
   play: async ({ canvasElement }) => {
     const menu = await openMenu(canvasElement);
 
-    expect(within(menu).getByRole("menuitem", { name: "Log out" })).toBeVisible();
-    expect(menu).toHaveTextContent("Version 6.7.0.0");
-  },
-};
-
-export const VisualTestOpenMenuWithFurtherEntries: MtUserMenuStory = {
-  ...WithFurtherEntries,
-  name: "Open the user menu with further entries",
-  play: async ({ canvasElement }) => {
-    const menu = await openMenu(canvasElement);
-
     const entries = within(menu).getAllByRole("menuitem");
     expect(entries.map((entry) => entry.textContent?.trim())).toEqual([
       "Your profile",
       "Settings",
       "Log out",
     ]);
-  },
-};
-
-export const TestEmitsLogout: MtUserMenuStory = {
-  name: "Emits logout when the logout entry is chosen",
-  play: async ({ args, canvasElement }) => {
-    const menu = await openMenu(canvasElement);
-
-    await userEvent.click(within(menu).getByRole("menuitem", { name: "Log out" }));
-
-    expect(args.onLogout).toHaveBeenCalledOnce();
   },
 };
