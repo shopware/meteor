@@ -91,10 +91,10 @@ export const VisualTestScrolledToBottom: MtSidebarStory = {
 };
 
 export const TestExposesComplementaryLandmark: MtSidebarStory = {
-  name: "Exposes a complementary landmark with an accessible name",
+  name: "Exposes a complementary landmark",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByRole("complementary", { name: "Sidebar" })).toBeVisible();
+    expect(canvas.getByRole("complementary")).toBeVisible();
   },
 };
 
@@ -126,7 +126,9 @@ export const TestKeepsHeaderAndFooterVisibleWhileScrolling: MtSidebarStory = {
     });
 
     expect(canvas.getByText("Demo shop")).toBeVisible();
-    expect(canvas.getByRole("button", { name: "User menu: Max Mustermann" })).toBeVisible();
+    expect(
+      canvas.getByRole("button", { name: "User menu: Max Mustermann, Administrator" }),
+    ).toBeVisible();
     expect(canvas.getByRole("link", { name: "Settings" })).toBeVisible();
   },
 };

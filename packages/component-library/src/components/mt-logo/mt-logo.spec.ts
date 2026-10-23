@@ -34,10 +34,20 @@ describe("mt-logo", () => {
     expect(container.querySelector(".mt-logo__subtitle")).not.toBeInTheDocument();
   });
 
-  it("renders the Shopware logo by default", () => {
-    renderLogo();
+  it("renders the Shopware logo hidden from screen readers by default", () => {
+    const { container } = renderLogo();
 
-    expect(screen.getByLabelText("Shopware")).toBeInTheDocument();
+    expect(container.querySelector(".mt-logo__image .mt-icon")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("names the Shopware logo with the logo label", () => {
+    renderLogo({ logoLabel: "Shopware" });
+
+    expect(screen.getByRole("img", { name: "Shopware" })).toBeInTheDocument();
   });
 
   it("replaces the whole default logo with the logo slot", () => {

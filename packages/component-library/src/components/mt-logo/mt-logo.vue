@@ -7,7 +7,9 @@
           name="solid-shopware"
           size="var(--scale-size-26)"
           color="var(--color-static-white)"
-          aria-label="Shopware"
+          :role="logoLabel ? 'img' : undefined"
+          :aria-label="logoLabel"
+          :decorative="!logoLabel"
         />
       </div>
     </slot>
@@ -43,9 +45,15 @@ withDefaults(
      * Second line below the title, for example the name of the product.
      */
     subtitle?: string;
+    /**
+     * Accessible name of the default Shopware logo. Without it, the logo is decorative and hidden
+     * from screen readers, as the title and subtitle next to it already name the shop.
+     */
+    logoLabel?: string;
   }>(),
   {
     subtitle: undefined,
+    logoLabel: undefined,
   },
 );
 

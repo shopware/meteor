@@ -5,6 +5,7 @@
         <button type="button" class="mt-user-menu__trigger" :aria-label="triggerLabel">
           <mt-avatar
             class="mt-user-menu__avatar"
+            aria-hidden="true"
             size="s"
             :first-name="firstName"
             :last-name="lastName"
@@ -101,7 +102,8 @@ const props = withDefaults(
      */
     version?: string;
     /**
-     * Accessible name of the button that opens the user menu. Defaults to the translated "User menu: <name>".
+     * Accessible name of the button that opens the user menu. It replaces the visible name and role for
+     * screen readers. Defaults to the translated "User menu: <name>", followed by the role when there is one.
      */
     menuLabel?: string;
     /**
@@ -134,11 +136,13 @@ const { t } = useI18n({
   messages: {
     en: {
       menuLabel: "User menu: {name}",
+      menuLabelWithRole: "User menu: {name}, {role}",
       logoutLabel: "Log out",
       version: "Version {version}",
     },
     de: {
       menuLabel: "Benutzermenü: {name}",
+      menuLabelWithRole: "Benutzermenü: {name}, {role}",
       logoutLabel: "Abmelden",
       version: "Version {version}",
     },
@@ -147,7 +151,13 @@ const { t } = useI18n({
 
 const fullName = computed(() => [props.firstName, props.lastName].filter(Boolean).join(" "));
 
-const triggerLabel = computed(() => props.menuLabel ?? t("menuLabel", { name: fullName.value }));
+const triggerLabel = computed(() => {
+  if (props.menuLabel) return props.menuLabel;
+
+  return props.role
+    ? t("menuLabelWithRole", { name: fullName.value, role: props.role })
+    : t("menuLabel", { name: fullName.value });
+});
 </script>
 
 <style scoped>

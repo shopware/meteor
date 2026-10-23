@@ -17,7 +17,9 @@ export default {
 async function openMenu(canvasElement: HTMLElement) {
   const canvas = within(canvasElement);
 
-  await userEvent.click(canvas.getByRole("button", { name: "User menu: Max Mustermann" }));
+  await userEvent.click(
+    canvas.getByRole("button", { name: "User menu: Max Mustermann, Administrator" }),
+  );
 
   // The menu is rendered at the end of the document, outside the canvas
   return within(document.body).findByRole("menu");

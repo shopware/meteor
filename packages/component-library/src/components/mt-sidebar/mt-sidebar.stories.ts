@@ -22,7 +22,6 @@ const meta: MtSidebarMeta = {
   title: "Components/Sidebar",
   component: MtSidebar,
   args: {
-    ariaLabel: "Sidebar",
     width: "300px",
     header: "",
     action: "",

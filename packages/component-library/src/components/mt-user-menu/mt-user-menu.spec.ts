@@ -57,6 +57,23 @@ describe("mt-user-menu", () => {
     expect(button).toHaveAttribute("aria-expanded", "false");
   });
 
+  it("adds the role to the name of the menu button", () => {
+    renderUserMenu({ role: "Administrator" });
+
+    expect(
+      screen.getByRole("button", { name: "User menu: Max Mustermann, Administrator" }),
+    ).toBeInTheDocument();
+  });
+
+  it("hides the avatar from screen readers, as the button is named after the user", () => {
+    renderUserMenu();
+
+    expect(screen.getByTestId("mt-avatar-initials").parentElement).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+  });
+
   it("uses the given accessible name for the menu button", () => {
     renderUserMenu({ menuLabel: "Account" });
 
