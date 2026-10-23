@@ -1,7 +1,16 @@
 <template>
   <aside class="mt-sidebar" :style="{ '--mt-sidebar-width': width }" :aria-label="ariaLabel">
-    <header v-if="hasSlotContent($slots.header)" class="mt-sidebar__header">
-      <slot name="header" />
+    <header
+      v-if="hasSlotContent($slots.header) || hasSlotContent($slots.action)"
+      class="mt-sidebar__header"
+    >
+      <div v-if="hasSlotContent($slots.header)" class="mt-sidebar__header-content">
+        <slot name="header" />
+      </div>
+
+      <div v-if="hasSlotContent($slots.action)" class="mt-sidebar__action">
+        <slot name="action" />
+      </div>
     </header>
 
     <div ref="scrollContainerRef" class="mt-sidebar__body" @scroll.passive="updateScrollShadows">
@@ -55,8 +64,21 @@ withDefaults(
 );
 
 defineSlots<{
+  /**
+   * Fixed area at the top, for example mt-logo.
+   */
   header?: null;
+  /**
+   * Next to the header, for example a button that collapses the sidebar.
+   */
+  action?: null;
+  /**
+   * The navigation, for example mt-nav. Scrolls on its own.
+   */
   default?: null;
+  /**
+   * Fixed area at the bottom, for example mt-user-menu.
+   */
   footer?: null;
 }>();
 
@@ -110,6 +132,18 @@ useResizeObserver([scrollContainerRef, contentRef], updateScrollShadows);
   justify-content: space-between;
   gap: var(--scale-size-12);
   padding-inline-start: var(--scale-size-10);
+}
+
+.mt-sidebar__header-content {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mt-sidebar__action {
+  display: flex;
+  flex-shrink: 0;
+  margin-inline-start: auto;
 }
 
 .mt-sidebar__body {

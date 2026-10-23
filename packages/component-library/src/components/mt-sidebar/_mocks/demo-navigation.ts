@@ -1,7 +1,7 @@
 import { markRaw } from "vue";
 import MtSidebar from "../mt-sidebar.vue";
-import MtSidebarFooter from "../../mt-sidebar-footer/mt-sidebar-footer.vue";
-import MtSidebarHeader from "../../mt-sidebar-header/mt-sidebar-header.vue";
+import MtUserMenu from "../../mt-user-menu/mt-user-menu.vue";
+import MtLogo from "../../mt-logo/mt-logo.vue";
 import MtNav from "../../mt-nav/mt-nav.vue";
 import type { NavItem, NavSection } from "../../mt-nav/mt-nav.vue";
 import { StoryLink } from "../../mt-nav/mt-nav.story-helper";
@@ -11,8 +11,8 @@ import { StoryLink } from "../../mt-nav/mt-nav.story-helper";
  */
 export const demoComponents = {
   MtSidebar,
-  MtSidebarHeader,
-  MtSidebarFooter,
+  MtLogo,
+  MtUserMenu,
   MtNav,
 };
 
@@ -93,10 +93,10 @@ export const demoNavigationTemplate = `
  * Header as used by the Shopware administration.
  */
 export const demoHeaderTemplate = `
-<mt-sidebar-header title="Demo shop" subtitle="Shopware" />`;
+<mt-logo title="Demo shop" subtitle="Shopware" />`;
 
 /**
  * Footer as used by the Shopware administration.
  */
 export const demoFooterTemplate = `
-<mt-sidebar-footer first-name="Max" last-name="Mustermann" role="Administrator" version="6.7.0.0" />`;
+<mt-user-menu first-name="Max" last-name="Mustermann" role="Administrator" version="6.7.0.0" />`;

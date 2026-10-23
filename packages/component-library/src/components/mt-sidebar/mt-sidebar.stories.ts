@@ -1,6 +1,8 @@
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import MtSidebar from "./mt-sidebar.vue";
+import MtButton from "../mt-button/mt-button.vue";
+import MtIcon from "../mt-icon/mt-icon.vue";
 import {
   demoComponents,
   demoLinkComponent,
@@ -11,7 +13,10 @@ import {
   demoFooterTemplate,
 } from "./_mocks/demo-navigation";
 
-export type MtSidebarMeta = SlottedMeta<typeof MtSidebar, "header" | "default" | "footer">;
+export type MtSidebarMeta = SlottedMeta<
+  typeof MtSidebar,
+  "header" | "action" | "default" | "footer"
+>;
 
 const meta: MtSidebarMeta = {
   title: "Components/Sidebar",
@@ -20,11 +25,13 @@ const meta: MtSidebarMeta = {
     ariaLabel: "Sidebar",
     width: "300px",
     header: "",
+    action: "",
     default: "",
     footer: "",
   },
   argTypes: {
     header: { control: { type: "text" } },
+    action: { control: { type: "text" } },
     default: { control: { type: "text" } },
     footer: { control: { type: "text" } },
   },
@@ -39,6 +46,10 @@ const meta: MtSidebarMeta = {
     </template>
     <template v-else #header>
       ${demoHeaderTemplate}
+    </template>
+
+    <template v-if="args.action" #action>
+      <div v-html="args.action"></div>
     </template>
 
     <template v-if="args.default" #default>
@@ -69,13 +80,13 @@ export const Default: MtSidebarStory = {
         language: "html",
         code: `<mt-sidebar>
   <template #header>
-    <!-- logo, shop name, collapse button, ... -->
+    <mt-logo title="Demo shop" subtitle="Shopware" />
   </template>
 
   <mt-nav :sections="sections" />
 
   <template #footer>
-    <!-- user menu, logout, ... -->
+    <mt-user-menu first-name="Max" last-name="Mustermann" role="Administrator" />
   </template>
 </mt-sidebar>`,
       },
@@ -108,6 +119,62 @@ export const ShortNavigation: MtSidebarStory = {
       description: {
         story:
           "When the navigation fits, nothing scrolls and no scroll shadows are shown. The footer still sits at the bottom of the sidebar.",
+      },
+    },
+  },
+};
+
+export const WithAction: MtSidebarStory = {
+  name: "With action",
+  render: () => ({
+    components: { ...demoComponents, MtButton, MtIcon },
+    setup: () => ({ sections: demoSections, linkComponent: demoLinkComponent }),
+    template: `
+<div style="height: 480px; display: flex;">
+  <mt-sidebar>
+    <template #header>
+      ${demoHeaderTemplate}
+    </template>
+
+    <template #action>
+      <mt-button variant="tertiary" size="default" square aria-label="Minimize menu">
+        <template #iconFront>
+          <mt-icon name="regular-panel-left" size="var(--scale-size-16)" decorative />
+        </template>
+      </mt-button>
+    </template>
+
+    ${demoNavigationTemplate}
+
+    <template #footer>
+      ${demoFooterTemplate}
+    </template>
+  </mt-sidebar>
+</div>`,
+  }),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "The `action` slot sits next to the header, for example for a button that collapses the sidebar.",
+      },
+      source: {
+        language: "html",
+        code: `<mt-sidebar>
+  <template #header>
+    <mt-logo title="Demo shop" subtitle="Shopware" />
+  </template>
+
+  <template #action>
+    <mt-button variant="tertiary" square aria-label="Minimize menu" @click="onCollapse">
+      <template #iconFront>
+        <mt-icon name="regular-panel-left" size="var(--scale-size-16)" decorative />
+      </template>
+    </mt-button>
+  </template>
+
+  <mt-nav :sections="sections" />
+</mt-sidebar>`,
       },
     },
   },
