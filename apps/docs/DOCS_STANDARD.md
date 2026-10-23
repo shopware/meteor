@@ -58,11 +58,11 @@ Write the description as a definition of the component, not as instructions. Sta
 
 Components that are not generally available carry a status banner as the first content on the page, directly after the frontmatter and before `Import`. Mirror the component's status from the library (the Storybook `status`): `experimental` or `deprecated`. Available components get no banner.
 
-Use a Nuxt UI callout: `::warning` for experimental, `::caution` for deprecated. Lead with the bold status word, then a short explanation. When a preferred alternative or replacement exists, link it (see [Prose rules](#prose-rules)); do not invent one if the component has no documented successor.
+Use a Nuxt UI callout: `::warning` for experimental, `::caution` for deprecated. Every experimental banner starts with the same text. A short page-specific sentence may follow it. When a preferred alternative or replacement exists, link it (see [Prose rules](#prose-rules)); do not invent one if the component has no documented successor.
 
 ```md
 ::warning
-**Experimental.** The API may still change. Prefer [**Action Menu**](/components/action-menu) or [**Floating UI**](/components/floating-ui) when they fit your use case.
+**Experimental:** This component is in a testing phase, and its API and behavior are not stable yet. Props, events, slots, visual behavior, or accessibility details may change without notice, and the component may be removed at any time. Prefer [**Action Menu**](/components/action-menu) or [**Floating UI**](/components/floating-ui) when they fit your use case.
 ::
 ```
 
