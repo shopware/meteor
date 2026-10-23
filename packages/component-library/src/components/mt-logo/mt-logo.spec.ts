@@ -34,7 +34,7 @@ describe("mt-logo", () => {
     expect(container.querySelector(".mt-logo__subtitle")).not.toBeInTheDocument();
   });
 
-  it("renders the Shopware logo hidden from screen readers by default", () => {
+  it("renders the Shopware logo hidden from screen readers", () => {
     const { container } = renderLogo();
 
     expect(container.querySelector(".mt-logo__image .mt-icon")).toHaveAttribute(
@@ -42,12 +42,6 @@ describe("mt-logo", () => {
       "true",
     );
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
-  });
-
-  it("names the Shopware logo with the logo label", () => {
-    renderLogo({ logoLabel: "Shopware" });
-
-    expect(screen.getByRole("img", { name: "Shopware" })).toBeInTheDocument();
   });
 
   it("replaces the whole default logo with the logo slot", () => {

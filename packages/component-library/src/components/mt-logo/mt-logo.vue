@@ -7,9 +7,7 @@
           name="solid-shopware"
           size="var(--scale-size-26)"
           color="var(--color-static-white)"
-          :role="logoLabel ? 'img' : undefined"
-          :aria-label="logoLabel"
-          :decorative="!logoLabel"
+          decorative
         />
       </div>
     </slot>
@@ -35,6 +33,12 @@
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "../mt-text/mt-text.vue";
 
+/**
+ * A logo with a title and an optional subtitle, for example the name of the shop in the header of
+ * `mt-sidebar`. The default Shopware logo is decorative, as the title names the shop.
+ *
+ * @experimental The API may still change in a future release.
+ */
 withDefaults(
   defineProps<{
     /**
@@ -45,15 +49,9 @@ withDefaults(
      * Second line below the title, for example the name of the product.
      */
     subtitle?: string;
-    /**
-     * Accessible name of the default Shopware logo. Without it, the logo is decorative and hidden
-     * from screen readers, as the title and subtitle next to it already name the shop.
-     */
-    logoLabel?: string;
   }>(),
   {
     subtitle: undefined,
-    logoLabel: undefined,
   },
 );
 
