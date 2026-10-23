@@ -3,26 +3,32 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import {
   MtButton,
-  MtContainer,
   MtEmptyState,
+  MtPage,
 } from "@shopware-ag/meteor-component-library";
+import { useBreadcrumb } from "../composables/useBreadcrumb";
 
 const { t } = useI18n();
 const router = useRouter();
+const breadcrumb = useBreadcrumb(() => t("notFound.title"));
 </script>
 
 <template>
-  <mt-container as="section" class="page stack">
+  <mt-page width="m" :breadcrumb="breadcrumb">
     <mt-empty-state
       icon="regular-map"
       :headline="t('notFound.title')"
       :description="t('notFound.description')"
     >
       <template #button>
-        <mt-button variant="primary" @click="router.push('/')">
+        <mt-button
+          variant="secondary"
+          size="default"
+          @click="router.push({ name: 'dashboard' })"
+        >
           {{ t("notFound.home") }}
         </mt-button>
       </template>
     </mt-empty-state>
-  </mt-container>
+  </mt-page>
 </template>

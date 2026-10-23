@@ -96,16 +96,14 @@ import {
 // Import global styling
 import MtUser from "./components/mt-user/mt-user.vue";
 import MtApp from "./components/mt-app/mt-app.vue";
-import {
-  useMtApp,
-  type MtAppContext,
-  type MtAppPanel,
-} from "./components/mt-app/composables/useMtApp";
-import {
-  useMtAppRegions,
-  type MtAppRegions,
-} from "./components/mt-app/composables/useMtAppRegions";
+import { useApp, type MtAppContext, type MtAppPanel } from "./components/mt-app/composables/useApp";
+import { useAppRegions, type MtAppRegions } from "./components/mt-app/composables/useAppRegions";
+import { useAppLoading } from "./components/mt-app/composables/useAppLoading";
+import { useUnsavedChanges } from "./components/mt-app/composables/useUnsavedChanges";
 import MtContainer from "./components/mt-container/mt-container.vue";
+import MtPage from "./components/mt-page/mt-page.vue";
+import MtContentHeader from "./components/mt-content-header/mt-content-header.vue";
+import MtContentLayout from "./components/mt-content-layout/mt-content-layout.vue";
 import "./assets/css/all.css";
 
 // Importing types
@@ -237,9 +235,14 @@ export {
   MtSkeletonBar as SwSkeletonBar,
   MtUser,
   MtApp,
-  useMtApp,
-  useMtAppRegions,
+  useApp,
+  useAppRegions,
+  useAppLoading,
+  useUnsavedChanges,
   MtContainer,
+  MtPage,
+  MtContentHeader,
+  MtContentLayout,
 };
 
 // Exporting types

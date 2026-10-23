@@ -2,6 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { RouterView } from "vue-router";
 import { MtApp } from "@shopware-ag/meteor-component-library";
+import AppConfirmModal from "./components/AppConfirmModal.vue";
 import AppNav from "./components/AppNav.vue";
 import AppSidebar from "./components/AppSidebar.vue";
 
@@ -20,6 +21,7 @@ const { t } = useI18n();
 
     <template #content>
       <RouterView />
+      <AppConfirmModal />
     </template>
 
     <template #sidebar>

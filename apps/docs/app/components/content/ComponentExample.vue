@@ -22,6 +22,9 @@ const props = withDefaults(
     /** Stretch the rendered example to fill the preview width. Off by default
      *  so intrinsic-width components (buttons, badges) stay left-aligned. */
     fullWidth?: boolean;
+    /** Render the preview without padding, so a full-bleed example such as a
+     *  page or the app shell reaches the border of the preview. */
+    inset?: boolean;
     /** Extra classes for the preview container. */
     class?: string;
   }>(),
@@ -31,6 +34,7 @@ const props = withDefaults(
     collapse: true,
     inlineCopyButton: false,
     fullWidth: false,
+    inset: false,
     class: undefined,
   },
 );
@@ -85,12 +89,19 @@ const codeWrapperClass = computed(() => [
     <div
       v-if="preview"
       class="border border-muted relative"
-      :class="source ? 'border-b-0 rounded-t-md' : 'rounded-md'"
+      :class="[
+        source ? 'border-b-0 rounded-t-md' : 'rounded-md',
+        inset ? 'overflow-hidden' : '',
+      ]"
     >
       <div
         v-if="resolvedComponent"
-        class="flex flex-wrap items-center justify-start gap-4 p-4"
-        :class="[fullWidth ? '[&>*]:w-full' : '', props.class]"
+        class="flex flex-wrap items-center justify-start gap-4"
+        :class="[
+          inset ? '' : 'p-4',
+          fullWidth ? '[&>*]:w-full' : '',
+          props.class,
+        ]"
       >
         <!-- Previews render client-only: example components may use browser
              APIs (ResizeObserver, document) that are unavailable during SSR. -->
