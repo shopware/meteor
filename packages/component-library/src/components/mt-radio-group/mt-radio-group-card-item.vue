@@ -39,12 +39,17 @@ const props = withDefaults(
     value: string | number | boolean;
     label: string;
     description?: string;
+    /**
+     * Disables this card. The card is also disabled when the whole group is disabled.
+     */
+    disabled?: boolean;
     required?: boolean;
     ariaDescribedBy?: string;
     error?: boolean;
   }>(),
   {
     description: undefined,
+    disabled: false,
     required: false,
     ariaDescribedBy: undefined,
     error: false,
@@ -61,7 +66,7 @@ const radioGroupContext = radioGroup;
 
 const name = computed(() => radioGroupContext.name.value);
 const checked = computed(() => radioGroupContext.selectedValue.value === props.value);
-const isDisabled = computed(() => radioGroupContext.disabled.value);
+const isDisabled = computed(() => radioGroupContext.disabled.value || props.disabled);
 const hasError = computed(() => props.error || radioGroupContext.error.value);
 const describedBy = computed(
   () =>

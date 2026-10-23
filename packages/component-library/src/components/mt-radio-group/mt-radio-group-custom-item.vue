@@ -6,7 +6,7 @@
     }"
     @click="onClick"
   >
-    <slot />
+    <slot :disabled="isDisabled" />
   </div>
 </template>
 
@@ -14,9 +14,19 @@
 import { computed, inject } from "vue";
 import type { RadioGroupContext } from "./_internal/mt-radio-group-context";
 
-const props = defineProps<{
-  value: string | number | boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    value: string | number | boolean;
+    /**
+     * Disables this option. The option is also disabled when the whole group is disabled.
+     * Pass the `disabled` slot prop on to the `MtRadioGroupIndicator` inside.
+     */
+    disabled?: boolean;
+  }>(),
+  {
+    disabled: false,
+  },
+);
 
 const radioGroup = inject<RadioGroupContext>("radioGroupContext");
 
@@ -26,7 +36,7 @@ if (!radioGroup) {
 
 const radioGroupContext = radioGroup;
 
-const isDisabled = computed(() => radioGroupContext.disabled.value);
+const isDisabled = computed(() => radioGroupContext.disabled.value || props.disabled);
 
 function onClick() {
   if (isDisabled.value) {

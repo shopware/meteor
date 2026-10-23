@@ -102,6 +102,77 @@ export const Default: Story = {
   },
 };
 
+export const WithDisabledItems: Story = {
+  name: "Disabled options",
+  args: {
+    label: "Choose a delivery method",
+    hint: "Express delivery is not available for this address.",
+  },
+  render: (args: typeof meta.args) => ({
+    components: { MtRadioGroupRoot, MtRadioGroupList, MtRadioGroupItem },
+    setup() {
+      const modelValue = ref("standard");
+
+      const handleUpdate = (value: string) => {
+        modelValue.value = value;
+        args!.change(value);
+      };
+
+      return { args, modelValue, handleUpdate };
+    },
+    template: `
+      <MtRadioGroupRoot
+        v-model="modelValue"
+        :disabled="args.disabled"
+        :label="args.label"
+        :help-text="args.helpText"
+        :name="args.name"
+        :error="args.error"
+        :hint="args.hint"
+        @update:modelValue="handleUpdate"
+      >
+        <MtRadioGroupList>
+          <MtRadioGroupItem id="standard-delivery" value="standard" label="Standard delivery" />
+          <MtRadioGroupItem id="express-delivery" value="express" label="Express delivery" disabled />
+          <MtRadioGroupItem id="store-collection" value="collection" label="Collect in store" />
+        </MtRadioGroupList>
+        <template v-if="args.hintSlot" #hint>{{ args.hintSlot }}</template>
+      </MtRadioGroupRoot>
+    `,
+  }),
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-radio-group-root
+  v-model="selectedDeliveryMethod"
+  label="Choose a delivery method"
+  hint="Express delivery is not available for this address."
+>
+  <mt-radio-group-list>
+    <mt-radio-group-item
+      id="standard-delivery"
+      value="standard"
+      label="Standard delivery"
+    />
+    <mt-radio-group-item
+      id="express-delivery"
+      value="express"
+      label="Express delivery"
+      disabled
+    />
+    <mt-radio-group-item
+      id="store-collection"
+      value="collection"
+      label="Collect in store"
+    />
+  </mt-radio-group-list>
+</mt-radio-group-root>`,
+      },
+    },
+  },
+};
+
 export const WithCardItems: Story = {
   name: "Card items",
   args: {

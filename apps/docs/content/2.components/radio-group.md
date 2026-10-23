@@ -37,6 +37,13 @@ Build fully custom option cards when you need richer content or a different layo
 ::component-example{name="radio-group-custom-item-example"}
 ::
 
+### Disabled option
+
+Disable a single option when it is not available, and use the group's hint to explain why.
+
+::component-example{name="radio-group-disabled-option-example"}
+::
+
 ## Anatomy
 
 **Radio Group** is a compound component made up of several public exports:
@@ -72,6 +79,7 @@ Build fully custom option cards when you need richer content or a different layo
 - Use `MtRadioGroupItem` for simple choices that only need a label.
 - Use `MtRadioGroupCardItem` when a short description helps users compare options.
 - Use `MtRadioGroupCustomItem` for richer content or layouts, such as pricing plans with feature lists.
+- Explain why an option is disabled, for example in the group's `hint`.
 - Keep the number of options manageable. A small visible set is the sweet spot.
 
 #dont
@@ -90,14 +98,16 @@ Build fully custom option cards when you need richer content or a different layo
 - **Radio Group** uses `v-model` on `MtRadioGroupRoot` to manage the selected value across all items in the group.
 - Use standard items and card items inside `MtRadioGroupRoot`. Both share the selected value, group name, and disabled state.
 - Clicking anywhere on a card selects its option. A disabled group prevents selection on all its cards.
+- Set `disabled` on an item, card item, or custom item to disable only that option. An option is disabled when either the option or the whole group is disabled. A disabled option that is already selected stays selected.
 - Card items inherit the root's error state. Set a card's `error` prop to mark an individual option as invalid.
-- `MtRadioGroupCustomItem` gives you layout freedom, but you still need to render `MtRadioGroupIndicator` so the custom option remains a real radio control.
+- `MtRadioGroupCustomItem` gives you layout freedom, but you still need to render `MtRadioGroupIndicator` so the custom option remains a real radio control. Pass the custom item's `disabled` slot prop to the indicator so that disabling the item also disables its radio input.
 - `helpText`, `hint`, and `error` follow the shared field patterns used by other form components.
 
 ## Accessibility
 
 - Provide a clear group label or other nearby visible context so users understand what the choice controls.
-- `MtRadioGroupIndicator` uses native radio inputs. Tab enters or leaves the group, arrow keys move between options and select them, and Space selects the focused option.
+- The root's `label` names the radio group for screen readers. The root's `hint` and `error`, and any element referenced by its `ariaDescribedBy`, describe the group.
+- `MtRadioGroupIndicator` uses native radio inputs. Tab enters or leaves the group, arrow keys move between options and select them, and Space selects the focused option. Arrow keys skip disabled options.
 - Card items keep the native radio input and show a focus outline around the card during keyboard navigation.
 - A card's label names its radio input. Its description is associated with the input so screen readers can announce the supporting text.
 - Use `ariaDescribedBy` on a card to reference additional descriptive text by its element ID.
