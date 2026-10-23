@@ -1,6 +1,6 @@
 import { within, expect, waitFor, userEvent } from "@storybook/test";
 
-import meta, { type MtSidebarMeta, type MtSidebarStory } from "./mt-sidebar.stories";
+import meta, { WithAction, type MtSidebarMeta, type MtSidebarStory } from "./mt-sidebar.stories";
 import {
   demoComponents,
   demoLinkComponent,
@@ -63,6 +63,16 @@ export const VisualTestDefault: MtSidebarStory = {
 export const VisualTestShortNavigation: MtSidebarStory = {
   name: "Render sidebar with short navigation",
   render: renderSidebar({ sections: shortDemoSections }),
+};
+
+export const VisualTestWithAction: MtSidebarStory = {
+  ...WithAction,
+  name: "Render sidebar with an action next to the header",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByRole("button", { name: "Minimize menu" })).toBeVisible();
+  },
 };
 
 export const VisualTestScrolledToBottom: MtSidebarStory = {

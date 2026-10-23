@@ -21,9 +21,9 @@ import MtLink from "./components/mt-link/mt-link.vue";
 import MtNumberField from "./components/mt-number-field/mt-number-field.vue";
 import MtPasswordField from "./components/mt-password-field/mt-password-field.vue";
 import MtSelect from "./components/mt-select/mt-select.vue";
+import MtLogo from "./components/mt-logo/mt-logo.vue";
 import MtSidebar from "./components/mt-sidebar/mt-sidebar.vue";
-import MtSidebarFooter from "./components/mt-sidebar-footer/mt-sidebar-footer.vue";
-import MtSidebarHeader from "./components/mt-sidebar-header/mt-sidebar-header.vue";
+import MtUserMenu from "./components/mt-user-menu/mt-user-menu.vue";
 import MtSlider from "@/components/mt-slider/mt-slider.vue";
 import MtSwitch from "./components/mt-switch/mt-switch.vue";
 import MtTextField from "./components/mt-text-field/mt-text-field.vue";
@@ -125,9 +125,9 @@ export {
   MtNumberField,
   MtPasswordField,
   MtSelect,
+  MtLogo,
   MtSidebar,
-  MtSidebarFooter,
-  MtSidebarHeader,
+  MtUserMenu,
   MtSlider,
   MtSwitch,
   MtTextField,

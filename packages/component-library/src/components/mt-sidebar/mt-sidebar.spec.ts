@@ -92,6 +92,36 @@ describe("mt-sidebar", () => {
     expect(header).toHaveTextContent("Administration");
   });
 
+  it("renders the action slot next to the header slot", async () => {
+    const { container } = render(MtSidebar, {
+      slots: {
+        header: "Administration",
+        action: "<button>Collapse</button>",
+      },
+    });
+
+    const header = container.querySelector("header.mt-sidebar__header");
+    expect(header?.querySelector(".mt-sidebar__header-content")).toHaveTextContent(
+      "Administration",
+    );
+    expect(header?.querySelector(".mt-sidebar__action")).toContainElement(
+      screen.getByRole("button", { name: "Collapse" }),
+    );
+  });
+
+  it("renders the header element for the action slot alone", async () => {
+    const { container } = render(MtSidebar, {
+      slots: {
+        action: "<button>Collapse</button>",
+      },
+    });
+
+    expect(container.querySelector(".mt-sidebar__header-content")).toBeNull();
+    expect(container.querySelector("header.mt-sidebar__header")).toContainElement(
+      screen.getByRole("button", { name: "Collapse" }),
+    );
+  });
+
   it("renders the footer slot inside a footer element", async () => {
     const { container } = render(MtSidebar, {
       slots: {
@@ -114,6 +144,7 @@ describe("mt-sidebar", () => {
     const { container } = render(MtSidebar, {
       slots: {
         header: '<span v-if="false">Administration</span>',
+        action: '<button v-if="false">Collapse</button>',
         footer: '<button v-if="false">Log out</button>',
       },
     });
