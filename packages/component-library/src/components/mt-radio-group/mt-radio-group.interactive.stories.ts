@@ -10,7 +10,7 @@ import MtRadioGroupIndicator from "./mt-radio-group-indicator.vue";
 import ExampleRadioOption from "./_internal/example-radio-option.vue";
 import type { StoryObj, Meta } from "@storybook/vue3";
 import { fn } from "@storybook/test";
-import meta, { Default, WithCardItems } from "./mt-radio-group.stories";
+import meta, { Default, WithCardItems, WithDisabledItems } from "./mt-radio-group.stories";
 import {
   expectHintIconAlignedWithFirstLine,
   multiLinePropHint,
@@ -206,6 +206,33 @@ export const TestSelectsItems: Story = {
     expect(canvas.getByRole("radio", { name: "Option 3" })).toBeChecked();
     expect(args.change).toHaveBeenLastCalledWith("value3");
     expect(args.change).toHaveBeenCalledTimes(2);
+  },
+};
+
+export const TestSkipsDisabledItems: Story = {
+  ...WithDisabledItems,
+  name: "Skips disabled options",
+  args: {
+    ...WithDisabledItems.args,
+    change: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const express = canvas.getByRole("radio", { name: "Express delivery" });
+
+    expect(express).toBeDisabled();
+
+    await userEvent.tab();
+
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).toHaveFocus();
+
+    await userEvent.keyboard("{ArrowDown}");
+
+    expect(canvas.getByRole("radio", { name: "Collect in store" })).toHaveFocus();
+    expect(canvas.getByRole("radio", { name: "Collect in store" })).toBeChecked();
+    expect(express).not.toBeChecked();
+    expect(args.change).toHaveBeenCalledWith("collection");
+    expect(args.change).toHaveBeenCalledTimes(1);
   },
 };
 

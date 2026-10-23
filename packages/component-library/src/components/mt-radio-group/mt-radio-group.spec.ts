@@ -4,6 +4,8 @@ import MtRadioGroupRoot from "./mt-radio-group-root.vue";
 import MtRadioGroupList from "./mt-radio-group-list.vue";
 import MtRadioGroupItem from "./mt-radio-group-item.vue";
 import MtRadioGroupCardItem from "./mt-radio-group-card-item.vue";
+import MtRadioGroupCustomItem from "./mt-radio-group-custom-item.vue";
+import MtRadioGroupIndicator from "./mt-radio-group-indicator.vue";
 import { userEvent } from "@testing-library/user-event";
 import { ref } from "vue";
 
@@ -120,6 +122,38 @@ describe("radio group cards", () => {
     expect(screen.getByRole("radio", { name: "Pro" })).toBeDisabled();
     expect(screen.getByRole("radio", { name: "Pro" })).not.toBeChecked();
     expect(onSelectionChange).not.toHaveBeenCalled();
+  });
+
+  it("can disable a single card", async () => {
+    // ARRANGE
+    const onSelectionChange = vi.fn();
+
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupCardItem },
+      setup: () => ({ selection: ref("basic"), onSelectionChange }),
+      template: `
+        <MtRadioGroupRoot v-model="selection" @update:modelValue="onSelectionChange">
+          <MtRadioGroupCardItem id="basic" value="basic" label="Basic" />
+          <MtRadioGroupCardItem id="pro" value="pro" label="Pro" disabled />
+          <MtRadioGroupCardItem id="enterprise" value="enterprise" label="Enterprise" />
+        </MtRadioGroupRoot>
+      `,
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Pro"));
+
+    // ASSERT
+    expect(screen.getByRole("radio", { name: "Pro" })).toBeDisabled();
+    expect(screen.getByRole("radio", { name: "Pro" })).not.toBeChecked();
+    expect(onSelectionChange).not.toHaveBeenCalled();
+
+    // ACT
+    await userEvent.click(screen.getByText("Enterprise"));
+
+    // ASSERT
+    expect(screen.getByRole("radio", { name: "Enterprise" })).toBeChecked();
+    expect(onSelectionChange).toHaveBeenCalledExactlyOnceWith("enterprise");
   });
 
   it.each([1, true, false])("preserves a selection's value type for %s", async (value) => {
@@ -245,6 +279,61 @@ describe("radio group cards", () => {
     expect(() => render(MtRadioGroupCardItem, { props })).toThrow(
       "MtRadioGroupCardItem must be used within MtRadioGroupRoot",
     );
+  });
+});
+
+describe("radio group custom items", () => {
+  it("can disable a single custom item", async () => {
+    // ARRANGE
+    const onSelectionChange = vi.fn();
+
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupCustomItem, MtRadioGroupIndicator },
+      setup: () => ({ selection: ref(null), onSelectionChange }),
+      template: `
+        <MtRadioGroupRoot v-model="selection" @update:modelValue="onSelectionChange">
+          <template #default="{ identification }">
+            <MtRadioGroupCustomItem value="pro" v-slot="{ disabled }">
+              <MtRadioGroupIndicator
+                id="pro"
+                :name="identification"
+                value="pro"
+                :checked="selection === 'pro'"
+                :disabled="disabled"
+              />
+              <span>Pro</span>
+            </MtRadioGroupCustomItem>
+            <MtRadioGroupCustomItem value="plus" disabled v-slot="{ disabled }">
+              <MtRadioGroupIndicator
+                id="plus"
+                :name="identification"
+                value="plus"
+                :checked="selection === 'plus'"
+                :disabled="disabled"
+              />
+              <span>Plus</span>
+            </MtRadioGroupCustomItem>
+          </template>
+        </MtRadioGroupRoot>
+      `,
+    });
+    const [pro, plus] = screen.getAllByRole("radio");
+
+    // ACT
+    await userEvent.click(screen.getByText("Plus"));
+
+    // ASSERT
+    expect(plus).toBeDisabled();
+    expect(plus).not.toBeChecked();
+    expect(onSelectionChange).not.toHaveBeenCalled();
+
+    // ACT
+    await userEvent.click(screen.getByText("Pro"));
+
+    // ASSERT
+    expect(pro).toBeEnabled();
+    expect(pro).toBeChecked();
+    expect(onSelectionChange).toHaveBeenCalledExactlyOnceWith("pro");
   });
 });
 
@@ -402,6 +491,65 @@ describe("mt-radio-group", () => {
     radios.forEach((radio) => {
       expect(radio).toBeDisabled();
     });
+  });
+
+  it("can disable a single option", async () => {
+    // ARRANGE
+    const onSelectionChange = vi.fn();
+
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupItem },
+      setup: () => ({ selection: ref("basic"), onSelectionChange }),
+      template: `
+        <MtRadioGroupRoot v-model="selection" @update:modelValue="onSelectionChange">
+          <MtRadioGroupItem id="basic" value="basic" label="Basic" />
+          <MtRadioGroupItem id="pro" value="pro" label="Pro" disabled />
+          <MtRadioGroupItem id="enterprise" value="enterprise" label="Enterprise" />
+        </MtRadioGroupRoot>
+      `,
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Pro"));
+
+    // ASSERT
+    expect(screen.getByRole("radio", { name: "Pro" })).toBeDisabled();
+    expect(screen.getByRole("radio", { name: "Pro" })).not.toBeChecked();
+    expect(onSelectionChange).not.toHaveBeenCalled();
+
+    // ACT
+    await userEvent.click(screen.getByText("Enterprise"));
+
+    // ASSERT
+    expect(screen.getByRole("radio", { name: "Enterprise" })).toBeChecked();
+    expect(onSelectionChange).toHaveBeenCalledExactlyOnceWith("enterprise");
+  });
+
+  it("skips a disabled option when moving through the options with arrow keys", async () => {
+    // ARRANGE
+    const onSelectionChange = vi.fn();
+
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupItem },
+      setup: () => ({ selection: ref("basic"), onSelectionChange }),
+      template: `
+        <MtRadioGroupRoot v-model="selection" @update:modelValue="onSelectionChange">
+          <MtRadioGroupItem id="basic" value="basic" label="Basic" />
+          <MtRadioGroupItem id="pro" value="pro" label="Pro" disabled />
+          <MtRadioGroupItem id="enterprise" value="enterprise" label="Enterprise" />
+        </MtRadioGroupRoot>
+      `,
+    });
+
+    // ACT
+    await userEvent.tab();
+    await userEvent.keyboard("{ArrowDown}");
+
+    // ASSERT
+    expect(screen.getByRole("radio", { name: "Enterprise" })).toHaveFocus();
+    expect(screen.getByRole("radio", { name: "Enterprise" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "Pro" })).not.toBeChecked();
+    expect(onSelectionChange).toHaveBeenCalledExactlyOnceWith("enterprise");
   });
 
   it("displays an error message when provided", async () => {
