@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 5.12.0
+
+### Minor Changes
+
+- [#1379](https://github.com/shopware/meteor/pull/1379) [`4a2c88a`](https://github.com/shopware/meteor/commit/4a2c88a9f81eba89be37d44b97a0ee48059ee036) Thanks [@github-actions](https://github.com/apps/github-actions)! - Added multiple icons:
+  `regular-shopping-bag-return`
+  `solid-shopping-bag-return`
+
 ## 5.11.0
 
 ### Minor Changes
