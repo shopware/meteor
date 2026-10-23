@@ -1,10 +1,10 @@
 <template>
   <component
-    :is="panel === 'navigation' ? 'nav' : 'aside'"
+    :is="as"
     ref="inline"
     class="mt-app__region"
     :class="`mt-app__region--${panel}`"
-    :aria-label="label"
+    :aria-label="as === 'div' ? undefined : label"
     :hidden="hidden || isMobile || undefined"
   >
     <div ref="host" class="mt-app__region-content">
@@ -15,11 +15,11 @@
   <mt-drawer-root
     v-if="isMobile"
     :open="isOpen"
-    @update:open="(open: boolean) => (open ? app.open(panel) : app.close(panel))"
+    @update:open="(open: boolean) => (open ? controller.open(panel) : controller.close(panel))"
   >
     <mt-drawer-content
       :id="id"
-      :side="panel === 'navigation' ? 'start' : 'end'"
+      :side="side"
       variant="floating"
       :title="label"
       class="mt-app__drawer"
@@ -28,7 +28,7 @@
       keep-mounted
     >
       <div class="mt-app__drawer-layout">
-        <div class="mt-app__drawer-chrome" :class="`mt-app__drawer-chrome--${panel}`">
+        <div class="mt-app__drawer-chrome" :class="`mt-app__drawer-chrome--${side}`">
           <mt-drawer-close
             :as="MtButton"
             variant="tertiary"
@@ -53,20 +53,29 @@ import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtDrawerRoot from "@/components/_internal/mt-drawer/mt-drawer-root.vue";
 import MtDrawerContent from "@/components/_internal/mt-drawer/mt-drawer-content.vue";
 import MtDrawerClose from "@/components/_internal/mt-drawer/mt-drawer-close.vue";
-import { useAppContext } from "../composables/useAppContext";
-import type { MtAppPanel } from "../composables/useMtApp";
+import type { PanelController } from "../composables/useAppPanels";
 
 /**
- * One panel of the shell: a `navigation` or `complementary` landmark in the desktop layout and a
- * drawer in the mobile layout. The slot content renders once into a host element that moves
- * between both places, so its state survives layout changes and the server markup matches the
- * first client render (a disabled `<Teleport>` can't be hydrated and enabled reliably).
+ * One panel of the shell or of a page: an element next to the content in the desktop layout,
+ * usually a landmark, and a drawer in the mobile layout. The slot content renders once into a host
+ * element that moves between both places, so its state survives layout changes and the server
+ * markup matches the first client render (a disabled `<Teleport>` can't be hydrated and enabled
+ * reliably).
  */
 const props = defineProps<{
-  panel: MtAppPanel;
+  panel: string;
+  /** The layout the panel belongs to, which owns its open state. */
+  controller: PanelController;
+  /**
+   * The element next to the content: a landmark, or a plain `div` when the slot content brings its
+   * own landmark, such as `mt-nav`.
+   */
+  as: "nav" | "aside" | "section" | "div";
+  /** The edge the drawer slides in from. */
+  side: "start" | "end";
   /** The id of the drawer, which the header trigger points to with `aria-controls`. */
   id: string;
-  /** The accessible name of the landmark and the drawer. */
+  /** The accessible name of the landmark, if `as` isn't `div`, and of the drawer. */
   label: string;
   /** The accessible name of the drawer's close button. */
   closeLabel: string;
@@ -78,13 +87,12 @@ defineSlots<{
   default?(): unknown;
 }>();
 
-const app = useAppContext("mt-app-region");
 const inline = useTemplateRef<HTMLElement>("inline");
 const host = useTemplateRef<HTMLElement>("host");
 const drawerBody = useTemplateRef<HTMLElement>("drawerBody");
 
-const isMobile = computed(() => app.isMobile.value);
-const isOpen = computed(() => isMobile.value && app.isOpen(props.panel));
+const isMobile = computed(() => props.controller.isMobile.value);
+const isOpen = computed(() => isMobile.value && props.controller.isOpen(props.panel));
 
 /** Moves the slot content into the drawer in the mobile layout, and back inline otherwise. */
 function placeContent() {
@@ -108,8 +116,8 @@ watch([isMobile, drawerBody], placeContent, { flush: "post" });
 onBeforeUnmount(() => {
   if (!isOpen.value) return;
 
-  app.close(props.panel);
-  app.focusContent();
+  props.controller.close(props.panel);
+  props.controller.focusContent();
 });
 
 defineExpose({
@@ -169,7 +177,7 @@ defineExpose({
   padding: var(--scale-size-8);
 }
 
-.mt-app__drawer-chrome--sidebar {
+.mt-app__drawer-chrome--end {
   justify-content: flex-end;
 }
 

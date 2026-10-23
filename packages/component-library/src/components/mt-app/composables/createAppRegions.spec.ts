@@ -1,10 +1,10 @@
 import { ref } from "vue";
-import { useAppRegions } from "./useAppRegions";
+import { createAppRegions } from "./createAppRegions";
 
-describe("useAppRegions", () => {
+describe("createAppRegions", () => {
   it("hides a region while any request hides it", () => {
     // ARRANGE
-    const { hidden, requestRegions } = useAppRegions();
+    const { hidden, requestRegions } = createAppRegions();
     const releaseFirst = requestRegions(() => ({ header: false }));
     const releaseSecond = requestRegions(() => ({ header: false, sidebar: false }));
 
@@ -29,7 +29,7 @@ describe("useAppRegions", () => {
   it("follows a request that changes", () => {
     // ARRANGE
     const fullscreen = ref(false);
-    const { hidden, requestRegions } = useAppRegions();
+    const { hidden, requestRegions } = createAppRegions();
     requestRegions(() => ({ navigation: !fullscreen.value }));
 
     // ACT

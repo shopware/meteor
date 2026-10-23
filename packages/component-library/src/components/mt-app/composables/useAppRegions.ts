@@ -1,34 +1,76 @@
-import { computed, shallowReactive } from "vue";
-import type { MtAppRegions } from "./useMtAppRegions";
-
-const REGIONS = ["header", "navigation", "sidebar", "contentFrame"] as const;
+import {
+  getCurrentInstance,
+  inject,
+  onActivated,
+  onDeactivated,
+  onScopeDispose,
+  toValue,
+  type MaybeRefOrGetter,
+} from "vue";
+import { appContextKey } from "./useAppContext";
+// Loads Vue Router's types for the augmentation of `RouteMeta` below. The generated types drop this
+// import, so apps without Vue Router don't need it.
+import type {} from "vue-router";
 
 /**
- * The regions that views hide with `useMtAppRegions()`. Each request lasts until its release
- * function is called, and a region stays hidden while any request hides it.
+ * The parts of the shell that a view can hide with `useAppRegions()`: its regions and the frame
+ * around the content. `false` hides a part; any other value leaves it as it is.
+ *
+ * @experimental The API may still change in a future release.
  */
-export function useAppRegions() {
-  const requests = shallowReactive(new Map<symbol, () => MtAppRegions>());
+export interface MtAppRegions {
+  header?: boolean;
+  navigation?: boolean;
+  sidebar?: boolean;
+  /** `false` removes the frame around the content while no other region is visible. */
+  contentFrame?: boolean;
+}
 
-  /** `true` for every region that is hidden. Stays the same object while nothing changes. */
-  const hidden = computed<Required<MtAppRegions>>((previous) => {
-    const requested = Array.from(requests.values(), (regions) => regions());
-    const next = Object.fromEntries(
-      REGIONS.map((region) => [region, requested.some((regions) => regions[region] === false)]),
-    ) as Required<MtAppRegions>;
+// Types `meta.mtAppRegions` in apps that use Vue Router. Without Vue Router, TypeScript skips it.
+declare module "vue-router" {
+  interface RouteMeta {
+    /** The parts of `mt-app` that the route hides, applied before its page renders. */
+    mtAppRegions?: MtAppRegions;
+  }
+}
 
-    const isUnchanged = previous && REGIONS.every((region) => previous[region] === next[region]);
-    return isUnchanged ? previous : next;
-  });
+/**
+ * Hides regions of the surrounding `<mt-app>` for as long as the calling component (or effect
+ * scope) is alive and not deactivated by `<KeepAlive>`, for example for a focus mode inside a page:
+ *
+ * ```ts
+ * useAppRegions(() => ({ header: !focusMode.value, navigation: !focusMode.value }));
+ * ```
+ *
+ * Regions that a whole route hides belong in its route meta instead, which the shell reads before
+ * the page renders, so they don't flicker during page transitions:
+ *
+ * ```ts
+ * { path: "/editor", component: EditorView, meta: { mtAppRegions: { header: false } } }
+ * ```
+ *
+ * When several components hide regions, a region stays hidden until none of them hides it anymore.
+ * Hidden regions stay mounted, so their state survives. Outside of a shell, the call does nothing.
+ *
+ * @experimental The API may still change in a future release.
+ */
+export function useAppRegions(regions: MaybeRefOrGetter<MtAppRegions>): void {
+  const context = inject(appContextKey, null);
+  if (context === null) return;
 
-  function requestRegions(regions: () => MtAppRegions) {
-    const id = Symbol("mt-app-regions");
-    requests.set(id, regions);
+  const request = () => context.requestRegions(() => toValue(regions));
+  let release: (() => void) | undefined = request();
 
-    return () => {
-      requests.delete(id);
-    };
+  // A page that <KeepAlive> caches gives the regions back while it isn't shown.
+  if (getCurrentInstance()) {
+    onDeactivated(() => {
+      release?.();
+      release = undefined;
+    });
+    onActivated(() => {
+      release ??= request();
+    });
   }
 
-  return { hidden, requestRegions };
+  onScopeDispose(() => release?.());
 }
