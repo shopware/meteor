@@ -79,6 +79,7 @@ defineSlots<{
   flex-direction: column;
   justify-content: center;
   min-width: 0;
+  margin-block-start: calc(-1 * var(--scale-size-1));
 }
 
 .mt-logo__title,
@@ -86,5 +87,6 @@ defineSlots<{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  line-height: 1.4;
 }
 </style>
