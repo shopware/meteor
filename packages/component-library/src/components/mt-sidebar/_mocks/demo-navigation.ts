@@ -3,6 +3,8 @@ import MtSidebar from "../mt-sidebar.vue";
 import MtUserMenu from "../../mt-user-menu/mt-user-menu.vue";
 import MtLogo from "../../mt-logo/mt-logo.vue";
 import MtNav from "../../mt-nav/mt-nav.vue";
+import MtActionMenuGroup from "../../mt-action-menu-group/mt-action-menu-group.vue";
+import MtActionMenuItem from "../../mt-action-menu-item/mt-action-menu-item.vue";
 import type { NavItem, NavSection } from "../../mt-nav/mt-nav.vue";
 import { StoryLink } from "../../mt-nav/mt-nav.story-helper";
 
@@ -13,6 +15,8 @@ export const demoComponents = {
   MtSidebar,
   MtLogo,
   MtUserMenu,
+  MtActionMenuGroup,
+  MtActionMenuItem,
   MtNav,
 };
 
@@ -99,4 +103,8 @@ export const demoHeaderTemplate = `
  * Footer as used by the Shopware administration.
  */
 export const demoFooterTemplate = `
-<mt-user-menu first-name="Max" last-name="Mustermann" role="Administrator" version="6.7.0.0" />`;
+<mt-user-menu first-name="Max" last-name="Mustermann" subtitle="Administrator">
+  <mt-action-menu-group>
+    <mt-action-menu-item icon="regular-sign-out" variant="critical">Log out</mt-action-menu-item>
+  </mt-action-menu-group>
+</mt-user-menu>`;
