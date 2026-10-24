@@ -23,7 +23,7 @@
       role="radiogroup"
       :aria-labelledby="label ? labelId : undefined"
       :aria-disabled="disabled || undefined"
-      :aria-describedby="describedBy"
+      :aria-describedby="describedBy()"
       :style="{ gridArea: 'options' }"
     >
       <slot :disabled="disabled" :identification="identification" />
@@ -32,7 +32,7 @@
     <mt-field-error :id="errorId" :error="error" :style="{ gridArea: 'error' }" />
 
     <div
-      v-if="showFieldHint"
+      v-if="showFieldHint()"
       :id="hintId"
       class="mt-radio-group-root__hint"
       :style="{ gridArea: 'hint' }"
@@ -82,9 +82,8 @@ const props = withDefaults(
 
 const slots = useSlots();
 
-const showFieldHint = computed(
-  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
-);
+const showFieldHint = () =>
+  !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
 
 const emit = defineEmits<{
   "update:modelValue": [value: string | number | boolean | null];
@@ -104,16 +103,10 @@ const identification = computed(() => {
   return `mt-field--${id}`;
 });
 
-const describedBy = computed(
-  () =>
-    [
-      props.ariaDescribedBy,
-      props.error ? errorId : undefined,
-      showFieldHint.value ? hintId : undefined,
-    ]
-      .filter(Boolean)
-      .join(" ") || undefined,
-);
+const describedBy = () =>
+  [props.ariaDescribedBy, props.error ? errorId : undefined, showFieldHint() ? hintId : undefined]
+    .filter(Boolean)
+    .join(" ") || undefined;
 
 const selectedValue = computed({
   get: () => props.modelValue,

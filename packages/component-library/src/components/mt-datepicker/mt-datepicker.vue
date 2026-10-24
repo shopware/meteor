@@ -85,15 +85,15 @@
 
     <!-- @deprecated tag:v5 remove field-hint class -->
     <mt-field-hint
-      v-if="showFieldHint || isTimeHintVisible"
+      v-if="showFieldHint() || isTimeHintVisible"
       class="mt-datepicker__hint"
-      :class="{ 'field-hint': !showFieldHint }"
-      :icon="showFieldHint ? 'solid-info-circle' : 'solid-clock'"
+      :class="{ 'field-hint': !showFieldHint() }"
+      :icon="showFieldHint() ? 'solid-info-circle' : 'solid-clock'"
       :hide-icon="!!slots.hint"
-      :data-testid="showFieldHint ? undefined : 'time-zone-hint'"
+      :data-testid="showFieldHint() ? undefined : 'time-zone-hint'"
       :style="{ gridArea: 'hint' }"
     >
-      <slot name="hint">{{ showFieldHint ? hint : timeZone || "UTC" }}</slot>
+      <slot name="hint">{{ showFieldHint() ? hint : timeZone || "UTC" }}</slot>
     </mt-field-hint>
   </div>
 </template>
@@ -275,9 +275,8 @@ const slots = defineSlots<{
   hint?(): void;
 }>();
 
-const showFieldHint = computed(
-  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
-);
+const showFieldHint = () =>
+  !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
 
 const onInheritanceChange = (inheritance: "linked" | "unlinked") => {
   if (inheritance === "linked") {
