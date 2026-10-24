@@ -1,4 +1,4 @@
-import { inject, provide } from "vue";
+import { inject, isRef, provide, reactive, toValue, watch, type MaybeRefOrGetter } from "vue";
 
 const defaultFutureFlags = {
   removeCardWidth: false,
@@ -38,8 +38,25 @@ export function resolveFutureFlags(input: FutureFlagsInput | undefined): FutureF
   return { ...base, ...overrides };
 }
 
-export function provideFutureFlags(input: FutureFlagsInput | undefined) {
-  provide(futureFlagsInjectionKey, resolveFutureFlags(input));
+/**
+ * Provides the resolved flags to all descendants. A plain value is provided as is; a ref or
+ * getter is provided as a reactive object that is kept in sync in place, so consumers that
+ * read a flag inside a computed re-evaluate when the input changes.
+ */
+export function provideFutureFlags(input: MaybeRefOrGetter<FutureFlagsInput | undefined>) {
+  if (!isRef(input) && typeof input !== "function") {
+    provide(futureFlagsInjectionKey, resolveFutureFlags(input));
+    return;
+  }
+
+  const flags = reactive(resolveFutureFlags(toValue(input)));
+
+  watch(
+    () => resolveFutureFlags(toValue(input)),
+    (next) => Object.assign(flags, next),
+  );
+
+  provide(futureFlagsInjectionKey, flags);
 }
 
 export function useFutureFlags(): FutureFlags {

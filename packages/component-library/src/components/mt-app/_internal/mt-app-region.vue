@@ -1,0 +1,189 @@
+<template>
+  <component
+    :is="as"
+    ref="inline"
+    class="mt-app__region"
+    :class="`mt-app__region--${panel}`"
+    :aria-label="as === 'div' ? undefined : label"
+    :hidden="hidden || isMobile || undefined"
+  >
+    <div ref="host" class="mt-app__region-content">
+      <slot />
+    </div>
+  </component>
+
+  <mt-drawer-root
+    v-if="isMobile"
+    :open="isOpen"
+    @update:open="(open: boolean) => (open ? controller.open(panel) : controller.close(panel))"
+  >
+    <mt-drawer-content
+      :id="id"
+      :side="side"
+      variant="floating"
+      :title="label"
+      class="mt-app__drawer"
+      hide-header
+      inset
+      keep-mounted
+    >
+      <div class="mt-app__drawer-layout">
+        <div class="mt-app__drawer-chrome" :class="`mt-app__drawer-chrome--${side}`">
+          <mt-drawer-close
+            :as="MtButton"
+            variant="tertiary"
+            size="small"
+            square
+            :aria-label="closeLabel"
+          >
+            <mt-icon name="regular-times-s" size="var(--scale-size-10)" decorative />
+          </mt-drawer-close>
+        </div>
+
+        <div ref="drawerBody" class="mt-app__drawer-body" />
+      </div>
+    </mt-drawer-content>
+  </mt-drawer-root>
+</template>
+
+<script setup lang="ts">
+import { computed, onBeforeUnmount, useTemplateRef, watch } from "vue";
+import MtButton from "@/components/mt-button/mt-button.vue";
+import MtIcon from "@/components/mt-icon/mt-icon.vue";
+import MtDrawerRoot from "@/components/_internal/mt-drawer/mt-drawer-root.vue";
+import MtDrawerContent from "@/components/_internal/mt-drawer/mt-drawer-content.vue";
+import MtDrawerClose from "@/components/_internal/mt-drawer/mt-drawer-close.vue";
+import type { PanelController } from "../composables/useAppPanels";
+
+/**
+ * One panel of the shell or of a page: an element next to the content in the desktop layout,
+ * usually a landmark, and a drawer in the mobile layout. The slot content renders once into a host
+ * element that moves between both places, so its state survives layout changes and the server
+ * markup matches the first client render (a disabled `<Teleport>` can't be hydrated and enabled
+ * reliably).
+ */
+const props = defineProps<{
+  panel: string;
+  /** The layout the panel belongs to, which owns its open state. */
+  controller: PanelController;
+  /**
+   * The element next to the content: a landmark, or a plain `div` when the slot content brings its
+   * own landmark, such as `mt-nav`.
+   */
+  as: "nav" | "aside" | "section" | "div";
+  /** The edge the drawer slides in from. */
+  side: "start" | "end";
+  /** The id of the drawer, which the header trigger points to with `aria-controls`. */
+  id: string;
+  /** The accessible name of the landmark, if `as` isn't `div`, and of the drawer. */
+  label: string;
+  /** The accessible name of the drawer's close button. */
+  closeLabel: string;
+  /** Hides the panel in the desktop layout, because it is closed or a view hides it. */
+  hidden?: boolean;
+}>();
+
+defineSlots<{
+  default?(): unknown;
+}>();
+
+const inline = useTemplateRef<HTMLElement>("inline");
+const host = useTemplateRef<HTMLElement>("host");
+const drawerBody = useTemplateRef<HTMLElement>("drawerBody");
+
+const isMobile = computed(() => props.controller.isMobile.value);
+const isOpen = computed(() => isMobile.value && props.controller.isOpen(props.panel));
+
+/** Moves the slot content into the drawer in the mobile layout, and back inline otherwise. */
+function placeContent() {
+  const target = isMobile.value && drawerBody.value ? drawerBody.value : inline.value;
+
+  if (host.value && target && host.value.parentElement !== target) target.append(host.value);
+}
+
+// Back inline before the drawer unmounts, so the content isn't removed with it.
+watch(
+  isMobile,
+  (mobile) => {
+    if (!mobile) placeContent();
+  },
+  { flush: "sync" },
+);
+
+watch([isMobile, drawerBody], placeContent, { flush: "post" });
+
+// A drawer that disappears while it is open would leave the focus nowhere.
+onBeforeUnmount(() => {
+  if (!isOpen.value) return;
+
+  props.controller.close(props.panel);
+  props.controller.focusContent();
+});
+
+defineExpose({
+  /** Whether the focused element is inside this panel, in either layout. */
+  containsFocus: () => {
+    const active = document.activeElement;
+
+    return Boolean(active && host.value?.contains(active));
+  },
+});
+</script>
+
+<style scoped>
+.mt-app__region {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* In the desktop layout, the sidebar is framed like the content. */
+.mt-app__region--sidebar {
+  background-color: var(--color-elevation-surface-default);
+  border: 1px solid var(--color-border-secondary-default);
+  border-radius: var(--border-radius-m);
+}
+
+.mt-app__region[hidden] {
+  display: none;
+}
+
+.mt-app__region-content {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+
+.mt-app__drawer-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.mt-app__drawer-body {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+
+.mt-app__drawer-chrome {
+  display: flex;
+  align-items: center;
+  min-height: var(--scale-size-48);
+  padding: var(--scale-size-8);
+}
+
+.mt-app__drawer-chrome--end {
+  justify-content: flex-end;
+}
+
+@media print {
+  .mt-app__region {
+    display: none;
+  }
+}
+</style>
