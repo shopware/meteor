@@ -30,7 +30,7 @@
 
     <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
 
-    <div v-if="showFieldHint" class="mt-radio-group-root__hint" :style="{ gridArea: 'hint' }">
+    <div v-if="showFieldHint()" class="mt-radio-group-root__hint" :style="{ gridArea: 'hint' }">
       <mt-field-hint :hide-icon="!!$slots.hint">
         <slot name="hint">{{ hint }}</slot>
       </mt-field-hint>
@@ -76,9 +76,8 @@ const props = withDefaults(
 
 const slots = useSlots();
 
-const showFieldHint = computed(
-  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
-);
+const showFieldHint = () =>
+  !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
 
 const emit = defineEmits<{
   "update:modelValue": [value: string | number | boolean | null];

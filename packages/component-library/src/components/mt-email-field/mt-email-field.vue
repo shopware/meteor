@@ -102,7 +102,7 @@
       :style="{ gridArea: 'error' }"
     />
 
-    <div v-if="showFieldHint" class="mt-email-field__hint" :style="{ gridArea: 'hint' }">
+    <div v-if="showFieldHint()" class="mt-email-field__hint" :style="{ gridArea: 'hint' }">
       <mt-field-hint :hide-icon="!!$slots.hint">
         <slot name="hint">{{ hint }}</slot>
       </mt-field-hint>
@@ -111,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, useTemplateRef, useId, useSlots } from "vue";
+import { onMounted, ref, useTemplateRef, useId, useSlots } from "vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
@@ -154,9 +154,8 @@ const props = defineProps<{
 
 const slots = useSlots();
 
-const showFieldHint = computed(
-  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
-);
+const showFieldHint = () =>
+  !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
 
 defineEmits(["change", "blur", "focus", "inheritance-restore", "inheritance-remove"]);
 
