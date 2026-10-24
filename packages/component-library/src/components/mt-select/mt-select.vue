@@ -121,7 +121,7 @@
     </template>
 
     <template #mt-select-hint>
-      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
+      <mt-field-hint v-if="showFieldHint()" :hide-icon="!!$slots.hint">
         <slot name="hint">
           {{ hint }}
         </slot>
@@ -429,10 +429,6 @@ export default defineComponent({
   },
 
   computed: {
-    showFieldHint(): boolean {
-      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
-    },
-
     visibleValues(): any[] {
       if (
         typeof this.currentValue === "string" ||
@@ -549,6 +545,10 @@ export default defineComponent({
   },
 
   methods: {
+    showFieldHint(): boolean {
+      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
+    },
+
     isSelected(item: any) {
       if (this.enableMultiSelection && Array.isArray(this.currentValue)) {
         if (this.valueProperty) {

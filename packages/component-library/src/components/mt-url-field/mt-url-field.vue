@@ -111,7 +111,7 @@
 
     <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
 
-    <div v-if="showFieldHint" class="mt-url-field__hint">
+    <div v-if="showFieldHint()" class="mt-url-field__hint">
       <mt-field-hint :hide-icon="!!$slots.hint">
         <slot name="hint">{{ hint }}</slot>
       </mt-field-hint>
@@ -188,9 +188,8 @@ const id = useId();
 
 const slots = useSlots();
 
-const showFieldHint = computed(
-  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
-);
+const showFieldHint = () =>
+  !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
 
 const currentValue = ref(modelValue.value);
 const sslActive = ref(true);
