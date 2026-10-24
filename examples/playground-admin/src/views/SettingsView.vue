@@ -3,20 +3,22 @@ import { useI18n } from "vue-i18n";
 import {
   MtButton,
   MtCard,
-  MtContainer,
   MtModal,
   MtModalAction,
   MtModalClose,
   MtModalRoot,
   MtModalTrigger,
+  MtPage,
   MtSelect,
   MtText,
   MtThemeSelect,
   useSnackbar,
   useTheme,
 } from "@shopware-ag/meteor-component-library";
+import { useBreadcrumb } from "../composables/useBreadcrumb";
 
 const { t, locale } = useI18n();
+const breadcrumb = useBreadcrumb(() => t("settings.title"));
 const { theme } = useTheme();
 const { addSnackbar } = useSnackbar();
 
@@ -25,17 +27,45 @@ const localeOptions = [
   { label: "Deutsch", value: "de" },
 ];
 
-function reset(done: () => void) {
+function reset(close: () => void) {
   locale.value = "en";
   theme.value = "system";
-  done();
+  close();
   addSnackbar({ message: t("settings.resetDone"), variant: "success" });
 }
 </script>
 
 <template>
-  <mt-container as="section" size="s" class="page stack">
-    <mt-card :title="t('settings.title')">
+  <mt-page width="s" :breadcrumb="breadcrumb">
+    <template #actions>
+      <mt-modal-root>
+        <mt-modal-trigger :as="MtButton" variant="secondary" size="default">
+          {{ t("settings.reset") }}
+        </mt-modal-trigger>
+
+        <mt-modal :title="t('settings.resetTitle')" width="s">
+          <mt-text size="xs">{{ t("settings.resetText") }}</mt-text>
+
+          <template #footer>
+            <div class="actions">
+              <mt-modal-close :as="MtButton" variant="secondary" size="default">
+                {{ t("common.cancel") }}
+              </mt-modal-close>
+              <mt-modal-action
+                :as="MtButton"
+                variant="critical"
+                size="default"
+                @click="reset"
+              >
+                {{ t("settings.reset") }}
+              </mt-modal-action>
+            </div>
+          </template>
+        </mt-modal>
+      </mt-modal-root>
+    </template>
+
+    <mt-card>
       <div class="stack">
         <mt-select
           v-model="locale"
@@ -46,38 +76,6 @@ function reset(done: () => void) {
         />
         <mt-theme-select v-model="theme" :label="t('settings.theme')" />
       </div>
-
-      <template #footer>
-        <mt-modal-root>
-          <mt-modal-trigger :as="MtButton" variant="secondary" size="default">
-            {{ t("settings.reset") }}
-          </mt-modal-trigger>
-
-          <mt-modal :title="t('settings.resetTitle')" width="s">
-            <mt-text size="xs">{{ t("settings.resetText") }}</mt-text>
-
-            <template #footer>
-              <div class="actions">
-                <mt-modal-close
-                  :as="MtButton"
-                  variant="secondary"
-                  size="default"
-                >
-                  {{ t("settings.cancel") }}
-                </mt-modal-close>
-                <mt-modal-action
-                  :as="MtButton"
-                  variant="critical"
-                  size="default"
-                  @click="reset"
-                >
-                  {{ t("settings.reset") }}
-                </mt-modal-action>
-              </div>
-            </template>
-          </mt-modal>
-        </mt-modal-root>
-      </template>
     </mt-card>
-  </mt-container>
+  </mt-page>
 </template>
