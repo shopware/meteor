@@ -283,6 +283,49 @@ describe("radio group cards", () => {
 });
 
 describe("radio group custom items", () => {
+  it("selects a custom item once when clicking a label inside it", async () => {
+    // ARRANGE
+    const onSelectionChange = vi.fn();
+
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupCustomItem, MtRadioGroupIndicator },
+      setup: () => ({ selection: ref("basic"), onSelectionChange }),
+      template: `
+        <MtRadioGroupRoot v-model="selection" @update:modelValue="onSelectionChange">
+          <template #default="{ identification }">
+            <MtRadioGroupCustomItem value="basic">
+              <MtRadioGroupIndicator
+                id="basic"
+                :name="identification"
+                value="basic"
+                :checked="selection === 'basic'"
+              />
+              <label for="basic">Basic</label>
+            </MtRadioGroupCustomItem>
+            <MtRadioGroupCustomItem value="pro">
+              <MtRadioGroupIndicator
+                id="pro"
+                :name="identification"
+                value="pro"
+                :checked="selection === 'pro'"
+              />
+              <label for="pro">Pro</label>
+            </MtRadioGroupCustomItem>
+          </template>
+        </MtRadioGroupRoot>
+      `,
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Pro"));
+    await userEvent.click(screen.getByText("Pro"));
+
+    // ASSERT
+    expect(screen.getByRole("radio", { name: "Basic" })).not.toBeChecked();
+    expect(screen.getByRole("radio", { name: "Pro" })).toBeChecked();
+    expect(onSelectionChange).toHaveBeenCalledExactlyOnceWith("pro");
+  });
+
   it("can disable a single custom item", async () => {
     // ARRANGE
     const onSelectionChange = vi.fn();
@@ -293,13 +336,12 @@ describe("radio group custom items", () => {
       template: `
         <MtRadioGroupRoot v-model="selection" @update:modelValue="onSelectionChange">
           <template #default="{ identification }">
-            <MtRadioGroupCustomItem value="pro" v-slot="{ disabled }">
+            <MtRadioGroupCustomItem value="pro">
               <MtRadioGroupIndicator
                 id="pro"
                 :name="identification"
                 value="pro"
                 :checked="selection === 'pro'"
-                :disabled="disabled"
               />
               <span>Pro</span>
             </MtRadioGroupCustomItem>
@@ -309,9 +351,9 @@ describe("radio group custom items", () => {
                 :name="identification"
                 value="plus"
                 :checked="selection === 'plus'"
-                :disabled="disabled"
               />
               <span>Plus</span>
+              <span v-if="disabled">Not available in your region</span>
             </MtRadioGroupCustomItem>
           </template>
         </MtRadioGroupRoot>
@@ -325,6 +367,7 @@ describe("radio group custom items", () => {
     // ASSERT
     expect(plus).toBeDisabled();
     expect(plus).not.toBeChecked();
+    expect(screen.getByText("Not available in your region")).toBeVisible();
     expect(onSelectionChange).not.toHaveBeenCalled();
 
     // ACT
@@ -333,6 +376,81 @@ describe("radio group custom items", () => {
     // ASSERT
     expect(pro).toBeEnabled();
     expect(pro).toBeChecked();
+    expect(onSelectionChange).toHaveBeenCalledExactlyOnceWith("pro");
+  });
+
+  it("leaves buttons and other controls inside a custom item to themselves", async () => {
+    // ARRANGE
+    const onSelectionChange = vi.fn();
+    const onCompare = vi.fn();
+
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupCustomItem, MtRadioGroupIndicator },
+      setup: () => ({ selection: ref(null), onSelectionChange, onCompare }),
+      template: `
+        <MtRadioGroupRoot v-model="selection" @update:modelValue="onSelectionChange">
+          <template #default="{ identification }">
+            <MtRadioGroupCustomItem value="pro">
+              <MtRadioGroupIndicator
+                id="pro"
+                :name="identification"
+                value="pro"
+                :checked="selection === 'pro'"
+              />
+              <span>Pro</span>
+              <button type="button" @click="onCompare">Compare plans</button>
+              <label for="pro-seats">Seats</label>
+              <select id="pro-seats">
+                <option>1</option>
+                <option>5</option>
+              </select>
+            </MtRadioGroupCustomItem>
+          </template>
+        </MtRadioGroupRoot>
+      `,
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Compare plans" }));
+    await userEvent.click(screen.getByText("Seats"));
+    await userEvent.selectOptions(screen.getByLabelText("Seats"), "5");
+
+    // ASSERT
+    expect(onCompare).toHaveBeenCalledOnce();
+    expect(screen.getByLabelText("Seats")).toHaveValue("5");
+    expect(screen.getByRole("radio")).not.toBeChecked();
+    expect(onSelectionChange).not.toHaveBeenCalled();
+  });
+
+  it("selects a custom item when clicking a label that belongs to no control", async () => {
+    // ARRANGE
+    const onSelectionChange = vi.fn();
+
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupCustomItem, MtRadioGroupIndicator },
+      setup: () => ({ selection: ref(null), onSelectionChange }),
+      template: `
+        <MtRadioGroupRoot v-model="selection" @update:modelValue="onSelectionChange">
+          <template #default="{ identification }">
+            <MtRadioGroupCustomItem value="pro">
+              <MtRadioGroupIndicator
+                id="pro"
+                :name="identification"
+                value="pro"
+                :checked="selection === 'pro'"
+              />
+              <label>Pro</label>
+            </MtRadioGroupCustomItem>
+          </template>
+        </MtRadioGroupRoot>
+      `,
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Pro"));
+
+    // ASSERT
+    expect(screen.getByRole("radio")).toBeChecked();
     expect(onSelectionChange).toHaveBeenCalledExactlyOnceWith("pro");
   });
 });

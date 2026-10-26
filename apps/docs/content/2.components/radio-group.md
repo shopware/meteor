@@ -100,7 +100,8 @@ Disable a single option when it is not available, and use the group's hint to ex
 - Clicking anywhere on a card selects its option. A disabled group prevents selection on all its cards.
 - Set `disabled` on an item, card item, or custom item to disable only that option. An option is disabled when either the option or the whole group is disabled. A disabled option that is already selected stays selected.
 - Card items inherit the root's error state. Set a card's `error` prop to mark an individual option as invalid.
-- `MtRadioGroupCustomItem` gives you layout freedom, but you still need to render `MtRadioGroupIndicator` so the custom option remains a real radio control. Pass the custom item's `disabled` slot prop to the indicator so that disabling the item also disables its radio input.
+- `MtRadioGroupCustomItem` gives you layout freedom, but you still need to render `MtRadioGroupIndicator` so the custom option remains a real radio control. Clicking the custom content selects the option, while links, buttons, and form controls inside it keep their own behavior.
+- The `MtRadioGroupIndicator` inside a custom item follows the item's disabled state. The item also passes that state to its slot as `disabled`, so you can style the custom content.
 - `helpText`, `hint`, and `error` follow the shared field patterns used by other form components.
 
 ## Accessibility
