@@ -7,7 +7,7 @@ import {
   MtButton,
   MtCard,
   MtContentHeader,
-  MtContentLayout,
+  MtLayout,
   MtDatepicker,
   MtEmptyState,
   MtNumberField,
@@ -350,7 +350,7 @@ const tabs = computed(() => [
           @new-item-active="activeTab = $event"
         />
 
-        <mt-content-layout v-if="activeTab === 'general'">
+        <mt-layout v-if="activeTab === 'general'">
           <mt-card :title="t('products.cards.general')">
             <div class="stack">
               <div class="grid">
@@ -534,9 +534,9 @@ const tabs = computed(() => [
               </div>
             </mt-card>
           </template>
-        </mt-content-layout>
+        </mt-layout>
 
-        <mt-content-layout v-else>
+        <mt-layout v-else>
           <mt-card :title="t('products.cards.measurements')">
             <div class="grid">
               <mt-unit-field
@@ -595,7 +595,7 @@ const tabs = computed(() => [
               />
             </div>
           </mt-card>
-        </mt-content-layout>
+        </mt-layout>
       </template>
     </div>
   </mt-page>

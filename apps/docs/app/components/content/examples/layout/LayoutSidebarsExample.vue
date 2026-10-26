@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MtContentLayout } from "@shopware-ag/meteor-component-library";
+import { MtLayout } from "@shopware-ag/meteor-component-library";
 </script>
 
 <template>
@@ -11,7 +11,7 @@ import { MtContentLayout } from "@shopware-ag/meteor-component-library";
       border: 1px dashed var(--color-border-primary-default);
     "
   >
-    <mt-content-layout>
+    <mt-layout>
       <template #start>
         <placeholder-slot name="start" style="height: 160px" />
       </template>
@@ -21,6 +21,6 @@ import { MtContentLayout } from "@shopware-ag/meteor-component-library";
       <template #end>
         <placeholder-slot name="end" style="height: 160px" />
       </template>
-    </mt-content-layout>
+    </mt-layout>
   </div>
 </template>

@@ -103,7 +103,7 @@ import { useUnsavedChanges } from "./components/mt-app/composables/useUnsavedCha
 import MtContainer from "./components/mt-container/mt-container.vue";
 import MtPage from "./components/mt-page/mt-page.vue";
 import MtContentHeader from "./components/mt-content-header/mt-content-header.vue";
-import MtContentLayout from "./components/mt-content-layout/mt-content-layout.vue";
+import MtLayout from "./components/mt-layout/mt-layout.vue";
 import "./assets/css/all.css";
 
 // Importing types
@@ -242,7 +242,7 @@ export {
   MtContainer,
   MtPage,
   MtContentHeader,
-  MtContentLayout,
+  MtLayout,
 };
 
 // Exporting types

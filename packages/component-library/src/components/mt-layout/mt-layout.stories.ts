@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
-import MtContentLayout from "./mt-content-layout.vue";
+import MtLayout from "./mt-layout.vue";
 import MtCard from "../mt-card/mt-card.vue";
 import MtText from "../mt-text/mt-text.vue";
 
-export type MtContentLayoutMeta = Meta<typeof MtContentLayout>;
+export type MtLayoutMeta = Meta<typeof MtLayout>;
 
-const meta: MtContentLayoutMeta = {
-  title: "Components/Content Layout",
-  component: MtContentLayout,
+const meta: MtLayoutMeta = {
+  title: "Components/Layout",
+  component: MtLayout,
   parameters: {
     docs: {
       description: {
@@ -16,10 +16,10 @@ const meta: MtContentLayoutMeta = {
     },
   },
   render: (args) => ({
-    components: { MtContentLayout, MtCard, MtText },
+    components: { MtLayout, MtCard, MtText },
     setup: () => ({ args }),
     template: `
-      <mt-content-layout>
+      <mt-layout>
         <mt-card title="General">
           <mt-text size="xs">The main content.</mt-text>
         </mt-card>
@@ -29,11 +29,11 @@ const meta: MtContentLayoutMeta = {
             <mt-text size="xs">A sidebar after the content.</mt-text>
           </mt-card>
         </template>
-      </mt-content-layout>`,
+      </mt-layout>`,
   }),
 };
 
 export default meta;
-export type MtContentLayoutStory = StoryObj<MtContentLayoutMeta>;
+export type MtLayoutStory = StoryObj<MtLayoutMeta>;
 
-export const Default: MtContentLayoutStory = {};
+export const Default: MtLayoutStory = {};

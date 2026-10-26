@@ -1,24 +1,21 @@
 <template>
   <div
-    class="mt-content-layout"
+    class="mt-layout"
     :class="{
-      'mt-content-layout--start': hasSlot('start'),
-      'mt-content-layout--end': hasSlot('end'),
+      'mt-layout--start': hasSlot('start'),
+      'mt-layout--end': hasSlot('end'),
     }"
   >
-    <div class="mt-content-layout__grid">
-      <div
-        v-if="hasSlot('start')"
-        class="mt-content-layout__sidebar mt-content-layout__sidebar--start"
-      >
+    <div class="mt-layout__grid">
+      <div v-if="hasSlot('start')" class="mt-layout__sidebar mt-layout__sidebar--start">
         <slot name="start" />
       </div>
 
-      <div class="mt-content-layout__content">
+      <div class="mt-layout__content">
         <slot />
       </div>
 
-      <div v-if="hasSlot('end')" class="mt-content-layout__sidebar mt-content-layout__sidebar--end">
+      <div v-if="hasSlot('end')" class="mt-layout__sidebar mt-layout__sidebar--end">
         <slot name="end" />
       </div>
     </div>
@@ -29,7 +26,7 @@
 import { onBeforeUpdate } from "vue";
 import { hasSlotContent } from "@/utils/slot";
 
-type ContentLayoutSidebar = "start" | "end";
+type LayoutSidebar = "start" | "end";
 
 /**
  * The content of a page with up to two sidebars of 300px next to it, for example inside `mt-page`
@@ -51,13 +48,13 @@ const slots = defineSlots<{
 }>();
 
 // Detecting empty slots renders them, so their presence is evaluated once per render.
-let slotPresence: Record<ContentLayoutSidebar, boolean> | undefined;
+let slotPresence: Record<LayoutSidebar, boolean> | undefined;
 
 onBeforeUpdate(() => {
   slotPresence = undefined;
 });
 
-function hasSlot(name: ContentLayoutSidebar) {
+function hasSlot(name: LayoutSidebar) {
   slotPresence ??= {
     start: hasSlotContent(slots.start),
     end: hasSlotContent(slots.end),
@@ -68,42 +65,42 @@ function hasSlot(name: ContentLayoutSidebar) {
 </script>
 
 <style scoped>
-.mt-content-layout {
+.mt-layout {
   width: 100%;
-  container: mt-content-layout / inline-size;
+  container: mt-layout / inline-size;
 }
 
-.mt-content-layout__grid,
-.mt-content-layout__sidebar,
-.mt-content-layout__content {
+.mt-layout__grid,
+.mt-layout__sidebar,
+.mt-layout__content {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--scale-size-16);
 }
 
-.mt-content-layout__grid {
+.mt-layout__grid {
   align-items: start;
 }
 
-.mt-content-layout__sidebar,
-.mt-content-layout__content {
+.mt-layout__sidebar,
+.mt-layout__content {
   align-content: start;
 }
 
 /* A sidebar is 18.75rem (300px) and the content keeps at least 30rem (480px), so the breakpoints
    are their sums with the gaps. Two sidebars move next to the content together. */
-@container mt-content-layout (width >= 49.75rem) {
-  .mt-content-layout--start:not(.mt-content-layout--end) > .mt-content-layout__grid {
+@container mt-layout (width >= 49.75rem) {
+  .mt-layout--start:not(.mt-layout--end) > .mt-layout__grid {
     grid-template-columns: 18.75rem minmax(0, 1fr);
   }
 
-  .mt-content-layout--end:not(.mt-content-layout--start) > .mt-content-layout__grid {
+  .mt-layout--end:not(.mt-layout--start) > .mt-layout__grid {
     grid-template-columns: minmax(0, 1fr) 18.75rem;
   }
 }
 
-@container mt-content-layout (width >= 69.5rem) {
-  .mt-content-layout--start.mt-content-layout--end > .mt-content-layout__grid {
+@container mt-layout (width >= 69.5rem) {
+  .mt-layout--start.mt-layout--end > .mt-layout__grid {
     grid-template-columns: 18.75rem minmax(0, 1fr) 18.75rem;
   }
 }

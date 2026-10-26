@@ -76,5 +76,5 @@ The `start` and `end` slots add panels next to the content, for example a list a
 
 - [**App**](/components/app): for the shell around the pages.
 - [**Content Header**](/components/content-header): for the title, the actions and the details of what the page shows.
-- [**Content Layout**](/components/content-layout): for sidebars that scroll with the content instead of panels.
+- [**Layout**](/components/layout): for sidebars that scroll with the content instead of panels.
 - [**Breadcrumb**](/components/breadcrumb): for the trail in the header.

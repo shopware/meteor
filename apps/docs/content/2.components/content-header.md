@@ -50,4 +50,4 @@ import { MtContentHeader } from "@shopware-ag/meteor-component-library";
 ## Related components
 
 - [**Page**](/components/page): for the frame around the content.
-- [**Content Layout**](/components/content-layout): for the blocks below the header.
+- [**Layout**](/components/layout): for the blocks below the header.
