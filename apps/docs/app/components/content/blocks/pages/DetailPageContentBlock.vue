@@ -6,7 +6,7 @@ import {
   MtButton,
   MtCard,
   MtContentHeader,
-  MtContentLayout,
+  MtLayout,
   MtNav,
   MtNumberField,
   MtPage,
@@ -150,7 +150,7 @@ function save() {
 
           <mt-tabs :items="tabs" :default-item="activeTab" @new-item-active="activeTab = $event" />
 
-          <mt-content-layout v-if="activeTab === 'general'">
+          <mt-layout v-if="activeTab === 'general'">
             <mt-card title="General information">
               <div class="stack">
                 <div class="grid">
@@ -220,16 +220,16 @@ function save() {
                 <mt-text-field v-model="product.ean" label="EAN" />
               </mt-card>
             </template>
-          </mt-content-layout>
+          </mt-layout>
 
-          <mt-content-layout v-else>
+          <mt-layout v-else>
             <mt-card title="Search engines">
               <div class="stack">
                 <mt-text-field v-model="product.metaTitle" label="Meta title" />
                 <mt-textarea v-model="product.metaDescription" label="Meta description" />
               </div>
             </mt-card>
-          </mt-content-layout>
+          </mt-layout>
         </div>
       </mt-page>
     </template>

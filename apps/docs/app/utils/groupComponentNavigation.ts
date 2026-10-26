@@ -3,7 +3,7 @@ import type { ContentNavigationItem } from "@nuxt/content";
 // The sections of the components sidebar, in the order they show, and the
 // pages in each, by slug. The sidebar lists the pages alphabetically.
 const COMPONENT_SECTIONS: Record<string, string[]> = {
-  Layout: ["app", "container", "content-layout", "page"],
+  Layout: ["app", "container", "layout", "page"],
   Content: [
     "action-menu",
     "avatar",

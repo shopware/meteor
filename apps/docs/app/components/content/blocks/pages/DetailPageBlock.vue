@@ -2,7 +2,7 @@
 import {
   MtApp,
   MtContentHeader,
-  MtContentLayout,
+  MtLayout,
   MtPage,
   type BreadcrumbItem,
 } from "@shopware-ag/meteor-component-library";
@@ -34,13 +34,13 @@ const breadcrumb: BreadcrumbItem[] = [
             <placeholder-slot name="Content Header: default" />
           </mt-content-header>
 
-          <mt-content-layout>
-            <placeholder-slot name="Content Layout: default" style="height: 24rem" />
+          <mt-layout>
+            <placeholder-slot name="Layout: default" style="height: 24rem" />
 
             <template #end>
-              <placeholder-slot name="Content Layout: end" style="height: 16rem" />
+              <placeholder-slot name="Layout: end" style="height: 16rem" />
             </template>
-          </mt-content-layout>
+          </mt-layout>
         </div>
       </mt-page>
     </template>
