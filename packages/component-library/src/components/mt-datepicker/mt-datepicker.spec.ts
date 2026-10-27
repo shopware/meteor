@@ -1,3 +1,4 @@
+import { defineComponent } from "vue";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/vue";
 import MtDatepicker from "./mt-datepicker.vue";
@@ -708,5 +709,57 @@ describe("mt-datepicker", () => {
 
     const monthLabel = document.querySelector('[data-test-id="month-toggle-overlay-0"]');
     expect(monthLabel).toHaveTextContent("juil.");
+  });
+});
+
+describe("mt-datepicker conditional hint", () => {
+  const Host = defineComponent({
+    components: { Field: MtDatepicker },
+    props: {
+      showHint: { type: Boolean, default: false },
+      hint: { type: String, default: null },
+    },
+    setup: () => ({ fieldProps: { dateType: "date" } }),
+    template: `
+      <Field v-bind="fieldProps" :hint="hint">
+        <template v-if="showHint" #hint>
+          <span data-testid="custom-hint">Original value</span>
+        </template>
+      </Field>
+    `,
+  });
+
+  it("renders a hint slot added after mounting and removes it again", async () => {
+    const { container, rerender } = render(Host);
+
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+
+    await rerender({ showHint: true });
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+
+    await rerender({ showHint: false });
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+  });
+
+  it("removes a hint slot that was present when mounting", async () => {
+    const { container, rerender } = render(Host, { props: { showHint: true } });
+
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+
+    await rerender({ showHint: false });
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+  });
+
+  it("falls back to the hint prop when the slot is removed", async () => {
+    const { rerender } = render(Host, { props: { hint: "Hint from prop" } });
+
+    expect(screen.getByText("Hint from prop")).toBeVisible();
+
+    await rerender({ showHint: true });
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+    expect(screen.queryByText("Hint from prop")).not.toBeInTheDocument();
+
+    await rerender({ showHint: false });
+    expect(screen.getByText("Hint from prop")).toBeVisible();
   });
 });
