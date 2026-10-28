@@ -41,7 +41,7 @@ export const VisualTestLongName: MtUserMenuStory = {
   ...LongName,
   name: "Cut off a long name with an ellipsis",
   play: async ({ canvasElement }) => {
-    const name = canvasElement.querySelector<HTMLElement>(".mt-user-menu__name");
+    const name = canvasElement.querySelector<HTMLElement>(".mt-user__name");
     if (!name) throw new Error("Name not found");
 
     expect(name.scrollWidth).toBeGreaterThan(name.clientWidth);

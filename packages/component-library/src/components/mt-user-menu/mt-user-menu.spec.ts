@@ -40,13 +40,13 @@ describe("mt-user-menu", () => {
   it("renders the subtitle below the name", () => {
     const { container } = renderUserMenu({ subtitle: "Administrator" });
 
-    expect(container.querySelector(".mt-user-menu__subtitle")).toHaveTextContent("Administrator");
+    expect(container.querySelector(".mt-user__subtitle")).toHaveTextContent("Administrator");
   });
 
   it("renders no subtitle when none is given", () => {
     const { container } = renderUserMenu();
 
-    expect(container.querySelector(".mt-user-menu__subtitle")).not.toBeInTheDocument();
+    expect(container.querySelector(".mt-user__subtitle")).not.toBeInTheDocument();
   });
 
   it("names the menu button after its visible name and subtitle", () => {

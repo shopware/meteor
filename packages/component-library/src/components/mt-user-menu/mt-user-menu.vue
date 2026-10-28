@@ -3,34 +3,17 @@
     <dropdown-menu-root>
       <dropdown-menu-trigger as-child>
         <button type="button" class="mt-user-menu__trigger">
-          <mt-avatar
-            class="mt-user-menu__avatar"
-            aria-hidden="true"
-            size="s"
-            :first-name="firstName"
-            :last-name="lastName"
+          <mt-user
+            class="mt-user-menu__user"
+            :name="fullName"
+            :subtitle="subtitle"
             :image-url="imageUrl"
           />
 
-          <div class="mt-user-menu__text">
-            <mt-text as="div" size="xs" weight="semibold" class="mt-user-menu__name">
-              {{ fullName }}
-            </mt-text>
-            <mt-text
-              v-if="subtitle"
-              as="div"
-              size="2xs"
-              color="color-text-secondary-default"
-              class="mt-user-menu__subtitle"
-            >
-              {{ subtitle }}
-            </mt-text>
-          </div>
-
-          <div class="mt-user-menu__chevrons">
+          <span class="mt-user-menu__chevrons">
             <mt-icon name="regular-chevron-up-xs" size="var(--scale-size-8)" decorative />
             <mt-icon name="regular-chevron-down-xs" size="var(--scale-size-8)" decorative />
-          </div>
+          </span>
         </button>
       </dropdown-menu-trigger>
 
@@ -47,9 +30,8 @@
 import { computed } from "vue";
 import { DropdownMenuPortal, DropdownMenuRoot, DropdownMenuTrigger } from "reka-ui";
 import MtActionMenu from "../mt-action-menu/mt-action-menu.vue";
-import MtAvatar from "../mt-avatar/mt-avatar.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
-import MtText from "../mt-text/mt-text.vue";
+import MtUser from "../mt-user/mt-user.vue";
 
 /**
  * The logged-in user as a button with avatar, name and an optional subtitle, which opens a menu
@@ -123,22 +105,8 @@ const fullName = computed(() => [props.firstName, props.lastName].filter(Boolean
   outline-offset: calc(-1 * var(--scale-size-2));
 }
 
-.mt-user-menu__avatar {
-  --mt-avatar-size: var(--scale-size-36);
-
-  flex-shrink: 0;
-}
-
-.mt-user-menu__text {
+.mt-user-menu__user {
   flex: 1 1 auto;
-  min-width: 0;
-}
-
-.mt-user-menu__name,
-.mt-user-menu__subtitle {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 
 .mt-user-menu__chevrons {
