@@ -6,7 +6,7 @@ nav:
 
 # Service communication
 
-Use service events to send a request from one Shopware service iframe to another and await its response. The bridge is available through `_private.bridge` in `@shopware-ag/meteor-admin-sdk`.
+Use service events to send a request from one Shopware service iframe to another and await its response. The bridge is available through `@shopware-ag/meteor-admin-sdk/es/_private/bridge`.
 
 The SDK handles messaging, origin checks, schema validation, request IDs, responses, timeouts, deduplication, and concurrency. Your service supplies the event handler and implements its business operation.
 
@@ -63,9 +63,7 @@ The example uses the built-in `copilot.chat.prompt.v1` contract.
 Register once when the receiving iframe initializes. Its location ID must be `copilot-chat`.
 
 ```ts
-import { _private, ui } from '@shopware-ag/meteor-admin-sdk';
-
-const { subscribeServiceEvent, SERVICE_ORIGINS } = _private.bridge;
+import { subscribeServiceEvent, SERVICE_ORIGINS } from '@shopware-ag/meteor-admin-sdk/es/_private/bridge';
 
 const unsubscribe = subscribeServiceEvent(
   'copilot.chat.prompt.v1',
@@ -81,9 +79,7 @@ const unsubscribe = subscribeServiceEvent(
 ### Publish a prompt
 
 ```ts
-import { _private } from '@shopware-ag/meteor-admin-sdk';
-
-const { publishServiceEvent, SERVICE_ORIGINS } = _private.bridge;
+import { publishServiceEvent, SERVICE_ORIGINS } from '@shopware-ag/meteor-admin-sdk/es/_private/bridge';
 
 try {
   const response = await publishServiceEvent({

@@ -40,6 +40,10 @@
       "import": "./es/telemetry/index.js",
       "require": "./umd/telemetry/index.js"
     },
+    "./es/_private/bridge": {
+      "import": "./es/_private/bridge/index.js",
+      "require": "./umd/_private/bridge/index.js"
+    },
     "./es/_private/context": {
       "import": "./es/_private/context/index.js",
       "require": "./umd/_private/context/index.js"

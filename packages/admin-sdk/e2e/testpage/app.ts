@@ -1,3 +1,4 @@
+import * as serviceBridge from '../../src/_private/bridge';
 import * as sw from '../../src/index';
 import { handle, publish, send, setExtensions } from '../../src/channel';
 import Criteria from '../../src/data/Criteria';
@@ -18,6 +19,7 @@ export interface sw_internal {
 declare global {
   interface Window {
     sw: typeof sw;
+    serviceBridge: typeof serviceBridge;
     sw_internal: sw_internal
   }
 }
@@ -46,3 +48,5 @@ window.sw_internal.setExtensions({
     }
   },
 });
+
+window.serviceBridge = serviceBridge;
