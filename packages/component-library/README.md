@@ -30,6 +30,8 @@ That's it — components render their bundled English snippets out of the box, w
 
 ### Translations (optional)
 
+Inside the Shopware Administration, nothing is needed: the Administration connects Meteor to its translations, and plugins override Meteor texts with `mt.*` keys in their snippet files.
+
 To switch language reactively, or to let your app provide/override translations, install the Meteor i18n plugin with an optional **host adapter**.
 
 ```js
