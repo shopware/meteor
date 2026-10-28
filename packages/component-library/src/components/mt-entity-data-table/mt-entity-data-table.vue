@@ -76,7 +76,6 @@
 </template>
 
 <script setup lang="ts">
-import { messages } from "./mt-entity-data-table.i18n";
 /**
  * This component is a wrapper for the mt-entity-data-table component.
  *
@@ -104,6 +103,7 @@ import type { MtPopoverItemType } from "@/components/mt-popover-item/mt-popover-
 import type { Filter } from "@/components/mt-data-table/mt-data-table.interfaces";
 import type { AvailableFilter } from "./mt-entity-data-table.interfaces";
 import { useMeteorI18n } from "@/composables/useMeteorI18n";
+import { messages } from "./mt-entity-data-table.i18n";
 import MtModalRoot from "@/components/mt-modal/sub-components/mt-modal-root.vue";
 import MtModal from "@/components/mt-modal/mt-modal.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";

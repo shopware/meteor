@@ -673,9 +673,6 @@ type DataSourcePropType = {
 
 type ColumnProperty = ColumnDefinition[];
 
-/**
- * @experimental - This component can be used but there are no guarantees for API stability yet.
- */
 const messages = {
   en: {
     itemsPerPage: "Items per page",
@@ -747,6 +744,9 @@ const messages = {
   },
 };
 
+/**
+ * @experimental - This component can be used but there are no guarantees for API stability yet.
+ */
 export default defineComponent({
   directives: {
     draggable: draggable,

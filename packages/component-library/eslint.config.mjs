@@ -61,6 +61,24 @@ export default tseslint.config([
       "vue/no-v-html": "off",
     },
   },
+  {
+    // Meteor ships without vue-i18n (it is no longer external, so an import would get bundled).
+    files: ["src/**/*.{ts,vue}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "vue-i18n",
+              message:
+                "Translate with useMeteorI18n from @/composables/useMeteorI18n.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   ...storybook.configs["flat/recommended"],
   {
     files: ["**/*.spec.{ts,js}"],
