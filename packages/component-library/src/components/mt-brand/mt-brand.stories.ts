@@ -7,8 +7,21 @@ const meta: MtBrandMeta = {
   title: "Components/Brand",
   component: MtBrand,
   args: {
-    title: "Demo shop",
+    title: "Meteor",
     subtitle: "Shopware",
+    variant: "shopware",
+    appearance: "dark",
+    compact: false,
+  },
+  argTypes: {
+    variant: {
+      control: { type: "select" },
+      options: ["shopware", "copilot", "intelligence", "nexus", "payments"],
+    },
+    appearance: {
+      control: { type: "select" },
+      options: ["dark", "light"],
+    },
   },
   render: (args) => ({
     components: { MtBrand },
@@ -28,7 +41,7 @@ export const Default: MtBrandStory = {
     docs: {
       source: {
         language: "html",
-        code: `<mt-brand title="Demo shop" subtitle="Shopware" />`,
+        code: `<mt-brand />`,
       },
     },
   },
@@ -37,7 +50,7 @@ export const Default: MtBrandStory = {
 export const WithoutSubtitle: MtBrandStory = {
   name: "Without subtitle",
   args: {
-    subtitle: undefined,
+    subtitle: "",
   },
 };
 
@@ -50,6 +63,84 @@ export const LongTitle: MtBrandStory = {
     docs: {
       description: {
         story: "A title that does not fit is cut off with an ellipsis and shown in full on hover.",
+      },
+    },
+  },
+};
+
+export const Variants: MtBrandStory = {
+  args: {
+    subtitle: undefined,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: "Each variant shows the logo of one Shopware product.",
+      },
+      source: {
+        language: "html",
+        code: `<mt-brand title="Shopware Copilot" variant="copilot" />`,
+      },
+    },
+  },
+  render: (args) => ({
+    components: { MtBrand },
+    setup: () => ({ args }),
+    template: `
+<div style="display: flex; flex-direction: column; gap: 16px; width: 300px;">
+  <mt-brand v-bind="args" variant="shopware" title="Shopware" />
+  <mt-brand v-bind="args" variant="copilot" title="Shopware Copilot" />
+  <mt-brand v-bind="args" variant="intelligence" title="Shopware Intelligence" />
+  <mt-brand v-bind="args" variant="nexus" title="Shopware Nexus" />
+  <mt-brand v-bind="args" variant="payments" title="Shopware Payments" />
+</div>`,
+  }),
+};
+
+export const Appearances: MtBrandStory = {
+  args: {
+    title: "Shopware Payments",
+    subtitle: undefined,
+    variant: "payments",
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "The dark appearance shows a white mark on a brand box, the light appearance a brand mark on a white box.",
+      },
+      source: {
+        language: "html",
+        code: `<mt-brand title="Shopware Payments" variant="payments" appearance="light" />`,
+      },
+    },
+  },
+  render: (args) => ({
+    components: { MtBrand },
+    setup: () => ({ args }),
+    template: `
+<div style="display: flex; flex-direction: column; gap: 16px; width: 300px;">
+  <mt-brand v-bind="args" appearance="dark" />
+  <div style="padding: 16px; background: var(--color-background-tertiary-default);">
+    <mt-brand v-bind="args" appearance="light" />
+  </div>
+</div>`,
+  }),
+};
+
+export const Compact: MtBrandStory = {
+  args: {
+    compact: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Shows only the logo, for example in a collapsed sidebar. The title shows on hover and stays available to screen readers.",
+      },
+      source: {
+        language: "html",
+        code: `<mt-brand compact />`,
       },
     },
   },
