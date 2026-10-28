@@ -16,7 +16,7 @@ const breadcrumb: BreadcrumbItem[] = [
 <template>
   <mt-app>
     <template #navigation>
-      <placeholder-slot name="App: navigation" inset style="width: 15rem" />
+      <placeholder-slot name="App: navigation" style="width: 15rem" />
     </template>
 
     <template #content>
