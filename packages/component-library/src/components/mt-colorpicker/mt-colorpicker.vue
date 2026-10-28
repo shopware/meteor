@@ -478,6 +478,7 @@ export default defineComponent({
     trap: FocusTrap | null;
     hueStep: number;
     alphaStep: number;
+    syncedHslValue: string | null;
   } {
     return {
       localValue: this.modelValue || "",
@@ -492,6 +493,7 @@ export default defineComponent({
       trap: null,
       hueStep: 1,
       alphaStep: 0.01,
+      syncedHslValue: null,
     };
   },
 
@@ -638,9 +640,9 @@ export default defineComponent({
     },
 
     hslValue(): string {
-      const hue = Math.abs(Math.floor(this.hueValue));
-      const saturation = Math.abs(Math.floor(this.saturationValue));
-      const luminance = Math.abs(Math.floor(this.luminanceValue));
+      const hue = Math.abs(Number(this.hueValue.toFixed(2)));
+      const saturation = Math.abs(Number(this.saturationValue.toFixed(2)));
+      const luminance = Math.abs(Number(this.luminanceValue.toFixed(2)));
 
       if (this.alphaValue !== 1) {
         const alpha = Math.abs(Number(this.alphaValue.toFixed(2)));
@@ -762,7 +764,14 @@ export default defineComponent({
       this.colorValue = this.modelValue || "";
     },
 
-    hslValue() {
+    hslValue(newHslValue: string) {
+      const isSyncedFromColorValue = newHslValue === this.syncedHslValue;
+      this.syncedHslValue = null;
+
+      if (isSyncedFromColorValue && !this.applyMode) {
+        return;
+      }
+
       this.colorValue = this.convertedValue;
     },
 
@@ -826,6 +835,8 @@ export default defineComponent({
           hslValues.alpha,
         );
       }
+
+      this.syncedHslValue = this.hslValue;
     },
   },
 
@@ -1310,7 +1321,7 @@ export default defineComponent({
         hue = (red - green) / delta + 4;
       }
 
-      hue = Math.round(hue * 60);
+      hue *= 60;
 
       // Make negative hues positive behind 360°
       if (hue < 0) {
@@ -1323,8 +1334,8 @@ export default defineComponent({
       // Calculate saturation
       saturation = delta === 0 ? 0 : delta / (1 - Math.abs(2 * luminance - 1));
 
-      saturation = +(saturation * 100).toFixed(1);
-      luminance = +(luminance * 100).toFixed(1);
+      saturation *= 100;
+      luminance *= 100;
 
       return {
         string: `hsl(${hue},${saturation}%,${luminance}%)`,
@@ -1395,7 +1406,7 @@ export default defineComponent({
         hue = (Number(red) - Number(green)) / delta + 4;
       }
 
-      hue = Math.round(hue * 60);
+      hue *= 60;
 
       if (hue < 0) {
         hue += 360;
@@ -1403,8 +1414,8 @@ export default defineComponent({
 
       luminance = (cmax + cmin) / 2;
       saturation = delta === 0 ? 0 : delta / (1 - Math.abs(2 * luminance - 1));
-      saturation = +(saturation * 100).toFixed(1);
-      luminance = +(luminance * 100).toFixed(1);
+      saturation *= 100;
+      luminance *= 100;
 
       const hslValue: {
         string: string;
