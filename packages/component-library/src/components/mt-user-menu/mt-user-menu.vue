@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-user-menu">
+  <div class="mt-user-menu" :class="{ 'mt-user-menu--compact': compact }">
     <dropdown-menu-root>
       <dropdown-menu-trigger as-child>
         <button type="button" class="mt-user-menu__trigger">
@@ -8,9 +8,10 @@
             :name="fullName"
             :subtitle="subtitle"
             :image-url="imageUrl"
+            :compact="compact"
           />
 
-          <span class="mt-user-menu__chevrons">
+          <span v-if="!compact" class="mt-user-menu__chevrons">
             <mt-icon name="regular-chevron-up-xs" size="var(--scale-size-8)" decorative />
             <mt-icon name="regular-chevron-down-xs" size="var(--scale-size-8)" decorative />
           </span>
@@ -18,7 +19,7 @@
       </dropdown-menu-trigger>
 
       <dropdown-menu-portal>
-        <mt-action-menu match-trigger-width side="top">
+        <mt-action-menu :match-trigger-width="!compact" side="top">
           <slot />
         </mt-action-menu>
       </dropdown-menu-portal>
@@ -57,11 +58,17 @@ const props = withDefaults(
      * Image shown in the avatar instead of the initials.
      */
     imageUrl?: string;
+    /**
+     * Shows only the avatar, for example in a collapsed sidebar. The name and subtitle stay
+     * available to screen readers.
+     */
+    compact?: boolean;
   }>(),
   {
     lastName: undefined,
     subtitle: undefined,
     imageUrl: undefined,
+    compact: false,
   },
 );
 
@@ -79,6 +86,10 @@ const fullName = computed(() => [props.firstName, props.lastName].filter(Boolean
 <style scoped>
 .mt-user-menu {
   width: 100%;
+}
+
+.mt-user-menu--compact {
+  width: fit-content;
 }
 
 .mt-user-menu__trigger {

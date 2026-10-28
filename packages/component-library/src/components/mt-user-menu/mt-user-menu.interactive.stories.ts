@@ -1,6 +1,7 @@
 import { expect, userEvent, within } from "@storybook/test";
 
 import meta, {
+  Compact,
   LongName,
   WithoutSubtitle,
   type MtUserMenuMeta,
@@ -59,5 +60,16 @@ export const VisualTestOpenMenu: MtUserMenuStory = {
       "Settings",
       "Log out",
     ]);
+  },
+};
+
+export const VisualTestCompact: MtUserMenuStory = {
+  ...Compact,
+  name: "Show only the avatar when compact",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByRole("button", { name: "Max Mustermann Administrator" })).toBeVisible();
+    expect(canvasElement.querySelector(".mt-user-menu__chevrons")).not.toBeInTheDocument();
   },
 };

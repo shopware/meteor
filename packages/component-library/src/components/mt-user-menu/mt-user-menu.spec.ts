@@ -66,6 +66,16 @@ describe("mt-user-menu", () => {
     );
   });
 
+  it("shows only the avatar when compact, but keeps the button named after the user", () => {
+    const { container } = renderUserMenu({ compact: true, subtitle: "Administrator" });
+
+    expect(container.querySelector(".mt-user")).toHaveClass("mt-user--compact");
+    expect(container.querySelector(".mt-user-menu__chevrons")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Max Mustermann Administrator" }),
+    ).toBeInTheDocument();
+  });
+
   it("opens a menu with the entries of the default slot", async () => {
     const onSelect = vi.fn();
     render(MtUserMenu, {

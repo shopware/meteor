@@ -15,6 +15,7 @@ const meta: MtUserMenuMeta = {
     firstName: "Max",
     lastName: "Mustermann",
     subtitle: "Administrator",
+    compact: false,
   },
   render: (args) => ({
     components: { MtUserMenu, MtActionMenuGroup, MtActionMenuItem },
@@ -78,6 +79,20 @@ export const LongName: MtUserMenuStory = {
     docs: {
       description: {
         story: "A name or subtitle that does not fit is cut off with an ellipsis.",
+      },
+    },
+  },
+};
+
+export const Compact: MtUserMenuStory = {
+  args: {
+    compact: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Shows only the avatar, for example in a collapsed sidebar. The menu keeps its own width.",
       },
     },
   },
