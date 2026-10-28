@@ -2,7 +2,7 @@
 import {
   MtActionMenuGroup,
   MtActionMenuItem,
-  MtLogo,
+  MtBrand,
   MtNav,
   MtSidebar,
   MtUserMenu,
@@ -33,7 +33,7 @@ const sections: NavSection[] = [
   <div style="height: 480px">
     <mt-sidebar>
       <template #header>
-        <mt-logo title="Demo shop" subtitle="Shopware" />
+        <mt-brand title="Demo shop" subtitle="Shopware" />
       </template>
 
       <mt-nav :sections="sections" />

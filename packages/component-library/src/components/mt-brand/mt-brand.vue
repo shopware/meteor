@@ -1,8 +1,8 @@
 <template>
-  <div class="mt-logo">
+  <div class="mt-brand">
     <!-- @slot Logo next to the title. Replaces the whole default Shopware logo -->
     <slot name="logo">
-      <div class="mt-logo__image">
+      <div class="mt-brand__image">
         <mt-icon
           name="solid-shopware"
           size="var(--scale-size-26)"
@@ -12,8 +12,8 @@
       </div>
     </slot>
 
-    <div class="mt-logo__text">
-      <mt-text as="div" size="s" weight="semibold" class="mt-logo__title" :title="title">
+    <div class="mt-brand__text">
+      <mt-text as="div" size="s" weight="semibold" class="mt-brand__title" :title="title">
         {{ title }}
       </mt-text>
       <mt-text
@@ -21,7 +21,7 @@
         as="div"
         size="2xs"
         color="color-text-secondary-default"
-        class="mt-logo__subtitle"
+        class="mt-brand__subtitle"
       >
         {{ subtitle }}
       </mt-text>
@@ -61,14 +61,14 @@ defineSlots<{
 </script>
 
 <style scoped>
-.mt-logo {
+.mt-brand {
   display: flex;
   align-items: center;
   gap: var(--scale-size-12);
   min-width: 0;
 }
 
-.mt-logo__image {
+.mt-brand__image {
   display: flex;
   flex-shrink: 0;
   align-items: center;
@@ -79,7 +79,7 @@ defineSlots<{
   border-radius: var(--border-radius-m);
 }
 
-.mt-logo__text {
+.mt-brand__text {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
@@ -88,8 +88,8 @@ defineSlots<{
   margin-block-start: calc(-1 * var(--scale-size-1));
 }
 
-.mt-logo__title,
-.mt-logo__subtitle {
+.mt-brand__title,
+.mt-brand__subtitle {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

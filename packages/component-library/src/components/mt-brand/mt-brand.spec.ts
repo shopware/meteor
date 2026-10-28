@@ -1,15 +1,15 @@
 import { render, screen } from "@testing-library/vue";
 import { describe, expect, it } from "vitest";
-import MtLogo from "./mt-logo.vue";
+import MtBrand from "./mt-brand.vue";
 
 function renderLogo(props: Record<string, unknown> = {}, slots: Record<string, string> = {}) {
-  return render(MtLogo, {
+  return render(MtBrand, {
     props: { title: "Demo shop", ...props },
     slots,
   });
 }
 
-describe("mt-logo", () => {
+describe("mt-brand", () => {
   it("renders the title", () => {
     renderLogo();
 
@@ -25,19 +25,19 @@ describe("mt-logo", () => {
   it("renders the subtitle below the title", () => {
     const { container } = renderLogo({ subtitle: "Shopware" });
 
-    expect(container.querySelector(".mt-logo__subtitle")).toHaveTextContent("Shopware");
+    expect(container.querySelector(".mt-brand__subtitle")).toHaveTextContent("Shopware");
   });
 
   it("renders no subtitle when none is given", () => {
     const { container } = renderLogo();
 
-    expect(container.querySelector(".mt-logo__subtitle")).not.toBeInTheDocument();
+    expect(container.querySelector(".mt-brand__subtitle")).not.toBeInTheDocument();
   });
 
   it("renders the Shopware logo hidden from screen readers", () => {
     const { container } = renderLogo();
 
-    expect(container.querySelector(".mt-logo__image .mt-icon")).toHaveAttribute(
+    expect(container.querySelector(".mt-brand__image .mt-icon")).toHaveAttribute(
       "aria-hidden",
       "true",
     );
@@ -48,6 +48,6 @@ describe("mt-logo", () => {
     const { container } = renderLogo({}, { logo: '<img src="logo.svg" alt="My shop" />' });
 
     expect(screen.getByRole("img", { name: "My shop" })).toBeInTheDocument();
-    expect(container.querySelector(".mt-logo__image")).not.toBeInTheDocument();
+    expect(container.querySelector(".mt-brand__image")).not.toBeInTheDocument();
   });
 });

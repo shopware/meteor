@@ -1,47 +1,47 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
-import MtLogo from "./mt-logo.vue";
+import MtBrand from "./mt-brand.vue";
 
-export type MtLogoMeta = Meta<typeof MtLogo>;
+export type MtBrandMeta = Meta<typeof MtBrand>;
 
-const meta: MtLogoMeta = {
-  title: "Components/Logo",
-  component: MtLogo,
+const meta: MtBrandMeta = {
+  title: "Components/Brand",
+  component: MtBrand,
   args: {
     title: "Demo shop",
     subtitle: "Shopware",
   },
   render: (args) => ({
-    components: { MtLogo },
+    components: { MtBrand },
     setup: () => ({ args }),
     template: `
 <div style="width: 300px;">
-  <mt-logo v-bind="args" />
+  <mt-brand v-bind="args" />
 </div>`,
   }),
 };
 
 export default meta;
-export type MtLogoStory = StoryObj<MtLogoMeta>;
+export type MtBrandStory = StoryObj<MtBrandMeta>;
 
-export const Default: MtLogoStory = {
+export const Default: MtBrandStory = {
   parameters: {
     docs: {
       source: {
         language: "html",
-        code: `<mt-logo title="Demo shop" subtitle="Shopware" />`,
+        code: `<mt-brand title="Demo shop" subtitle="Shopware" />`,
       },
     },
   },
 };
 
-export const WithoutSubtitle: MtLogoStory = {
+export const WithoutSubtitle: MtBrandStory = {
   name: "Without subtitle",
   args: {
     subtitle: undefined,
   },
 };
 
-export const LongTitle: MtLogoStory = {
+export const LongTitle: MtBrandStory = {
   name: "Long title",
   args: {
     title: "The demo shop with a very long name that does not fit",

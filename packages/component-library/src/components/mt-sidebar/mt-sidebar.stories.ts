@@ -79,7 +79,7 @@ export const Default: MtSidebarStory = {
         language: "html",
         code: `<mt-sidebar>
   <template #header>
-    <mt-logo title="Demo shop" subtitle="Shopware" />
+    <mt-brand title="Demo shop" subtitle="Shopware" />
   </template>
 
   <mt-nav :sections="sections" />
@@ -167,7 +167,7 @@ export const WithActions: MtSidebarStory = {
         language: "html",
         code: `<mt-sidebar>
   <template #header>
-    <mt-logo title="Demo shop" subtitle="Shopware" />
+    <mt-brand title="Demo shop" subtitle="Shopware" />
   </template>
 
   <template #actions>

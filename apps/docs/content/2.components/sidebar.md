@@ -18,7 +18,7 @@ description: The main navigation of an application, with a fixed header and foot
 import { MtSidebar } from "@shopware-ag/meteor-component-library";
 ```
 
-Put an `mt-nav` into the default slot, a [**Logo**](/components/logo) into the `header` slot and a [**User Menu**](/components/user-menu) into the `footer` slot. The `actions` slot sits next to the header, for example for a button that collapses the sidebar. The sidebar fills the height of its container, so give the container a height.
+Put an `mt-nav` into the default slot, a [**Brand**](/components/brand) into the `header` slot and a [**User Menu**](/components/user-menu) into the `footer` slot. The `actions` slot sits next to the header, for example for a button that collapses the sidebar. The sidebar fills the height of its container, so give the container a height.
 
 ## API reference
 

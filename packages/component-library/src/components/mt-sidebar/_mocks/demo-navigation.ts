@@ -1,7 +1,7 @@
 import { markRaw } from "vue";
 import MtSidebar from "../mt-sidebar.vue";
 import MtUserMenu from "../../mt-user-menu/mt-user-menu.vue";
-import MtLogo from "../../mt-logo/mt-logo.vue";
+import MtBrand from "../../mt-brand/mt-brand.vue";
 import MtNav from "../../mt-nav/mt-nav.vue";
 import MtActionMenuGroup from "../../mt-action-menu-group/mt-action-menu-group.vue";
 import MtActionMenuItem from "../../mt-action-menu-item/mt-action-menu-item.vue";
@@ -13,7 +13,7 @@ import { StoryLink } from "../../mt-nav/mt-nav.story-helper";
  */
 export const demoComponents = {
   MtSidebar,
-  MtLogo,
+  MtBrand,
   MtUserMenu,
   MtActionMenuGroup,
   MtActionMenuItem,
@@ -97,7 +97,7 @@ export const demoNavigationTemplate = `
  * Header as used by the Shopware administration.
  */
 export const demoHeaderTemplate = `
-<mt-logo title="Demo shop" subtitle="Shopware" />`;
+<mt-brand title="Demo shop" subtitle="Shopware" />`;
 
 /**
  * Footer as used by the Shopware administration.

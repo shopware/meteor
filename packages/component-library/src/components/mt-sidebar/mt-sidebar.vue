@@ -55,7 +55,7 @@ const props = withDefaults(
 
 defineSlots<{
   /**
-   * Fixed area at the top, for example mt-logo.
+   * Fixed area at the top, for example mt-brand.
    */
   header?: null;
   /**
