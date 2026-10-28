@@ -44,48 +44,53 @@
   </div>
 </template>
 
+<script lang="ts">
+const messages = {
+  de: {
+    units: {
+      mm: "Millimeter",
+      cm: "Zentimeter",
+      m: "Meter",
+      in: "Zoll",
+      ft: "Fuß",
+      yd: "Yard",
+      g: "Gramm",
+      kg: "Kilogramm",
+      oz: "Unze",
+      lb: "Pfund",
+    },
+    "select-unit": "Einheit auswählen",
+  },
+  en: {
+    units: {
+      mm: "Millimeters",
+      cm: "Centimeters",
+      m: "Meters",
+      in: "Inches",
+      ft: "Feet",
+      yd: "Yards",
+      g: "Grams",
+      kg: "Kilograms",
+      oz: "Ounces",
+      lb: "Pounds",
+    },
+    "select-unit": "Select unit",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtUnitSelectResult from "./_internal/mt-unit-select-result.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import type { Unit } from "convert-units";
 import { useFloating, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
 import { onClickOutside } from "@vueuse/core";
 
-const { t } = useI18n({
-  messages: {
-    de: {
-      units: {
-        mm: "Millimeter",
-        cm: "Zentimeter",
-        m: "Meter",
-        in: "Zoll",
-        ft: "Fuß",
-        yd: "Yard",
-        g: "Gramm",
-        kg: "Kilogramm",
-        oz: "Unze",
-        lb: "Pfund",
-      },
-      "select-unit": "Einheit auswählen",
-    },
-    en: {
-      units: {
-        mm: "Millimeters",
-        cm: "Centimeters",
-        m: "Meters",
-        in: "Inches",
-        ft: "Feet",
-        yd: "Yards",
-        g: "Grams",
-        kg: "Kilograms",
-        oz: "Ounces",
-        lb: "Pounds",
-      },
-      "select-unit": "Select unit",
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.unit-select",
+  messages,
 });
 
 const props = defineProps<{

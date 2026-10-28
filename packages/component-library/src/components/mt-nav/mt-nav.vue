@@ -15,13 +15,32 @@
   </nav>
 </template>
 
+<script lang="ts">
+export type {
+  NavActiveMatcher,
+  NavItem,
+  NavLinkComponent,
+  NavLinkTarget,
+  NavSection,
+} from "./_internal/mt-nav-context";
+
+const messages = {
+  en: {
+    navigationLabel: "Main navigation",
+  },
+  de: {
+    navigationLabel: "Hauptnavigation",
+  },
+};
+</script>
+
 <script setup lang="ts">
 /**
  * Experimental: the API of mt-nav may still change in a future release.
  */
 
 import { computed, provide, ref, useId, watch } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtNavSection from "./_internal/mt-nav-section.vue";
 import {
   NAV_CONTEXT,
@@ -35,14 +54,6 @@ import {
   type NavLinkComponent,
   type NavSection,
   type NavSlots,
-} from "./_internal/mt-nav-context";
-
-export type {
-  NavActiveMatcher,
-  NavItem,
-  NavLinkComponent,
-  NavLinkTarget,
-  NavSection,
 } from "./_internal/mt-nav-context";
 
 const props = withDefaults(
@@ -81,15 +92,9 @@ const emit = defineEmits<{
 
 const slots = defineSlots<NavSlots>();
 
-const { t } = useI18n({
-  messages: {
-    en: {
-      navigationLabel: "Main navigation",
-    },
-    de: {
-      navigationLabel: "Hauptnavigation",
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.nav",
+  messages,
 });
 
 const navigationLabelId = `mt-nav-label-${useId()}`;

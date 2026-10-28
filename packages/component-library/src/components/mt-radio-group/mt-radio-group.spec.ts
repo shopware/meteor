@@ -9,16 +9,6 @@ import MtRadioGroupIndicator from "./mt-radio-group-indicator.vue";
 import { userEvent } from "@testing-library/user-event";
 import { ref } from "vue";
 
-vi.mock("vue-i18n", async () => {
-  const actual = await vi.importActual("vue-i18n");
-  return {
-    ...actual,
-    useI18n: () => ({
-      t: (key: string) => key,
-    }),
-  };
-});
-
 describe("radio group cards", () => {
   it("selects a card once when clicking its label", async () => {
     // ARRANGE

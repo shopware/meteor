@@ -55,9 +55,20 @@
   </component>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    opensInNewTab: "(opens in a new tab)",
+  },
+  de: {
+    opensInNewTab: "(öffnet in einem neuen Tab)",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
@@ -80,15 +91,9 @@ const props = defineProps<{
 
 const context = useNavContext();
 
-const { t } = useI18n({
-  messages: {
-    en: {
-      opensInNewTab: "(opens in a new tab)",
-    },
-    de: {
-      opensInNewTab: "(öffnet in einem neuen Tab)",
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.nav-item",
+  messages,
 });
 
 const isLeafDepth = props.depth >= MAX_NESTING_LEVEL;

@@ -57,7 +57,16 @@ import {
   MtSelectResultRemoveItemSelectByKeyboardListener,
 } from "./mt-select-result-context";
 import { ref } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
+
+const messages = {
+  en: {
+    messageNoResults: "No results found.",
+  },
+  de: {
+    messageNoResults: "Es wurden keine Ergebnisse gefunden.",
+  },
+};
 
 export default defineComponent({
   name: "MtSelectResultList",
@@ -74,15 +83,9 @@ export default defineComponent({
   },
 
   setup() {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          messageNoResults: "No results found.",
-        },
-        de: {
-          messageNoResults: "Es wurden keine Ergebnisse gefunden.",
-        },
-      },
+    const { t } = useMeteorI18n({
+      namespace: "mt.select-result-list",
+      messages,
     });
 
     const activeItemIndex = ref(0);

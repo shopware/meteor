@@ -53,7 +53,6 @@ import MtPopoverItem from "../mt-popover-item/mt-popover-item.vue";
 import MtButton from "../mt-button/mt-button.vue";
 import MtSmoothReflow from "../_internal/mt-smooth-reflow.vue";
 import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
-import type { TranslateResult } from "vue-i18n";
 import type { View } from "./mt-popover.interfaces";
 import MtText from "@/components/mt-text/mt-text.vue";
 
@@ -70,7 +69,7 @@ export default defineComponent({
   },
   props: {
     title: {
-      type: String as PropType<string | TranslateResult>,
+      type: String as PropType<string>,
       required: false,
       default: "",
     },

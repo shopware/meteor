@@ -31,7 +31,7 @@
                 square
                 variant="tertiary"
                 :size="size === 'xs' ? 'x-small' : 'small'"
-                :aria-label="t('hiddenLevels', hiddenCrumbs.length)"
+                :aria-label="t('hiddenLevels', { count: hiddenCrumbs.length })"
               >
                 <mt-icon
                   name="solid-ellipsis-h-s"
@@ -96,6 +96,17 @@ export interface BreadcrumbItem {
   to?: string | Record<string, unknown>;
   as?: string | Component;
 }
+
+const messages = {
+  en: {
+    ariaLabel: "Breadcrumb",
+    hiddenLevels: "Show {count} hidden level | Show {count} hidden levels",
+  },
+  de: {
+    ariaLabel: "Brotkrumennavigation",
+    hiddenLevels: "{count} ausgeblendete Ebene anzeigen | {count} ausgeblendete Ebenen anzeigen",
+  },
+};
 </script>
 
 <script setup lang="ts">
@@ -108,7 +119,7 @@ import {
   resolveDynamicComponent,
   watch,
 } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import { useResizeObserver } from "@vueuse/core";
 import { DropdownMenuPortal, DropdownMenuRoot, DropdownMenuTrigger } from "reka-ui";
 import MtActionMenu from "../mt-action-menu/mt-action-menu.vue";
@@ -159,17 +170,9 @@ defineEmits<{
   (e: "click", item: BreadcrumbItem, event: MouseEvent): void;
 }>();
 
-const { t } = useI18n({
-  messages: {
-    en: {
-      ariaLabel: "Breadcrumb",
-      hiddenLevels: "Show {count} hidden level | Show {count} hidden levels",
-    },
-    de: {
-      ariaLabel: "Brotkrumennavigation",
-      hiddenLevels: "{count} ausgeblendete Ebene anzeigen | {count} ausgeblendete Ebenen anzeigen",
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.breadcrumb",
+  messages,
 });
 
 const SHRINK_SCALE = 1000;
