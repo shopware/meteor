@@ -16,10 +16,11 @@ const repoRoot = resolve(here, "../../..");
 const contentDir = resolve(here, "../content");
 const outFile = resolve(
   contentDir,
-  "1.documentation/1.getting-started/5.whats-new.md",
+  "1.documentation/1.getting-started/6.whats-new.md",
 );
 // Older output locations to clean up when this script moves/renames the page.
 const stale = [
+  resolve(contentDir, "1.documentation/1.getting-started/5.whats-new.md"),
   resolve(contentDir, "1.documentation/1.getting-started/5.changelog.md"),
   resolve(contentDir, "1.documentation/1.get-started"),
   resolve(contentDir, "1.docs"),
@@ -247,7 +248,7 @@ ${tabs.join("\n\n")}
   await writeFile(outFile, page);
 
   console.log(
-    `[sync-changelogs] wrote ${tabs.length} changelog tab(s) to content/1.documentation/1.getting-started/5.whats-new.md`,
+    `[sync-changelogs] wrote ${tabs.length} changelog tab(s) to content/1.documentation/1.getting-started/6.whats-new.md`,
   );
 }
 

@@ -16,28 +16,6 @@ const vueServerRendererEntry = join(
   "server-renderer/index.mjs",
 );
 
-// The meteor components import vue-i18n@9 (their nested copy) and call
-// useI18n() at setup. The docs app must install an i18n instance from the
-// SAME copy, so alias vue-i18n to the component library's version for both
-// the app plugin and the bundled components.
-const vueI18nPath = fileURLToPath(
-  new URL(
-    "../../packages/component-library/node_modules/vue-i18n",
-    import.meta.url,
-  ),
-);
-
-// vue-i18n@9 (aliased above) imports @intlify internals. Alias those to the
-// SAME nested v9 copies, otherwise the docs build mixes them with the root v11
-// @intlify (which removed `compileToFunction`) → SyntaxError at runtime on Vercel.
-const meteorIntlifyPath = (pkg: string) =>
-  fileURLToPath(
-    new URL(
-      `../../packages/component-library/node_modules/@intlify/${pkg}`,
-      import.meta.url,
-    ),
-  );
-
 // The meteor component library barrel (its index.js) imports a global CSS
 // reset (dist/index.css) that retargets bare elements (*, body, button,
 // h1-h6) and leaks onto the docs typography. The docs deliberately do not
@@ -193,24 +171,14 @@ export default defineNuxtConfig({
       // reference and logs an ENOENT "Failed to load source map" warning.
       devSourcemap: false,
     },
-    resolve: {
-      alias: {
-        "vue-i18n": vueI18nPath,
-        "@intlify/core-base": meteorIntlifyPath("core-base"),
-        "@intlify/message-compiler": meteorIntlifyPath("message-compiler"),
-        "@intlify/shared": meteorIntlifyPath("shared"),
-      },
-    },
     optimizeDeps: {
       // Exclude the component library so its barrel import is processed by
       // Vite (and the dropMeteorGlobalReset plugin) rather than esbuild's dep
       // pre-bundler, which would inline the global reset and bypass the plugin.
       exclude: ["@shopware-ag/meteor-component-library"],
       include: [
-        // vue-i18n (aliased above to the component library's nested copy) and
-        // apexcharts (pulled in by mt-chart) are otherwise discovered at
+        // apexcharts (pulled in by mt-chart) is otherwise discovered at
         // runtime, which triggers a re-optimize and full page reload.
-        "vue-i18n",
         "apexcharts",
         "@vueuse/core",
         "remark-emoji",

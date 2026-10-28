@@ -1,15 +1,15 @@
-import { createI18n } from "vue-i18n";
+import { createMeteorI18nPlugin } from "@shopware-ag/meteor-component-library";
 
 /**
  * Host-app setup the meteor component library expects, mirroring the Storybook
- * preview decorators (app.use(i18n) + DeviceHelperPlugin). Without it,
- * components throw at setup/mount:
- * - useI18n() needs a global vue-i18n instance installed via app.use.
+ * preview decorators (Meteor i18n plugin + DeviceHelperPlugin):
+ * - the Meteor i18n plugin serves the components' bundled English snippets
+ *   (the docs render in English; no host adapter needed).
  * - several components read `this.$device` in mounted to register resize
  *   listeners.
  *
- * i18n is installed on both server and client; the device helper is client
- * only because it touches window and its listeners only run after mount.
+ * The i18n plugin is installed on both server and client; the device helper is
+ * client only because it touches window and its listeners only run after mount.
  */
 
 type ResizeRegistration = {
@@ -98,18 +98,7 @@ class DeviceHelper {
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const i18n = createI18n({
-    legacy: false,
-    globalInjection: true,
-    locale: "en",
-    fallbackLocale: "en",
-    messages: {
-      en: {},
-      de: {},
-    },
-    allowComposition: true,
-  });
-  nuxtApp.vueApp.use(i18n);
+  nuxtApp.vueApp.use(createMeteorI18nPlugin());
 
   if (import.meta.client) {
     const deviceHelper = new DeviceHelper();

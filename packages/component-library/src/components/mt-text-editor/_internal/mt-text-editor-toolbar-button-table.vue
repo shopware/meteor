@@ -8,25 +8,25 @@
 
   <!-- Table modal -->
   <mt-modal-root :isOpen="showTableModal" @change="($event) => (showTableModal = $event)">
-    <mt-modal :title="t('mt-text-editor-toolbar-button-table.modalTitle')" width="s">
+    <mt-modal :title="t('mt.text-editor-toolbar-button-table.modalTitle')" width="s">
       <template #default>
         <div class="mt-text-editor__table-modal">
           <mt-number-field
-            :label="t('mt-text-editor-toolbar-button-table.columns')"
+            :label="t('mt.text-editor-toolbar-button-table.columns')"
             v-model="tableColumns"
             type="number"
             :min="1"
             numberType="int"
           />
           <mt-number-field
-            :label="t('mt-text-editor-toolbar-button-table.rows')"
+            :label="t('mt.text-editor-toolbar-button-table.rows')"
             v-model="tableRows"
             type="number"
             :min="1"
             numberType="int"
           />
           <mt-switch
-            :label="t('mt-text-editor-toolbar-button-table.showHeader')"
+            :label="t('mt.text-editor-toolbar-button-table.showHeader')"
             v-model="tableShowHeader"
           />
         </div>
@@ -34,11 +34,11 @@
       <template #footer>
         <div class="mt-text-editor__table-modal-footer">
           <mt-modal-close :as="mtButton" variant="secondary">
-            {{ t("mt-text-editor-toolbar-button-table.cancel") }}
+            {{ t("mt.text-editor-toolbar-button-table.cancel") }}
           </mt-modal-close>
 
           <mt-button variant="primary" @click="insertTable">
-            {{ t("mt-text-editor-toolbar-button-table.insertTable") }}
+            {{ t("mt.text-editor-toolbar-button-table.insertTable") }}
           </mt-button>
         </div>
       </template>
@@ -57,49 +57,10 @@ import mtSwitch from "@/components/mt-switch/mt-switch.vue";
 import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
 import mtNumberField from "@/components/mt-number-field/mt-number-field.vue";
 import mtModalClose from "@/components/mt-modal/sub-components/mt-modal-close.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
+import { meteorTextEditorMessages } from "../mt-text-editor.i18n";
 
-const { t } = useI18n({
-  useScope: "global",
-  messages: {
-    en: {
-      "mt-text-editor-toolbar-button-table": {
-        label: "Table",
-        modalTitle: "Insert/Edit Table",
-        insertTable: "Insert table",
-        cancel: "Cancel",
-        columns: "Columns",
-        rows: "Rows",
-        showHeader: "Show header",
-        insertRowBefore: "Insert row before",
-        insertRowAfter: "Insert row after",
-        deleteRow: "Delete row",
-        insertColumnBefore: "Insert column before",
-        insertColumnAfter: "Insert column after",
-        deleteColumn: "Delete column",
-        removeTable: "Remove table",
-      },
-    },
-    de: {
-      "mt-text-editor-toolbar-button-table": {
-        label: "Tabelle",
-        modalTitle: "Tabelle einfügen/bearbeiten",
-        insertTable: "Tabelle einfügen",
-        cancel: "Abbrechen",
-        columns: "Spalten",
-        rows: "Zeilen",
-        showHeader: "Kopfzeile anzeigen",
-        insertRowBefore: "Zeile davor einfügen",
-        insertRowAfter: "Zeile danach einfügen",
-        deleteRow: "Zeile löschen",
-        insertColumnBefore: "Spalte davor einfügen",
-        insertColumnAfter: "Spalte danach einfügen",
-        deleteColumn: "Spalte löschen",
-        removeTable: "Tabelle entfernen",
-      },
-    },
-  },
-});
+const { t } = useMeteorI18n({ messages: meteorTextEditorMessages });
 
 const props = defineProps({
   editor: {
@@ -152,7 +113,7 @@ const insertTable = () => {
 <script lang="ts">
 export const tableButton: CustomButton = {
   name: "table",
-  label: "mt-text-editor-toolbar-button-table.label",
+  label: "mt.text-editor-toolbar-button-table.label",
   icon: "regular-table-xs",
   disabled: (editor, globalDisabled) => {
     if (globalDisabled) {
@@ -170,43 +131,43 @@ export const tableButton: CustomButton = {
     return [
       {
         name: "table-insert-row-before",
-        label: "Insert row before",
+        label: "mt.text-editor-toolbar-button-table.insertRowBefore",
         icon: "regular-insert-row-before",
         action: (editor) => editor.chain().focus().addRowBefore().run(),
       },
       {
         name: "table-insert-row-after",
-        label: "Insert row after",
+        label: "mt.text-editor-toolbar-button-table.insertRowAfter",
         icon: "regular-insert-row-after",
         action: (editor) => editor.chain().focus().addRowAfter().run(),
       },
       {
         name: "table-delete-row",
-        label: "Delete row",
+        label: "mt.text-editor-toolbar-button-table.deleteRow",
         icon: "regular-delete-row",
         action: (editor) => editor.chain().focus().deleteRow().run(),
       },
       {
         name: "table-insert-column-before",
-        label: "Insert column before",
+        label: "mt.text-editor-toolbar-button-table.insertColumnBefore",
         icon: "regular-insert-column-before",
         action: (editor) => editor.chain().focus().addColumnBefore().run(),
       },
       {
         name: "table-insert-column-after",
-        label: "Insert column after",
+        label: "mt.text-editor-toolbar-button-table.insertColumnAfter",
         icon: "regular-insert-column-after",
         action: (editor) => editor.chain().focus().addColumnAfter().run(),
       },
       {
         name: "table-delete-column",
-        label: "Delete column",
+        label: "mt.text-editor-toolbar-button-table.deleteColumn",
         icon: "regular-delete-column",
         action: (editor) => editor.chain().focus().deleteColumn().run(),
       },
       {
         name: "table-remove-table",
-        label: "Remove table",
+        label: "mt.text-editor-toolbar-button-table.removeTable",
         icon: "regular-times-xs",
         action: (editor) => editor.chain().focus().deleteTable().run(),
       },
