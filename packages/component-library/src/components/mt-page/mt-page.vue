@@ -76,7 +76,6 @@
         ref="startRegion"
         panel="start"
         :controller="controller"
-        as="section"
         side="start"
         :label="labels.start"
         :close-label="t('close', { label: labels.start })"
@@ -102,7 +101,6 @@
         ref="endRegion"
         panel="end"
         :controller="controller"
-        as="section"
         side="end"
         :label="labels.end"
         :close-label="t('close', { label: labels.end })"
@@ -151,6 +149,8 @@ type PagePanel = "start" | "end";
  * each panel scroll on their own while the header stays in place.
  *
  * - A panel is as wide as its content, so give the slot content a fixed width.
+ * - The panels add no landmark of their own, so their slots bring one, such as an `<aside>` named
+ *   after its content.
  * - Below the breakpoint, measured on the page and not on the viewport, the panels become drawers
  *   that open from triggers in the page header.
  * - The content is padded, less on narrow pages. `width` limits it to a centered maximum width,
@@ -181,9 +181,9 @@ const props = withDefaults(
      * itself: its label is the page's `<h1>`. An `icon` on the first item marks the section.
      */
     breadcrumb?: BreadcrumbItem[];
-    /** The accessible name of the start panel, its drawer and its trigger. Defaults to "Start panel". */
+    /** The accessible name of the start panel's drawer and its trigger. Defaults to "Start panel". */
     startLabel?: string;
-    /** The accessible name of the end panel, its drawer and its trigger. Defaults to "End panel". */
+    /** The accessible name of the end panel's drawer and its trigger. Defaults to "End panel". */
     endLabel?: string;
     /**
      * The page width in pixels below which the panels become drawers. `0` keeps them next to the

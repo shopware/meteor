@@ -409,7 +409,10 @@ function removeDocument(document: OrderDocument) {
     </div>
 
     <template v-if="order || isLoading" #end>
-      <div class="stack order-detail__panel">
+      <aside
+        class="stack order-detail__panel"
+        :aria-label="t('orders.details.customer')"
+      >
         <template v-if="order">
           <section class="stack">
             <mt-text
@@ -522,7 +525,7 @@ function removeDocument(document: OrderDocument) {
         <template v-else>
           <mt-skeleton-bar v-for="row in 6" :key="row" />
         </template>
-      </div>
+      </aside>
     </template>
   </mt-page>
 </template>

@@ -55,7 +55,7 @@ router.isReady().then(() => app.mount("#app"));
 ## Anatomy
 
 - `header`: a bar above the other regions. In the mobile layout, the shell adds a trigger for the navigation drawer at its start and one for the sidebar drawer at its end, also when the slot is empty.
-- `navigation`: the main navigation, such as [**Nav**](/components/nav), next to the content. It brings its own `<nav>` landmark.
+- `navigation`: the main navigation, such as [**Nav**](/components/nav), next to the content.
 - `content`: the scrollable main content in a frame, usually a [**Page**](/components/page). It fills the shell without the frame when no other slot is filled, or when no other region is visible and a view sets `contentFrame: false`.
 - `sidebar`: a framed panel next to the content, for example an assistant.
 
@@ -91,7 +91,7 @@ router.isReady().then(() => app.mount("#app"));
 
 ## Accessibility
 
-- The content is a `<main>` landmark, and the sidebar is an `<aside>` landmark named by `sidebar-label`. The navigation slot brings its own `<nav>`.
+- The header is a `<header>` landmark and the content a `<main>` landmark. The navigation and the sidebar add no landmark of their own, so their content brings one, such as the `<nav>` of [**Nav**](/components/nav) or an `<aside>` named after its content.
 - The first focusable element of the shell is a "Skip to content" button. It becomes visible when it receives the focus and moves the focus to the content.
 - When a region hides while it holds the focus, the focus moves to the content.
 - After a navigation, screen readers announce the new document title, as after a full page load.

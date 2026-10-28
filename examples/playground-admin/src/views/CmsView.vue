@@ -17,11 +17,13 @@ const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
     closable
   >
     <template #start>
-      <ul class="cms-blocks">
-        <li v-for="block in blocks" :key="block">
-          <mt-text size="xs">{{ t("cms.block", { number: block }) }}</mt-text>
-        </li>
-      </ul>
+      <aside :aria-label="t('cms.blocks')">
+        <ul class="cms-blocks">
+          <li v-for="block in blocks" :key="block">
+            <mt-text size="xs">{{ t("cms.block", { number: block }) }}</mt-text>
+          </li>
+        </ul>
+      </aside>
     </template>
 
     <div class="cms-canvas">
@@ -31,11 +33,11 @@ const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
     </div>
 
     <template #end>
-      <div class="cms-properties">
+      <aside class="cms-properties" :aria-label="t('cms.properties')">
         <mt-text size="xs" color="color-text-secondary-default">
           {{ t("cms.noSelection") }}
         </mt-text>
-      </div>
+      </aside>
     </template>
   </mt-page>
 </template>

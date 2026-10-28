@@ -47,7 +47,7 @@ The `start` and `end` slots add panels next to the content, for example a list a
 
 - Use one **Page** per route, and end its `breadcrumb` with the page itself.
 - Keep the actions in the header to the few that concern the whole page, such as saving.
-- Pass `start-label` and `end-label` that name the panels, such as "Blocks" and "Properties".
+- Put the content of a panel into an `<aside>` named after it, such as "Blocks" or "Properties", and pass the same names as `start-label` and `end-label`.
 
 #dont
 
@@ -69,7 +69,8 @@ The `start` and `end` slots add panels next to the content, for example a list a
 ## Accessibility
 
 - The label of the last breadcrumb item is the `<h1>` of the page. It is visually hidden, because the breadcrumb shows it.
-- Each panel is a landmark named by `start-label` or `end-label`, and so are its drawer and its trigger. Without them, they are named "Start panel" and "End panel".
+- The panels add no landmark of their own, so their content brings one, such as an `<aside>` named after it.
+- The drawers of the panels and their triggers are named by `start-label` and `end-label`. Without them, they are named "Start panel" and "End panel".
 - The close button is named "Close". This name and the defaults of the panel labels are translated for English and German.
 
 ## Related components

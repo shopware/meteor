@@ -66,7 +66,7 @@ The `suffix` slot renders after the label of every row and receives the row as `
 
 ## Accessibility
 
-- **Nav** is a `<nav>` landmark named by `label`, which defaults to "Main navigation", translated for English and German.
+- **Nav** is a `<nav>` landmark named by `label`, which defaults to "Main" ("Hauptmenü" in German). Screen readers add the role, so they announce it as "Main, navigation". Pass another `label` when a page has more than one **Nav**, such as "Settings".
 - The current page carries `aria-current="page"`, and rows that open nested rows announce whether they are expanded.
 - The rows can be reached with the Tab key. The arrow keys move between the visible rows, and Home and End move to the first and the last row.
 

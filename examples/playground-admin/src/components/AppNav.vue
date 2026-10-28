@@ -70,12 +70,7 @@ function isActive(item: NavItem) {
 
 <template>
   <div class="app-nav">
-    <mt-nav
-      class="app-nav__menu"
-      :sections="sections"
-      :label="t('nav.label')"
-      :is-active="isActive"
-    />
+    <mt-nav class="app-nav__menu" :sections="sections" :is-active="isActive" />
 
     <div class="app-nav__footer">
       <mt-user
