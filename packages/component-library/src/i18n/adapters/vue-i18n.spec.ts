@@ -12,7 +12,7 @@ function fakeComposer(messages: Record<string, string>, locale = ref("en-GB")) {
 
 /**
  * Mimics vue-i18n v9/v10: `te(key)` checks ONLY the given (or active) locale and never
- * walks the fallback chain — the exact behavior the adapter's fallback probe works around.
+ * walks the fallback chain, the exact behavior the adapter's fallback probe works around.
  */
 function fakeV10Composer(
   catalogs: Record<string, Record<string, string>>,
@@ -150,7 +150,7 @@ describe("createVueI18nAdapter", () => {
       };
       const composer = {
         locale: ref("en"),
-        // te() knows nothing — the translations only materialize through t().
+        // te() knows nothing; the translations only materialize through t().
         te: () => false,
         t: (key: string) => backendCatalog[key] ?? key,
       };

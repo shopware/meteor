@@ -13,7 +13,7 @@ export const messages = {
     app: {
       title: "Standalone Meteor example",
       description:
-        "This app translates its own texts with vue-i18n and adds French for Meteor's snippets — a language Meteor does not bundle.",
+        "This app translates its own texts with vue-i18n and adds French for Meteor's texts, a language Meteor does not bundle.",
       language: "Language",
       ownTexts:
         "The heading and this description come from the app's own catalog.",
@@ -25,7 +25,7 @@ export const messages = {
     app: {
       title: "Eigenständiges Meteor-Beispiel",
       description:
-        "Diese App übersetzt ihre eigenen Texte mit vue-i18n und liefert Französisch für Meteors Snippets — eine Sprache, die Meteor nicht mitbringt.",
+        "Diese App übersetzt ihre eigenen Texte mit vue-i18n und liefert Französisch für Meteors Texte, eine Sprache, die Meteor nicht mitbringt.",
       language: "Sprache",
       ownTexts:
         "Die Überschrift und diese Beschreibung kommen aus dem Katalog der App.",
@@ -37,7 +37,7 @@ export const messages = {
     app: {
       title: "Exemple Meteor autonome",
       description:
-        "Cette application traduit ses propres textes avec vue-i18n et fournit le français pour les extraits de Meteor — une langue que Meteor n'embarque pas.",
+        "Cette application traduit ses propres textes avec vue-i18n et fournit le français pour les textes de Meteor, une langue que Meteor n'embarque pas.",
       language: "Langue",
       ownTexts:
         "Le titre et cette description proviennent du catalogue de l'application.",

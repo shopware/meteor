@@ -16,7 +16,7 @@ function numberFormatterFor(locale: string): Intl.NumberFormat {
     try {
       formatter = new Intl.NumberFormat(locale);
     } catch {
-      // The host reported an invalid locale tag — format with the runtime default instead.
+      // The host reported an invalid locale tag: format with the runtime default instead.
       formatter = new Intl.NumberFormat();
     }
     numberFormatters.set(locale, formatter);
@@ -55,7 +55,7 @@ export interface MeteorI18nComposer {
    */
   t: (key: string, values?: MeteorInterpolationValues) => string;
   /**
-   * Like {@link t}, but returns `undefined` on a full miss instead of the public key —
+   * Like {@link t}, but returns `undefined` on a full miss instead of the public key;
    * use it to probe keys (`ti(key) ?? fallback`) instead of comparing `t(key) === key`.
    */
   ti: (key: string, values?: MeteorInterpolationValues) => string | undefined;

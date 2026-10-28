@@ -2,7 +2,7 @@ import { isRef, toValue, type Ref } from "vue";
 import type { MeteorI18nAdapter } from "../types";
 
 /**
- * Minimal shape of a vue-i18n Composer (Composition mode, `legacy: false`) — the object
+ * Minimal shape of a vue-i18n Composer (Composition mode, `legacy: false`): the object
  * exposed as `i18n.global`, by a root-scope `useI18n()`, and by `@nuxtjs/i18n`'s `$i18n`.
  * Duck-typed on purpose so this helper introduces **no** dependency on vue-i18n and works
  * with whatever vue-i18n version the host already uses.
@@ -53,7 +53,7 @@ export interface VueI18nAdapterOptions {
    *
    * Use this when your translations are not statically visible to `te()`:
    * - catalogs registered as FLAT dotted keys on vue-i18n < 11.3.0 without `flatJson`
-   *   (its `te()` misses dotted keys there — intlify/vue-i18n#2375), or
+   *   (its `te()` misses dotted keys there, intlify/vue-i18n#2375), or
    * - translations served at runtime through vue-i18n's `missing` handler
    *   (backend-driven catalogs), which `te()` never consults.
    *
@@ -69,7 +69,7 @@ const warnedLegacyKeys = new Set<string>();
 function isDev(): boolean {
   // try/catch instead of a typeof guard: bundlers statically replace the exact token
   // `process.env.NODE_ENV`, and in browsers without that replacement (where `process`
-  // is not declared) the reference throws — it must never crash the consumer.
+  // is not declared) the reference throws, and it must never crash the consumer.
   try {
     return process.env.NODE_ENV !== "production";
   } catch {
@@ -83,7 +83,7 @@ function isDev(): boolean {
  * Accepts the `createI18n(...)` result (`{ global }`) or the global composer directly.
  * Uses `te()` to detect a real hit, so on a miss Meteor falls back to its own bundled
  * snippets instead of vue-i18n returning the key string. The reactive `locale` is taken
- * straight from the composer, so host language switches re-render Meteor components —
+ * straight from the composer, so host language switches re-render Meteor components,
  * which is why Composition mode (`legacy: false`) is required: a Legacy-mode instance
  * exposes `locale` as a plain string and Meteor's language would silently freeze.
  *
@@ -127,7 +127,7 @@ export function createVueI18nAdapter(
     return undefined;
   };
 
-  // Since vue-i18n 11.3.0, message-compiler errors always throw — at t() time, i.e.
+  // Since vue-i18n 11.3.0, message-compiler errors always throw at t() time, i.e.
   // inside the calling component's render. A host override containing an unescaped
   // special character (`{ } @ $ |`) must degrade to Meteor's bundled snippet instead of
   // crashing the component.
@@ -142,7 +142,7 @@ export function createVueI18nAdapter(
       if (isDev()) {
         console.warn(
           `[meteor-i18n] The host translation for "${key}" could not be compiled ` +
-            "(vue-i18n message syntax — special characters like { } @ $ | need escaping " +
+            "(vue-i18n message syntax: special characters like { } @ $ | need escaping " +
             "in vue-i18n catalogs). Falling back to Meteor's bundled snippet.",
           error,
         );

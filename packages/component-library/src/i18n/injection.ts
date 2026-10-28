@@ -11,7 +11,7 @@ export const meteorI18nInjectionKey: InjectionKey<MeteorI18nInstance> = Symbol.f
  * Module-level default instance used when no `createMeteorI18nPlugin` was installed.
  *
  * Mirrors the default-instance pattern of `useFutureFlags`, so every component works
- * standalone — rendering Meteor's bundled English snippets — without any host setup.
+ * standalone, rendering Meteor's bundled English snippets without any host setup.
  * It holds no mutable state, so it is safe to share between apps and SSR requests.
  */
 export const defaultMeteorI18n: MeteorI18nInstance = {

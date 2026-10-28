@@ -6,10 +6,10 @@ import { createMeteorI18nPlugin } from "@shopware-ag/meteor-component-library";
 import App from "./App.vue";
 
 // This app has no translations of its own, so it needs no i18n framework. All it has
-// to do is tell Meteor which language the host admin is on — the Admin SDK is the only
+// to do is tell Meteor which language the host admin is on; the Admin SDK is the only
 // place that answer can come from inside an iframe.
 
-// Await the initial locale BEFORE mounting — a .then() wiring would flash English.
+// Await the initial locale BEFORE mounting; a .then() wiring would flash English.
 const { locale: initialLocale } = await context.getLocale();
 const locale = ref(initialLocale);
 
@@ -22,7 +22,7 @@ const app = createApp(App);
 
 // Meteor renders its own bundled en/de texts in the admin's language. When your app
 // grows its own texts, hand this same `locale` ref to vue-i18n and switch to
-// `createVueI18nAdapter` — nothing gets thrown away.
+// `createVueI18nAdapter`. Nothing gets thrown away.
 app.use(createMeteorI18nPlugin({ locale }));
 
 app.mount("#app");

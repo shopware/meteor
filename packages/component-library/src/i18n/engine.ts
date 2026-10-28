@@ -10,7 +10,7 @@ const INTERPOLATION_REGEX = /\{(\w+)\}/g;
  * - pipe pluralization:  `"no items | one item | {n} items"` selected by `n`/`count`
  *
  * A `|` only acts as a plural separator when the call actually passes a numeric
- * `n`/`count` — a message like `"Bold | Ctrl+B"` rendered without a count stays
+ * `n`/`count`. A message like `"Bold | Ctrl+B"` rendered without a count stays
  * intact instead of being mis-split into plural forms.
  *
  * Plural selection uses only the default English/German choice rule (see choiceIndex);
@@ -18,7 +18,7 @@ const INTERPOLATION_REGEX = /\{(\w+)\}/g;
  * through a host adapter, not through bundled or registry messages.
  *
  * Missing interpolation variables are left as their literal placeholder (`{var}`).
- * (vue-i18n renders an empty string there instead — a deliberate divergence: the
+ * (vue-i18n renders an empty string there instead. A deliberate divergence: the
  * untouched placeholder makes the missing value visible.)
  */
 export function render(message: string, values?: MeteorInterpolationValues): string {

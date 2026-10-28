@@ -10,7 +10,7 @@ const APP_SECRET = "testSecret";
  * Minimal Shopware app-registration endpoints, served by the Vite dev server itself.
  *
  * Shopware HMAC-signs the admin iframe URL with an app secret, so every app with a
- * `base-app-url` must complete the registration handshake once at install time — which
+ * `base-app-url` must complete the registration handshake once at install time, which
  * means the dev server has to be RUNNING when `bin/console app:install`/`app:refresh`
  * executes. The contract (see shopware/shopware,
  * src/Core/Framework/App/Lifecycle/Registration):
@@ -19,13 +19,13 @@ const APP_SECRET = "testSecret";
  *     header `shopware-app-signature` = HMAC-SHA256(rawQueryString, manifest secret)
  *     → respond { proof, secret, confirmation_url } where
  *       proof = HMAC-SHA256(shopId + shopUrl + appName, manifest secret)
- *  2. POST confirmation_url — the shop confirms the minted secret; any 2xx completes it.
+ *  2. POST confirmation_url: the shop confirms the minted secret; any 2xx completes it.
  */
 function appRegistration(): Plugin {
   return {
     name: "meteor-example-app-registration",
     configureServer(server) {
-      // Registered before /authorize — connect matches by prefix, order matters.
+      // Registered before /authorize: connect matches by prefix, order matters.
       server.middlewares.use("/authorize/callback", (_req, res) => {
         res.setHeader("content-type", "application/json");
         res.end("{}");

@@ -36,7 +36,7 @@ const locations = {
 
 async function bootstrap(): Promise<void> {
   // Seed the app's vue-i18n with the host admin's UI locale BEFORE mounting (avoids a
-  // flash of the wrong language) and follow later switches pushed over the Admin SDK —
+  // flash of the wrong language) and follow later switches pushed over the Admin SDK:
   // the canonical i18n setup for an iframe app.
   const { locale, fallbackLocale } = await context.getLocale();
 

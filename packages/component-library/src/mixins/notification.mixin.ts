@@ -4,7 +4,7 @@ export default defineComponent({
   methods: {
     createNotification() {
       // TODO: Implement a general notification system.
-      // NOTE: the default `title` values below are raw snippet keys (`global.default.*`) —
+      // NOTE: the default `title` values below are raw snippet keys (`global.default.*`):
       // an implementation must translate them (host adapter / bundled snippets) before
       // display, or they will render as keys.
       // return Shopware.State.dispatch('notification/createNotification', notification);

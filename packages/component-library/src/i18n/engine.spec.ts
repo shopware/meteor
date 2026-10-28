@@ -20,7 +20,7 @@ describe("i18n engine", () => {
     });
   });
 
-  describe("pluralization (3 forms) — mt-data-table numberOfResults", () => {
+  describe("pluralization (3 forms): mt-data-table numberOfResults", () => {
     const msg = "No results found for | One result found for | {n} results found for";
 
     it("selects the zero form for n=0", () => {
@@ -36,7 +36,7 @@ describe("i18n engine", () => {
     });
   });
 
-  describe("pluralization (2 forms) — mt-data-table itemsSelected", () => {
+  describe("pluralization (2 forms): mt-data-table itemsSelected", () => {
     const msg = "1 item selected | {n} items selected";
 
     it("selects the singular form for n=1", () => {

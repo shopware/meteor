@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: "html",
   expect: {
     // The first cold load transforms the whole linked component-library module
-    // graph in the vite dev server — slower than the 5s default on CI runners.
+    // graph in the vite dev server, slower than the 5s default on CI runners.
     timeout: 15_000,
   },
   use: {

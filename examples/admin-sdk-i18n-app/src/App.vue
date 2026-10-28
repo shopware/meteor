@@ -2,7 +2,7 @@
   <div class="i18n-demo">
     <mt-card
       title="Meteor i18n via the Admin SDK"
-      subtitle="No i18n framework installed — everything below is translated by Meteor's bundled snippets."
+      subtitle="No i18n library installed. Everything below uses Meteor's built-in texts."
     >
       <mt-text as="p">
         Switch the administration language (for example between English and

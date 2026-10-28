@@ -115,7 +115,7 @@ describe.each([
 
     // `@` is vue-i18n's linked-message sigil; depending on the vue-i18n version this
     // either compiles to something else or throws. Either way the adapter must not
-    // crash the render — a throw becomes a miss (undefined) with a dev warning.
+    // crash the render: a throw becomes a miss (undefined) with a dev warning.
     expect(() => adapter.t("mt.card.contact")).not.toThrow();
   });
 
@@ -156,7 +156,7 @@ describe.each([
     const gated = createVueI18nAdapter(i18n);
     const trusting = createVueI18nAdapter(i18n, { skipExistenceCheck: true });
 
-    // te() never consults the missing handler — the gated adapter cannot see it.
+    // te() never consults the missing handler, so the gated adapter cannot see it.
     expect(gated.t("mt.pagination.nextPage")).toBeUndefined();
     expect(trusting.t("mt.pagination.nextPage")).toBe("From the backend");
     expect(trusting.t("mt.pagination.unknown")).toBeUndefined(); // key echo -> miss

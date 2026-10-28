@@ -10,7 +10,7 @@ export interface MeteorI18nPluginOptions {
   adapter?: MeteorI18nAdapter;
   /**
    * Optional overrides / additional languages, keyed by full locale code then by the public
-   * `mt.<component>.<key>` snippet key. Resolved before the bundled defaults — use it to override
+   * `mt.<component>.<key>` snippet key. Resolved before the bundled defaults; use it to override
    * Meteor's wording or add languages it doesn't ship.
    *
    * @example
