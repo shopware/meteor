@@ -94,7 +94,6 @@ import {
   DropdownMenuSub,
 } from "reka-ui";
 // Import global styling
-import MtUser from "./components/mt-user/mt-user.vue";
 import MtApp from "./components/mt-app/mt-app.vue";
 import { useApp, type MtAppContext, type MtAppPanel } from "./components/mt-app/composables/useApp";
 import { useAppRegions, type MtAppRegions } from "./components/mt-app/composables/useAppRegions";
@@ -233,7 +232,6 @@ export {
   MtPagination as SwPagination,
   // @deprecated
   MtSkeletonBar as SwSkeletonBar,
-  MtUser,
   MtApp,
   useApp,
   useAppRegions,

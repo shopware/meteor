@@ -101,5 +101,4 @@ router.isReady().then(() => app.mount("#app"));
 
 - [**Page**](/components/page): for the frame of each page in the content.
 - [**Nav**](/components/nav): for the main navigation in the `navigation` slot.
-- [**User**](/components/user): for the signed-in user, for example below the navigation.
 - [**Theme Provider**](/utilities/components/theme-provider): for theming Meteor components in an application or extension without the shell.
