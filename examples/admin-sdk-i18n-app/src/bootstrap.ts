@@ -20,18 +20,9 @@ void context.subscribeLocale(({ locale: nextLocale }) => {
 
 const app = createApp(App);
 
-app.use(
-  createMeteorI18nPlugin({
-    adapter: {
-      locale,
-      // Never translates anything itself (always returns undefined), so Meteor falls
-      // back to its own bundled en/de texts — this adapter only tells Meteor which
-      // language the admin is on. When your app grows its own texts, keep this
-      // `locale` ref and hand it to vue-i18n (then switch to `createVueI18nAdapter`)
-      // or to your own small dictionary — nothing gets thrown away.
-      t: () => undefined,
-    },
-  }),
-);
+// Meteor renders its own bundled en/de texts in the admin's language. When your app
+// grows its own texts, hand this same `locale` ref to vue-i18n and switch to
+// `createVueI18nAdapter` — nothing gets thrown away.
+app.use(createMeteorI18nPlugin({ locale }));
 
 app.mount("#app");

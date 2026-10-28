@@ -59,6 +59,7 @@ export interface VueI18nAdapterOptions {
    *
    * Costs: every miss walks vue-i18n's full fallback chain and emits its missing-key
    * warnings, and a translation whose text literally equals its own key reads as a miss.
+   * Host texts always win in this mode, even ones found only in the fallback language.
    */
   skipExistenceCheck?: boolean;
 }
@@ -86,10 +87,11 @@ function isDev(): boolean {
  * which is why Composition mode (`legacy: false`) is required: a Legacy-mode instance
  * exposes `locale` as a plain string and Meteor's language would silently freeze.
  *
- * Because `te()` only checks the *active* locale on vue-i18n < 11.3.0 (11.3.0+ walks the
- * fallback chain), a miss is re-probed against the composer's primary `fallbackLocale` —
- * otherwise a host key that exists only in the fallback catalog (e.g. only `en-GB`
- * snippets on a `de-DE` UI) would silently lose to Meteor's bundled snippets.
+ * Lookups are explicit per locale (`te(key, locale)`), which behaves the same in vue-i18n
+ * 9–11: when Meteor asks for one locale, only that locale is checked; otherwise the active
+ * locale and then the primary `fallbackLocale`. So a host key that exists only in the
+ * fallback catalog (e.g. only `en-GB` snippets on a `de-DE` UI) still resolves, but only
+ * after Meteor's own text for the active language.
  *
  * @example
  * // raw vue-i18n
@@ -149,26 +151,22 @@ export function createVueI18nAdapter(
     }
   };
 
-  const probe = (key: string, values?: Record<string, unknown>): string | undefined => {
-    // Cloned because vue-i18n's `escapeParameter` mutates the named object in place.
-    const named = { ...values };
+  // With `legacyKeys`, a miss on `mt.<component>.<rest>` retries the pre-6.0 name
+  // `mt-<component>.<rest>` through the same lookup.
+  const withLegacyKey = (key: string, find: (key: string) => string | undefined) => {
+    const hit = find(key);
+    if (hit !== undefined || !options.legacyKeys || !key.startsWith("mt.")) return hit;
 
-    if (options.skipExistenceCheck) {
-      const result = translate(key, named);
-      // vue-i18n returns the key itself when it has no translation anywhere.
-      return result === key ? undefined : result;
+    const legacyKey = `mt-${key.slice(3)}`;
+    const legacyHit = find(legacyKey);
+    if (legacyHit !== undefined && isDev() && !warnedLegacyKeys.has(key)) {
+      warnedLegacyKeys.add(key);
+      console.warn(
+        `[meteor-i18n] "${key}" resolved through its deprecated key name "${legacyKey}". ` +
+          `Rename the snippet entry to "${key}".`,
+      );
     }
-
-    if (composer.te(key)) return translate(key, named);
-
-    const fallback = primaryFallbackLocale();
-    // The `{ locale }` object form is required: a positional string third argument would
-    // bind vue-i18n's `t(key, defaultMsg)` overload instead.
-    if (fallback && fallback !== toValue(composer.locale) && composer.te(key, fallback)) {
-      return translate(key, named, { locale: fallback });
-    }
-
-    return undefined;
+    return legacyHit;
   };
 
   return {
@@ -176,27 +174,40 @@ export function createVueI18nAdapter(
     // Wrapped rather than passed by reference: vue-i18n's `n` has overloads and relies on
     // its `this` binding.
     ...(composer.n ? { n: (value: number) => composer.n!(value) } : {}),
-    t: (key, values) => {
-      const named = values as Record<string, unknown> | undefined;
+    t: (key, values, lookup) => {
+      // Cloned because vue-i18n's `escapeParameter` mutates the named object in place.
+      const named = { ...values } as Record<string, unknown>;
 
-      const hit = probe(key, named);
-      if (hit !== undefined) return hit;
-
-      if (options.legacyKeys && key.startsWith("mt.")) {
-        const legacyHit = probe(`mt-${key.slice(3)}`, named);
-        if (legacyHit !== undefined) {
-          if (isDev() && !warnedLegacyKeys.has(key)) {
-            warnedLegacyKeys.add(key);
-            console.warn(
-              `[meteor-i18n] "${key}" resolved through its deprecated key name "mt-${key.slice(3)}". ` +
-                `Rename the snippet entry to "${key}".`,
-            );
-          }
-          return legacyHit;
-        }
+      if (options.skipExistenceCheck) {
+        // Without te(), vue-i18n can't look in a single locale, so this mode keeps the
+        // plain host-first lookup. vue-i18n returns the key itself on a miss.
+        return withLegacyKey(key, (k) => {
+          const result = translate(k, named);
+          return result === k ? undefined : result;
+        });
       }
 
-      return undefined;
+      // te(key, locale) with an explicit locale never walks the fallback chain (vue-i18n
+      // 9–11). The `{ locale }` object form is required: a positional string third argument
+      // would bind vue-i18n's `t(key, defaultMsg)` overload instead.
+      const lookupIn = (locale: string) =>
+        withLegacyKey(key, (k) =>
+          composer.te(k, locale) ? translate(k, named, { locale }) : undefined,
+        );
+
+      if (lookup?.locale) return lookupIn(lookup.locale);
+
+      // Active locale, then the primary fallback locale, each looked up explicitly (no
+      // fallback warnings). Last, te(key) covers deeper fallback levels: vue-i18n ≥ 11.3
+      // walks the whole chain there, older versions only check the active locale again.
+      const active = toValue(composer.locale);
+      const fallback = primaryFallbackLocale();
+
+      return (
+        lookupIn(active) ??
+        (fallback && fallback !== active ? lookupIn(fallback) : undefined) ??
+        withLegacyKey(key, (k) => (composer.te(k) ? translate(k, named) : undefined))
+      );
     },
   };
 }

@@ -1,4 +1,4 @@
-import type { Ref, ComputedRef } from "vue";
+import type { Ref, ComputedRef, MaybeRefOrGetter } from "vue";
 
 /**
  * Values for named interpolation inside a snippet, e.g. `t("foo", { count: 3 })`.
@@ -47,6 +47,11 @@ export type MeteorLocaleMessages = Record<string, MeteorMessageTree | undefined>
  *   It MUST return a nullish value (never the key itself) when it has no translation,
  *   so Meteor can fall back to its own bundled snippets. A vue-i18n host implements
  *   this as `te(key) ? t(key, values) : undefined`.
+ * - When Meteor passes `options.locale`, `t` should look only in that locale (no
+ *   fallback). Meteor first asks for the active locale, then uses its own texts for that
+ *   language, and only then asks again without a locale. That keeps a host text that
+ *   exists only in its fallback language from replacing Meteor's own translation.
+ *   Adapters that ignore `options` still work; their hits always win.
  * - REACTIVITY: on a hit, components re-render on locale change only if `t` itself reads
  *   a reactive locale source internally (vue-i18n's composer does this automatically).
  *   A hand-written adapter over a plain dictionary must read its locale ref *inside* `t`
@@ -60,7 +65,11 @@ export type MeteorLocaleMessages = Record<string, MeteorMessageTree | undefined>
  */
 export interface MeteorI18nAdapter {
   locale: Ref<string> | ComputedRef<string> | (() => string);
-  t: (key: string, values?: MeteorInterpolationValues) => string | undefined | null;
+  t: (
+    key: string,
+    values?: MeteorInterpolationValues,
+    options?: { locale?: string },
+  ) => string | undefined | null;
   n?: (value: number) => string;
 }
 
@@ -79,5 +88,5 @@ export interface MeteorI18nInstance {
    */
   messages?: MeteorLocaleMessages;
   /** Locale source used only when no adapter is provided. */
-  fallbackLocale: Ref<string>;
+  locale: MaybeRefOrGetter<string>;
 }

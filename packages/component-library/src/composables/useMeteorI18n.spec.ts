@@ -1,9 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
-import { computed, defineComponent, h, ref, type Plugin } from "vue";
+import { computed, defineComponent, h, nextTick, ref, type Plugin } from "vue";
 import { mount } from "@vue/test-utils";
 import { useMeteorI18n, type MeteorI18nComposer, type UseMeteorI18nOptions } from "./useMeteorI18n";
 import { createMeteorI18nPlugin } from "@/i18n/plugin";
-import { defaultMeteorI18n } from "@/i18n/injection";
 import type { MeteorI18nAdapter } from "@/i18n/types";
 
 // A component with a namespace + short bundled keys (the common case).
@@ -43,7 +42,7 @@ describe("useMeteorI18n", () => {
     expect(t("missing")).toBe("mt.pagination.missing");
   });
 
-  it("switches language via the writable locale and uses the fallback chain (de bundled)", () => {
+  it("renders in the plugin's locale and uses the fallback chain (de bundled)", () => {
     const { t, locale } = setupComposable(createMeteorI18nPlugin({ locale: "de-DE" }));
 
     expect(locale.value).toBe("de");
@@ -108,9 +107,46 @@ describe("useMeteorI18n", () => {
     });
   });
 
-  it("exposes a default instance so components work with no provider", () => {
-    expect(defaultMeteorI18n.adapter).toBeUndefined();
-    expect(defaultMeteorI18n.fallbackLocale.value).toBe("en");
+  it("finds the plugin installed by another copy of Meteor", async () => {
+    // e.g. an Admin plugin that bundles its own Meteor copy, rendered inside the Admin's app
+    vi.resetModules();
+    const otherCopy = await import("@/i18n/plugin");
+    const adapter: MeteorI18nAdapter = { locale: ref("de-DE"), t: () => undefined };
+
+    const { t } = setupComposable(otherCopy.createMeteorI18nPlugin({ adapter }));
+
+    expect(t("firstPage")).toBe("Erste Seite");
+  });
+
+  it("renders bundled English when no plugin is installed", () => {
+    const { t, locale } = setupComposable();
+
+    expect(locale.value).toBe("en");
+    expect(t("firstPage")).toBe("First page");
+  });
+
+  it("follows a ref passed as the plugin's locale", async () => {
+    const appLocale = ref("en-GB");
+    const wrapper = mount(
+      defineComponent({
+        setup() {
+          const { t } = useMeteorI18n(paginationOptions);
+          return () => h("span", t("firstPage"));
+        },
+      }),
+      { global: { plugins: [createMeteorI18nPlugin({ locale: appLocale })] } },
+    );
+
+    expect(wrapper.text()).toBe("First page");
+
+    appLocale.value = "de-DE";
+    await nextTick();
+
+    expect(wrapper.text()).toBe("Erste Seite");
+  });
+
+  it("throws a clear error when called outside a component's setup", () => {
+    expect(() => useMeteorI18n()).toThrow("must be called inside a component's setup()");
   });
 
   describe("ti", () => {
@@ -184,20 +220,6 @@ describe("useMeteorI18n", () => {
       expect(rendered.value).toBe("First page (host)");
       hostLocale.value = "de";
       expect(rendered.value).toBe("Erste Seite (host)");
-    });
-  });
-
-  describe("locale writability", () => {
-    it("warns and ignores locale writes while an adapter is present", () => {
-      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-      const adapter: MeteorI18nAdapter = { locale: ref("en-GB"), t: () => undefined };
-      const { locale } = setupComposable(createMeteorI18nPlugin({ adapter }));
-
-      locale.value = "de";
-
-      expect(locale.value).toBe("en");
-      expect(warn).toHaveBeenCalledWith(expect.stringContaining("controlled by the host adapter"));
-      warn.mockRestore();
     });
   });
 });

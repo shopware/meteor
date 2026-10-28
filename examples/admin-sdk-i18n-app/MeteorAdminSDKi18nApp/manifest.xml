@@ -3,7 +3,7 @@
     <meta>
         <name>MeteorAdminSDKi18nApp</name>
         <label>Meteor Admin SDK i18n Example App</label>
-        <description>Shows Meteor components following the host admin's language via the Admin SDK adapter, with no i18n framework in the app.</description>
+        <description>Shows Meteor components following the host admin's language via the Admin SDK locale, with no i18n framework in the app.</description>
         <author>Shopware AG</author>
         <copyright>(c) by Shopware AG</copyright>
         <version>1.0.0</version>

@@ -1,4 +1,4 @@
-import { ref, type App, type Plugin } from "vue";
+import type { App, MaybeRefOrGetter, Plugin } from "vue";
 import { meteorI18nInjectionKey } from "./injection";
 import type { MeteorI18nAdapter, MeteorLocaleMessages } from "./types";
 
@@ -23,9 +23,14 @@ export interface MeteorI18nPluginOptions {
    */
   messages?: MeteorLocaleMessages;
   /**
-   * Initial locale, used only when no `adapter` is provided (default `"en"`).
+   * The language Meteor renders in when no `adapter` is provided (default `"en"`).
+   * Pass a ref or getter to switch languages at runtime.
+   *
+   * @example
+   * const locale = ref("de-DE");
+   * app.use(createMeteorI18nPlugin({ locale }));
    */
-  locale?: string;
+  locale?: MaybeRefOrGetter<string>;
 }
 
 /**
@@ -45,7 +50,7 @@ export function createMeteorI18nPlugin(options: MeteorI18nPluginOptions = {}): P
       app.provide(meteorI18nInjectionKey, {
         adapter: options.adapter,
         messages: options.messages,
-        fallbackLocale: ref(options.locale ?? "en"),
+        locale: options.locale ?? "en",
       });
     },
   };

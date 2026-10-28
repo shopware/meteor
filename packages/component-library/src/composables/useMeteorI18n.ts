@@ -1,20 +1,9 @@
-import { computed, inject, toValue, type WritableComputedRef } from "vue";
+import { computed, hasInjectionContext, inject, toValue, type ComputedRef } from "vue";
 import { defaultMeteorI18n, meteorI18nInjectionKey } from "@/i18n/injection";
-import { languageOf, localeChain } from "@/i18n/locale";
+import { DEFAULT_LOCALE, languageOf, localeChain } from "@/i18n/locale";
 import { render } from "@/i18n/engine";
 import { lookupNested } from "@/i18n/lookup";
 import type { MeteorInterpolationValues, MeteorMessages } from "@/i18n/types";
-
-// try/catch instead of a typeof guard: bundlers statically replace the exact token
-// `process.env.NODE_ENV`, and in browsers without that replacement (where `process`
-// is not declared) the reference throws — it must never crash the consumer.
-function isDev(): boolean {
-  try {
-    return process.env.NODE_ENV !== "production";
-  } catch {
-    return false;
-  }
-}
 
 // Intl.NumberFormat construction is expensive; one formatter per locale, shared by all
 // composable instances.
@@ -57,10 +46,12 @@ export interface MeteorI18nComposer {
    * Translate a snippet key (relative to `namespace` if one was given).
    *
    * Resolution order for the resulting public key:
-   *   1. host adapter (if it returns a non-nullish string)
-   *   2. app-wide override registry (`createMeteorI18nPlugin({ messages })`), per locale fallback chain
-   *   3. the component's bundled snippet, per locale fallback chain
-   *   4. the public key itself
+   *   1. host adapter, in the active locale only
+   *   2. app-wide override registry (`createMeteorI18nPlugin({ messages })`), then the
+   *      component's bundled snippet, for the active language (e.g. `de-DE` -> `de`)
+   *   3. host adapter, including its fallback locale
+   *   4. override registry, then bundled snippet, in English
+   *   5. the public key itself
    */
   t: (key: string, values?: MeteorInterpolationValues) => string;
   /**
@@ -73,19 +64,26 @@ export interface MeteorI18nComposer {
    * otherwise `Intl.NumberFormat` with the adapter's (or fallback) locale.
    */
   n: (value: number) => string;
-  /** The current resolved language (`"en"`, `"de"`, or whatever the host reports). */
-  locale: WritableComputedRef<string>;
+  /**
+   * The current language (`"en"`, `"de"`, or whatever the host reports). Read-only: change
+   * the language through the host adapter or the plugin's `locale` option.
+   */
+  locale: ComputedRef<string>;
 }
 
 /**
  * Meteor's translation-solution-agnostic i18n composable.
  */
 export function useMeteorI18n(options: UseMeteorI18nOptions = {}): MeteorI18nComposer {
+  if (!hasInjectionContext()) {
+    throw new Error("[meteor-i18n] useMeteorI18n() must be called inside a component's setup().");
+  }
+
   const instance = inject(meteorI18nInjectionKey, defaultMeteorI18n);
   const { namespace, messages } = options;
 
   const rawLocale = computed(() =>
-    instance.adapter ? toValue(instance.adapter.locale) : instance.fallbackLocale.value,
+    instance.adapter ? toValue(instance.adapter.locale) : toValue(instance.locale),
   );
   const chain = computed(() => localeChain(rawLocale.value));
 
@@ -93,26 +91,33 @@ export function useMeteorI18n(options: UseMeteorI18nOptions = {}): MeteorI18nCom
     return namespace ? `${namespace}.${key}` : key;
   }
 
+  // The override registry (public key) wins over the component's bundled snippet (short key).
+  function ownSnippet(loc: string, key: string, publicKey: string): string | undefined {
+    return lookupNested(instance.messages?.[loc], publicKey) ?? lookupNested(messages?.[loc], key);
+  }
+
   function resolve(key: string, values?: MeteorInterpolationValues): string | undefined {
     const publicKey = publicKeyOf(key);
+    const adapter = instance.adapter;
+    // The adapter returns nullish on a miss.
+    const hosted = (locale?: string) => adapter?.t(publicKey, values, { locale }) ?? undefined;
 
-    // 1. Host adapter — a true hit only (the adapter returns nullish on a miss).
-    if (instance.adapter) {
-      const hosted = instance.adapter.t(publicKey, values);
-      if (hosted !== undefined && hosted !== null) return hosted;
+    // The same order vue-i18n walks one merged catalog in: the host and Meteor in the
+    // active language first, then the host's fallback language, then Meteor's English.
+    const hit = hosted(rawLocale.value);
+    if (hit !== undefined) return hit;
+
+    const languageChain = chain.value.filter((loc) => loc !== DEFAULT_LOCALE);
+    for (const loc of languageChain) {
+      const own = ownSnippet(loc, key, publicKey);
+      if (own !== undefined) return render(own, values);
     }
 
-    // 2./3. Override registry (public key) then the component's bundled snippet (relative key),
-    // walking the locale fallback chain (region -> language -> English).
-    for (const loc of chain.value) {
-      const override = lookupNested(instance.messages?.[loc], publicKey);
-      if (override !== undefined) return render(override, values);
+    const fallbackHit = hosted();
+    if (fallbackHit !== undefined) return fallbackHit;
 
-      const bundled = messages ? lookupNested(messages[loc], key) : undefined;
-      if (bundled !== undefined) return render(bundled, values);
-    }
-
-    return undefined;
+    const english = ownSnippet(DEFAULT_LOCALE, key, publicKey);
+    return english !== undefined ? render(english, values) : undefined;
   }
 
   function t(key: string, values?: MeteorInterpolationValues): string {
@@ -131,21 +136,7 @@ export function useMeteorI18n(options: UseMeteorI18nOptions = {}): MeteorI18nCom
     return numberFormatterFor(rawLocale.value).format(value);
   }
 
-  const locale = computed<string>({
-    get: () => languageOf(rawLocale.value),
-    set: (value) => {
-      if (instance.adapter) {
-        if (isDev()) {
-          console.warn(
-            "[meteor-i18n] The locale is controlled by the host adapter; writing to `locale` is ignored. " +
-              "Change the language through the host's i18n solution instead.",
-          );
-        }
-        return;
-      }
-      instance.fallbackLocale.value = value;
-    },
-  });
+  const locale = computed(() => languageOf(rawLocale.value));
 
   return { t, ti, n, locale };
 }
