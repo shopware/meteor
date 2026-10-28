@@ -4,15 +4,12 @@ import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import {
   MtNav,
-  MtUser,
   type NavItem,
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
-import { useCurrentUser } from "../composables/useCurrentUser";
 
 const { t } = useI18n();
 const route = useRoute();
-const user = useCurrentUser();
 
 /** The menu of the Shopware Administration, with the modules this playground has. */
 const sections = computed<NavSection[]>(() => [
@@ -71,13 +68,6 @@ function isActive(item: NavItem) {
 <template>
   <div class="app-nav">
     <mt-nav class="app-nav__menu" :sections="sections" :is-active="isActive" />
-
-    <div class="app-nav__footer">
-      <mt-user
-        :name="`${user.firstName} ${user.lastName}`"
-        :subtitle="user.email"
-      />
-    </div>
   </div>
 </template>
 
@@ -92,9 +82,5 @@ function isActive(item: NavItem) {
 .app-nav__menu {
   flex: 1;
   min-height: 0;
-}
-
-.app-nav__footer {
-  padding: var(--scale-size-16);
 }
 </style>

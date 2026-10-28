@@ -23,7 +23,6 @@ import {
   MtTabs,
   MtText,
   MtTextarea,
-  MtUser,
   useSnackbar,
 } from "@shopware-ag/meteor-component-library";
 import type { Address, Order, OrderDocument } from "../../shared/types";
@@ -423,10 +422,10 @@ function removeDocument(document: OrderDocument) {
             >
               {{ t("orders.details.customer") }}
             </mt-text>
-            <mt-user
-              :name="`${order.customer.firstName} ${order.customer.lastName}`"
-              :subtitle="order.customer.email"
-            />
+            <mt-text size="xs">
+              {{ order.customer.firstName }} {{ order.customer.lastName }}
+            </mt-text>
+            <mt-text size="xs">{{ order.customer.email }}</mt-text>
             <mt-text size="xs">{{ order.customer.phone }}</mt-text>
           </section>
 
