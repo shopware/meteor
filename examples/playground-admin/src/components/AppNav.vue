@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { MtLink, MtUser } from "@shopware-ag/meteor-component-library";
+import { MtLink } from "@shopware-ag/meteor-component-library";
 
 const { t } = useI18n();
 
@@ -20,10 +20,6 @@ const routes = [
         }}</mt-link>
       </li>
     </ul>
-
-    <div class="app-nav__footer">
-      <mt-user name="Mila Hoffmann" subtitle="mila.hoffmann@example.com" />
-    </div>
   </div>
 </template>
 
@@ -42,11 +38,6 @@ const routes = [
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.app-nav__footer {
-  margin-block-start: auto;
-  padding-block-start: var(--scale-size-16);
 }
 
 .app-nav__link.router-link-exact-active {
