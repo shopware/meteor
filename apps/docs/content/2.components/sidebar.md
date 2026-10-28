@@ -36,7 +36,7 @@ Put an `mt-nav` into the default slot, a [**Brand**](/components/brand) into the
 #dont
 
 - Do not put page content or forms into the sidebar.
-- Do not wrap the navigation in a `<nav>` of its own, as the sidebar already is the navigation landmark.
+- Do not place the sidebar inside another landmark, such as `<main>` or `<section>`.
 
 ::
 
@@ -49,6 +49,6 @@ Put an `mt-nav` into the default slot, a [**Brand**](/components/brand) into the
 
 ## Accessibility
 
-- **Sidebar** is the navigation landmark of the page, named "Main navigation" in the language of the app. Use `aria-label` to give it another name.
-- An `mt-nav` inside it adds no landmark of its own, so screen readers find one navigation that holds the logo, the links and the user menu.
+- **Sidebar** is an `<aside>`, which screen readers announce as a complementary landmark. It has no name by default. Use `aria-label` to name it when the page has another `<aside>`, so screen reader users can tell them apart.
+- The `mt-nav` inside it is the navigation landmark, named "Main" ("Hauptmenü" in German).
 - Header and footer of the sidebar are not landmarks of their own.

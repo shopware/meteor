@@ -106,12 +106,6 @@ export interface NavContext {
 
 export const NAV_CONTEXT: InjectionKey<NavContext> = Symbol("mt-nav");
 
-/**
- * Provided by a component that is the navigation landmark itself, such as `mt-sidebar`. The
- * `mt-nav` inside it then renders without a landmark of its own.
- */
-export const NAV_LANDMARK: InjectionKey<true> = Symbol("mt-nav-landmark");
-
 export function useNavContext(): NavContext {
   // Returns the state of the surrounding mt-nav, or throws if rendered outside one
   const context = inject(NAV_CONTEXT, null);

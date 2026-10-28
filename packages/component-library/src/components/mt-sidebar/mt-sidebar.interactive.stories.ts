@@ -75,12 +75,14 @@ export const VisualTestScrolledToBottom: MtSidebarStory = {
   },
 };
 
-export const TestExposesNavigationLandmark: MtSidebarStory = {
-  name: "Is the only navigation landmark, named Main navigation",
+export const TestExposesLandmarks: MtSidebarStory = {
+  name: "Is a complementary landmark that holds the navigation, named Main",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const navigation = canvas.getByRole("navigation", { name: "Main" });
+
+    expect(canvas.getByRole("complementary")).toContainElement(navigation);
     expect(canvas.getAllByRole("navigation")).toHaveLength(1);
-    expect(canvas.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
   },
 };
 
@@ -91,7 +93,7 @@ export const TestUsesCustomAriaLabel: MtSidebarStory = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByRole("navigation", { name: "Administration" })).toBeVisible();
+    expect(canvas.getByRole("complementary", { name: "Administration" })).toBeVisible();
   },
 };
 

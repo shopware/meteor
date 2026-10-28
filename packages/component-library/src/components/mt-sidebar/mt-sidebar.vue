@@ -1,5 +1,5 @@
 <template>
-  <nav class="mt-sidebar" :style="{ '--mt-sidebar-width': width }" :aria-label="label">
+  <aside class="mt-sidebar" :style="{ '--mt-sidebar-width': width }" :aria-label="ariaLabel">
     <header
       v-if="hasSlotContent($slots.header) || hasSlotContent($slots.actions)"
       class="mt-sidebar__header"
@@ -20,25 +20,24 @@
     <footer v-if="hasSlotContent($slots.footer)" class="mt-sidebar__footer">
       <slot name="footer" />
     </footer>
-  </nav>
+  </aside>
 </template>
 
 <script setup lang="ts">
-import { computed, provide } from "vue";
-import { useI18n } from "vue-i18n";
-import { NAV_LANDMARK } from "../mt-nav/_internal/mt-nav-context";
 import { hasSlotContent } from "@/utils/slot";
 
 /**
- * The main navigation of an application: a fixed header, the navigation, which scrolls on its
- * own, and a fixed footer. It is the navigation landmark, so an `mt-nav` inside it adds none.
+ * The frame around the main navigation of an application: a fixed header, the navigation, which
+ * scrolls on its own, and a fixed footer. It is a complementary landmark (`<aside>`), and the
+ * `mt-nav` inside it is the navigation landmark.
  *
  * @experimental The API may still change in a future release.
  */
-const props = withDefaults(
+withDefaults(
   defineProps<{
     /**
-     * Accessible name of the navigation landmark. Defaults to the translated "Main navigation".
+     * Accessible name of the sidebar landmark. Only needed when the page has another `<aside>`,
+     * so screen reader users can tell them apart.
      */
     ariaLabel?: string;
     /**
@@ -71,21 +70,6 @@ defineSlots<{
    */
   footer?: null;
 }>();
-
-const { t } = useI18n({
-  messages: {
-    en: {
-      label: "Main navigation",
-    },
-    de: {
-      label: "Hauptnavigation",
-    },
-  },
-});
-
-const label = computed(() => props.ariaLabel ?? t("label"));
-
-provide(NAV_LANDMARK, true);
 </script>
 
 <style scoped>

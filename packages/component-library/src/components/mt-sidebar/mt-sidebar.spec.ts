@@ -4,10 +4,10 @@ import MtSidebar from "./mt-sidebar.vue";
 import MtNav from "../mt-nav/mt-nav.vue";
 
 describe("mt-sidebar", () => {
-  it("renders a navigation landmark named Main navigation by default", async () => {
+  it("renders a complementary landmark without a name by default", async () => {
     render(MtSidebar);
 
-    expect(screen.getByRole("navigation", { name: "Main navigation" })).toBeInTheDocument();
+    expect(screen.getByRole("complementary")).not.toHaveAccessibleName();
   });
 
   it("uses the given aria label", async () => {
@@ -17,10 +17,10 @@ describe("mt-sidebar", () => {
       },
     });
 
-    expect(screen.getByRole("navigation", { name: "Administration" })).toBeInTheDocument();
+    expect(screen.getByRole("complementary", { name: "Administration" })).toBeInTheDocument();
   });
 
-  it("stays the only navigation landmark with an mt-nav inside", async () => {
+  it("holds the navigation landmark of an mt-nav inside", async () => {
     render(MtSidebar, {
       global: {
         components: { MtNav },
@@ -30,22 +30,10 @@ describe("mt-sidebar", () => {
       },
     });
 
-    expect(screen.getAllByRole("navigation")).toHaveLength(1);
-    expect(screen.getByRole("navigation", { name: "Main navigation" })).toContainElement(
-      screen.getByRole("link", { name: "Dashboard" }),
-    );
-  });
+    const navigation = screen.getByRole("navigation", { name: "Main" });
 
-  it("renders the navigation in the default slot", async () => {
-    render(MtSidebar, {
-      slots: {
-        default: '<a href="#">Dashboard</a>',
-      },
-    });
-
-    expect(screen.getByRole("navigation")).toContainElement(
-      screen.getByRole("link", { name: "Dashboard" }),
-    );
+    expect(screen.getByRole("complementary")).toContainElement(navigation);
+    expect(navigation).toContainElement(screen.getByRole("link", { name: "Dashboard" }));
   });
 
   it("renders the header slot inside a header element", async () => {
