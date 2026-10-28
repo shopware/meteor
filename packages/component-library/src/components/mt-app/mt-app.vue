@@ -60,7 +60,6 @@
         ref="navigationRegion"
         panel="navigation"
         :controller="appContext"
-        as="div"
         side="start"
         :label="labels.navigation"
         :close-label="t('close', { label: labels.navigation })"
@@ -85,7 +84,6 @@
         ref="sidebarRegion"
         panel="sidebar"
         :controller="appContext"
-        as="aside"
         side="end"
         :label="labels.sidebar"
         :close-label="t('close', { label: labels.sidebar })"
@@ -172,10 +170,10 @@ import type { MtAppRegions } from "./composables/useAppRegions";
  * breakpoint, and provides the theme, the future flags and the snackbar host to
  * everything inside. Use one shell per application.
  *
- * - The sidebar renders as an `<aside>` landmark, so its slot shouldn't add another one. The
- *   navigation slot brings its own `<nav>`, such as `mt-nav`. The labels name the sidebar landmark
- *   and, in the mobile layout, the drawers and their triggers. The defaults are translated for
- *   English and German; pass both labels in other languages.
+ * - The navigation and the sidebar add no landmark of their own, so their slots bring one, such as
+ *   `mt-nav` or an `<aside>`. The labels name the drawers and their triggers in the mobile
+ *   layout. The defaults are translated for English and German; pass both labels in other
+ *   languages.
  * - Components inside the shell, such as pages, read and control it with `useApp()`. In the
  *   component that renders `<mt-app>`, use the props of the `header` slot or a template ref.
  * - A route hides regions with `meta: { mtAppRegions: { header: false } }`, and a page toggles them
@@ -213,7 +211,10 @@ const props = withDefaults(
      * to "Navigation".
      */
     navigationLabel?: string;
-    /** The accessible name of the sidebar, such as "Assistant". Defaults to "Sidebar". */
+    /**
+     * The accessible name of the sidebar drawer and its trigger in the mobile layout, such as
+     * "Assistant". Defaults to "Sidebar".
+     */
     sidebarLabel?: string;
   }>(),
   {

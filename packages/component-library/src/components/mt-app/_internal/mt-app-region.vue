@@ -1,16 +1,14 @@
 <template>
-  <component
-    :is="as"
+  <div
     ref="inline"
     class="mt-app__region"
     :class="`mt-app__region--${panel}`"
-    :aria-label="as === 'div' ? undefined : label"
     :hidden="hidden || isMobile || undefined"
   >
     <div ref="host" class="mt-app__region-content">
       <slot />
     </div>
-  </component>
+  </div>
 
   <mt-drawer-root
     v-if="isMobile"
@@ -56,26 +54,21 @@ import MtDrawerClose from "@/components/_internal/mt-drawer/mt-drawer-close.vue"
 import type { PanelController } from "../composables/useAppPanels";
 
 /**
- * One panel of the shell or of a page: an element next to the content in the desktop layout,
- * usually a landmark, and a drawer in the mobile layout. The slot content renders once into a host
- * element that moves between both places, so its state survives layout changes and the server
- * markup matches the first client render (a disabled `<Teleport>` can't be hydrated and enabled
- * reliably).
+ * One panel of the shell or of a page: an element next to the content in the desktop layout and a
+ * drawer in the mobile layout. It adds no landmark, so the slot content brings its own, such as
+ * `mt-nav` or an `<aside>`. The slot content renders once into a host element that moves
+ * between both places, so its state survives layout changes and the server markup matches the
+ * first client render (a disabled `<Teleport>` can't be hydrated and enabled reliably).
  */
 const props = defineProps<{
   panel: string;
   /** The layout the panel belongs to, which owns its open state. */
   controller: PanelController;
-  /**
-   * The element next to the content: a landmark, or a plain `div` when the slot content brings its
-   * own landmark, such as `mt-nav`.
-   */
-  as: "nav" | "aside" | "section" | "div";
   /** The edge the drawer slides in from. */
   side: "start" | "end";
   /** The id of the drawer, which the header trigger points to with `aria-controls`. */
   id: string;
-  /** The accessible name of the landmark, if `as` isn't `div`, and of the drawer. */
+  /** The accessible name of the drawer. */
   label: string;
   /** The accessible name of the drawer's close button. */
   closeLabel: string;

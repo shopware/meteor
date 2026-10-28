@@ -6,11 +6,11 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div class="app-sidebar">
+  <aside class="app-sidebar" :aria-label="t('sidebar.label')">
     <mt-text size="xs" color="color-text-secondary-default">{{
       t("sidebar.label")
     }}</mt-text>
-  </div>
+  </aside>
 </template>
 
 <style scoped>

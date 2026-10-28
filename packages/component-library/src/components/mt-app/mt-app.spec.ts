@@ -87,7 +87,7 @@ const allSlots = {
   navigation:
     '<nav aria-label="Main"><a href="/orders">Orders</a><button>Start action</button></nav>',
   content: "<p>Main content</p><button>Content action</button>",
-  sidebar: "<div><button>End action</button></div>",
+  sidebar: '<aside aria-label="Details"><button>End action</button></aside>',
 };
 
 type Slots = Partial<Record<keyof typeof allSlots, unknown>>;
@@ -228,7 +228,7 @@ describe("mt-app", () => {
   });
 
   describe("regions", () => {
-    it("renders a landmark per slot, except the navigation that brings its own", async () => {
+    it("renders the header and the content as landmarks, while the panels bring their own", async () => {
       // ACT
       await renderApp();
 
@@ -237,9 +237,19 @@ describe("mt-app", () => {
       expect(screen.getByRole("link", { name: "Orders" })).toBeVisible();
       expect(screen.getAllByRole("navigation")).toHaveLength(1);
       expect(screen.getByRole("main")).toHaveTextContent("Main content");
-      expect(screen.getByRole("complementary", { name: "Sidebar" })).toHaveTextContent(
+      expect(screen.getAllByRole("complementary")).toHaveLength(1);
+      expect(screen.getByRole("complementary", { name: "Details" })).toHaveTextContent(
         "End action",
       );
+    });
+
+    it("adds no landmark around the sidebar content", async () => {
+      // ACT
+      await renderApp({ slots: { content: allSlots.content, sidebar: "<p>Sidebar content</p>" } });
+
+      // ASSERT
+      expect(screen.getByText("Sidebar content")).toBeVisible();
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
     });
 
     it("lets only content fill the shell without a frame", async () => {
@@ -339,7 +349,7 @@ describe("mt-app", () => {
       // ASSERT
       expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
       expect(screen.getByRole("link", { name: "Orders" })).toBeVisible();
-      expect(screen.getByRole("complementary", { name: "Sidebar" })).toBeInTheDocument();
+      expect(screen.getByRole("complementary", { name: "Details" })).toBeInTheDocument();
     });
   });
 
@@ -628,7 +638,7 @@ describe("mt-app", () => {
       await userEvent.click(screen.getByRole("button", { name: "Toggle sidebar" }));
 
       // ASSERT
-      expect(screen.getByRole("complementary", { name: "Sidebar" })).toBeInTheDocument();
+      expect(screen.getByRole("complementary", { name: "Details" })).toBeInTheDocument();
     });
 
     it("opens and closes the drawers in the mobile layout", async () => {
