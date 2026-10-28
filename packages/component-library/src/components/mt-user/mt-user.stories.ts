@@ -16,7 +16,7 @@ const meta: MtUserMeta = {
   args: {
     name: "Mila Hoffmann",
     subtitle: "mila.hoffmann@example.com",
-    avatarOnly: false,
+    compact: false,
   },
   render: (args) => ({
     components: { MtUser },
@@ -27,7 +27,7 @@ const meta: MtUserMeta = {
           :name="args.name"
           :subtitle="args.subtitle"
           :image-url="args.imageUrl"
-          :avatar-only="args.avatarOnly"
+          :compact="args.compact"
         />
       </div>`,
   }),

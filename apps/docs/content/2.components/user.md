@@ -20,18 +20,11 @@ import { MtUser } from "@shopware-ag/meteor-component-library";
 
 ## Examples
 
-### Avatar only
+### Compact
 
-`avatar-only` hides the name and the subtitle visually, for example in a collapsed navigation. The `suffix` slot stays visible.
+`compact` hides the name and the subtitle visually, for example in a collapsed navigation.
 
-::component-example{name="user-avatar-only-example"}
-::
-
-### With an action
-
-The `suffix` slot holds trailing content, such as a menu trigger.
-
-::component-example{name="user-suffix-example"}
+::component-example{name="user-compact-example"}
 ::
 
 ## API reference
@@ -44,11 +37,10 @@ The `suffix` slot holds trailing content, such as a menu trigger.
 #do
 
 - Keep the subtitle to one short piece of information, such as a role or an email address.
-- Give an icon-only action in the `suffix` slot an accessible name.
 
 #dont
 
-- Do not put several interactive elements into **User**; add one action in the `suffix` slot.
+- Do not build your own user menu from **User**. Use [**User Menu**](/components/user-menu) instead.
 
 ::
 
@@ -60,7 +52,7 @@ The `suffix` slot holds trailing content, such as a menu trigger.
 ## Accessibility
 
 - The avatar is hidden from assistive technology, because the name is shown as text next to it.
-- With `avatar-only`, the name and the subtitle are hidden visually but stay available to assistive technology.
+- With `compact`, the name and the subtitle are hidden visually but stay available to assistive technology.
 
 ## Related components
 

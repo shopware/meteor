@@ -21,21 +21,10 @@ describe("mt-user", () => {
 
   it("keeps the name available to assistive technology when only the avatar is shown", () => {
     // ACT
-    const { container } = render(MtUser, { props: { name: "Mila Hoffmann", avatarOnly: true } });
+    const { container } = render(MtUser, { props: { name: "Mila Hoffmann", compact: true } });
 
     // ASSERT
-    expect(container.querySelector(".mt-user")).toHaveClass("mt-user--avatar-only");
+    expect(container.querySelector(".mt-user")).toHaveClass("mt-user--compact");
     expect(screen.getByText("Mila Hoffmann").closest("[aria-hidden]")).toBeNull();
-  });
-
-  it("renders the suffix slot", () => {
-    // ACT
-    render(MtUser, {
-      props: { name: "Mila Hoffmann" },
-      slots: { suffix: "<button>Account menu</button>" },
-    });
-
-    // ASSERT
-    expect(screen.getByRole("button", { name: "Account menu" })).toBeVisible();
   });
 });

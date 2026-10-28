@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-user" :class="{ 'mt-user--avatar-only': avatarOnly }">
+  <div class="mt-user" :class="{ 'mt-user--compact': compact }">
     <mt-avatar
       class="mt-user__avatar"
       size="s"
@@ -24,10 +24,6 @@
         {{ subtitle }}
       </mt-text>
     </span>
-
-    <span v-if="hasSlotContent(slots.suffix)" class="mt-user__suffix">
-      <slot name="suffix" />
-    </span>
   </div>
 </template>
 
@@ -35,7 +31,6 @@
 import { computed } from "vue";
 import MtAvatar from "@/components/mt-avatar/mt-avatar.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
-import { hasSlotContent } from "@/utils/slot";
 
 /**
  * A user shown as avatar, name and an optional secondary line, for example in a
@@ -53,21 +48,16 @@ const props = withDefaults(
     imageUrl?: string;
     /**
      * Hides the name and the subtitle visually, for example in a collapsed sidebar. They stay
-     * available to assistive technology, and the `suffix` slot stays visible.
+     * available to assistive technology.
      */
-    avatarOnly?: boolean;
+    compact?: boolean;
   }>(),
   {
     subtitle: undefined,
     imageUrl: undefined,
-    avatarOnly: false,
+    compact: false,
   },
 );
-
-const slots = defineSlots<{
-  /** Trailing content, such as a menu trigger or an action. */
-  suffix?(): unknown;
-}>();
 
 const initials = computed(() => {
   const words = props.name.trim().split(/\s+/).filter(Boolean);
@@ -108,13 +98,7 @@ const initials = computed(() => {
   white-space: nowrap;
 }
 
-.mt-user__suffix {
-  display: flex;
-  flex: none;
-  align-items: center;
-}
-
-.mt-user--avatar-only .mt-user__text {
+.mt-user--compact .mt-user__text {
   position: absolute;
   width: var(--scale-size-1);
   height: var(--scale-size-1);
