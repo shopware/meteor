@@ -46,7 +46,7 @@ app.use(i18n);
 app.use(createMeteorI18nPlugin({ adapter: createVueI18nAdapter(i18n) }));
 ```
 
-Apps without vue-i18n, other translation libraries and changing Meteor's texts are covered in the [Internationalization docs](https://meteor.shopware.com/documentation/getting-started/internationalization).
+Shopware apps & services always need this step, even without texts of their own: Meteor components in an app's iframe don't follow the Administration's language on their own. Apps without vue-i18n, other translation libraries and changing Meteor's texts are covered in the [Internationalization docs](https://meteor.shopware.com/documentation/getting-started/internationalization).
 
 **Upgrading from Meteor 5?** Add the plugin as shown above, otherwise Meteor components stay English while your app switches language. If you import `vue-i18n` without declaring it in your `package.json`, add it there: Meteor no longer installs it.
 
