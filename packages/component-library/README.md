@@ -56,9 +56,9 @@ app.use(createMeteorI18nPlugin({ adapter: createVueI18nAdapter(i18n) }));
 
 Any other solution works too — just provide an adapter (`{ locale, t, n? }`) whose `t` returns `undefined` on a miss and reads a reactive locale inside the call.
 
-Iframe apps in the Shopware Admin drive the same vue-i18n instance from the Admin SDK's locale (`context.getLocale()` / `context.subscribeLocale()`). An app with no texts of its own at all (rare) doesn't need an i18n framework — an adapter is just `{ locale, t }`; see the SDK locale recipe in the [Internationalization docs](https://meteor.shopware.com/documentation/getting-started/internationalization).
+No translation library? Pass the language as a ref: `createMeteorI18nPlugin({ locale })`. Iframe apps in the Shopware Admin fill it (or their vue-i18n instance) from the Admin SDK (`context.getLocale()` / `context.subscribeLocale()`); see the [Internationalization docs](https://meteor.shopware.com/documentation/getting-started/internationalization).
 
-To **override** Meteor's wording or **add a language**, target the public snippet keys (`mt.<component>.<key>`, e.g. `mt.pagination.nextPage`) — either through your host translations (host-first wins) or via `createMeteorI18nPlugin({ messages })`. See the developer docs for details.
+To **override** Meteor's wording or **add a language**, target the public snippet keys (`mt.<component>.<key>`, e.g. `mt.pagination.nextPage`) — either in your translation solution (in every language you support) or via `createMeteorI18nPlugin({ messages })`. See the developer docs for details.
 
 **Migrating an app from 5.x?** One line is required, or Meteor components silently stay English while the rest of your app switches language: install the plugin with an adapter (`createVueI18nAdapter(i18n)` next to your existing `app.use(i18n)` — `legacy: false` required). If you imported `vue-i18n` without declaring it, add it to your own dependencies; it is no longer shipped transitively.
 

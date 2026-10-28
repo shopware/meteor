@@ -8,8 +8,7 @@
         Switch the administration language (for example between English and
         German): the pagination texts and the validation message follow along.
         The language reaches this iframe through the Admin SDK's locale channel
-        and is handed to Meteor by the ten-line adapter in
-        <code>src/bootstrap.ts</code>.
+        and is handed to Meteor in <code>src/bootstrap.ts</code>.
       </mt-text>
 
       <mt-pagination

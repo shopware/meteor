@@ -1,8 +1,8 @@
 /**
  * One vue-i18n catalog drives everything: the app's own strings (`app.*`) AND the
- * translations for Meteor's snippets (`mt.*`). Meteor resolves host-first, so an
- * `mt.*` entry here wins over Meteor's bundled snippet; on a miss (e.g. English and
- * German below have no `mt` block) Meteor falls back to its bundled en/de texts.
+ * translations for Meteor's snippets (`mt.*`). An `mt.*` entry here wins over Meteor's
+ * bundled snippet in the same language; on a miss (e.g. English and German below have
+ * no `mt` block) Meteor falls back to its bundled en/de texts.
  *
  * NOTE: vue-i18n resolves keys as nested paths, so the `mt.*` overrides use the
  * NESTED object form here. Meteor's own plugin registry

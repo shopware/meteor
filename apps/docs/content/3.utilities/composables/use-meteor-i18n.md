@@ -6,9 +6,9 @@ description: The composable Meteor components use to translate their own texts �
 ## Usage
 
 `useMeteorI18n` is how Meteor's own components translate their texts: each component bundles
-its English/German snippets and resolves every key host-first. It is exported so you can build
-custom components that translate exactly the same way — following the host application's
-language and staying overridable through the same mechanisms as Meteor's snippets.
+its English/German texts and resolves every key in the [lookup order](/documentation/getting-started/internationalization#lookup-order).
+Use it for custom components that should translate the same way, following the app's language
+and staying overridable like Meteor's own texts.
 
 For wiring an application (the plugin, adapters for vue-i18n and other solutions, overriding
 wording), see the [Internationalization guide](/documentation/getting-started/internationalization).
@@ -47,13 +47,14 @@ plural rule is applied).
 
 | Member   | Type                                                                       | Description                                                                                                                                                                                 |
 | -------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `t`      | `(key: string, values?: MeteorInterpolationValues) => string`              | Translates a key. Resolution order: host adapter → plugin `messages` registry → bundled snippet (walking the locale fallback chain, e.g. `de-DE` → `de` → `en`) → the public key itself.    |
+| `t`      | `(key: string, values?: MeteorInterpolationValues) => string`              | Translates a key in the [lookup order](/documentation/getting-started/internationalization#lookup-order). Returns the public key itself when nothing matches.                               |
 | `ti`     | `(key: string, values?: MeteorInterpolationValues) => string \| undefined` | Like `t`, but returns `undefined` on a full miss — probe keys with `ti(key) ?? fallback` instead of comparing `t(key) === key`.                                                             |
 | `n`      | `(value: number) => string`                                                | Formats a number for the current locale: the host adapter's `n` when it provides one, otherwise a cached `Intl.NumberFormat`.                                                               |
-| `locale` | `WritableComputedRef<string>`                                              | The resolved language (`"en"`, `"de"`, ...). Writable only when no host adapter is installed — with an adapter, the host owns the locale and writes are ignored with a development warning. |
+| `locale` | `ComputedRef<string>`                                                      | The current language (`"en"`, `"de"`, ...). Read-only: change the language through your translation solution or the plugin's `locale` option.                                             |
 
 ## Notes
 
+- Call it inside a component's `setup()`; anywhere else it throws an error.
 - `t()` is reactive at the call site: used in a template or `computed`, it re-renders on
   locale changes. A value stored once in `setup()` (`const label = t("...")`) stays frozen.
 - Bundled catalogs should live at module scope (a `const` outside the component, or a sibling

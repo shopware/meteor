@@ -1,15 +1,15 @@
 # Meteor Admin SDK i18n Example App
 
-The **minimal-adapter reference** for iframe apps: this app has no translations of its own
-and no i18n framework — Meteor's components render their bundled English/German snippets, and
-a ten-line hand-written adapter (see [src/bootstrap.ts](src/bootstrap.ts)) tells Meteor which
-language the host admin is on, fed by the Admin SDK's locale channel.
+The reference for iframe apps without an i18n framework: this app has no translations of its
+own. Meteor's components render their bundled English/German texts, and one line in
+[src/bootstrap.ts](src/bootstrap.ts) — `createMeteorI18nPlugin({ locale })` — tells Meteor which
+language the admin is on, fed by the Admin SDK's locale channel.
 
 Note this profile is rare: most real apps have at least a few texts of their own (card
 titles, button labels) and should use the vue-i18n setup instead — see `examples/admin-sdk-app`
 and the [Internationalization docs](https://meteor.shopware.com/documentation/getting-started/internationalization).
 When an app built like this one grows its own texts, the `locale` ref in bootstrap.ts carries
-over: hand it to vue-i18n and switch the adapter to `createVueI18nAdapter(i18n)`.
+over: hand it to vue-i18n and switch to `createVueI18nAdapter(i18n)`.
 
 ## Test it in a local Shopware
 
