@@ -16,6 +16,7 @@ The SDK handles messaging, origin checks, schema validation, request IDs, respon
 - The receiver must be loaded and subscribed before publishing.
 - Agree on the destination origin, receiving location ID, event key, and payload contract.
 - Use compatible SDK versions in both services.
+- Each destination origin and location ID must identify one receiving iframe. Multiple matching receiver frames are not supported in this phase.
 
 ## publishServiceEvent(params)
 
@@ -32,7 +33,7 @@ Sends once to the Administration's direct child frames using the exact target or
 
 Use meaningful, nonempty location IDs and event keys. The current implementation does not reject empty routing strings during parameter validation; unmatched values eventually time out.
 
-The first valid correlated response settles the promise. A handler result resolves it after response-schema validation; an SDK failure rejects it. Later responses are ignored. Other receiving handlers may still be executing.
+The first valid correlated response settles the promise. A handler result resolves it after response-schema validation; an SDK failure rejects it. Later responses are ignored.
 
 There is no automatic retry. A timeout stops the publisher waiting but does not cancel the receiving handler or prove that the operation did not execute.
 
@@ -50,7 +51,9 @@ Registers one subscription and returns an idempotent `() => void` unsubscribe ca
 
 The SDK reads the receiving location through `location.get()`. A missing or empty location ID throws `MISSING_LOCATION_ID` during subscription setup.
 
-Multiple subscriptions for the same event key are allowed. Each matching authorized subscription can execute. Multiple matching receiver frames are also allowed; publishers receive only the first response that settles their request.
+Only one subscription per event key and location ID is allowed within an iframe. A second registration throws `ServiceEventError` with code `DUPLICATE_SUBSCRIPTION`, even if its handler or options differ. Unsubscribe before registering a replacement. Different event keys can have separate subscriptions.
+
+This check is local to the iframe; it does not detect duplicate destinations across frames.
 
 Unsubscribing removes only that subscription. It does not cancel an already running handler.
 

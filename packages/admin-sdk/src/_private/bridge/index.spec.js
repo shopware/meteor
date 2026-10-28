@@ -220,18 +220,31 @@ test('evicts the oldest completed ID after 100 requests', async () => {
   expect(handler).toHaveBeenCalledTimes(102);
 });
 
-test('first response wins with multiple subscriptions', async () => {
-  let finish;
-  subscribe(() => new Promise(resolve => { finish = resolve; }));
-  subscribe(() => 'fast');
-  const pending = publishServiceEvent(params);
-  await expect(pending).resolves.toBe('fast');
-  finish('slow');
-  await flush();
-  expect(sender.postMessage).toHaveBeenCalledWith(expect.objectContaining({ data: 'slow' }), senderOrigin);
+test('rejects duplicate subscriptions without replacing the original handler', async () => {
+  subscribe(() => 'original');
+  const duplicate = jest.fn(() => 'duplicate');
+  expect(() => subscribe(duplicate, { concurrency: 'parallel', allowedOrigins: ['*'] }))
+    .toThrow(expect.objectContaining({ code: 'DUPLICATE_SUBSCRIPTION' }));
+  await expect(publishServiceEvent(params)).resolves.toBe('original');
+  expect(duplicate).not.toHaveBeenCalled();
 });
 
-test('unsubscribe is idempotent and removes only its handler', async () => {
+test('allows different event keys in the same location', async () => {
+  subscribe(() => 'first');
+  subscribe(() => 'second', {}, 'other.v1');
+  await expect(publishServiceEvent(params)).resolves.toBe('first');
+  await expect(publishServiceEvent({ ...params, eventKey: 'other.v1' })).resolves.toBe('second');
+});
+
+test('scopes duplicate registration to the location ID', async () => {
+  subscribe(() => 'first location');
+  window.history.replaceState({}, '', '/?location-id=other-location');
+  subscribe(() => 'second location');
+  await expect(publishServiceEvent(params)).resolves.toBe('first location');
+  await expect(publishServiceEvent({ ...params, targetLocationId: 'other-location' })).resolves.toBe('second location');
+});
+
+test('unsubscribe is idempotent and permits registering the same event again', async () => {
   const removed = jest.fn();
   const stop = subscribe(removed);
   stop();

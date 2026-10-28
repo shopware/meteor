@@ -104,3 +104,25 @@ test('resolves business error-shaped payloads without treating them as SDK failu
   }));
   expect(result).toEqual({ error: { code: 'HANDLER_ERROR', message: 'Business result' } });
 });
+
+test('rejects duplicate registration and allows a replacement after unsubscribe', async ({ page }) => {
+  const { sender, receiver } = await setupSiblings(page);
+  const code = await receiver.evaluate(() => {
+    const { subscribeServiceEvent } = window.serviceBridge;
+    const options = { allowedOrigins: ['http://localhost:8181'] };
+    const stop = subscribeServiceEvent('custom.v1', () => 'original', options);
+    let result = 'unexpected-success';
+    try {
+      subscribeServiceEvent('custom.v1', () => 'duplicate', options);
+    } catch (error) { result = (error as { code: string }).code; }
+    stop();
+    subscribeServiceEvent('custom.v1', () => 'replacement', options);
+    return result;
+  });
+  expect(code).toBe('DUPLICATE_SUBSCRIPTION');
+  const response = await sender.evaluate(() => window.serviceBridge.publishServiceEvent({
+    targetOrigin: 'http://localhost:8182', targetLocationId: 'copilot-chat',
+    eventKey: 'custom.v1', data: {}, options: { timeout: 2000 },
+  }));
+  expect(response).toBe('replacement');
+});

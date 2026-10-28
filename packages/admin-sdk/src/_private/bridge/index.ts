@@ -105,6 +105,10 @@ export function subscribeServiceEvent(
   if (!locationId) {
     throw new ServiceEventError('MISSING_LOCATION_ID', 'The receiving URL must contain a nonempty location-id.');
   }
+  if (Array.from(subscriptions).some(subscription => subscription.eventKey === eventKey
+    && subscription.locationId === locationId)) {
+    throw new ServiceEventError('DUPLICATE_SUBSCRIPTION', 'This event key and location ID already have a subscription.');
+  }
   const subscription: Subscription = {
     eventKey,
     locationId,

@@ -26,6 +26,7 @@ export const serviceEventErrorCodes = [
   'HANDLER_ERROR',
   'HANDLER_BUSY',
   'MISSING_LOCATION_ID',
+  'DUPLICATE_SUBSCRIPTION',
 ] as const;
 
 export type ServiceEventErrorCode = typeof serviceEventErrorCodes[number];
