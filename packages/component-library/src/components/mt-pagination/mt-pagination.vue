@@ -86,7 +86,7 @@ const messages = {
   de: {
     infoText: "{start}-{end} von {totalItems}",
     firstPage: "Erste Seite",
-    previousPage: "Voherige Seite",
+    previousPage: "Vorherige Seite",
     nextPage: "Nächste Seite",
     lastPage: "Letzte Seite",
   },

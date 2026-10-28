@@ -46,9 +46,9 @@ const messages = {
         INVALID_URL: "Bitte gib eine gültige URL ein.",
         INVALID_MAIL: "Bitte gib eine gültige E-Mail-Adresse ein.",
         FRAMEWORK__RATE_LIMIT_EXCEEDED:
-          "Zu viele Anfragen. Bitte warten Sie {seconds} Sekunden, bevor Sie es erneut versuchen.",
-        DUPLICATED_URL: "Diese URL wird bereits genutzt. Bitte wähle eine andere Domain.",
-        "c1051bb4-d103-4f74-8988-acbcafc7fdc3": "Dieses Feld darf nicht leer sein",
+          "Zu viele Anfragen. Bitte warte {seconds} Sekunden, bevor Du es erneut versuchst.",
+        DUPLICATED_URL: "Diese URL wird bereits genutzt. Bitte wähle eine andere URL.",
+        "c1051bb4-d103-4f74-8988-acbcafc7fdc3": "Dieses Feld darf nicht leer sein.",
       },
     },
   },

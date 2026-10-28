@@ -732,7 +732,7 @@ const messages = {
       delete: "Löschen",
     },
     emptyState: {
-      headline: "Füge dein erstes Element hinzu",
+      headline: "Füge Dein erstes Element hinzu",
       description: "Aktuell sind noch keine Elemente vorhanden.",
     },
     bulkEdit: {

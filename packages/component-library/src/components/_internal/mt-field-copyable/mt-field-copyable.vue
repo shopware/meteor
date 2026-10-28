@@ -41,7 +41,7 @@ const messages = {
       canCopy: "In Zwischenablage kopieren.",
       notificationCopySuccessMessage: "Der Text wurde in die Zwischenablage kopiert.",
       notificationCopyFailureMessage: "Der Text konnte nicht in die Zwischenablage kopiert werden.",
-      errorTitle: "Fehler beim kopieren in die Zwischenablage",
+      errorTitle: "Fehler beim Kopieren in die Zwischenablage",
     },
   },
 };

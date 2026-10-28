@@ -266,7 +266,7 @@ const messages = {
     apply: "Apply",
   },
   de: {
-    apply: "Anwenden",
+    apply: "Übernehmen",
   },
 };
 
