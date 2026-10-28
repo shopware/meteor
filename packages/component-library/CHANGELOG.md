@@ -1,5 +1,37 @@
 # Changelog
 
+## 5.9.0
+
+### Minor Changes
+
+- [#1386](https://github.com/shopware/meteor/pull/1386) [`8ec5a71`](https://github.com/shopware/meteor/commit/8ec5a71dbb8daa01263f2c1640c7120da99199cc) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add the `mt-nav` component for the main application navigation, with sections, up to three levels of nested rows and keyboard navigation
+
+- [#1459](https://github.com/shopware/meteor/pull/1459) [`2499c76`](https://github.com/shopware/meteor/commit/2499c76a122793d052ea09f91919bf3c2a375880) Thanks [@mstegmeyer](https://github.com/mstegmeyer)! - Add a `disabled` prop to `mt-radio-group-item`, `mt-radio-group-card-item` and `mt-radio-group-custom-item` to disable a single option of a radio group. The `mt-radio-group-indicator` inside a disabled `mt-radio-group-custom-item` is disabled as well, and the custom item passes the state to its default slot as `disabled`.
+
+- [#1401](https://github.com/shopware/meteor/pull/1401) [`f7cc3c9`](https://github.com/shopware/meteor/commit/f7cc3c980e90ff16b4eca1f545116d93db771ca5) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Add a `disabled` prop to `MtStatusDot` that renders the dot in the disabled color token of its variant and turns off `pulse`.
+
+### Patch Changes
+
+- [#1460](https://github.com/shopware/meteor/pull/1460) [`88f18c8`](https://github.com/shopware/meteor/commit/88f18c8dbd3ab391fe7ec076c539c82550bf55fb) Thanks [@aragon999](https://github.com/aragon999)! - Fix form field hints not appearing or disappearing when a conditional `hint` slot changes after mounting.
+
+- [#1374](https://github.com/shopware/meteor/pull/1374) [`b8e77b6`](https://github.com/shopware/meteor/commit/b8e77b6eb9a1fe986d9432f77b1fb9b5bd569af6) Thanks [@hrombach-dsee](https://github.com/hrombach-dsee)! - Fix `mt-tooltip` not updating when the `content` prop changes
+
+- [#1405](https://github.com/shopware/meteor/pull/1405) [`49edc0d`](https://github.com/shopware/meteor/commit/49edc0daa17d81b2d77c91f7c228ed212624b425) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Fix an invalid `@media speech` rule with an empty selector in `mt-tabs.css`. Strict CSS minifiers such as Lightning CSS, which Vite 8 uses, no longer fail when they bundle the stylesheet.
+
+- [#1459](https://github.com/shopware/meteor/pull/1459) [`2499c76`](https://github.com/shopware/meteor/commit/2499c76a122793d052ea09f91919bf3c2a375880) Thanks [@mstegmeyer](https://github.com/mstegmeyer)! - Fix `mt-radio-group-item` and `mt-radio-group-custom-item` emitting `update:modelValue` twice when a label is clicked. Both now select on the native `change` event, like `mt-radio-group-card-item`. Clicks on links, buttons and form controls inside `mt-radio-group-custom-item` no longer select it.
+
+- [#1459](https://github.com/shopware/meteor/pull/1459) [`2499c76`](https://github.com/shopware/meteor/commit/2499c76a122793d052ea09f91919bf3c2a375880) Thanks [@mstegmeyer](https://github.com/mstegmeyer)! - Fix `mt-radio-group-root` leaving its radio group without an accessible name. The group is now labelled by `label` and described by `hint` and `error` in addition to `ariaDescribedBy`, and the label no longer points at an element that does not exist.
+
+- [#1394](https://github.com/shopware/meteor/pull/1394) [`0255689`](https://github.com/shopware/meteor/commit/02556899b6b8875a277748f598042c170e9a0a62) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Fix Shift+Tab in `mt-select`: leaving a select backwards no longer clicks the element before it, such as a checkbox or a button, and entering a select backwards opens it like Tab does.
+
+- [#1395](https://github.com/shopware/meteor/pull/1395) [`01286c0`](https://github.com/shopware/meteor/commit/01286c0098feff9109cc77542d545b587c9b8f36) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Fix notifications showing twice when `mt-snackbar` is mounted more than once. Only one mounted `mt-snackbar` renders them now.
+
+- [#1403](https://github.com/shopware/meteor/pull/1403) [`480c2dd`](https://github.com/shopware/meteor/commit/480c2dd9e73cea10d47da1a954349d81db930bf2) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Fix `mt-tooltip` closing again by itself when its trigger gets focus right after rendering, for example through a quick Tab or a `focus()` call.
+
+- Updated dependencies [[`17f05b1`](https://github.com/shopware/meteor/commit/17f05b15ee5884498f11fc3211dad1be8216c900), [`4a2c88a`](https://github.com/shopware/meteor/commit/4a2c88a9f81eba89be37d44b97a0ee48059ee036)]:
+  - @shopware-ag/meteor-admin-sdk@6.15.1
+  - @shopware-ag/meteor-icon-kit@5.12.0
+
 ## 5.8.0
 
 ### Minor Changes
