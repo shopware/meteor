@@ -1,0 +1,57 @@
+<script setup lang="ts">
+import {
+  MtApp,
+  MtContentHeader,
+  MtLayout,
+  MtPage,
+  type BreadcrumbItem,
+} from "@shopware-ag/meteor-component-library";
+
+const breadcrumb: BreadcrumbItem[] = [
+  { label: "Products", to: "/products", icon: "products" },
+  { label: "Running shoe Aero" },
+];
+</script>
+
+<template>
+  <mt-app>
+    <template #navigation>
+      <placeholder-slot name="App: navigation" style="width: 15rem" />
+    </template>
+
+    <template #content>
+      <mt-page width="l" :breadcrumb="breadcrumb">
+        <template #actions>
+          <placeholder-slot name="Page: actions" />
+        </template>
+
+        <div class="stack">
+          <mt-content-header title="Running shoe Aero">
+            <template #actions>
+              <placeholder-slot name="Content Header: actions" />
+            </template>
+
+            <placeholder-slot name="Content Header: default" />
+          </mt-content-header>
+
+          <mt-layout>
+            <placeholder-slot name="Layout: default" style="height: 24rem" />
+
+            <template #end>
+              <placeholder-slot name="Layout: end" style="height: 16rem" />
+            </template>
+          </mt-layout>
+        </div>
+      </mt-page>
+    </template>
+  </mt-app>
+</template>
+
+<style scoped>
+.stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--scale-size-16);
+  align-content: start;
+}
+</style>

@@ -21,6 +21,7 @@
         v-show="isOpen"
         ref="dropdownRef"
         class="mt-unit-select"
+        data-mt-overlay
         :style="{
           ...floatingStyles,
           ...(props.zIndex != null ? { zIndex: props.zIndex } : {}),
