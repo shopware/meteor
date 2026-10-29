@@ -321,6 +321,10 @@ const meta: MtNavMeta = {
     sections: { control: false },
     linkComponent: { control: false },
     isActive: { control: false },
+    orientation: {
+      control: { type: "inline-radio" },
+      options: ["vertical", "horizontal"],
+    },
   },
   ...createStory([{ items: [...shopItems, ...systemItems] }], defaultSource),
 };
@@ -376,3 +380,17 @@ export const NestedSubmenus: MtNavStory = createStory(
   "",
   "language.index",
 );
+
+const horizontalSource = `
+<mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" @navigate="onNavigate" />`;
+
+/**
+ * With `orientation="horizontal"` the top-level rows run in a line. A row with nested rows opens
+ * them in a floating panel when clicked.
+ */
+export const Horizontal: MtNavStory = {
+  ...createStory([{ items: nestedItems }], horizontalSource, "", "language.index"),
+  args: {
+    orientation: "horizontal",
+  },
+};

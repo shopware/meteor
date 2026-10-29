@@ -16,6 +16,11 @@ export type NavLinkTarget = string | object;
 export type NavActiveMatcher = (item: NavItem) => boolean;
 
 /**
+ * Direction the top-level rows run in. Horizontal rows open their nested rows in a floating panel.
+ */
+export type NavOrientation = "vertical" | "horizontal";
+
+/**
  * One row of the navigation. Rows nest through `children`, up to three levels deep in total.
  */
 export interface NavItem {
@@ -91,6 +96,7 @@ export interface NavSlots {
  */
 export interface NavContext {
   linkComponent: ComputedRef<NavLinkComponent>;
+  orientation: ComputedRef<NavOrientation>;
   /** Tells whether the row itself is active. */
   isRowActive: (item: NavItem) => boolean;
   /** Tells whether the row itself or one of its descendants is active. */

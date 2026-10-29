@@ -1,5 +1,9 @@
 <template>
-  <nav class="mt-nav" :aria-labelledby="navigationLabelId">
+  <nav
+    class="mt-nav"
+    :class="{ 'mt-nav--horizontal': orientation === 'horizontal' }"
+    :aria-labelledby="navigationLabelId"
+  >
     <h2 :id="navigationLabelId" class="visually-hidden">
       {{ label ?? t("navigationLabel") }}
     </h2>
@@ -33,6 +37,7 @@ import {
   type NavActiveMatcher,
   type NavItem,
   type NavLinkComponent,
+  type NavOrientation,
   type NavSection,
   type NavSlots,
 } from "./_internal/mt-nav-context";
@@ -42,6 +47,7 @@ export type {
   NavItem,
   NavLinkComponent,
   NavLinkTarget,
+  NavOrientation,
   NavSection,
 } from "./_internal/mt-nav-context";
 
@@ -65,11 +71,17 @@ const props = withDefaults(
      * Lets the sections stay static instead of setting `active` on every route change.
      */
     isActive?: NavActiveMatcher;
+    /**
+     * Direction the top-level rows run in. Horizontal rows show their nested rows in a floating
+     * panel that opens on click.
+     */
+    orientation?: NavOrientation;
   }>(),
   {
     linkComponent: "router-link",
     label: undefined,
     isActive: undefined,
+    orientation: "vertical",
   },
 );
 
@@ -135,6 +147,7 @@ const activeRowSignature = computed(() =>
 
 provide(NAV_CONTEXT, {
   linkComponent: computed(() => props.linkComponent),
+  orientation: computed(() => props.orientation),
   isRowActive: (item) => isRowActive(item, props.isActive),
   isItemActive: isActiveItem,
   slots,
@@ -204,6 +217,7 @@ function openBranchOfActiveItem() {
 
 function onNavigationKeydown(event: KeyboardEvent) {
   // Moves focus between the visible links with the arrow, Home and End keys, without wrapping
+  const isHorizontal = props.orientation === "horizontal";
   const body = navBodyElement.value;
   const target = event.target;
 
@@ -221,10 +235,10 @@ function onNavigationKeydown(event: KeyboardEvent) {
   let nextIndex: number;
 
   switch (event.key) {
-    case "ArrowDown":
+    case isHorizontal ? "ArrowRight" : "ArrowDown":
       nextIndex = Math.min(currentIndex + 1, links.length - 1);
       break;
-    case "ArrowUp":
+    case isHorizontal ? "ArrowLeft" : "ArrowUp":
       nextIndex = Math.max(currentIndex - 1, 0);
       break;
     case "Home":
@@ -272,5 +286,19 @@ function onNavigationKeydown(event: KeyboardEvent) {
 
 .mt-nav__body::-webkit-scrollbar {
   display: none;
+}
+
+.mt-nav--horizontal {
+  height: auto;
+  mask-image: none;
+}
+
+.mt-nav--horizontal .mt-nav__body {
+  height: auto;
+  flex-direction: row;
+  align-items: center;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 </style>
