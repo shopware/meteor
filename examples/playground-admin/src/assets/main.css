@@ -1,0 +1,33 @@
+/* Stacks its children with the default spacing. A wide child, such as an editor toolbar, can't
+   widen it. */
+.stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--scale-size-16);
+  align-content: start;
+}
+
+/* A row of items with a small gap, wrapping when they don't fit. */
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--scale-size-8);
+}
+
+/* As many equal columns as fit, each at least --grid-min wide, and one column on narrow cards. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--grid-min, 16rem)), 1fr)
+  );
+  gap: var(--scale-size-16);
+}
+
+/* A row of buttons at the end of a footer. */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--scale-size-8);
+}

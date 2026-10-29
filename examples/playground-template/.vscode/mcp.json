@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "meteor": {
+      "type": "http",
+      "url": "https://meteor.shopware.com/mcp"
+    }
+  }
+}
