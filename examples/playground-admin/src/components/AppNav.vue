@@ -1,25 +1,73 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { MtLink } from "@shopware-ag/meteor-component-library";
+import { useRoute } from "vue-router";
+import {
+  MtNav,
+  type NavItem,
+  type NavSection,
+} from "@shopware-ag/meteor-component-library";
 
 const { t } = useI18n();
+const route = useRoute();
 
-const routes = [
-  { to: "/", label: "nav.dashboard" },
-  { to: "/cms", label: "nav.cms" },
-  { to: "/settings", label: "nav.settings" },
-];
+/** The menu of the Shopware Administration, with the modules this playground has. */
+const sections = computed<NavSection[]>(() => [
+  {
+    items: [
+      {
+        id: "dashboard",
+        label: t("nav.dashboard"),
+        icon: "regular-dashboard",
+        to: "/",
+      },
+      {
+        id: "catalogues",
+        label: t("nav.catalogues"),
+        icon: "regular-products",
+        children: [
+          { id: "products", label: t("nav.products"), to: "/products" },
+          { id: "categories", label: t("nav.categories"), to: "/categories" },
+        ],
+      },
+      {
+        id: "orders",
+        label: t("nav.orders"),
+        icon: "regular-shopping-bag",
+        children: [
+          { id: "order-overview", label: t("nav.overview"), to: "/orders" },
+        ],
+      },
+      {
+        id: "content",
+        label: t("nav.content"),
+        icon: "regular-image-text",
+        children: [
+          { id: "shopping-experiences", label: t("nav.cms"), to: "/cms" },
+        ],
+      },
+      {
+        id: "settings",
+        label: t("nav.settings"),
+        icon: "regular-cog",
+        to: "/settings",
+      },
+    ],
+  },
+]);
+
+/** A row is active on its own page and on the pages below it, such as a product's detail page. */
+function isActive(item: NavItem) {
+  if (typeof item.to !== "string") return false;
+  if (item.to === "/") return route.path === "/";
+
+  return route.path === item.to || route.path.startsWith(`${item.to}/`);
+}
 </script>
 
 <template>
   <div class="app-nav">
-    <ul class="app-nav__links">
-      <li v-for="route in routes" :key="route.to">
-        <mt-link class="app-nav__link" :to="route.to">{{
-          t(route.label)
-        }}</mt-link>
-      </li>
-    </ul>
+    <mt-nav class="app-nav__menu" :sections="sections" :is-active="isActive" />
   </div>
 </template>
 
@@ -29,18 +77,10 @@ const routes = [
   flex: 1;
   flex-direction: column;
   width: 15rem;
-  padding: var(--scale-size-16);
 }
 
-.app-nav__links {
-  display: grid;
-  gap: var(--scale-size-8);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.app-nav__link.router-link-exact-active {
-  font-weight: var(--font-weight-semibold);
+.app-nav__menu {
+  flex: 1;
+  min-height: 0;
 }
 </style>
