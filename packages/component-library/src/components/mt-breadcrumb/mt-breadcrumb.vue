@@ -3,7 +3,11 @@
     v-if="items.length"
     ref="navEl"
     class="mt-breadcrumb"
-    :class="[`mt-breadcrumb--size-${size}`, `mt-breadcrumb--overflow-${overflow}`]"
+    :class="[
+      `mt-breadcrumb--size-${size}`,
+      `mt-breadcrumb--overflow-${overflow}`,
+      { 'mt-breadcrumb--hide-current': hideCurrent, 'mt-breadcrumb--settled': isSettled },
+    ]"
     :aria-label="ariaLabel ?? t('ariaLabel')"
   >
     <ol ref="listEl" class="mt-breadcrumb__list">
@@ -12,6 +16,7 @@
           v-if="index > 0"
           :ref="(el) => setElement(separatorEls, index, el)"
           class="mt-breadcrumb__separator"
+          :class="{ 'mt-breadcrumb__separator--current': isCurrent(index) }"
           :hidden="collapsedSeparators.includes(index)"
           role="presentation"
           aria-hidden="true"
@@ -62,7 +67,10 @@
         <li
           :ref="(el) => setElement(crumbEls, index, el)"
           class="mt-breadcrumb__crumb"
-          :class="{ 'mt-breadcrumb__crumb--current': isCurrent(index) }"
+          :class="{
+            'mt-breadcrumb__crumb--icon': !!item.icon,
+            'mt-breadcrumb__crumb--current': isCurrent(index),
+          }"
           :hidden="collapsedCrumbs.includes(index)"
         >
           <component
@@ -72,7 +80,16 @@
             v-bind="linkAttributes(item)"
             @click="$emit('click', item, $event)"
           >
-            {{ item.label }}
+            <mt-icon
+              v-if="item.icon"
+              class="mt-breadcrumb__icon"
+              :name="item.icon"
+              mode="regular"
+              size="var(--mt-breadcrumb-icon-size)"
+              decorative
+            />
+
+            <span class="mt-breadcrumb__text">{{ item.label }}</span>
           </component>
 
           <span
@@ -80,7 +97,16 @@
             class="mt-breadcrumb__label"
             :aria-current="isCurrent(index) ? 'page' : undefined"
           >
-            {{ item.label }}
+            <mt-icon
+              v-if="item.icon"
+              class="mt-breadcrumb__icon"
+              :name="item.icon"
+              mode="regular"
+              size="var(--mt-breadcrumb-icon-size)"
+              decorative
+            />
+
+            <span class="mt-breadcrumb__text">{{ item.label }}</span>
           </span>
         </li>
       </template>
@@ -92,9 +118,20 @@
 import type { Component } from "vue";
 
 export interface BreadcrumbItem {
+  /** The text of the crumb. */
   label: string;
+  /**
+   * Where the crumb leads. A crumb with a destination renders as a link, except the last one,
+   * which is the current page.
+   */
   to?: string | Record<string, unknown>;
+  /** The element or component that renders the link of this crumb, overriding `linkAs`. */
   as?: string | Component;
+  /**
+   * An icon in front of the label: the name of an icon kit icon without its variant, such as
+   * `products`. It always renders in the regular variant, as large as the text.
+   */
+  icon?: string;
 }
 </script>
 
@@ -121,7 +158,8 @@ const props = withDefaults(
   defineProps<{
     /**
      * The crumbs from the root of the hierarchy to the current page. An item with a `to`
-     * renders as a link, the last item always renders as the current page.
+     * renders as a link, the last item always renders as the current page. An item with an `icon`
+     * shows it in front of its label.
      */
     items: BreadcrumbItem[];
     /**
@@ -146,12 +184,20 @@ const props = withDefaults(
      * The element or component that renders a link crumb. An item can override it with `as`.
      */
     linkAs?: string | Component;
+    /**
+     * Visually hides the current page and the separator before it. Both keep their space, and the
+     * current page stays available to assistive technology.
+     *
+     * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+     */
+    hideCurrent?: boolean;
   }>(),
   {
     size: "xs",
     overflow: "collapse",
     ariaLabel: undefined,
     linkAs: "router-link",
+    hideCurrent: false,
   },
 );
 
@@ -184,6 +230,7 @@ const collapsedCrumbs = ref<number[]>([]);
 const collapsedSeparators = ref<number[]>([]);
 const showEllipsis = ref(false);
 const overflowOpen = ref(false);
+const isSettled = ref(false);
 
 const hiddenCrumbs = computed(() =>
   collapsedCrumbs.value.map((index) => ({ item: props.items[index], index })),
@@ -193,7 +240,11 @@ watch(showEllipsis, (visible) => {
   if (!visible) overflowOpen.value = false;
 });
 
+// The number of crumbs decides which one is the current page.
+watch(() => props.items.length, settle);
+
 let frame: number | undefined;
+let settleFrame: number | undefined;
 let lastWidth = 0;
 let unmounted = false;
 
@@ -231,6 +282,22 @@ function requestLayout() {
   frame = window.requestAnimationFrame(() => {
     frame = undefined;
     layout();
+  });
+}
+
+// The current page fades when `hideCurrent` changes on a trail that is on screen. When the
+// breadcrumb renders or the current page moves to another crumb, the new state applies at once,
+// so a page that hides its title right after rendering or navigating doesn't fade it.
+function settle() {
+  isSettled.value = false;
+  if (settleFrame !== undefined) window.cancelAnimationFrame(settleFrame);
+
+  // The first frame runs before the next paint, the second one after it.
+  settleFrame = window.requestAnimationFrame(() => {
+    settleFrame = window.requestAnimationFrame(() => {
+      settleFrame = undefined;
+      isSettled.value = true;
+    });
   });
 }
 
@@ -345,7 +412,7 @@ useResizeObserver(navEl, ([entry]) => {
 
 onMounted(() => {
   requestLayout();
-  document.fonts?.ready.then(requestLayout);
+  settle();
 });
 
 onUpdated(requestLayout);
@@ -353,6 +420,7 @@ onUpdated(requestLayout);
 onBeforeUnmount(() => {
   unmounted = true;
   if (frame !== undefined) window.cancelAnimationFrame(frame);
+  if (settleFrame !== undefined) window.cancelAnimationFrame(settleFrame);
 });
 </script>
 
@@ -368,6 +436,9 @@ onBeforeUnmount(() => {
 }
 
 .mt-breadcrumb--size-xs {
+  --mt-breadcrumb-icon-size: var(--font-size-xs);
+  --mt-breadcrumb-icon-gap: var(--scale-size-8);
+
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
 }
@@ -377,6 +448,9 @@ onBeforeUnmount(() => {
 }
 
 .mt-breadcrumb--size-s {
+  --mt-breadcrumb-icon-size: var(--font-size-s);
+  --mt-breadcrumb-icon-gap: var(--scale-size-10);
+
   font-size: var(--font-size-s);
   line-height: var(--font-line-height-s);
 }
@@ -421,6 +495,17 @@ onBeforeUnmount(() => {
   min-width: min(var(--mt-breadcrumb-item-min-width), var(--mt-breadcrumb-natural-width, 0px));
 }
 
+/* The icon comes on top of the minimum, so the label keeps its full minimum width. */
+.mt-breadcrumb__crumb--icon {
+  min-width: min(
+    calc(
+      var(--mt-breadcrumb-item-min-width) + var(--mt-breadcrumb-icon-size) +
+        var(--mt-breadcrumb-icon-gap)
+    ),
+    var(--mt-breadcrumb-natural-width, 0px)
+  );
+}
+
 .mt-breadcrumb__crumb--current {
   color: var(--color-text-primary-default);
   font-weight: var(--font-weight-semibold);
@@ -432,6 +517,18 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
   color: var(--color-text-tertiary-default);
   user-select: none;
+}
+
+/* The current page and its separator keep their space, so nothing shifts when they show. */
+.mt-breadcrumb--hide-current
+  :is(.mt-breadcrumb__crumb--current, .mt-breadcrumb__separator--current) {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mt-breadcrumb--settled :is(.mt-breadcrumb__crumb--current, .mt-breadcrumb__separator--current) {
+    transition: opacity 150ms ease-out;
+  }
 }
 
 .mt-breadcrumb__ellipsis {
@@ -450,7 +547,17 @@ onBeforeUnmount(() => {
 
 .mt-breadcrumb__link,
 .mt-breadcrumb__label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--mt-breadcrumb-icon-gap);
+  min-width: 0;
+}
+
+.mt-breadcrumb__icon {
+  flex: none;
+}
+
+.mt-breadcrumb__text {
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
