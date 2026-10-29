@@ -3,6 +3,7 @@
     <div
       ref="snackbarContainer"
       class="mt-snackbar"
+      data-mt-overlay
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
       @focusin="isFocused = true"
