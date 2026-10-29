@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { camelCase } from "scule";
 import { useClipboard } from "@vueuse/core";
 import { exampleKey } from "#shared/utils/exampleKey";
 import MtThemeProvider from "@shopware-ag/meteor-component-library/MtThemeProvider";
@@ -44,7 +43,6 @@ const slots = defineSlots<{
   code(props?: object): unknown;
 }>();
 
-const camelName = camelCase(props.name);
 const pascalName = exampleKey(props.name);
 
 const exampleModules = import.meta.glob(
@@ -57,20 +55,8 @@ const resolvedComponent = exampleMatch
   ? defineAsyncComponent(exampleMatch[1] as never)
   : undefined;
 
-const { data: example } = await useFetchComponentExample(camelName);
-
-const sourceText = computed(() => (example.value?.code ?? "").trim());
-
-const code = computed(() => {
-  if (!sourceText.value) return "";
-  return `\`\`\`vue\n${sourceText.value}\n\`\`\``;
-});
-
-const { data: ast } = await useAsyncData(
-  `component-example-ast-${camelName}`,
-  () => cachedParseMarkdown(code.value),
-  { watch: [code] },
-);
+const { sourceText, ast, ready } = useExampleSource(props.name);
+await ready;
 
 const showCode = ref(!props.collapse);
 
