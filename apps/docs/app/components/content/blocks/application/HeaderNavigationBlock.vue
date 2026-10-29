@@ -2,11 +2,11 @@
 import { ref } from "vue";
 import {
   MtApp,
+  MtAvatar,
   MtButton,
   MtIcon,
   MtPage,
   MtSearch,
-  MtUser,
   type BreadcrumbItem,
 } from "@shopware-ag/meteor-component-library";
 
@@ -36,7 +36,7 @@ const breadcrumb: BreadcrumbItem[] = [{ label: "Dashboard", icon: "dashboard" }]
           <mt-button variant="tertiary" size="default" square aria-label="Notifications">
             <mt-icon name="regular-bell" size="var(--scale-size-16)" decorative />
           </mt-button>
-          <mt-user name="Mila Hoffmann" subtitle="mila.hoffmann@example.com" avatar-only />
+          <mt-avatar first-name="Mila" last-name="Hoffmann" size="s" aria-label="Mila Hoffmann" />
         </div>
       </div>
     </template>
