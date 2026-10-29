@@ -42,6 +42,7 @@
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
+    "verify:runtime-entrypoints": "node build/verify-runtime-entrypoints.mjs",
     "size": "size-limit",
     "size:why": "size-limit --why",
     "lint:types": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
@@ -56,7 +57,8 @@
     "storybook": "storybook dev -p 6006 --no-open",
     "build:storybook": "storybook build",
     "test:storybook": "test-storybook",
-    "prepublish": "npm run build-only"
+    "prepublish": "npm run build-only && npm run verify:runtime-entrypoints",
+    "build:verified": "run-s build verify:runtime-entrypoints"
   },
   "dependencies": {
     "@codemirror/lang-html": "^6.4.9",

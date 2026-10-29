@@ -61,6 +61,11 @@ export default tseslint.config([
       "vue/no-v-html": "off",
     },
   },
+  {
+    files: ["build/verify-runtime-entrypoints.mjs"],
+    extends: [eslint.configs.recommended],
+    languageOptions: { globals: globals.node },
+  },
   ...storybook.configs["flat/recommended"],
   {
     files: ["**/*.spec.{ts,js}"],
