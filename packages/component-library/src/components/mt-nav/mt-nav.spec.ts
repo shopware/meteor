@@ -82,7 +82,7 @@ describe("mt-nav", () => {
     it("renders the top level rows", () => {
       renderNav();
 
-      const navigation = screen.getByRole("navigation", { name: "Main navigation" });
+      const navigation = screen.getByRole("navigation", { name: "Main" });
 
       expect(getRowLabel("Dashboard", navigation)).toBeVisible();
       expect(getRowLabel("Products", navigation)).toBeVisible();

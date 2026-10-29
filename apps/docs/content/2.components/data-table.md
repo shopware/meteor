@@ -4,7 +4,7 @@ description: A flexible table for displaying large datasets with pagination, sor
 ---
 
 ::warning
-**Experimental.** The API may still change in a future release.
+**Experimental:** This component is in a testing phase, and its API and behavior are not stable yet. Props, events, slots, visual behavior, or accessibility details may change without notice, and the component may be removed at any time.
 ::
 
 ::component-example{name="data-table-basic-example" fullWidth}
