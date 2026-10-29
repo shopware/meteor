@@ -96,6 +96,12 @@ export default defineConfig({
       entry: {
         index: path.resolve(__dirname, "src/index.ts"),
         fonts: path.resolve(__dirname, "src/fonts.ts"),
+        MtDropdownMenuRoot: path.resolve(__dirname, "src/MtDropdownMenuRoot.ts"),
+        MtDropdownMenuPortal: path.resolve(__dirname, "src/MtDropdownMenuPortal.ts"),
+        MtDropdownMenuTrigger: path.resolve(__dirname, "src/MtDropdownMenuTrigger.ts"),
+        MtDropdownMenuSub: path.resolve(__dirname, "src/MtDropdownMenuSub.ts"),
+        useTheme: path.resolve(__dirname, "src/useTheme.ts"),
+        useSnackbar: path.resolve(__dirname, "src/useSnackbar.ts"),
         ...allComponents,
       },
       formats: ["es", "cjs"],

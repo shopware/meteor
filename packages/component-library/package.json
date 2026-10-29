@@ -41,7 +41,7 @@
     "build": "run-p lint:types \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
-    "build-only": "vite build",
+    "build-only": "vite build && node build/verify-runtime-entrypoints.mjs",
     "size": "size-limit",
     "size:why": "size-limit --why",
     "lint:types": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
