@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { MtPage, MtText } from "@shopware-ag/meteor-component-library";
+import { MtPage, MtPanel, MtText } from "@shopware-ag/meteor-component-library";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 
 const { t } = useI18n();
@@ -10,20 +10,26 @@ const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
 </script>
 
 <template>
-  <mt-page
-    :breadcrumb="breadcrumb"
-    :start-label="t('cms.blocks')"
-    :end-label="t('cms.properties')"
-    closable
-  >
+  <mt-page :breadcrumb="breadcrumb" closable>
     <template #start>
-      <aside :aria-label="t('cms.blocks')">
-        <ul class="cms-blocks">
-          <li v-for="block in blocks" :key="block">
-            <mt-text size="xs">{{ t("cms.block", { number: block }) }}</mt-text>
-          </li>
-        </ul>
-      </aside>
+      <mt-panel
+        :label="t('cms.blocks')"
+        icon="regular-layout"
+        resizable
+        :width="240"
+        :min-width="200"
+        :max-width="400"
+      >
+        <aside :aria-label="t('cms.blocks')">
+          <ul class="cms-blocks">
+            <li v-for="block in blocks" :key="block">
+              <mt-text size="xs">{{
+                t("cms.block", { number: block })
+              }}</mt-text>
+            </li>
+          </ul>
+        </aside>
+      </mt-panel>
     </template>
 
     <div class="cms-canvas">
@@ -33,11 +39,21 @@ const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
     </div>
 
     <template #end>
-      <aside class="cms-properties" :aria-label="t('cms.properties')">
-        <mt-text size="xs" color="color-text-secondary-default">
-          {{ t("cms.noSelection") }}
-        </mt-text>
-      </aside>
+      <mt-panel
+        :label="t('cms.properties')"
+        icon="regular-cog"
+        closable
+        resizable
+        :width="320"
+        :min-width="240"
+        :max-width="480"
+      >
+        <aside class="cms-properties" :aria-label="t('cms.properties')">
+          <mt-text size="xs" color="color-text-secondary-default">
+            {{ t("cms.noSelection") }}
+          </mt-text>
+        </aside>
+      </mt-panel>
     </template>
   </mt-page>
 </template>
@@ -46,7 +62,6 @@ const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
 .cms-blocks {
   display: grid;
   gap: var(--scale-size-8);
-  width: 15rem;
   padding: var(--scale-size-16);
 }
 
@@ -57,7 +72,6 @@ const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
 }
 
 .cms-properties {
-  width: 20rem;
   padding: var(--scale-size-16);
 }
 </style>

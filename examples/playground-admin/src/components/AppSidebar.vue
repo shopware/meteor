@@ -15,7 +15,6 @@ const { t } = useI18n();
 
 <style scoped>
 .app-sidebar {
-  width: 20rem;
   padding: var(--scale-size-16);
 }
 </style>
