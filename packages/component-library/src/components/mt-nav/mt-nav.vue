@@ -34,6 +34,7 @@ import {
   isItemActive,
   isRowActive,
   itemKey,
+  moveLinkFocus,
   type NavActiveMatcher,
   type NavItem,
   type NavLinkComponent,
@@ -216,43 +217,18 @@ function openBranchOfActiveItem() {
 }
 
 function onNavigationKeydown(event: KeyboardEvent) {
-  // Moves focus between the visible links with the arrow, Home and End keys, without wrapping
-  const isHorizontal = props.orientation === "horizontal";
-  const body = navBodyElement.value;
-  const target = event.target;
-
-  // Keys pressed inside slotted content, e.g. a button in a suffix, keep their meaning
-  if (!body || !(target instanceof HTMLElement) || !target.matches(".mt-nav__link")) {
+  // Moves focus between the visible links with the arrow keys of the orientation, Home and End
+  if (!navBodyElement.value) {
     return;
   }
 
-  // Label-only rows render as a span and can't take focus, so they're skipped
-  const links = Array.from(body.querySelectorAll<HTMLElement>(".mt-nav__link")).filter(
-    (link) => link.tabIndex >= 0 && !link.closest("[hidden]"),
+  moveLinkFocus(
+    navBodyElement.value,
+    event,
+    props.orientation === "horizontal"
+      ? { next: "ArrowRight", previous: "ArrowLeft" }
+      : { next: "ArrowDown", previous: "ArrowUp" },
   );
-
-  const currentIndex = links.indexOf(target);
-  let nextIndex: number;
-
-  switch (event.key) {
-    case isHorizontal ? "ArrowRight" : "ArrowDown":
-      nextIndex = Math.min(currentIndex + 1, links.length - 1);
-      break;
-    case isHorizontal ? "ArrowLeft" : "ArrowUp":
-      nextIndex = Math.max(currentIndex - 1, 0);
-      break;
-    case "Home":
-      nextIndex = 0;
-      break;
-    case "End":
-      nextIndex = links.length - 1;
-      break;
-    default:
-      return;
-  }
-
-  event.preventDefault();
-  links[nextIndex]?.focus();
 }
 </script>
 

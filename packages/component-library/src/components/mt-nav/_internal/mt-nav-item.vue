@@ -1,6 +1,6 @@
 <template>
   <component :is="rowComponent" v-bind="rowProps" class="mt-nav__list-item" :class="rowClasses">
-    <div ref="itemRowElement" class="mt-nav__item-row">
+    <div ref="itemRowElement" class="mt-nav__item-row" @keydown="onRowKeydown">
       <component
         :is="linkTag"
         class="mt-nav__link"
@@ -50,7 +50,7 @@
       :is-opened="subtreeOpen"
       @close="setSubtreeOpen(false)"
     >
-      <div class="mt-nav__flyout" @keydown.esc="closeFlyoutAndFocusRow">
+      <div ref="flyoutElement" class="mt-nav__flyout" @keydown="onFlyoutKeydown">
         <ul class="mt-nav__sub-list">
           <mt-nav-item
             v-for="child in item.children"
@@ -86,8 +86,10 @@ import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
 import {
   MAX_NESTING_LEVEL,
   NAV_CONTEXT,
+  focusableLinks,
   hasNestedItems,
   itemKey,
+  moveLinkFocus,
   useNavContext,
   type NavItem,
 } from "./mt-nav-context";
@@ -131,6 +133,7 @@ const isFlyout = computed(
 );
 
 const itemRowElement = ref<HTMLElement | null>(null);
+const flyoutElement = ref<HTMLElement | null>(null);
 
 // Open state of the floating panel. Unlike the inline branches, it never opens on its own.
 const flyoutOpen = ref(false);
@@ -277,10 +280,39 @@ function setSubtreeOpen(open: boolean) {
   }
 }
 
-function closeFlyoutAndFocusRow() {
-  // Closes the floating panel with Escape and hands focus back to the row that opened it
-  flyoutOpen.value = false;
-  itemRowElement.value?.querySelector<HTMLElement>(".mt-nav__link")?.focus();
+function onRowKeydown(event: KeyboardEvent) {
+  // ArrowDown on a row whose floating panel is open moves focus to the first row in the panel
+  const target = event.target;
+
+  if (
+    event.key !== "ArrowDown" ||
+    !subtreeOpen.value ||
+    !flyoutElement.value ||
+    !(target instanceof HTMLElement) ||
+    !target.matches(".mt-nav__link")
+  ) {
+    return;
+  }
+
+  const firstLink = focusableLinks(flyoutElement.value)[0];
+
+  if (firstLink) {
+    event.preventDefault();
+    firstLink.focus();
+  }
+}
+
+function onFlyoutKeydown(event: KeyboardEvent) {
+  // Moves focus between the rows of the floating panel; Escape closes it and returns to its row
+  if (event.key === "Escape") {
+    flyoutOpen.value = false;
+    itemRowElement.value?.querySelector<HTMLElement>(".mt-nav__link")?.focus();
+    return;
+  }
+
+  if (flyoutElement.value) {
+    moveLinkFocus(flyoutElement.value, event, { next: "ArrowDown", previous: "ArrowUp" });
+  }
 }
 </script>
 
