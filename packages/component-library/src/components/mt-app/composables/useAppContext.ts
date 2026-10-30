@@ -23,9 +23,29 @@ export interface AppContext {
   confirmLeave(): Promise<boolean>;
   /** Moves the focus to the content, for example when the focused region disappears. */
   focusContent(): void;
+  /**
+   * Whether the panel has a trigger: it is available, and the shell uses the mobile layout or the
+   * panel is closable on desktop.
+   */
+  isTriggerShown(panel: MtAppPanel): boolean;
+  /** The accessible name of the panel's trigger. */
+  triggerLabel(panel: MtAppPanel): string;
+  /** The id of the element that the panel's trigger controls: the panel or its drawer. */
+  triggerControls(panel: MtAppPanel): string;
+  /**
+   * Reports that a page shows the panel's trigger, so the shell's header doesn't show its own,
+   * until the returned function is called.
+   */
+  registerTrigger(panel: MtAppPanel): () => void;
 }
 
 export const appContextKey = Symbol("mt-app") as InjectionKey<AppContext>;
+
+/** The icons of the panels' triggers. */
+export const appTriggerIcons: Record<MtAppPanel, string> = {
+  navigation: "regular-bars",
+  sidebar: "regular-panel-right",
+};
 
 /** The context of the surrounding `mt-app`, for parts that only work inside of it. */
 export function useAppContext(component: string): AppContext {

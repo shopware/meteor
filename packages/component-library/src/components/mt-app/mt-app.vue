@@ -18,20 +18,24 @@
     </div>
 
     <header
-      v-if="hasSlot('header') || showTriggers()"
+      v-if="hasSlot('header') || showsHeaderTriggers()"
       class="mt-app__header"
-      :class="{ 'mt-app__header--with-triggers': showTriggers() }"
-      :hidden="(hiddenRegions.header && !showTriggers()) || undefined"
+      :class="{ 'mt-app__header--with-triggers': showsHeaderTriggers() }"
+      :hidden="(hiddenRegions.header && !showsHeaderTriggers()) || undefined"
     >
-      <mt-app-trigger
-        v-if="isMobile && isAvailable('navigation')"
-        panel="navigation"
-        :label="t('open', { label: labels.navigation })"
-        :expanded="panels.isOpen('navigation')"
-        :controls="drawerIds.navigation"
-        icon="regular-bars"
+      <mt-button
+        v-if="showsHeaderTrigger('navigation')"
+        class="mt-app__trigger"
+        variant="tertiary"
+        size="default"
+        square
+        :aria-label="triggerLabel('navigation')"
+        :aria-expanded="panels.isOpen('navigation') ? 'true' : 'false'"
+        :aria-controls="drawerIds.navigation"
         @click="panels.toggle('navigation')"
-      />
+      >
+        <mt-icon :name="appTriggerIcons.navigation" size="var(--scale-size-16)" decorative />
+      </mt-button>
 
       <div
         v-if="hasSlot('header')"
@@ -42,15 +46,19 @@
         <slot name="header" v-bind="headerSlotProps" />
       </div>
 
-      <mt-app-trigger
-        v-if="isMobile && isAvailable('sidebar')"
-        panel="sidebar"
-        :label="t('open', { label: labels.sidebar })"
-        :expanded="panels.isOpen('sidebar')"
-        :controls="drawerIds.sidebar"
-        icon="regular-panel-right"
+      <mt-button
+        v-if="showsHeaderTrigger('sidebar')"
+        class="mt-app__trigger mt-app__trigger--sidebar"
+        variant="tertiary"
+        size="default"
+        square
+        :aria-label="triggerLabel('sidebar')"
+        :aria-expanded="panels.isOpen('sidebar') ? 'true' : 'false'"
+        :aria-controls="drawerIds.sidebar"
         @click="panels.toggle('sidebar')"
-      />
+      >
+        <mt-icon :name="appTriggerIcons.sidebar" size="var(--scale-size-16)" decorative />
+      </mt-button>
     </header>
 
     <div class="mt-app__body">
@@ -130,8 +138,10 @@ import {
   nextTick,
   onBeforeUpdate,
   onMounted,
+  onUpdated,
   provide,
   ref,
+  shallowRef,
   useId,
   useTemplateRef,
   watch,
@@ -139,6 +149,7 @@ import {
 import { defaultWindow, useEventListener, useMediaQuery, useMounted } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import MtButton from "@/components/mt-button/mt-button.vue";
+import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtModal from "@/components/mt-modal/mt-modal.vue";
 import MtModalAction from "@/components/mt-modal/sub-components/mt-modal-action.vue";
 import MtModalClose from "@/components/mt-modal/sub-components/mt-modal-close.vue";
@@ -149,10 +160,10 @@ import { provideFutureFlags, type FutureFlagsInput } from "@/composables/useFutu
 import { useTheme } from "@/composables/useTheme";
 import { hasSlotContent } from "@/utils/slot";
 import MtAppRegion from "./_internal/mt-app-region.vue";
-import MtAppTrigger from "./_internal/mt-app-trigger.vue";
-import { appContextKey, type AppContext } from "./composables/useAppContext";
+import { appContextKey, appTriggerIcons, type AppContext } from "./composables/useAppContext";
 import { useAppPanels } from "./composables/useAppPanels";
 import { createAppRegions } from "./composables/createAppRegions";
+import { createAppTriggers } from "./composables/createAppTriggers";
 import { createAppLoading } from "./composables/createAppLoading";
 import { createAppUnsavedChanges } from "./composables/createAppUnsavedChanges";
 import {
@@ -171,9 +182,12 @@ import type { MtAppRegions } from "./composables/useAppRegions";
  * everything inside. Use one shell per application.
  *
  * - The navigation and the sidebar add no landmark of their own, so their slots bring one, such as
- *   `mt-nav` or an `<aside>`. The labels name the drawers and their triggers in the mobile
- *   layout. The defaults are translated for English and German; pass both labels in other
- *   languages.
+ *   `mt-nav` or an `<aside>`. The labels name the drawers and their triggers. The defaults are
+ *   translated for English and German; pass both labels in other languages.
+ * - The triggers of the navigation and the sidebar sit in the header of the page, such as
+ *   `mt-page`, or of a custom page with `mt-app-panel-trigger`. While no page shows them, the
+ *   shell's header shows them at its start and end. They open the drawers in the mobile layout,
+ *   and show and hide panels that are closable in the desktop layout.
  * - Components inside the shell, such as pages, read and control it with `useApp()`. In the
  *   component that renders `<mt-app>`, use the props of the `header` slot or a template ref.
  * - A route hides regions with `meta: { mtAppRegions: { header: false } }`, and a page toggles them
@@ -207,21 +221,32 @@ const props = withDefaults(
      */
     loadingBar?: boolean;
     /**
-     * The accessible name of the navigation drawer and its trigger in the mobile layout. Defaults
-     * to "Navigation".
+     * The accessible name of the navigation drawer and its trigger. Defaults to "Navigation".
      */
     navigationLabel?: string;
     /**
-     * The accessible name of the sidebar drawer and its trigger in the mobile layout, such as
-     * "Assistant". Defaults to "Sidebar".
+     * The accessible name of the sidebar drawer and its trigger, such as "Assistant". Defaults to
+     * "Sidebar".
      */
     sidebarLabel?: string;
+    /**
+     * Shows the trigger of the navigation also in the desktop layout, where it shows and hides the
+     * navigation. In the mobile layout, the navigation always has a trigger.
+     */
+    navigationClosable?: boolean;
+    /**
+     * Shows the trigger of the sidebar also in the desktop layout, where it shows and hides the
+     * sidebar. In the mobile layout, the sidebar always has a trigger.
+     */
+    sidebarClosable?: boolean;
   }>(),
   {
     future: undefined,
     breakpoint: 1280,
     navigationLabel: undefined,
     sidebarLabel: undefined,
+    navigationClosable: false,
+    sidebarClosable: false,
     loadingBar: false,
   },
 );
@@ -244,7 +269,10 @@ interface PanelSlotProps {
 type HeaderSlotProps = Omit<MtAppContext, "isMobile"> & { isMobile: boolean };
 
 const slots = defineSlots<{
-  /** The header bar. In the mobile layout, the drawer triggers sit at its start and end. */
+  /**
+   * The header bar of the application. While no page shows the triggers of the navigation and the
+   * sidebar, they sit at its start and end.
+   */
   header?(props: HeaderSlotProps): unknown;
   /** The navigation. Becomes a drawer in the mobile layout. */
   navigation?(props: PanelSlotProps): unknown;
@@ -391,9 +419,48 @@ function isShownInline(panel: MtAppPanel) {
   return hasSlot(panel) && isOpenInline(panel);
 }
 
-function showTriggers() {
-  return isMobile.value && (isAvailable("navigation") || isAvailable("sidebar"));
+const closable = computed<Record<MtAppPanel, boolean>>(() => ({
+  navigation: props.navigationClosable,
+  sidebar: props.sidebarClosable,
+}));
+
+/** Whether the panel has a trigger: it is available, and it is a drawer or closable. */
+function hasTrigger(panel: MtAppPanel) {
+  return isAvailable(panel) && (isMobile.value || closable.value[panel]);
 }
+
+function triggerLabel(panel: MtAppPanel) {
+  return t("open", { label: labels.value[panel] });
+}
+
+const { isShownByPage, registerTrigger } = createAppTriggers();
+
+/**
+ * Whether the header shows the panel's trigger, because no page shows it. Only after mounting:
+ * pages register their triggers while they render, after the header.
+ */
+function showsHeaderTrigger(panel: MtAppPanel) {
+  return isMounted.value && hasTrigger(panel) && !isShownByPage(panel);
+}
+
+function showsHeaderTriggers() {
+  return showsHeaderTrigger("navigation") || showsHeaderTrigger("sidebar");
+}
+
+// Pages render after the shell and read the slot presence of the same render. When a later render
+// changes it, this makes them render again.
+const slotPresenceChanges = shallowRef(0);
+let renderedPanels = "";
+
+function trackSlotPresence() {
+  const presence = `${hasSlot("navigation")},${hasSlot("sidebar")}`;
+
+  if (renderedPanels && presence !== renderedPanels) slotPresenceChanges.value++;
+  renderedPanels = presence;
+}
+
+onMounted(trackSlotPresence);
+onUpdated(trackSlotPresence);
 
 /**
  * The content fills the shell without a frame when no other slot is filled. Regions that a view
@@ -404,7 +471,8 @@ function isFrameless() {
   if (!hasContent()) return false;
   if (!hasSlot("header") && !hasSlot("navigation") && !hasSlot("sidebar")) return true;
 
-  const isHeaderVisible = (hasSlot("header") && !hiddenRegions.value.header) || showTriggers();
+  const isHeaderVisible =
+    (hasSlot("header") && !hiddenRegions.value.header) || showsHeaderTriggers();
 
   return (
     hiddenRegions.value.contentFrame &&
@@ -483,6 +551,14 @@ const appContext: AppContext = {
   registerUnsavedChanges,
   confirmLeave,
   focusContent,
+  isTriggerShown(panel) {
+    // Tracked, so pages render again when a later render of the shell changes the slot presence.
+    void slotPresenceChanges.value;
+    return hasTrigger(panel);
+  },
+  triggerLabel,
+  triggerControls: (panel) => drawerIds[panel],
+  registerTrigger,
 };
 
 provide(appContextKey, appContext);
@@ -578,6 +654,14 @@ defineExpose({
 
 .mt-app__header--with-triggers {
   min-height: var(--scale-size-56);
+}
+
+.mt-app__trigger {
+  flex: none;
+}
+
+.mt-app__trigger--sidebar {
+  margin-inline-start: auto;
 }
 
 .mt-app__header-content {
