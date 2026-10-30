@@ -294,10 +294,12 @@ export const de: Messages = {
     title: "Benutzereinstellungen",
     language: "Sprache",
     theme: "Design",
+    navigationClosable: "Navigation auf dem Desktop ein- und ausblenden",
+    sidebarClosable: "Seitenleiste auf dem Desktop ein- und ausblenden",
     reset: "Einstellungen zurücksetzen",
     resetTitle: "Einstellungen zurücksetzen?",
     resetText:
-      "Sprache und Design werden auf ihre Standardwerte zurückgesetzt.",
+      "Sprache, Design und Layout werden auf ihre Standardwerte zurückgesetzt.",
     resetDone: "Einstellungen zurückgesetzt",
   },
 };

@@ -10,17 +10,23 @@ import {
   MtModalTrigger,
   MtPage,
   MtSelect,
+  MtSwitch,
   MtText,
   MtThemeSelect,
   useSnackbar,
   useTheme,
 } from "@shopware-ag/meteor-component-library";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
+import {
+  resetLayoutSettings,
+  useLayoutSettings,
+} from "../composables/useLayoutSettings";
 
 const { t, locale } = useI18n();
 const breadcrumb = useBreadcrumb(() => t("settings.title"));
 const { theme } = useTheme();
 const { addSnackbar } = useSnackbar();
+const layout = useLayoutSettings();
 
 const localeOptions = [
   { label: "English", value: "en" },
@@ -30,6 +36,7 @@ const localeOptions = [
 function reset(close: () => void) {
   locale.value = "en";
   theme.value = "system";
+  resetLayoutSettings();
   close();
   addSnackbar({ message: t("settings.resetDone"), variant: "success" });
 }
@@ -75,6 +82,14 @@ function reset(close: () => void) {
           hide-clearable-button
         />
         <mt-theme-select v-model="theme" :label="t('settings.theme')" />
+        <mt-switch
+          v-model="layout.navigationClosable"
+          :label="t('settings.navigationClosable')"
+        />
+        <mt-switch
+          v-model="layout.sidebarClosable"
+          :label="t('settings.sidebarClosable')"
+        />
       </div>
     </mt-card>
   </mt-page>
