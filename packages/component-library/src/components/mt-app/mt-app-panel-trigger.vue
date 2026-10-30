@@ -99,13 +99,11 @@ if (app) {
 .mt-app-panel-trigger {
   display: flex;
   flex: none;
-  align-self: stretch;
   align-items: center;
-  gap: var(--scale-size-12);
+  gap: var(--scale-size-8);
 }
 
 .mt-app-panel-trigger__divider {
-  align-self: stretch;
-  height: auto;
+  height: var(--scale-size-40);
 }
 </style>
