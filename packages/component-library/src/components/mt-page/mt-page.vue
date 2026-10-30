@@ -472,10 +472,10 @@ watch(
   display: flex;
   grid-row: 1;
   align-items: center;
-  gap: var(--scale-size-12);
+  gap: var(--scale-size-8);
   min-width: 0;
-  height: var(--scale-size-64);
-  padding-inline: var(--scale-size-12);
+  height: var(--scale-size-56);
+  padding-inline: var(--scale-size-8);
   border-bottom: 1px solid
     color-mix(
       in srgb,
@@ -484,10 +484,7 @@ watch(
     );
 }
 
-/*
- * The border always separates the header from the panels, and the divider of the close button
- * ends on it.
- */
+/* With panels, a close button or the shell's triggers, the border is always shown. */
 .mt-page--header-border .mt-page__header {
   border-bottom-color: var(--color-border-secondary-default);
 }
@@ -496,6 +493,10 @@ watch(
 .mt-page__close-divider,
 .mt-page__panel-trigger {
   flex: none;
+}
+
+.mt-page__close-divider {
+  height: var(--scale-size-40);
 }
 
 .mt-page__breadcrumb {
