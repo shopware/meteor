@@ -287,9 +287,11 @@ export const en = {
     title: "User settings",
     language: "Language",
     theme: "Theme",
+    navigationClosable: "Show and hide the navigation on desktop",
+    sidebarClosable: "Show and hide the sidebar on desktop",
     reset: "Reset settings",
     resetTitle: "Reset settings?",
-    resetText: "Language and theme go back to their defaults.",
+    resetText: "Language, theme and layout go back to their defaults.",
     resetDone: "Settings reset",
   },
 };
