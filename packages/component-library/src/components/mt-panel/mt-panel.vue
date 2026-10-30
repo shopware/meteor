@@ -7,6 +7,7 @@
       'mt-panel--drawer': isInDrawer,
       [`mt-panel--handle-${handleEdge}`]: hasHandle,
       'mt-panel--resizing': dragWidth !== null,
+      'mt-panel--resetting': isResetting,
     }"
     :style="panelStyle"
   >
@@ -87,6 +88,9 @@ import { panelContextKey, panelWidthStorageKey, type PanelAppearance } from "./p
  * - `resizable` adds a handle on the inner edge in the desktop layout, centered on the nearest
  *   visible edge. The panel remembers the width in the browser, one width per use (for a page's
  *   panels per page), and emits it for `v-model:width`.
+ * - A panel that is `closable` and `resizable` also closes by drag: past its smallest width, it
+ *   slides out with the pointer, and it closes when the drag ends in the zone at its outer edge,
+ *   or beyond it.
  * - The panel scrolls its content itself, so the handle can reach over the panel's edge.
  *
  * @experimental The API may still change in a future release.
@@ -156,6 +160,10 @@ const { t } = useI18n({
 const SMALLEST_WIDTH = 160;
 /** How far the arrow keys move the handle, in pixels. */
 const KEYBOARD_STEP = 10;
+/** The width of the zone at the outer edge that closes the panel when a drag ends in it. */
+const CLOSE_ZONE_WIDTH = 24;
+/** The length of the animation back to the starting width, as long as the panel's slide. */
+const RESET_DURATION = 400;
 
 const context = inject(panelContextKey, null);
 const root = useTemplateRef<HTMLElement>("root");
@@ -164,6 +172,7 @@ const isMounted = useMounted();
 
 const isInDrawer = computed(() => context?.isMobile.value ?? false);
 const hasHandle = computed(() => props.resizable && context !== null && !isInDrawer.value);
+const canCloseByDrag = computed(() => hasHandle.value && props.closable);
 
 // Panels before the content (navigation, start) are resized at their end edge, the others at their
 // start edge.
@@ -185,6 +194,20 @@ watch(
 
 // The width while a drag is going on. It is only emitted when the drag ends.
 const dragWidth = ref<number | null>(null);
+
+// Whether the pointer is in the close zone during a drag, or beyond it.
+let isInCloseZone = false;
+
+// A panel dragged into the close zone keeps the dragged width while it slides out, and opens again
+// with the width it had before the drag.
+const closingWidth = ref<number | null>(null);
+
+watch(
+  () => context?.isOpen(),
+  (isOpen) => {
+    if (isOpen) closingWidth.value = null;
+  },
+);
 
 const renderedWidth = ref<number | null>(null);
 
@@ -209,7 +232,9 @@ function clamp(width: number) {
 
 const panelStyle = computed(() => {
   // A drawer takes the width the panel started with, not one the user resized it to on desktop.
-  const width = isInDrawer.value ? startingWidth : dragWidth.value ?? currentWidth.value;
+  const width = isInDrawer.value
+    ? startingWidth
+    : dragWidth.value ?? closingWidth.value ?? currentWidth.value;
 
   return {
     "--mt-panel-width": width === undefined ? undefined : `${width}px`,
@@ -268,7 +293,14 @@ onMounted(() => {
   if (width !== props.width) emit("update:width", width);
 });
 
-let dragStart: { x: number; width: number; userSelect: string; cursor: string } | null = null;
+let dragStart: {
+  x: number;
+  width: number;
+  /** The panel's outer edge, opposite the handle, which stays in place during the drag. */
+  outerEdge: number;
+  userSelect: string;
+  cursor: string;
+} | null = null;
 
 function startDrag(event: PointerEvent) {
   if (event.button !== 0 || !root.value) return;
@@ -279,9 +311,11 @@ function startDrag(event: PointerEvent) {
   // Text in the page would otherwise get selected while the pointer moves, and the cursor would
   // change back whenever the pointer runs ahead of the handle.
   const documentStyle = document.documentElement.style;
+  const rect = root.value.getBoundingClientRect();
   dragStart = {
     x: event.clientX,
-    width: root.value.getBoundingClientRect().width,
+    width: rect.width,
+    outerEdge: handleEdge.value === "end" ? rect.left : rect.right,
     userSelect: documentStyle.userSelect,
     cursor: documentStyle.cursor,
   };
@@ -289,6 +323,7 @@ function startDrag(event: PointerEvent) {
   documentStyle.cursor = "col-resize";
 
   dragWidth.value = clamp(dragStart.width);
+  stopResetting();
   context?.setResizing(true);
 }
 
@@ -296,10 +331,22 @@ function drag(event: PointerEvent) {
   if (!dragStart) return;
 
   const distance = event.clientX - dragStart.x;
-  dragWidth.value = clamp(dragStart.width + (handleEdge.value === "end" ? distance : -distance));
+  const width = dragStart.width + (handleEdge.value === "end" ? distance : -distance);
+  dragWidth.value = clamp(width);
+
+  if (!canCloseByDrag.value) return;
+
+  // Past its smallest width, the panel slides out with the pointer, as a preview of closing it.
+  context?.slideOut(Math.max(minimum.value - width, 0));
+
+  // The distance from the pointer to the outer edge, towards the inside of the panel. Beyond the
+  // edge, up to and past the edge of the screen, it is negative.
+  const towardsInside = handleEdge.value === "end" ? 1 : -1;
+  isInCloseZone = (event.clientX - dragStart.outerEdge) * towardsInside <= CLOSE_ZONE_WIDTH;
 }
 
-function endDrag() {
+/** Ends a drag. Releasing the pointer in the close zone closes the panel instead of resizing it. */
+function endDrag(event?: PointerEvent) {
   if (!dragStart) return;
 
   document.documentElement.style.userSelect = dragStart.userSelect;
@@ -307,10 +354,14 @@ function endDrag() {
   dragStart = null;
 
   const width = dragWidth.value;
+  const closes = event?.type === "pointerup" && isInCloseZone;
   dragWidth.value = null;
+  isInCloseZone = false;
   context?.setResizing(false);
+  context?.release(closes);
 
-  if (width !== null) commit(width);
+  if (closes) closingWidth.value = width;
+  else if (width !== null) commit(width);
 }
 
 function resizeWithKeyboard(event: KeyboardEvent) {
@@ -341,15 +392,31 @@ function resizeWithKeyboard(event: KeyboardEvent) {
   commit(clamp(next));
 }
 
+// Going back to the starting width animates, unless the panel is as wide as its content (`auto`).
+const isResetting = ref(false);
+let resetTimeout: ReturnType<typeof setTimeout> | undefined;
+
+function stopResetting() {
+  clearTimeout(resetTimeout);
+  isResetting.value = false;
+}
+
 /** Goes back to the width the panel started with: `width`, or the width of its content. */
 function reset() {
+  stopResetting();
+  isResetting.value = true;
+  resetTimeout = setTimeout(stopResetting, RESET_DURATION);
+
   currentWidth.value = startingWidth;
   storeWidth(undefined);
   if (startingWidth !== undefined) emit("update:width", startingWidth);
 }
 
 // A drag that is cut off, for example when the panel unmounts, mustn't keep the page unselectable.
-onScopeDispose(endDrag);
+onScopeDispose(() => {
+  endDrag();
+  stopResetting();
+});
 
 // Inside another component, the layout can't see the panel in its slot, so it reports its options.
 if (context && !context.isFoundInSlot()) {
@@ -384,6 +451,10 @@ if (context && !context.isFoundInSlot()) {
 /* In a drawer, the panel is at most as wide as the drawer, which ends before the screen's edge. */
 .mt-panel--drawer {
   max-width: min(var(--mt-panel-max-width, 100%), 100%);
+}
+
+.mt-panel--resetting {
+  transition: width 400ms cubic-bezier(0.3, 0, 0, 1);
 }
 
 .mt-panel__body {
@@ -460,6 +531,7 @@ if (context && !context.isFoundInSlot()) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .mt-panel--resetting,
   .mt-panel__handle::after {
     transition: none;
   }

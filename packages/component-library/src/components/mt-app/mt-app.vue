@@ -71,7 +71,7 @@
         side="start"
         :label="panelLabel('navigation')"
         :close-label="t('close', { label: panelLabel('navigation') })"
-        :hidden="!isOpenInline('navigation') || undefined"
+        :hidden="isHiddenInline('navigation')"
         :bordered="panelSettings('navigation').appearance === 'bordered'"
         :has-panel="hasPanel('navigation')"
       >
@@ -97,7 +97,7 @@
         side="end"
         :label="panelLabel('sidebar')"
         :close-label="t('close', { label: panelLabel('sidebar') })"
-        :hidden="!isOpenInline('sidebar') || undefined"
+        :hidden="isHiddenInline('sidebar')"
         :bordered="panelSettings('sidebar').appearance === 'bordered'"
         :has-panel="hasPanel('sidebar')"
       >
@@ -355,10 +355,12 @@ const isLoadingBarShown = computed(() => props.loadingBar && isLoading.value);
 // The content is busy for as long as the loading lasts, while the bar may stay a bit longer.
 const isBusy = computed(() => props.loadingBar && isPending.value);
 
+const desktopOpen = { navigation: navigationOpen, sidebar: sidebarOpen };
+
 const panels = useAppPanels({
   isMobile,
   canOpenDrawer: isAvailable,
-  desktopState: { navigation: navigationOpen, sidebar: sidebarOpen },
+  desktopState: desktopOpen,
 });
 
 // Detecting empty slots renders them, so their presence is evaluated once per render. The same
@@ -430,6 +432,14 @@ function isAvailable(panel: MtAppPanel): boolean {
  */
 function isOpenInline(panel: MtAppPanel) {
   return !isMobile.value && !hiddenRegions.value[panel] && panels.isOpen(panel);
+}
+
+/**
+ * Whether the panel is closed or a view hides it, in the desktop layout. It doesn't depend on the
+ * layout, so the panel only slides when it opens or closes, not when the layout switches.
+ */
+function isHiddenInline(panel: MtAppPanel) {
+  return hiddenRegions.value[panel] || !desktopOpen[panel].value;
 }
 
 /** Whether the panel is visible next to the content. */
@@ -709,6 +719,8 @@ defineExpose({
   gap: var(--mt-app-gap);
   min-height: 0;
   padding: var(--mt-app-gap);
+  /* A panel sliding out over the edge doesn't show outside the shell. */
+  overflow: clip;
 }
 
 /* A bordered panel is framed like the content, as a surface of its own on the shell's background. */
