@@ -1,3 +1,4 @@
+import * as serviceBridge from '../../src/_private/bridge';
 import * as sw from '../../src/index';
 import { handle, publish, send, setExtensions } from '../../src/channel';
 import Criteria from '../../src/data/Criteria';
@@ -5,6 +6,7 @@ import EntityCollection from "../../src/_internals/data/EntityCollection";
 import EntityClass from "../../src/_internals/data/Entity";
 import MissingPrivilegesError from '../../src/_internals/privileges/missing-privileges-error';
 export interface sw_internal {
+  serviceBridge: typeof serviceBridge,
   handle: typeof handle,
   publish: typeof publish,
   send: typeof send,
@@ -24,6 +26,7 @@ declare global {
 
 window.sw = sw;
 window.sw_internal = {
+  serviceBridge,
   handle: handle,
   publish: publish,
   send: send,
