@@ -29,14 +29,16 @@ Fill the slots you need and render the router view in `content`. Mounting the ap
 ```vue [App.vue]
 <script setup lang="ts">
 import { RouterView } from "vue-router";
-import { MtApp } from "@shopware-ag/meteor-component-library";
+import { MtApp, MtPanel } from "@shopware-ag/meteor-component-library";
 import AppNavigation from "./AppNavigation.vue";
 </script>
 
 <template>
   <mt-app loading-bar>
     <template #navigation>
-      <AppNavigation />
+      <mt-panel closable>
+        <AppNavigation />
+      </mt-panel>
     </template>
 
     <template #content>
@@ -51,6 +53,8 @@ const app = createApp(App).use(router);
 
 router.isReady().then(() => app.mount("#app"));
 ```
+
+A [**Panel**](/components/panel) in the `navigation` or `sidebar` slot sets the panel's label, the icon of its trigger, whether it can be hidden on desktop, and its width.
 
 ### Triggers in a custom page
 
@@ -73,9 +77,9 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 ## Anatomy
 
 - `header`: the application's own bar above the other regions. The triggers of the navigation and the sidebar sit in the header of the page. Only while no page shows them, the shell's header shows them at its start and end, also when the slot is empty.
-- `navigation`: the main navigation, such as [**Nav**](/components/nav), next to the content.
+- `navigation`: the main navigation, such as [**Nav**](/components/nav), next to the content, usually in a [**Panel**](/components/panel).
 - `content`: the scrollable main content in a frame, usually a [**Page**](/components/page). It fills the shell without the frame when no other slot is filled, or when no other region is visible and a view sets `contentFrame: false`.
-- `sidebar`: a framed panel next to the content, for example an assistant.
+- `sidebar`: a panel next to the content, for example an assistant, usually in a [**Panel**](/components/panel). It is framed like the content unless its `appearance` is `plain`.
 
 ## API reference
 
@@ -87,8 +91,8 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 #do
 
 - Use a single **App** as the root of a standalone application.
-- Give the content of the `navigation` and `sidebar` slots a fixed width.
-- Pass `navigation-label` and `sidebar-label` in languages other than English and German.
+- Put a [**Panel**](/components/panel) directly into the `navigation` and `sidebar` slots to set their labels and widths.
+- Set the `label` of each panel in languages other than English and German.
 
 #dont
 
@@ -101,7 +105,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 
 - **App** fills the viewport by default, and the document itself never scrolls while it is mounted: the content and the panels scroll on their own. Set `--mt-app-height` to give it another height.
 - Below `breakpoint` (1280px of viewport width by default), the navigation and the sidebar become drawers that open from their triggers. In the mobile layout, at most one drawer is open, and switching the layout closes it.
-- In the desktop layout, `v-model:navigation-open` and `v-model:sidebar-open` show and hide the panels. With `navigation-closable` or `sidebar-closable`, the panel's trigger also shows in the desktop layout and shows and hides the panel.
+- In the desktop layout, `v-model:navigation-open` and `v-model:sidebar-open` show and hide the panels. A [**Panel**](/components/panel) with `closable` also shows its trigger in the desktop layout.
 - A panel that a view hides has no trigger in either layout.
 - **App** applies the stored theme preference, enables all future flags for the components inside, and mounts the [**Snackbar**](/components/snackbar) host.
 - With Vue Router installed, a navigation closes the open drawer and shows the new page from its top, or from the element of its URL hash.
@@ -114,11 +118,12 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 - The first focusable element of the shell is a "Skip to content" button. It becomes visible when it receives the focus and moves the focus to the content.
 - When a region hides while it holds the focus, the focus moves to the content.
 - After a navigation, screen readers announce the new document title, as after a full page load.
-- The drawers and their triggers are named by `navigation-label` and `sidebar-label`. Their defaults and the other texts of the shell are translated for English and German.
+- The drawers and their triggers are named by the `label` of their [**Panel**](/components/panel), or "Navigation" and "Sidebar". These defaults and the other texts of the shell are translated for English and German.
 - A trigger tells whether its panel is open and points to the panel, or to its drawer in the mobile layout.
 
 ## Related components
 
 - [**Page**](/components/page): for the frame of each page in the content.
+- [**Panel**](/components/panel): for the label, the trigger icon and the width of the navigation and the sidebar.
 - [**Nav**](/components/nav): for the main navigation in the `navigation` slot.
 - [**Theme Provider**](/utilities/components/theme-provider): for theming Meteor components in an application or extension without the shell.
