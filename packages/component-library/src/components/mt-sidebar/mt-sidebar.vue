@@ -1,5 +1,5 @@
 <template>
-  <aside class="mt-sidebar" :aria-label="ariaLabel">
+  <aside class="mt-sidebar">
     <header
       v-if="hasSlotContent($slots.header) || hasSlotContent($slots.actions)"
       class="mt-sidebar__header"
@@ -27,44 +27,20 @@
 import { hasSlotContent } from "@/utils/slot";
 
 /**
- * The frame around the main navigation of an application: a fixed header, the navigation, which
- * scrolls on its own, and a fixed footer. It is a complementary landmark (`<aside>`), and the
- * `mt-nav` inside it is the navigation landmark.
- *
- * It is 300px wide, or as wide as the `mt-panel` around it when that sets a width.
+ * The frame around the main navigation of an application: a fixed header and footer around the
+ * navigation, which scrolls on its own. It is a complementary landmark (`<aside>`).
  *
  * @experimental The API may still change in a future release.
  */
-withDefaults(
-  defineProps<{
-    /**
-     * Accessible name of the sidebar landmark. Only needed when the page has another `<aside>`,
-     * so screen reader users can tell them apart.
-     */
-    ariaLabel?: string;
-  }>(),
-  {
-    ariaLabel: undefined,
-  },
-);
-
 defineSlots<{
-  /**
-   * Fixed area at the top, for example mt-brand.
-   */
-  header?: null;
-  /**
-   * Next to the header, for example a button that collapses the sidebar.
-   */
-  actions?: null;
-  /**
-   * The navigation, for example mt-nav. It fills the space between header and footer.
-   */
-  default?: null;
-  /**
-   * Fixed area at the bottom, for example mt-user-menu.
-   */
-  footer?: null;
+  /** A fixed area at the top, for example `mt-brand`. */
+  header?(): unknown;
+  /** Buttons next to the header. */
+  actions?(): unknown;
+  /** The navigation, for example `mt-nav`. It fills the space between header and footer. */
+  default?(): unknown;
+  /** A fixed area at the bottom, for example `mt-user-menu`. */
+  footer?(): unknown;
 }>();
 </script>
 
@@ -79,7 +55,6 @@ defineSlots<{
   height: 100%;
   min-height: 0;
   padding: var(--scale-size-24) var(--scale-size-12) var(--scale-size-8);
-  background: var(--color-elevation-surface-sunken);
   color: var(--color-text-primary-default);
 }
 

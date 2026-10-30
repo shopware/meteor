@@ -10,8 +10,6 @@ import AppNavigation from "./components/AppNavigation.vue";
       <AppNavigation />
     </template>
 
-    <template #content>
-      <RouterView />
-    </template>
+    <RouterView />
   </mt-app>
 </template>

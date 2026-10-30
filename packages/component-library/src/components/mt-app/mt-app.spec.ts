@@ -9,7 +9,6 @@ import {
   ref,
   shallowRef,
   Transition,
-  type App,
   type Component,
 } from "vue";
 import { render, screen, waitFor } from "@testing-library/vue";
@@ -23,72 +22,14 @@ import { useAppLoading } from "./composables/useAppLoading";
 import { useUnsavedChanges } from "./composables/useUnsavedChanges";
 import { useFutureFlags } from "../../composables/useFutureFlags";
 import { useSnackbar } from "../mt-snackbar/composables/use-snackbar";
-import type { Router } from "vue-router";
-
-type MediaListener = (event: MediaQueryListEvent) => void;
-
-/**
- * Stubs `matchMedia` with a fake viewport width: `width <` queries match when the
- * width is below the queried value, every other query (e.g. the OS color scheme
- * asked by useTheme) never matches.
- */
-function stubMatchMedia(width = 1440) {
-  const state = { width };
-  const widthLists: { maxWidth: number; listeners: Set<MediaListener> }[] = [];
-
-  vi.stubGlobal(
-    "matchMedia",
-    vi.fn((query: string) => {
-      const maxWidth = Number(/\(width < ([\d.]+)px\)/.exec(query)?.[1] ?? NaN);
-      const listeners = new Set<MediaListener>();
-      const entry = { maxWidth, listeners };
-      if (!Number.isNaN(maxWidth)) widthLists.push(entry);
-
-      return {
-        get matches() {
-          return Number.isNaN(maxWidth) ? false : state.width < maxWidth;
-        },
-        media: query,
-        onchange: null,
-        addEventListener: (_type: string, listener: MediaListener) => listeners.add(listener),
-        removeEventListener: (_type: string, listener: MediaListener) => listeners.delete(listener),
-        dispatchEvent: () => true,
-      };
-    }),
-  );
-
-  return {
-    setWidth(value: number) {
-      state.width = value;
-      widthLists.forEach((entry) =>
-        entry.listeners.forEach((listener) =>
-          listener({ matches: value < entry.maxWidth } as MediaQueryListEvent),
-        ),
-      );
-    },
-  };
-}
-
-function createLocalStorageMock(): Storage {
-  const store = new Map<string, string>();
-
-  return {
-    getItem: (key) => store.get(key) ?? null,
-    setItem: (key, value) => void store.set(key, String(value)),
-    removeItem: (key) => void store.delete(key),
-    clear: () => store.clear(),
-    key: (index) => [...store.keys()][index] ?? null,
-    get length() {
-      return store.size;
-    },
-  };
-}
+import { NavigationFailureType } from "vue-router";
+import { createLocalStorageMock, routerPlugin, stubMatchMedia } from "./__tests__/shell-test-utils";
 
 const allSlots = {
   header: "<span>Header content</span>",
   navigation:
     '<nav aria-label="Main"><a href="/orders">Orders</a><button>Start action</button></nav>',
-  content: "<p>Main content</p><button>Content action</button>",
+  default: "<p>Main content</p><button>Content action</button>",
   sidebar: '<aside aria-label="Details"><button>End action</button></aside>',
 };
 
@@ -105,15 +46,7 @@ async function renderApp(
   const result = render(MtApp, {
     global: {
       stubs: options.stubs,
-      plugins: options.router
-        ? [
-            {
-              install: (app: App) => {
-                app.config.globalProperties.$router = options.router as Router;
-              },
-            },
-          ]
-        : [],
+      plugins: options.router ? [routerPlugin(options.router)] : [],
     },
     props: options.props,
     slots: options.slots ?? allSlots,
@@ -130,27 +63,28 @@ function mobileProps(props: Record<string, unknown> = {}) {
 
 interface FakeRouteRecord {
   path: string;
+  meta?: Record<string, unknown>;
   instances: Record<string, unknown>;
 }
 
 interface FakeRoute {
   path: string;
   hash: string;
-  meta: Record<string, unknown>;
   params?: Record<string, string>;
-  matched?: FakeRouteRecord[];
+  matched: FakeRouteRecord[];
 }
 
-type FakeRouteOptions = Partial<Omit<FakeRoute, "path">>;
+/** `meta` goes to the one record that the route matches, unless `matched` lists its records. */
+type FakeRouteOptions = Partial<Omit<FakeRoute, "path">> & { meta?: Record<string, unknown> };
 
-function createFakeRoute(path: string, options: FakeRouteOptions = {}): FakeRoute {
-  return { hash: "", meta: {}, ...options, path };
+function createFakeRoute(path: string, { meta = {}, ...options }: FakeRouteOptions = {}) {
+  return { hash: "", matched: [{ path, meta, instances: {} }], ...options, path };
 }
 
 function createFakeRouter(initialMeta: Record<string, unknown> = {}) {
   const guards: ((to: FakeRoute, from: FakeRoute) => unknown)[] = [];
   const hooks: ((to: FakeRoute, from: FakeRoute, failure?: unknown) => void)[] = [];
-  const currentRoute = shallowRef<FakeRoute>({ path: "/", hash: "", meta: initialMeta });
+  const currentRoute = shallowRef<FakeRoute>(createFakeRoute("/", { meta: initialMeta }));
 
   const router = {
     currentRoute,
@@ -185,7 +119,7 @@ function createFakeRouter(initialMeta: Record<string, unknown> = {}) {
 
     for (const guard of guards) {
       if ((await guard(to, from)) === false) {
-        hooks.forEach((hook) => hook(to, from, { type: 4 }));
+        hooks.forEach((hook) => hook(to, from, { type: NavigationFailureType.aborted }));
         return false;
       }
     }
@@ -197,10 +131,11 @@ function createFakeRouter(initialMeta: Record<string, unknown> = {}) {
   return { router, currentRoute, start, navigate, attempt };
 }
 
-const navigationTriggerName = "Open Navigation";
-const sidebarTriggerName = "Open Sidebar";
+const navigationTriggerName = "Toggle Navigation";
+const sidebarTriggerName = "Toggle Sidebar";
 
-function drawerOf(triggerName: string) {
+/** The panel or the drawer that the trigger controls. */
+function controlledBy(triggerName: string) {
   const trigger = screen.getByRole("button", { name: triggerName });
 
   return document.getElementById(trigger.getAttribute("aria-controls") ?? "")!;
@@ -247,7 +182,7 @@ describe("mt-app", () => {
 
     it("adds no landmark around the sidebar content", async () => {
       // ACT
-      await renderApp({ slots: { content: allSlots.content, sidebar: "<p>Sidebar content</p>" } });
+      await renderApp({ slots: { default: allSlots.default, sidebar: "<p>Sidebar content</p>" } });
 
       // ASSERT
       expect(screen.getByText("Sidebar content")).toBeVisible();
@@ -256,7 +191,7 @@ describe("mt-app", () => {
 
     it("lets only content fill the shell without a frame", async () => {
       // ACT
-      await renderApp({ slots: { content: allSlots.content } });
+      await renderApp({ slots: { default: allSlots.default } });
 
       // ASSERT
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
@@ -274,7 +209,7 @@ describe("mt-app", () => {
         // ACT
         await renderApp({
           props,
-          slots: { content: allSlots.content, navigation: allSlots.navigation },
+          slots: { default: allSlots.default, navigation: allSlots.navigation },
         });
 
         // ASSERT
@@ -286,7 +221,7 @@ describe("mt-app", () => {
       // ACT
       await renderApp({
         slots: {
-          content: allSlots.content,
+          default: allSlots.default,
           sidebar: () => [createCommentVNode("v-if")],
           header: () => [createCommentVNode("v-if")],
         },
@@ -313,7 +248,7 @@ describe("mt-app", () => {
       // ACT
       await renderApp({
         props: mobileProps(),
-        slots: { content: allSlots.content, sidebar: allSlots.sidebar },
+        slots: { default: allSlots.default, sidebar: allSlots.sidebar },
       });
 
       // ASSERT
@@ -325,7 +260,7 @@ describe("mt-app", () => {
       // ACT
       await renderApp({
         props: mobileProps(),
-        slots: { content: allSlots.content, navigation: allSlots.navigation },
+        slots: { default: allSlots.default, navigation: allSlots.navigation },
       });
 
       // ASSERT
@@ -335,7 +270,7 @@ describe("mt-app", () => {
 
     it("renders no header when there is neither header content nor a sidebar", async () => {
       // ACT
-      await renderApp({ props: mobileProps(), slots: { content: allSlots.content } });
+      await renderApp({ props: mobileProps(), slots: { default: allSlots.default } });
 
       // ASSERT
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
@@ -366,17 +301,13 @@ describe("mt-app", () => {
         ]),
     });
 
-    function controlledBy(trigger: HTMLElement) {
-      return document.getElementById(trigger.getAttribute("aria-controls") ?? "");
-    }
-
     it("leaves the triggers to a page that shows them", async () => {
       // ACT
       await renderApp({
         props: mobileProps(),
         slots: {
           navigation: allSlots.navigation,
-          content: () => [h(PageWithTriggers)],
+          default: () => [h(PageWithTriggers)],
           sidebar: allSlots.sidebar,
         },
       });
@@ -389,7 +320,7 @@ describe("mt-app", () => {
       expect(screen.getByRole("main")).toContainElement(
         screen.getByRole("button", { name: sidebarTriggerName }),
       );
-      expect(drawerOf(navigationTriggerName)).toHaveAttribute("role", "dialog");
+      expect(controlledBy(navigationTriggerName)).toHaveAttribute("role", "dialog");
     });
 
     it("shows a trigger in its header while no page shows it", async () => {
@@ -401,7 +332,7 @@ describe("mt-app", () => {
         props: mobileProps(),
         slots: {
           navigation: allSlots.navigation,
-          content: () => [
+          default: () => [
             h(KeepAlive, null, [showsPage.value ? h(PageWithTriggers) : h(OtherView)]),
           ],
         },
@@ -434,7 +365,7 @@ describe("mt-app", () => {
         props: { "onUpdate:sidebarOpen": onUpdate },
         slots: {
           navigation: allSlots.navigation,
-          content: allSlots.content,
+          default: allSlots.default,
           sidebar: () =>
             h(MtPanel, { closable: true }, () =>
               h("aside", { "aria-label": "Details" }, [h("button", "End action")]),
@@ -446,7 +377,7 @@ describe("mt-app", () => {
       // ASSERT
       expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
       expect(trigger).toHaveAttribute("aria-expanded", "true");
-      expect(controlledBy(trigger)).toContainElement(
+      expect(controlledBy(sidebarTriggerName)).toContainElement(
         screen.getByRole("complementary", { name: "Details" }),
       );
 
@@ -459,23 +390,32 @@ describe("mt-app", () => {
       expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
     });
 
-    it("shows no trigger for a closable panel that a view hides", async () => {
+    it("shows no trigger for a closable panel while a view hides it", async () => {
       // ARRANGE
+      const showsView = ref(true);
       const FocusView = defineComponent({
         setup() {
           useAppRegions({ sidebar: false });
           return () => h("p", "Focus view");
         },
       });
-
-      // ACT
       await renderApp({
-        props: { sidebarClosable: true },
-        slots: { content: () => [h(FocusView)], sidebar: allSlots.sidebar },
+        slots: {
+          default: () => [showsView.value ? h(FocusView) : h("p", "Page")],
+          sidebar: () =>
+            h(MtPanel, { closable: true }, () => h("aside", { "aria-label": "Details" }, "Tools")),
+        },
       });
 
       // ASSERT
       expect(screen.queryByRole("button", { name: sidebarTriggerName })).not.toBeInTheDocument();
+
+      // ACT
+      showsView.value = false;
+      await nextTick();
+
+      // ASSERT
+      expect(screen.getByRole("button", { name: sidebarTriggerName })).toBeInTheDocument();
     });
   });
 
@@ -485,7 +425,7 @@ describe("mt-app", () => {
       await renderApp({ props: mobileProps() });
 
       // ASSERT
-      const drawer = drawerOf(navigationTriggerName);
+      const drawer = controlledBy(navigationTriggerName);
       expect(drawer).toHaveAttribute("role", "dialog");
       expect(drawer).toHaveAttribute("inert");
       expect(drawer).toHaveAttribute("aria-modal", "true");
@@ -506,10 +446,10 @@ describe("mt-app", () => {
       // ASSERT
       const drawer = screen.getByRole("dialog", { name: "Navigation" });
       expect(drawer).not.toHaveAttribute("inert");
-      expect(drawer).toHaveAttribute("id", drawerOf(navigationTriggerName).id);
+      expect(drawer).toHaveAttribute("id", controlledBy(navigationTriggerName).id);
       expect(isInert(screen.getByRole("banner"))).toBe(true);
       expect(isInert(screen.getByRole("main"))).toBe(true);
-      expect(drawerOf(sidebarTriggerName)).toHaveAttribute("inert");
+      expect(controlledBy(sidebarTriggerName)).toHaveAttribute("inert");
       expect(visibleBackdrops()).toHaveLength(1);
       expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveAttribute(
         "aria-expanded",
@@ -527,8 +467,8 @@ describe("mt-app", () => {
       await userEvent.click(screen.getByRole("button", { name: sidebarTriggerName }));
 
       // ASSERT
-      expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert");
-      expect(drawerOf(sidebarTriggerName)).not.toHaveAttribute("inert");
+      expect(controlledBy(navigationTriggerName)).toHaveAttribute("inert");
+      expect(controlledBy(sidebarTriggerName)).not.toHaveAttribute("inert");
       expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveAttribute(
         "aria-expanded",
         "false",
@@ -547,7 +487,7 @@ describe("mt-app", () => {
       await userEvent.dblClick(screen.getByRole("button", { name: navigationTriggerName }));
 
       // ASSERT
-      await waitFor(() => expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert"));
+      await waitFor(() => expect(controlledBy(navigationTriggerName)).toHaveAttribute("inert"));
       expect(visibleBackdrops()).toHaveLength(0);
       expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveAttribute(
         "aria-expanded",
@@ -564,7 +504,7 @@ describe("mt-app", () => {
       await userEvent.click(visibleBackdrops()[0]);
 
       // ASSERT
-      expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert");
+      expect(controlledBy(navigationTriggerName)).toHaveAttribute("inert");
       expect(isInert(screen.getByRole("main"))).toBe(false);
       await waitFor(() =>
         expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveFocus(),
@@ -580,7 +520,7 @@ describe("mt-app", () => {
       await userEvent.click(screen.getByRole("button", { name: "Close Sidebar" }));
 
       // ASSERT
-      expect(drawerOf(sidebarTriggerName)).toHaveAttribute("inert");
+      expect(controlledBy(sidebarTriggerName)).toHaveAttribute("inert");
       await waitFor(() =>
         expect(screen.getByRole("button", { name: sidebarTriggerName })).toHaveFocus(),
       );
@@ -598,7 +538,7 @@ describe("mt-app", () => {
       await navigate("/orders");
 
       // ASSERT
-      expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert");
+      expect(controlledBy(navigationTriggerName)).toHaveAttribute("inert");
     });
 
     it("shows a new page from its top", async () => {
@@ -619,7 +559,7 @@ describe("mt-app", () => {
       const { router, navigate } = createFakeRouter();
       await renderApp({
         router,
-        slots: { content: '<h2 id="shipping">Shipping</h2>' },
+        slots: { default: '<h2 id="shipping">Shipping</h2>' },
       });
       const target = screen.getByRole("heading", { name: "Shipping" });
       const scrollIntoView = vi.fn();
@@ -634,18 +574,19 @@ describe("mt-app", () => {
 
     it("announces the title of a new page to screen readers", async () => {
       // ARRANGE
+      document.title = "Shop";
       const { router, navigate } = createFakeRouter();
       const { container } = await renderApp({ router });
       const announcer = container.querySelector("[aria-live]");
 
       // ACT
-      document.title = "Orders";
       await navigate("/orders");
 
       // ASSERT
-      expect(announcer).toHaveTextContent("Orders");
+      expect(announcer?.textContent).toBe("");
 
       // ACT
+      document.title = "Orders";
       await navigate("/orders/1");
 
       // ASSERT
@@ -687,7 +628,7 @@ describe("mt-app", () => {
       };
       await renderApp({
         props: { breakpoint: 1280 },
-        slots: { content: allSlots.content, navigation: () => [h(Counter)] },
+        slots: { default: allSlots.default, navigation: () => [h(Counter)] },
       });
       await userEvent.click(screen.getByRole("button", { name: "Count 0" }));
 
@@ -709,7 +650,7 @@ describe("mt-app", () => {
         props: { showEnd: Boolean },
         template: `
           <mt-app :breakpoint="99999">
-            <template #content><p>Main content</p></template>
+            <template #default><p>Main content</p></template>
             <template #navigation><a href="/">Start nav</a></template>
             <template v-if="showEnd" #sidebar><div>End tools</div></template>
           </mt-app>
@@ -751,7 +692,7 @@ describe("mt-app", () => {
 
     it("shows and hides the panels in the desktop layout", async () => {
       // ARRANGE
-      await renderApp({ slots: { ...allSlots, content: () => [h(Probe)] } });
+      await renderApp({ slots: { ...allSlots, default: () => [h(Probe)] } });
 
       // ACT
       await userEvent.click(screen.getByRole("button", { name: "Toggle sidebar" }));
@@ -771,7 +712,7 @@ describe("mt-app", () => {
       // ARRANGE
       await renderApp({
         props: mobileProps(),
-        slots: { content: () => [h(Probe)], navigation: allSlots.navigation },
+        slots: { default: () => [h(Probe)], navigation: allSlots.navigation },
       });
 
       // ACT
@@ -786,7 +727,7 @@ describe("mt-app", () => {
       // ARRANGE
       await renderApp({
         props: mobileProps(),
-        slots: { content: () => [h(Probe)], navigation: allSlots.navigation },
+        slots: { default: () => [h(Probe)], navigation: allSlots.navigation },
       });
 
       // ACT
@@ -830,7 +771,7 @@ describe("mt-app", () => {
         h(
           MtApp,
           { ref: shell },
-          { content: () => h("p", "Content"), sidebar: () => h("p", "Tools") },
+          { default: () => h("p", "Content"), sidebar: () => h("p", "Tools") },
         ),
       );
       await nextTick();
@@ -848,7 +789,7 @@ describe("mt-app", () => {
       const onUpdate = vi.fn();
       const { rerender } = await renderApp({
         props: { "onUpdate:navigationOpen": onUpdate },
-        slots: { ...allSlots, content: () => [h(Probe)] },
+        slots: { ...allSlots, default: () => [h(Probe)] },
       });
 
       // ACT
@@ -872,20 +813,20 @@ describe("mt-app", () => {
       await renderApp({
         props: mobileProps(),
         slots: {
-          content: allSlots.content,
+          default: allSlots.default,
           sidebar: () => h(MtPanel, { label: label.value }, () => h("p", "Tools")),
         },
       });
 
       // ASSERT
-      expect(screen.getByRole("button", { name: "Open Assistant" })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Toggle Assistant" })).toBeInTheDocument();
 
       // ACT
       label.value = "Details";
       await nextTick();
 
       // ASSERT
-      expect(screen.getByRole("button", { name: "Open Details" })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Toggle Details" })).toBeInTheDocument();
     });
   });
 
@@ -895,7 +836,7 @@ describe("mt-app", () => {
       localStorage.setItem("mt-theme", "dark");
 
       // ACT
-      await renderApp({ slots: { content: allSlots.content } });
+      await renderApp({ slots: { default: allSlots.default } });
 
       // ASSERT
       expect(document.documentElement.dataset.theme).toBe("dark");
@@ -915,7 +856,7 @@ describe("mt-app", () => {
 
     it("enables all future flags by default", async () => {
       // ACT
-      await renderApp({ slots: { content: () => [h(FlagProbe)] } });
+      await renderApp({ slots: { default: () => [h(FlagProbe)] } });
 
       // ASSERT
       expect(screen.getByRole("status")).toHaveTextContent("card:true banner:true");
@@ -923,7 +864,7 @@ describe("mt-app", () => {
 
     it("applies single overrides on top of all enabled flags and updates them reactively", async () => {
       // ARRANGE
-      const { rerender } = await renderApp({ slots: { content: () => [h(FlagProbe)] } });
+      const { rerender } = await renderApp({ slots: { default: () => [h(FlagProbe)] } });
 
       // ACT
       await rerender({ future: { removeCardWidth: false } });
@@ -948,7 +889,7 @@ describe("mt-app", () => {
       const View = createView({ header: false });
       const showView = ref(true);
       await renderApp({
-        slots: { ...allSlots, content: () => [showView.value ? h(View) : h("p", "Page")] },
+        slots: { ...allSlots, default: () => [showView.value ? h(View) : h("p", "Page")] },
       });
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
 
@@ -960,10 +901,10 @@ describe("mt-app", () => {
       expect(screen.getByRole("banner")).toHaveTextContent("Header content");
     });
 
-    it("keeps a hidden sidebar mounted and removes its drawer trigger", async () => {
+    it("keeps a hidden navigation mounted and removes its drawer trigger", async () => {
       // ARRANGE
       const mounted = vi.fn();
-      const Counter: Component = {
+      const NavigationItem: Component = {
         setup() {
           onMounted(mounted);
           return () => h("button", "Navigation item");
@@ -975,8 +916,8 @@ describe("mt-app", () => {
         props: mobileProps(),
         slots: {
           header: allSlots.header,
-          navigation: () => [h(Counter)],
-          content: () => [showView.value ? h(View) : h("p", "Page")],
+          navigation: () => [h(NavigationItem)],
+          default: () => [showView.value ? h(View) : h("p", "Page")],
         },
       });
 
@@ -1005,7 +946,7 @@ describe("mt-app", () => {
       const View = createView(regions);
 
       // ACT
-      await renderApp({ slots: { ...allSlots, content: () => [h(View)] } });
+      await renderApp({ slots: { ...allSlots, default: () => [h(View)] } });
 
       // ASSERT
       expect(
@@ -1039,7 +980,7 @@ describe("mt-app", () => {
         stubs: { transition: false },
         slots: {
           ...allSlots,
-          content: () =>
+          default: () =>
             h(Transition, { mode: "out-in" }, () =>
               h(pages[currentRoute.value.path], { key: currentRoute.value.path }),
             ),
@@ -1066,6 +1007,28 @@ describe("mt-app", () => {
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
     });
 
+    it("combines the regions of nested routes, with a child route overriding its parent", async () => {
+      // ARRANGE
+      const { router, navigate } = createFakeRouter();
+      await renderApp({ router });
+
+      // ACT
+      await navigate("/editor/1", {
+        matched: [
+          {
+            path: "/editor",
+            meta: { mtAppRegions: { header: false, sidebar: false } },
+            instances: {},
+          },
+          { path: "/editor/:id", meta: { mtAppRegions: { sidebar: true } }, instances: {} },
+        ],
+      });
+
+      // ASSERT
+      expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+      expect(screen.getByRole("complementary", { name: "Details" })).toBeVisible();
+    });
+
     it("gives the regions back while a page that KeepAlive caches isn't shown", async () => {
       // ARRANGE
       const FullscreenPage = defineComponent({
@@ -1077,7 +1040,7 @@ describe("mt-app", () => {
       const OtherPage: Component = { render: () => h("p", "Orders") };
       const page = shallowRef<Component>(FullscreenPage);
       await renderApp({
-        slots: { ...allSlots, content: () => h(KeepAlive, () => h(page.value)) },
+        slots: { ...allSlots, default: () => h(KeepAlive, () => h(page.value)) },
       });
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
 
@@ -1135,7 +1098,7 @@ describe("mt-app", () => {
         slots: {
           ...allSlots,
           // Like RouterView, which registers the page it renders in the route record.
-          content: () =>
+          default: () =>
             h(KeepAlive, () =>
               h(page.value, {
                 ref: (instance: unknown) => {
@@ -1307,6 +1270,27 @@ describe("mt-app", () => {
   });
 
   describe("loading bar", () => {
+    async function renderLoadingPage() {
+      const isLoading = ref(false);
+      const isShown = ref(true);
+      const Page = defineComponent({
+        setup() {
+          useAppLoading(isLoading);
+          return () => h("p", "Orders");
+        },
+      });
+      const OtherPage: Component = { render: () => h("p", "Customers") };
+
+      await renderApp({
+        props: { loadingBar: true },
+        slots: {
+          default: () => h(KeepAlive, () => (isShown.value ? h(Page) : h(OtherPage))),
+        },
+      });
+
+      return { isLoading, isShown };
+    }
+
     beforeEach(() => {
       vi.useFakeTimers();
     });
@@ -1355,31 +1339,9 @@ describe("mt-app", () => {
       expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
     });
 
-    function renderLoadingPage() {
-      const isLoading = ref(false);
-      const isShown = ref(true);
-      const Page = defineComponent({
-        setup() {
-          useAppLoading(isLoading);
-          return () => h("p", "Orders");
-        },
-      });
-      const OtherPage: Component = { render: () => h("p", "Customers") };
-
-      const result = renderApp({
-        props: { loadingBar: true },
-        slots: {
-          content: () => h(KeepAlive, () => (isShown.value ? h(Page) : h(OtherPage))),
-        },
-      });
-
-      return { result, isLoading, isShown };
-    }
-
     it("keeps the loading bar while a page reports loading", async () => {
       // ARRANGE
-      const { result, isLoading } = renderLoadingPage();
-      await result;
+      const { isLoading } = await renderLoadingPage();
 
       // ACT
       isLoading.value = true;
@@ -1398,8 +1360,7 @@ describe("mt-app", () => {
 
     it("stops the loading of a page that KeepAlive takes off the screen", async () => {
       // ARRANGE
-      const { result, isLoading, isShown } = renderLoadingPage();
-      await result;
+      const { isLoading, isShown } = await renderLoadingPage();
       isLoading.value = true;
       await vi.advanceTimersByTimeAsync(200);
 
@@ -1422,7 +1383,7 @@ describe("mt-app", () => {
   describe("snackbar host", () => {
     it("renders snackbar notifications once by default", async () => {
       // ARRANGE
-      render(MtApp, { slots: { content: allSlots.content } });
+      render(MtApp, { slots: { default: allSlots.default } });
 
       // ACT
       useSnackbar().addSnackbar({ message: "Saved successfully" });

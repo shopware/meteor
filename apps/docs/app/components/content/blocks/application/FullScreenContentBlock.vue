@@ -12,10 +12,8 @@ const breadcrumb: BreadcrumbItem[] = [
 
 <template>
   <mt-app>
-    <template #content>
-      <mt-page :breadcrumb="breadcrumb" closable>
-        <placeholder-slot style="height: 24rem" />
-      </mt-page>
-    </template>
+    <mt-page :breadcrumb="breadcrumb" closable>
+      <placeholder-slot style="height: 24rem" />
+    </mt-page>
   </mt-app>
 </template>

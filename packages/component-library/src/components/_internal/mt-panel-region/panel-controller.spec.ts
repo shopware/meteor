@@ -1,24 +1,25 @@
 import { nextTick, ref } from "vue";
-import { useAppPanels } from "./useAppPanels";
-import type { MtAppPanel } from "./useApp";
+import { createPanelState } from "./panel-controller";
 
-function setup(options: { isMobile?: boolean; unavailable?: MtAppPanel[] } = {}) {
-  const isMobile = ref(options.isMobile ?? false);
-  const desktopState = { navigation: ref(true), sidebar: ref(true) };
-  const panels = useAppPanels({
-    isMobile,
-    canOpenDrawer: (panel) => !options.unavailable?.includes(panel),
-    desktopState,
+type Place = "navigation" | "sidebar";
+
+function setup(options: { isDrawer?: boolean; unavailable?: Place[] } = {}) {
+  const isDrawer = ref(options.isDrawer ?? false);
+  const inlineOpen = { navigation: ref(true), sidebar: ref(true) };
+  const panels = createPanelState<Place>({
+    isDrawer,
+    canOpenDrawer: (place) => !options.unavailable?.includes(place),
+    inlineOpen,
   });
 
-  return { isMobile, desktopState, panels };
+  return { isDrawer, inlineOpen, panels };
 }
 
-describe("useAppPanels", () => {
-  describe("desktop layout", () => {
+describe("createPanelState", () => {
+  describe("next to the content", () => {
     it("shows the panels until they are closed", () => {
       // ARRANGE
-      const { desktopState, panels } = setup();
+      const { inlineOpen, panels } = setup();
 
       // ACT
       panels.close("sidebar");
@@ -26,7 +27,7 @@ describe("useAppPanels", () => {
       // ASSERT
       expect(panels.isOpen("navigation")).toBe(true);
       expect(panels.isOpen("sidebar")).toBe(false);
-      expect(desktopState.sidebar.value).toBe(false);
+      expect(inlineOpen.sidebar.value).toBe(false);
     });
 
     it("toggles a panel", () => {
@@ -42,10 +43,10 @@ describe("useAppPanels", () => {
     });
   });
 
-  describe("mobile layout", () => {
+  describe("as drawers", () => {
     it("opens one drawer at a time", () => {
       // ARRANGE
-      const { desktopState, panels } = setup({ isMobile: true });
+      const { inlineOpen, panels } = setup({ isDrawer: true });
 
       // ACT
       panels.open("navigation");
@@ -54,12 +55,12 @@ describe("useAppPanels", () => {
       // ASSERT
       expect(panels.isOpen("navigation")).toBe(false);
       expect(panels.isOpen("sidebar")).toBe(true);
-      expect(desktopState.navigation.value).toBe(true);
+      expect(inlineOpen.navigation.value).toBe(true);
     });
 
     it("doesn't open the drawer of an unavailable panel", () => {
       // ARRANGE
-      const { panels } = setup({ isMobile: true, unavailable: ["navigation"] });
+      const { panels } = setup({ isDrawer: true, unavailable: ["navigation"] });
 
       // ACT
       panels.open("navigation");
@@ -70,13 +71,13 @@ describe("useAppPanels", () => {
 
     it("closes the drawer when the layout changes", async () => {
       // ARRANGE
-      const { isMobile, panels } = setup({ isMobile: true });
+      const { isDrawer, panels } = setup({ isDrawer: true });
       panels.open("sidebar");
 
       // ACT
-      isMobile.value = false;
+      isDrawer.value = false;
       await nextTick();
-      isMobile.value = true;
+      isDrawer.value = true;
       await nextTick();
 
       // ASSERT

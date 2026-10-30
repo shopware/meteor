@@ -26,10 +26,8 @@ const layout = useLayoutSettings();
       </mt-panel>
     </template>
 
-    <template #content>
-      <RouterView />
-      <AppConfirmModal />
-    </template>
+    <RouterView />
+    <AppConfirmModal />
 
     <template #sidebar>
       <mt-panel

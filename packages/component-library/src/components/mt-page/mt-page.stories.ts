@@ -43,7 +43,6 @@ const meta: MtPageMeta = {
             <mt-button variant="primary" size="default">Save</mt-button>
           </template>
 
-
           <mt-text size="xs">The content of the page.</mt-text>
         </mt-page>
       </div>`,

@@ -22,7 +22,7 @@ import { MtUser } from "@shopware-ag/meteor-component-library";
 
 ### Compact
 
-`compact` hides the name and the subtitle visually, for example in a collapsed navigation.
+`compact` hides the name and the subtitle visually. The name shows on hover.
 
 ::component-example{name="user-compact-example"}
 ::

@@ -12,7 +12,7 @@ description: A logo with the name of the shop or app next to it, and an optional
 
 ## Usage
 
-**Brand** shows the logo of the app with a title, such as the name of the shop, and a subtitle, such as the name of the product. The title defaults to "Meteor" and the subtitle to "Shopware". An empty `subtitle` hides the second line. It is made for the `header` slot of [**Sidebar**](/components/sidebar), but works anywhere the name of the shop is shown with a logo.
+**Brand** shows the logo of the app with a title, such as the name of the shop, and a subtitle, such as the name of the product. The `title` is required, and without a `subtitle` the second line stays empty. It is made for the `header` slot of [**Sidebar**](/components/sidebar), but works anywhere the name of the shop is shown with a logo.
 
 ```ts
 import { MtBrand } from "@shopware-ag/meteor-component-library";

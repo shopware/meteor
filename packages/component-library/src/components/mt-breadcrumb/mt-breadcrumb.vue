@@ -74,11 +74,9 @@
           :hidden="collapsedCrumbs.includes(index)"
         >
           <component
-            :is="resolveLinkComponent(item)"
-            v-if="isLink(item, index)"
-            class="mt-breadcrumb__link"
-            v-bind="linkAttributes(item)"
-            @click="$emit('click', item, $event)"
+            :is="isLink(item, index) ? resolveLinkComponent(item) : 'span'"
+            v-bind="crumbAttributes(item, index)"
+            @click="isLink(item, index) && $emit('click', item, $event)"
           >
             <mt-icon
               v-if="item.icon"
@@ -91,23 +89,6 @@
 
             <span class="mt-breadcrumb__text">{{ item.label }}</span>
           </component>
-
-          <span
-            v-else
-            class="mt-breadcrumb__label"
-            :aria-current="isCurrent(index) ? 'page' : undefined"
-          >
-            <mt-icon
-              v-if="item.icon"
-              class="mt-breadcrumb__icon"
-              :name="item.icon"
-              mode="regular"
-              size="var(--mt-breadcrumb-icon-size)"
-              decorative
-            />
-
-            <span class="mt-breadcrumb__text">{{ item.label }}</span>
-          </span>
         </li>
       </template>
     </ol>
@@ -188,7 +169,7 @@ const props = withDefaults(
      * Visually hides the current page and the separator before it. Both keep their space, and the
      * current page stays available to assistive technology.
      *
-     * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+     * @experimental The API may still change in a future release.
      */
     hideCurrent?: boolean;
   }>(),
@@ -274,6 +255,16 @@ function linkAttributes(item: BreadcrumbItem) {
   if ((item.as ?? props.linkAs) === "router-link") return { to: item.to };
 
   return typeof item.to === "string" ? { href: item.to } : {};
+}
+
+/** A link to the crumb's page, or a label: the current page, or a crumb without destination. */
+function crumbAttributes(item: BreadcrumbItem, index: number) {
+  if (isLink(item, index)) return { class: "mt-breadcrumb__link", ...linkAttributes(item) };
+
+  return {
+    class: "mt-breadcrumb__label",
+    "aria-current": isCurrent(index) ? "page" : undefined,
+  };
 }
 
 function requestLayout() {

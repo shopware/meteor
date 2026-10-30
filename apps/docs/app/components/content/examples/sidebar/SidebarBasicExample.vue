@@ -30,7 +30,9 @@ const sections: NavSection[] = [
 </script>
 
 <template>
-  <div style="height: 480px">
+  <div
+    style="height: 480px; background-color: var(--color-elevation-surface-sunken)"
+  >
     <mt-sidebar>
       <template #header>
         <mt-brand title="Demo shop" subtitle="Shopware" />
@@ -38,12 +40,8 @@ const sections: NavSection[] = [
 
       <mt-nav :sections="sections" />
 
-      <template #footer> 
-        <mt-user-menu
-          first-name="Max"
-          last-name="Mustermann"
-          subtitle="Administrator"
-        >
+      <template #footer>
+        <mt-user-menu name="Max Mustermann" subtitle="Administrator">
           <mt-action-menu-group>
             <mt-action-menu-item icon="regular-sign-out" variant="critical">
               Log out

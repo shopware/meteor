@@ -23,14 +23,9 @@ import { pageContextKey } from "@/components/mt-page/_internal/mt-page-context";
 import { hasSlotContent } from "@/utils/slot";
 
 /**
- * The heading block at the top of a page's content: the title of what the page shows, such as a
- * product name, actions at its end, and a full-width row of additional information below. Use it in
- * the default slot of `mt-page`, whose header keeps the breadcrumb and the page actions.
- *
- * - The title wraps instead of truncating.
- * - On a narrow container, the actions move onto their own line.
- * - Inside `mt-page`, the breadcrumb in the page header hides its current crumb while this title
- *   is on screen.
+ * The heading block at the top of a page's content: the title of what the page shows, actions at its
+ * end, and a row of additional information below. Inside `mt-page`, the page header's breadcrumb
+ * hides its current crumb while this title is on screen.
  *
  * @experimental The API may still change in a future release.
  */
