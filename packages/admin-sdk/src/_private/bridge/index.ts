@@ -143,14 +143,17 @@ function receiveRequest(event: MessageEvent<unknown>): void {
   if (!isAdminChildFrame(source)) {
     return;
   }
-  const sendError = (error: ServiceEventError): void => {
+  const sendError = (error: unknown): void => {
+    const failure = error instanceof ServiceEventError
+      ? error
+      : new ServiceEventError('INTERNAL_ERROR', error instanceof Error ? error.message : 'Internal service event error.');
     reply(source, event.origin, {
       type: 'response',
       requestId: request.requestId,
       eventKey: request.eventKey,
       targetLocationId: request.targetLocationId,
       ok: false,
-      error: { code: error.code, message: error.message },
+      error: { code: failure.code, message: failure.message },
     });
   };
   const allowed = matches.filter(subscription => subscription.allowedOrigins.includes('*')
@@ -167,7 +170,7 @@ function receiveRequest(event: MessageEvent<unknown>): void {
   try {
     validateContract(request.eventKey, request.data, 'request');
   } catch (error) {
-    sendError(error as ServiceEventError);
+    sendError(error);
     return;
   }
   const tracked = { source, origin: event.origin, requestId: request.requestId };
@@ -206,7 +209,7 @@ function receiveRequest(event: MessageEvent<unknown>): void {
       };
       reply(source, event.origin, response);
     } catch (error) {
-      sendError(error as ServiceEventError);
+      sendError(error);
     } finally {
       subscription.running = false;
     }

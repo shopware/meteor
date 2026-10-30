@@ -2,7 +2,7 @@
 "@shopware-ag/meteor-admin-sdk": minor
 ---
 
-Add service-to-service request/response messaging through `publishServiceEvent` and `subscribeServiceEvent`, imported from `@shopware-ag/meteor-admin-sdk/es/_private/bridge`, for services embedded in the Shopware Administration.
+Add an internal service-to-service request/response bridge for Shopware services through `publishServiceEvent` and `subscribeServiceEvent`, imported from `@shopware-ag/meteor-admin-sdk/es/_private/bridge`.
 
 The bridge handles origin validation, event contracts, response correlation, configurable timeouts, request deduplication, and per-subscription concurrency, which defaults to `single`. It includes service origin constants and the `copilot.chat.prompt.v1` contract.
 

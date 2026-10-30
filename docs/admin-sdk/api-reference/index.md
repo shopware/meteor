@@ -84,10 +84,6 @@ APIs in this section include:
 - [Register CMS Block](./cms/registerCmsBlock.md)
 - [Register CMS Element](./cms/registerCmsElement.md)
 
-## Service Communication
-
-- [Service Communication](./service-events.md): Send requests between service iframes and await responses.
-
 ## Shared Options
 
 Some SDK APIs support shared configuration options that control how actions are executed in the Administration.

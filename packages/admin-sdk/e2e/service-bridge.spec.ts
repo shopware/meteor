@@ -4,7 +4,7 @@ import type {} from './testpage/app';
 
 async function setupSiblings(page: Page) {
   await page.goto('http://localhost:8181');
-  await page.waitForFunction(() => !!window.serviceBridge);
+  await page.waitForFunction(() => !!window.sw_internal?.serviceBridge);
   await page.evaluate(() => {
     for (const [name, port, location] of [
       ['sender', '8181', 'analytics'],
@@ -22,7 +22,7 @@ async function setupSiblings(page: Page) {
   const sender = page.frame('sender')!;
   const receiver = page.frame('receiver')!;
   const other = page.frame('other')!;
-  await Promise.all([sender, receiver, other].map(frame => frame.waitForFunction(() => !!window.serviceBridge)));
+  await Promise.all([sender, receiver, other].map(frame => frame.waitForFunction(() => !!window.sw_internal?.serviceBridge)));
   return { sender, receiver, other };
 }
 
@@ -35,19 +35,19 @@ test('bridge is not exposed from the root SDK', async ({ page }) => {
 test('routes a real cross-origin request to the matching sibling and returns its response', async ({ page }) => {
   const { sender, receiver, other } = await setupSiblings(page);
   await receiver.evaluate(() => {
-    window.serviceBridge.subscribeServiceEvent('copilot.chat.prompt.v1', async data => {
+    window.sw_internal.serviceBridge.subscribeServiceEvent('copilot.chat.prompt.v1', async data => {
       document.body.dataset.prompt = (data as { prompt: string }).prompt;
       await Promise.resolve();
       return { status: 'success' };
     }, { allowedOrigins: ['http://localhost:8181'] });
   });
   await other.evaluate(() => {
-    window.serviceBridge.subscribeServiceEvent('copilot.chat.prompt.v1', () => {
+    window.sw_internal.serviceBridge.subscribeServiceEvent('copilot.chat.prompt.v1', () => {
       document.body.dataset.invoked = 'true';
       return { status: 'error' };
     }, { allowedOrigins: ['http://localhost:8181'] });
   });
-  const result = await sender.evaluate(() => window.serviceBridge.publishServiceEvent({
+  const result = await sender.evaluate(() => window.sw_internal.serviceBridge.publishServiceEvent({
     targetOrigin: 'http://localhost:8182', targetLocationId: 'copilot-chat',
     eventKey: 'copilot.chat.prompt.v1', data: { prompt: 'List the top 10 products by revenue.' },
     options: { timeout: 2000 },
@@ -60,13 +60,13 @@ test('routes a real cross-origin request to the matching sibling and returns its
 test('denies a sender outside the receiver allowlist', async ({ page }) => {
   const { sender, receiver } = await setupSiblings(page);
   await receiver.evaluate(() => {
-    window.serviceBridge.subscribeServiceEvent('custom.v1', () => {
+    window.sw_internal.serviceBridge.subscribeServiceEvent('custom.v1', () => {
       document.body.dataset.invoked = 'true';
     }, { allowedOrigins: ['https://untrusted.example.com'] });
   });
   const code = await sender.evaluate(async () => {
     try {
-      await window.serviceBridge.publishServiceEvent({
+      await window.sw_internal.serviceBridge.publishServiceEvent({
         targetOrigin: 'http://localhost:8182', targetLocationId: 'copilot-chat',
         eventKey: 'custom.v1', data: {}, options: { timeout: 2000 },
       });
@@ -81,7 +81,7 @@ test('times out when no receiving subscription matches', async ({ page }) => {
   const { sender } = await setupSiblings(page);
   const code = await sender.evaluate(async () => {
     try {
-      await window.serviceBridge.publishServiceEvent({
+      await window.sw_internal.serviceBridge.publishServiceEvent({
         targetOrigin: 'http://localhost:8182', targetLocationId: 'absent',
         eventKey: 'custom.v1', data: {}, options: { timeout: 150 },
       });
@@ -94,11 +94,11 @@ test('times out when no receiving subscription matches', async ({ page }) => {
 test('resolves business error-shaped payloads without treating them as SDK failures', async ({ page }) => {
   const { sender, receiver } = await setupSiblings(page);
   await receiver.evaluate(() => {
-    window.serviceBridge.subscribeServiceEvent('custom.v1', () => ({
+    window.sw_internal.serviceBridge.subscribeServiceEvent('custom.v1', () => ({
       error: { code: 'HANDLER_ERROR', message: 'Business result' },
     }), { allowedOrigins: ['http://localhost:8181'] });
   });
-  const result = await sender.evaluate(() => window.serviceBridge.publishServiceEvent({
+  const result = await sender.evaluate(() => window.sw_internal.serviceBridge.publishServiceEvent({
     targetOrigin: 'http://localhost:8182', targetLocationId: 'copilot-chat',
     eventKey: 'custom.v1', data: {}, options: { timeout: 2000 },
   }));
@@ -108,7 +108,7 @@ test('resolves business error-shaped payloads without treating them as SDK failu
 test('rejects duplicate registration and allows a replacement after unsubscribe', async ({ page }) => {
   const { sender, receiver } = await setupSiblings(page);
   const code = await receiver.evaluate(() => {
-    const { subscribeServiceEvent } = window.serviceBridge;
+    const { subscribeServiceEvent } = window.sw_internal.serviceBridge;
     const options = { allowedOrigins: ['http://localhost:8181'] };
     const stop = subscribeServiceEvent('custom.v1', () => 'original', options);
     let result = 'unexpected-success';
@@ -120,7 +120,7 @@ test('rejects duplicate registration and allows a replacement after unsubscribe'
     return result;
   });
   expect(code).toBe('DUPLICATE_SUBSCRIPTION');
-  const response = await sender.evaluate(() => window.serviceBridge.publishServiceEvent({
+  const response = await sender.evaluate(() => window.sw_internal.serviceBridge.publishServiceEvent({
     targetOrigin: 'http://localhost:8182', targetLocationId: 'copilot-chat',
     eventKey: 'custom.v1', data: {}, options: { timeout: 2000 },
   }));

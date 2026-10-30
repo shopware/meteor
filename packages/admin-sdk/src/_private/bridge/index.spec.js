@@ -1,5 +1,6 @@
 import { webcrypto } from 'crypto';
 import { publishServiceEvent, subscribeServiceEvent } from './index';
+import * as contracts from './contracts';
 
 // Only the Admin RPC channel is stubbed; bridge transport/validation stays real.
 jest.mock('../../channel', () => ({ send: jest.fn() }));
@@ -50,6 +51,7 @@ afterEach(() => {
   Object.defineProperty(window, 'parent', parentDescriptor);
   if (cryptoDescriptor) Object.defineProperty(window, 'crypto', cryptoDescriptor);
   else delete window.crypto;
+  jest.restoreAllMocks();
   jest.useRealTimers();
 });
 
@@ -155,6 +157,39 @@ test('validates handler results', async () => {
   subscribe(() => ({ status: 'invalid' }), {}, 'copilot.chat.prompt.v1');
   await expect(publishServiceEvent({ ...params, eventKey: 'copilot.chat.prompt.v1' }))
     .rejects.toMatchObject({ code: 'RESPONSE_VALIDATION_FAILED' });
+});
+
+test('returns INTERNAL_ERROR when receiver request validation unexpectedly throws', async () => {
+  const validateContract = contracts.validateContract;
+  jest.spyOn(contracts, 'validateContract')
+    .mockImplementationOnce(validateContract)
+    .mockImplementationOnce(() => { throw new TypeError('Request validation failed internally'); });
+  const handler = jest.fn();
+  subscribe(handler);
+  const pending = publishServiceEvent(params);
+  const assertion = expect(pending).rejects.toMatchObject({
+    code: 'INTERNAL_ERROR', message: 'Request validation failed internally',
+  });
+  await flush();
+  expect(jest.getTimerCount()).toBe(0);
+  jest.advanceTimersByTime(100);
+  await assertion;
+  expect(handler).not.toHaveBeenCalled();
+  expect(jest.getTimerCount()).toBe(0);
+});
+
+test.each([
+  { thrown: new TypeError('Response validation failed internally'), message: 'Response validation failed internally' },
+  { thrown: 'unexpected failure', message: 'Internal service event error.' },
+])('returns INTERNAL_ERROR for unexpected response validation failures: $message', async ({ thrown, message }) => {
+  subscribe(() => ({ get status() { throw thrown; } }), {}, 'copilot.chat.prompt.v1');
+  const pending = publishServiceEvent({ ...params, eventKey: 'copilot.chat.prompt.v1' });
+  const assertion = expect(pending).rejects.toMatchObject({ code: 'INTERNAL_ERROR', message });
+  await flush();
+  expect(jest.getTimerCount()).toBe(0);
+  jest.advanceTimersByTime(100);
+  await assertion;
+  expect(jest.getTimerCount()).toBe(0);
 });
 
 test('validates responses at the publisher even if a peer bypasses its schema', async () => {

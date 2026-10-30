@@ -1,12 +1,6 @@
----
-title: "Service Communication"
-nav:
-  position: 90
----
+# Internal service communication
 
-# Service communication
-
-Use service events to send a request from one Shopware service iframe to another and await its response. The bridge is available through `@shopware-ag/meteor-admin-sdk/es/_private/bridge`.
+This private API is intended for internal Shopware services. It is not part of the public Admin SDK API and may change as service integrations evolve. Import it from `@shopware-ag/meteor-admin-sdk/es/_private/bridge`.
 
 The SDK handles messaging, origin checks, schema validation, request IDs, responses, timeouts, deduplication, and concurrency. Your service supplies the event handler and implements its business operation.
 
@@ -56,6 +50,10 @@ Only one subscription per event key and location ID is allowed within an iframe.
 This check is local to the iframe; it does not detect duplicate destinations across frames.
 
 Unsubscribing removes only that subscription. It does not cancel an already running handler.
+
+## Errors
+
+`HANDLER_ERROR` reports an exception thrown by the business handler. `INTERNAL_ERROR` reports an unexpected error while the SDK processes a request. Both are returned as SDK errors to the publisher.
 
 ## Example: send a prompt to Copilot
 

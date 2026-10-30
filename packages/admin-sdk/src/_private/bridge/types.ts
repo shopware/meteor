@@ -19,6 +19,7 @@ export type SubscribeServiceEventOptions = {
 
 export const serviceEventErrorCodes = [
   'INVALID_PARAMS',
+  'INTERNAL_ERROR',
   'TIMEOUT',
   'ORIGIN_NOT_ALLOWED',
   'REQUEST_VALIDATION_FAILED',

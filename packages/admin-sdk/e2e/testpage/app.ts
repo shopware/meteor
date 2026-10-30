@@ -6,6 +6,7 @@ import EntityCollection from "../../src/_internals/data/EntityCollection";
 import EntityClass from "../../src/_internals/data/Entity";
 import MissingPrivilegesError from '../../src/_internals/privileges/missing-privileges-error';
 export interface sw_internal {
+  serviceBridge: typeof serviceBridge,
   handle: typeof handle,
   publish: typeof publish,
   send: typeof send,
@@ -19,13 +20,13 @@ export interface sw_internal {
 declare global {
   interface Window {
     sw: typeof sw;
-    serviceBridge: typeof serviceBridge;
     sw_internal: sw_internal
   }
 }
 
 window.sw = sw;
 window.sw_internal = {
+  serviceBridge,
   handle: handle,
   publish: publish,
   send: send,
@@ -48,5 +49,3 @@ window.sw_internal.setExtensions({
     }
   },
 });
-
-window.serviceBridge = serviceBridge;
