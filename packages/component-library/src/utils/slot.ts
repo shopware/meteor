@@ -1,4 +1,4 @@
-import { Comment, Fragment, Text, isVNode, type VNode, type VNodeChild } from "vue";
+import { Comment, Fragment, Text, isVNode, onBeforeUpdate, type VNode, type VNodeChild } from "vue";
 
 /** A slot function as exposed by `useSlots()` or typed via `defineSlots()`. */
 type SlotLike = (...args: any[]) => unknown;
@@ -31,6 +31,20 @@ export function findSlotComponent(node: VNodeChild, marker: string): VNode | und
   if (node.type === Fragment) return findSlotComponent(node.children as VNodeChild, marker);
 
   return typeof node.type === "object" && marker in node.type ? node : undefined;
+}
+
+/**
+ * Returns a function that reads a value from slots once per render of the calling component:
+ * rendering a slot to inspect it is costly, and what it shows only changes with a new render.
+ */
+export function useRenderCache<T>(read: () => T): () => T {
+  let cached: { value: T } | undefined;
+
+  onBeforeUpdate(() => {
+    cached = undefined;
+  });
+
+  return () => (cached ??= { value: read() }).value;
 }
 
 /**

@@ -8,11 +8,7 @@ import {
 
 <template>
   <div style="width: 300px">
-    <mt-user-menu
-      first-name="Max"
-      last-name="Mustermann"
-      subtitle="Administrator"
-    >
+    <mt-user-menu name="Max Mustermann" subtitle="Administrator">
       <mt-action-menu-group>
         <mt-action-menu-item icon="regular-user">
           Your profile

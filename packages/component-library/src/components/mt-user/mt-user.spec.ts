@@ -19,12 +19,20 @@ describe("mt-user", () => {
     expect(screen.getByTestId("mt-avatar-initials")).toHaveTextContent("MH");
   });
 
-  it("keeps the name available to assistive technology when only the avatar is shown", () => {
+  it("hides the avatar from assistive technology, as the name tells the user", () => {
     // ACT
-    const { container } = render(MtUser, { props: { name: "Mila Hoffmann", compact: true } });
+    render(MtUser, { props: { name: "Mila Hoffmann" } });
 
     // ASSERT
-    expect(container.querySelector(".mt-user")).toHaveClass("mt-user--compact");
+    expect(screen.getByTestId("mt-avatar-initials").closest("[aria-hidden]")).not.toBeNull();
+  });
+
+  it("keeps the name available to assistive technology when only the avatar is shown", () => {
+    // ACT
+    render(MtUser, { props: { name: "Mila Hoffmann", compact: true } });
+
+    // ASSERT
+    expect(screen.getByText("Mila Hoffmann").closest(".visually-hidden")).not.toBeNull();
     expect(screen.getByText("Mila Hoffmann").closest("[aria-hidden]")).toBeNull();
   });
 });

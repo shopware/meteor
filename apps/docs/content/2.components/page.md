@@ -68,8 +68,9 @@ The `start` and `end` slots add panels next to the content, for example a list a
 - The breakpoint for the panels is measured on the width of the page, not of the viewport, so the panels also become drawers next to an open sidebar. While a panel of the shell is being resized, the page keeps its layout until the drag ends.
 - A [**Panel**](/components/panel) with `closable` also shows its trigger on a wide page, where it shows and hides the panel.
 - On a wide page, a panel slides in and out over the page's edge when it opens or closes, as the panels of [**App**](/components/app) do. A page turning narrow or wide doesn't slide.
+- With Vue Router, a navigation to another path closes the open drawer of a panel and shows the content from its top, or from the element of its URL hash. A change of only the query or the hash, such as a filter, keeps the drawer open.
 - A line on the inner edge sets each panel off from the content, unless its [**Panel**](/components/panel) has the `appearance` `plain`.
-- A `close` listener replaces the navigation of the close button. Without Vue Router and without a listener, the button does nothing.
+- A `close` listener, also with `.once`, replaces the navigation of the close button. Without Vue Router and without a listener, the button does nothing.
 
 ## Accessibility
 
@@ -83,5 +84,5 @@ The `start` and `end` slots add panels next to the content, for example a list a
 - [**App**](/components/app): for the shell around the pages.
 - [**Panel**](/components/panel): for the label, the trigger icon and the width of the panels.
 - [**Content Header**](/components/content-header): for the title, the actions and the details of what the page shows.
-- [**Layout**](/components/layout): for sidebars that scroll with the content instead of panels.
+- [**Layout**](/components/layout): for columns that scroll with the content instead of panels.
 - [**Breadcrumb**](/components/breadcrumb): for the trail in the header.

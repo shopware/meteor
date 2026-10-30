@@ -1,6 +1,6 @@
 ---
 title: Layout
-description: A layout for the content of a page, with up to two sidebars next to it.
+description: A layout for the content of a page, with up to two columns next to it.
 ---
 
 ::warning
@@ -12,7 +12,7 @@ description: A layout for the content of a page, with up to two sidebars next to
 
 ## Usage
 
-**Layout** arranges the blocks of a page's content, such as cards, in a main column with up to two sidebars of 300px next to it. Use it in the content of a [**Page**](/components/page) or in one of its tabs, for example with the settings of a record in the middle and its status at the side.
+**Layout** arranges the blocks of a page's content, such as cards, in a main column with up to two columns of 300px next to it. Use it in the content of a [**Page**](/components/page) or in one of its tabs, for example with the settings of a record in the middle and its status at the side.
 
 ```ts
 import { MtLayout } from "@shopware-ag/meteor-component-library";
@@ -20,11 +20,11 @@ import { MtLayout } from "@shopware-ag/meteor-component-library";
 
 ## Examples
 
-### Two sidebars
+### Two columns
 
-Fill `start` and `end` for a sidebar on each side. When the content gets too narrow, the sidebars wrap: the start sidebar above the content and the end sidebar below it. Drag the corner of the box to try it.
+Fill `start` and `end` for a column on each side. When the content gets too narrow, the columns wrap: the start column above the content and the end column below it. Drag the corner of the box to try it.
 
-::component-example{name="layout-sidebars-example" fullWidth}
+::component-example{name="layout-columns-example" fullWidth}
 ::
 
 ## API reference
@@ -36,8 +36,8 @@ Fill `start` and `end` for a sidebar on each side. When the content gets too nar
 ::do-dont{vertical}
 #do
 
-- Put the main settings of a record in the content and secondary information, such as its status, in a sidebar.
-- Prefer a single sidebar; use two only when both hold information that belongs next to the content.
+- Put the main settings of a record in the content and secondary information, such as its status, in a column.
+- Prefer a single column; use two only when both hold information that belongs next to the content.
 
 #dont
 
@@ -48,8 +48,8 @@ Fill `start` and `end` for a sidebar on each side. When the content gets too nar
 ## Behavior
 
 - **Layout** fills the width of its parent, and each region stacks its blocks with a gap of 16px.
-- The sidebars are 300px wide and scroll with the content. Unlike the panels of [**Page**](/components/page), they never become drawers.
-- The sidebars wrap when the layout is narrower than 49.75rem with one sidebar, or 69.5rem with two, so the content keeps at least 480px. Two sidebars wrap together.
+- The columns are 300px wide and scroll with the content. Unlike the panels of [**Page**](/components/page), they never become drawers.
+- The columns wrap when the layout is narrower than 49.75rem with one column, or 69.5rem with two, so the content keeps at least 480px. Two columns wrap together.
 
 ## Related components
 

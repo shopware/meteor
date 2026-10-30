@@ -124,115 +124,113 @@ function save() {
       <mt-nav class="navigation" :sections="navigation" />
     </template>
 
-    <template #content>
-      <mt-page width="l" :breadcrumb="breadcrumb">
-        <template #actions>
-          <mt-button variant="secondary" size="default" :disabled="!isDirty" @click="discard">
-            Cancel
-          </mt-button>
-          <mt-button
-            variant="primary"
-            size="default"
-            :disabled="!isDirty"
-            :is-loading="isSaving"
-            @click="save"
-          >
-            Save
-          </mt-button>
-        </template>
+    <mt-page width="l" :breadcrumb="breadcrumb">
+      <template #actions>
+        <mt-button variant="secondary" size="default" :disabled="!isDirty" @click="discard">
+          Cancel
+        </mt-button>
+        <mt-button
+          variant="primary"
+          size="default"
+          :disabled="!isDirty"
+          :is-loading="isSaving"
+          @click="save"
+        >
+          Save
+        </mt-button>
+      </template>
 
-        <div class="stack">
-          <mt-content-header :title="product.name">
-            <mt-badge :variant="product.active ? 'positive' : 'neutral'">
-              {{ product.active ? "Active" : "Inactive" }}
-            </mt-badge>
-          </mt-content-header>
+      <div class="stack">
+        <mt-content-header :title="product.name">
+          <mt-badge :variant="product.active ? 'positive' : 'neutral'">
+            {{ product.active ? "Active" : "Inactive" }}
+          </mt-badge>
+        </mt-content-header>
 
-          <mt-tabs :items="tabs" :default-item="activeTab" @new-item-active="activeTab = $event" />
+        <mt-tabs :items="tabs" :default-item="activeTab" @new-item-active="activeTab = $event" />
 
-          <mt-layout v-if="activeTab === 'general'">
-            <mt-card title="General information">
-              <div class="stack">
-                <div class="grid">
-                  <mt-text-field v-model="product.name" label="Name" required />
-                  <mt-select
-                    v-model="product.manufacturer"
-                    label="Manufacturer"
-                    :options="manufacturerOptions"
-                  />
-                </div>
-                <mt-text-field v-model="product.productNumber" label="Product number" required />
-                <mt-textarea v-model="product.description" label="Description" />
-              </div>
-            </mt-card>
-
-            <mt-card title="Prices">
+        <mt-layout v-if="activeTab === 'general'">
+          <mt-card title="General information">
+            <div class="stack">
               <div class="grid">
+                <mt-text-field v-model="product.name" label="Name" required />
                 <mt-select
-                  v-model="product.tax"
-                  label="Tax rate"
-                  :options="taxOptions"
-                  :enable-search="false"
-                  hide-clearable-button
-                  required
-                />
-                <mt-number-field v-model="product.price" label="Price (gross)" :min="0" required>
-                  <template #suffix><mt-text size="xs">€</mt-text></template>
-                </mt-number-field>
-                <mt-number-field v-model="product.purchasePrice" label="Purchase price" :min="0">
-                  <template #suffix><mt-text size="xs">€</mt-text></template>
-                </mt-number-field>
-              </div>
-            </mt-card>
-
-            <mt-card title="Stock">
-              <div class="grid">
-                <mt-number-field v-model="product.stock" label="Stock" number-type="int" />
-                <mt-number-field
-                  v-model="product.minPurchase"
-                  label="Minimum order quantity"
-                  number-type="int"
-                  :min="1"
+                  v-model="product.manufacturer"
+                  label="Manufacturer"
+                  :options="manufacturerOptions"
                 />
               </div>
-            </mt-card>
+              <mt-text-field v-model="product.productNumber" label="Product number" required />
+              <mt-textarea v-model="product.description" label="Description" />
+            </div>
+          </mt-card>
 
-            <template #end>
-              <mt-card title="Visibility">
-                <div class="stack">
-                  <mt-switch v-model="product.active" label="Active" />
-                  <mt-select
-                    v-model="product.salesChannels"
-                    label="Sales channels"
-                    :options="salesChannelOptions"
-                    enable-multi-selection
-                  />
-                  <mt-select
-                    v-model="product.categories"
-                    label="Categories"
-                    :options="categoryOptions"
-                    enable-multi-selection
-                  />
-                </div>
-              </mt-card>
+          <mt-card title="Prices">
+            <div class="grid">
+              <mt-select
+                v-model="product.tax"
+                label="Tax rate"
+                :options="taxOptions"
+                :enable-search="false"
+                hide-clearable-button
+                required
+              />
+              <mt-number-field v-model="product.price" label="Price (gross)" :min="0" required>
+                <template #suffix><mt-text size="xs">€</mt-text></template>
+              </mt-number-field>
+              <mt-number-field v-model="product.purchasePrice" label="Purchase price" :min="0">
+                <template #suffix><mt-text size="xs">€</mt-text></template>
+              </mt-number-field>
+            </div>
+          </mt-card>
 
-              <mt-card title="Labelling">
-                <mt-text-field v-model="product.ean" label="EAN" />
-              </mt-card>
-            </template>
-          </mt-layout>
+          <mt-card title="Stock">
+            <div class="grid">
+              <mt-number-field v-model="product.stock" label="Stock" number-type="int" />
+              <mt-number-field
+                v-model="product.minPurchase"
+                label="Minimum order quantity"
+                number-type="int"
+                :min="1"
+              />
+            </div>
+          </mt-card>
 
-          <mt-layout v-else>
-            <mt-card title="Search engines">
+          <template #end>
+            <mt-card title="Visibility">
               <div class="stack">
-                <mt-text-field v-model="product.metaTitle" label="Meta title" />
-                <mt-textarea v-model="product.metaDescription" label="Meta description" />
+                <mt-switch v-model="product.active" label="Active" />
+                <mt-select
+                  v-model="product.salesChannels"
+                  label="Sales channels"
+                  :options="salesChannelOptions"
+                  enable-multi-selection
+                />
+                <mt-select
+                  v-model="product.categories"
+                  label="Categories"
+                  :options="categoryOptions"
+                  enable-multi-selection
+                />
               </div>
             </mt-card>
-          </mt-layout>
-        </div>
-      </mt-page>
-    </template>
+
+            <mt-card title="Labelling">
+              <mt-text-field v-model="product.ean" label="EAN" />
+            </mt-card>
+          </template>
+        </mt-layout>
+
+        <mt-layout v-else>
+          <mt-card title="Search engines">
+            <div class="stack">
+              <mt-text-field v-model="product.metaTitle" label="Meta title" />
+              <mt-textarea v-model="product.metaDescription" label="Meta description" />
+            </div>
+          </mt-card>
+        </mt-layout>
+      </div>
+    </mt-page>
   </mt-app>
 </template>
 

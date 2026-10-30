@@ -1,9 +1,16 @@
 import { onMounted, onScopeDispose, watch, type Ref } from "vue";
 import { useEventListener } from "@vueuse/core";
 
+/**
+ * Marks an element at the top of the body that stays usable while a modal layer is open, such as
+ * the snackbar host, whose notifications show above an open drawer.
+ */
+export const OVERLAY_ATTRIBUTE = "data-mt-overlay";
+
 export interface UseModalLayerOptions {
   /** The element that acts as the modal panel. It receives the focus while the layer is active. */
   panel: Readonly<Ref<HTMLElement | null>>;
+  /** Whether the layer is active: the panel holds the focus and the page behind it is inert. */
   active: Readonly<Ref<boolean>>;
   /**
    * Called when Escape is pressed inside the panel, or while the focus is lost to the page,
@@ -94,16 +101,10 @@ function wrapTab(event: KeyboardEvent, root: HTMLElement) {
 }
 
 /**
- * Modal behavior for a panel, used by `MtDrawerContent`: while active, the panel holds the
- * focus, Tab stays inside it, Escape closes it and the elements outside it are inert.
- * Escape is handled by the topmost layer only, and only when it is pressed inside the panel
- * or while the focus is lost to the page (e.g. after the focused element was removed or
- * blurred), so overlays teleported to the body (menus, date pickers, popovers) keep their
- * own keys and stay usable.
- *
- * Inertness is reference-counted across layers, so a layer opened from another one never
- * releases what the other layer made inert. Focus moves run after the DOM has been patched,
- * because focusing an element that is still inert or hidden has no effect.
+ * Modal behavior for a panel: while active, the panel holds the focus, Tab stays inside it, Escape
+ * closes it and the elements outside it are inert. Escape is handled by the topmost layer only,
+ * inside the panel or while the focus is lost, so overlays teleported to the body keep their own
+ * keys.
  */
 export function useModalLayer(options: UseModalLayerOptions): void {
   const layer = Symbol("mt-modal-layer");
@@ -149,13 +150,13 @@ export function useModalLayer(options: UseModalLayerOptions): void {
     acquired.forEach(releaseInert);
     acquired = [];
 
-    // The focus returns to the element that had it before the layer opened.
     const target = previousFocus;
     previousFocus = null;
 
     if (target?.isConnected) target.focus({ preventScroll: true });
   }
 
+  // Focusing an element that is still inert or hidden has no effect.
   watch(
     options.active,
     (isActive, wasActive) => {

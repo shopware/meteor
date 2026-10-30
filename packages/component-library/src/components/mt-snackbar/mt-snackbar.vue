@@ -2,7 +2,7 @@
   <Teleport v-if="isActiveHost" to="body">
     <div
       class="mt-snackbar"
-      data-mt-overlay
+      v-bind="{ [OVERLAY_ATTRIBUTE]: '' }"
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
     >
@@ -20,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+import { OVERLAY_ATTRIBUTE } from "@/components/_internal/mt-drawer/composables/useModalLayer";
 import MtSnackbarNotification from "./_internal/mt-snackbar-notification.vue";
 import { useSnackbar, useSnackbarHost, type Snackbar } from "./composables/use-snackbar";
 import { ref } from "vue";

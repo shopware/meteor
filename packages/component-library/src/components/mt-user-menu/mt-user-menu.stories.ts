@@ -9,11 +9,17 @@ export type MtUserMenuMeta = Meta<typeof MtUserMenu>;
 const frameStyle = "display: flex; align-items: flex-end; width: 300px; height: 320px;";
 
 const meta: MtUserMenuMeta = {
-  title: "Components/User menu",
+  title: "Components/User Menu",
   component: MtUserMenu,
+  parameters: {
+    docs: {
+      description: {
+        component: "**Experimental.** The API may still change in a future release.",
+      },
+    },
+  },
   args: {
-    firstName: "Max",
-    lastName: "Mustermann",
+    name: "Max Mustermann",
     subtitle: "Administrator",
     compact: false,
   },
@@ -44,7 +50,7 @@ export const Default: MtUserMenuStory = {
     docs: {
       source: {
         language: "html",
-        code: `<mt-user-menu first-name="Max" last-name="Mustermann" subtitle="Administrator">
+        code: `<mt-user-menu name="Max Mustermann" subtitle="Administrator">
   <mt-action-menu-group>
     <mt-action-menu-item icon="regular-user">Your profile</mt-action-menu-item>
     <mt-action-menu-item icon="regular-cog">Settings</mt-action-menu-item>
@@ -71,8 +77,7 @@ export const WithoutSubtitle: MtUserMenuStory = {
 export const LongName: MtUserMenuStory = {
   name: "Long name",
   args: {
-    firstName: "Maximilian Alexander",
-    lastName: "Mustermann-Musterfrau",
+    name: "Maximilian Alexander Mustermann-Musterfrau",
     subtitle: "Administrator of the demo shop",
   },
   parameters: {
@@ -91,8 +96,7 @@ export const Compact: MtUserMenuStory = {
   parameters: {
     docs: {
       description: {
-        story:
-          "Shows only the avatar, for example in a collapsed sidebar. The menu keeps its own width.",
+        story: "Shows only the avatar. The name shows on hover, and the menu keeps its own width.",
       },
     },
   },

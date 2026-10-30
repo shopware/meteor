@@ -5,24 +5,7 @@ import { createI18n } from "vue-i18n";
 import MtApp from "./mt-app.vue";
 import MtPage from "../mt-page/mt-page.vue";
 import MtPanel from "../mt-panel/mt-panel.vue";
-
-function stubViewport(width: number) {
-  vi.stubGlobal(
-    "matchMedia",
-    vi.fn((query: string) => {
-      const maxWidth = Number(/\(width < ([\d.]+)px\)/.exec(query)?.[1] ?? NaN);
-
-      return {
-        matches: Number.isNaN(maxWidth) ? false : width < maxWidth,
-        media: query,
-        onchange: null,
-        addEventListener: () => undefined,
-        removeEventListener: () => undefined,
-        dispatchEvent: () => true,
-      };
-    }),
-  );
-}
+import { stubMatchMedia } from "./__tests__/shell-test-utils";
 
 interface AppOptions {
   content?: () => unknown;
@@ -36,7 +19,7 @@ function createApp({ content, navigation, sidebar }: AppOptions = {}) {
       h(MtApp, null, {
         header: () => h("span", "Header content"),
         navigation: navigation ?? (() => h("a", { href: "/" }, "Orders")),
-        content: content ?? (() => h("p", "Main content")),
+        default: content ?? (() => h("p", "Main content")),
         sidebar: sidebar ?? (() => h("div", "Tools")),
       }),
   }).use(createI18n({ legacy: false, locale: "en" }));
@@ -45,7 +28,7 @@ function createApp({ content, navigation, sidebar }: AppOptions = {}) {
 async function hydrate(width: number, options: AppOptions = {}) {
   vi.stubGlobal("matchMedia", undefined);
   const html = await renderToString(createApp(options));
-  stubViewport(width);
+  stubMatchMedia(width);
 
   const container = document.createElement("div");
   container.innerHTML = html;
@@ -104,7 +87,7 @@ describe("mt-app server-side rendering", () => {
     });
 
     // ASSERT
-    expect(html).toContain('aria-label="Open Assistant"');
+    expect(html).toContain('aria-label="Toggle Assistant"');
     expect(hydrationMessages).toEqual([]);
     expect(
       container.querySelectorAll(".mt-page__header .mt-app-panel-trigger__button"),

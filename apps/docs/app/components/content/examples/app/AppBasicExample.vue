@@ -15,9 +15,7 @@ import { MtApp } from "@shopware-ag/meteor-component-library";
       <placeholder-slot name="navigation" style="width: 12rem" />
     </template>
 
-    <template #content>
-      <placeholder-slot name="content" inset />
-    </template>
+    <placeholder-slot name="default" inset />
 
     <template #sidebar>
       <placeholder-slot name="sidebar" inset style="width: 12rem" />

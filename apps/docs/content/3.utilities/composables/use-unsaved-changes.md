@@ -45,6 +45,8 @@ async function close() {
 - One question is open at a time. Asking again while it is open waits for the same answer.
 - Only "Discard changes" leaves; closing the question in any other way keeps the changes.
 - A view that `<KeepAlive>` keeps doesn't ask while it isn't shown.
+- Views that no route renders, such as the content of the shell's header, navigation or sidebar, ask before every navigation to another path.
+- Global guards that the app registers before the shell mounts run before the question.
 - The texts of the question are translated for English and German.
 - Outside of a shell, the call does nothing.
 

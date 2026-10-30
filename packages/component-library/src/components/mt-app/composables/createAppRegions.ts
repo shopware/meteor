@@ -4,15 +4,15 @@ import type { MtAppRegions } from "./useAppRegions";
 const REGIONS = ["header", "navigation", "sidebar", "contentFrame"] as const;
 
 /**
- * The regions that views hide with `useAppRegions()`. Each request lasts until its release
- * function is called, and a region stays hidden while any request hides it.
+ * The regions that views hide with `useAppRegions()` and routes with their meta. A region stays
+ * hidden while any registration hides it.
  */
 export function createAppRegions() {
-  const requests = shallowReactive(new Map<symbol, () => MtAppRegions>());
+  const registrations = shallowReactive(new Map<symbol, () => MtAppRegions>());
 
   /** `true` for every region that is hidden. Stays the same object while nothing changes. */
   const hidden = computed<Required<MtAppRegions>>((previous) => {
-    const requested = Array.from(requests.values(), (regions) => regions());
+    const requested = Array.from(registrations.values(), (regions) => regions());
     const next = Object.fromEntries(
       REGIONS.map((region) => [region, requested.some((regions) => regions[region] === false)]),
     ) as Required<MtAppRegions>;
@@ -21,14 +21,14 @@ export function createAppRegions() {
     return isUnchanged ? previous : next;
   });
 
-  function requestRegions(regions: () => MtAppRegions) {
+  function registerRegions(regions: () => MtAppRegions) {
     const id = Symbol("mt-app-regions");
-    requests.set(id, regions);
+    registrations.set(id, regions);
 
     return () => {
-      requests.delete(id);
+      registrations.delete(id);
     };
   }
 
-  return { hidden, requestRegions };
+  return { hidden, registerRegions };
 }

@@ -1,6 +1,5 @@
 <template>
   <div class="mt-brand" :title="compact ? title : undefined">
-    <!-- @slot Logo next to the title. Replaces the whole default logo, including its box -->
     <slot name="logo">
       <div class="mt-brand__image" :class="`mt-brand__image--${appearance}`">
         <mt-icon :name="productLogos[variant].icon" :size="productLogos[variant].size" decorative />
@@ -19,21 +18,12 @@
 </template>
 
 <script setup lang="ts">
-import MtIcon from "../mt-icon/mt-icon.vue";
-import MtText from "../mt-text/mt-text.vue";
-
-const productLogos = {
-  // The share of the box each mark takes in the product logos
-  shopware: { icon: "solid-shopware", size: "60%" },
-  copilot: { icon: "solid-shopware-copilot", size: "53%" },
-  intelligence: { icon: "solid-shopware-intelligence", size: "60%" },
-  nexus: { icon: "solid-shopware-nexus", size: "60%" },
-  payments: { icon: "solid-shopware-payments", size: "68%" },
-} as const;
+import MtIcon from "@/components/mt-icon/mt-icon.vue";
+import MtText from "@/components/mt-text/mt-text.vue";
 
 /**
  * A logo with a title and an optional subtitle, for example the name of the shop in the header of
- * `mt-sidebar`. The default logo is decorative, as the title names the shop.
+ * `mt-sidebar`.
  *
  * @experimental The API may still change in a future release.
  */
@@ -42,10 +32,8 @@ withDefaults(
     /**
      * Name next to the logo, for example the name of the shop. Cut off with an ellipsis when too long.
      */
-    title?: string;
-    /**
-     * Second line below the title, for example the name of the product. An empty string hides it.
-     */
+    title: string;
+    /** Second line below the title, for example the name of the product. */
     subtitle?: string;
     /**
      * The Shopware product whose logo is shown.
@@ -62,8 +50,7 @@ withDefaults(
     compact?: boolean;
   }>(),
   {
-    title: "Meteor",
-    subtitle: "Shopware",
+    subtitle: undefined,
     variant: "shopware",
     appearance: "dark",
     compact: false,
@@ -71,8 +58,18 @@ withDefaults(
 );
 
 defineSlots<{
-  logo?: null;
+  /** A logo next to the title. It replaces the whole default logo, including its box. */
+  logo?(): unknown;
 }>();
+
+const productLogos = {
+  // The share of the box each mark takes in the product logos
+  shopware: { icon: "solid-shopware", size: "60%" },
+  copilot: { icon: "solid-shopware-copilot", size: "53%" },
+  intelligence: { icon: "solid-shopware-intelligence", size: "60%" },
+  nexus: { icon: "solid-shopware-nexus", size: "60%" },
+  payments: { icon: "solid-shopware-payments", size: "68%" },
+} as const;
 </script>
 
 <style scoped>

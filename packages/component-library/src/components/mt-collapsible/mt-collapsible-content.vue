@@ -8,7 +8,7 @@
     :force-mount="forceMount"
     @content-found="() => emits('contentFound')"
     @animationend.self="isAnimated = false"
-    @animationcancel.self="isAnimated = false"
+    @animationcancel.self="onAnimationCancel"
   >
     <slot />
   </CollapsibleContent>
@@ -46,6 +46,12 @@ function isShown() {
   const place = (content.value?.$el as Node | undefined)?.parentElement;
 
   return Boolean(place && place.getClientRects().length > 0);
+}
+
+/** A cancel also arrives for the animation that the next one replaces, which must keep the class. */
+function onAnimationCancel(event: AnimationEvent) {
+  const current = root.open.value ? "mt-collapsible-slide-down" : "mt-collapsible-slide-up";
+  if (event.animationName === current) isAnimated.value = false;
 }
 
 // Sync, so the class is in place when Reka looks for the closing animation before it removes the

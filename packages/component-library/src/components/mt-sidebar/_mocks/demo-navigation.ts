@@ -8,9 +8,6 @@ import MtActionMenuItem from "../../mt-action-menu-item/mt-action-menu-item.vue"
 import type { NavItem, NavSection } from "../../mt-nav/mt-nav.vue";
 import { StoryLink } from "../../mt-nav/mt-nav.story-helper";
 
-/**
- * Everything the demo templates below need to render.
- */
 export const demoComponents = {
   MtSidebar,
   MtBrand,
@@ -86,24 +83,17 @@ export const demoSections: NavSection[] = [
  */
 export const shortDemoSections: NavSection[] = [{ items: shopItems.slice(0, 4) }];
 
-/**
- * The navigation used to demonstrate the sidebar. Any navigation can be placed
- * into the default slot instead.
- */
+/** The navigation used to demonstrate the sidebar. */
 export const demoNavigationTemplate = `
 <mt-nav :sections="sections" :link-component="linkComponent" />`;
 
-/**
- * Header as used by the Shopware administration.
- */
+/** A brand in the sidebar header. */
 export const demoHeaderTemplate = `
 <mt-brand title="Demo shop" subtitle="Shopware" />`;
 
-/**
- * Footer as used by the Shopware administration.
- */
+/** A user menu in the sidebar footer. */
 export const demoFooterTemplate = `
-<mt-user-menu first-name="Max" last-name="Mustermann" subtitle="Administrator">
+<mt-user-menu name="Max Mustermann" subtitle="Administrator">
   <mt-action-menu-group>
     <mt-action-menu-item icon="regular-sign-out" variant="critical">Log out</mt-action-menu-item>
   </mt-action-menu-group>

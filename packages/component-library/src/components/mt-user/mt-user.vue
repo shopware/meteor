@@ -1,15 +1,14 @@
 <template>
-  <div class="mt-user" :class="{ 'mt-user--compact': compact }">
+  <span class="mt-user" :title="compact ? name : undefined">
     <mt-avatar
       class="mt-user__avatar"
-      size="s"
-      :first-name="initials.first"
-      :last-name="initials.last"
+      :first-name="nameParts.first"
+      :last-name="nameParts.last"
       :image-url="imageUrl"
       aria-hidden="true"
     />
 
-    <span class="mt-user__text">
+    <span class="mt-user__text" :class="{ 'visually-hidden': compact }">
       <mt-text as="span" class="mt-user__name" size="xs" weight="semibold">
         {{ name }}
       </mt-text>
@@ -24,7 +23,7 @@
         {{ subtitle }}
       </mt-text>
     </span>
-  </div>
+  </span>
 </template>
 
 <script setup lang="ts">
@@ -47,8 +46,8 @@ const props = withDefaults(
     /** An image for the avatar instead of the initials. */
     imageUrl?: string;
     /**
-     * Hides the name and the subtitle visually, for example in a collapsed sidebar. They stay
-     * available to assistive technology.
+     * Shows only the avatar. The name and the subtitle stay available to assistive technology, and
+     * the name shows on hover.
      */
     compact?: boolean;
   }>(),
@@ -59,7 +58,7 @@ const props = withDefaults(
   },
 );
 
-const initials = computed(() => {
+const nameParts = computed(() => {
   const words = props.name.trim().split(/\s+/).filter(Boolean);
 
   return { first: words[0], last: words.length > 1 ? words[words.length - 1] : undefined };
@@ -68,19 +67,17 @@ const initials = computed(() => {
 
 <style scoped>
 .mt-user {
-  position: relative;
   display: flex;
   align-items: center;
   gap: var(--scale-size-12);
   min-width: 0;
 }
 
-.mt-user__avatar {
-  flex: none;
-}
-
+/* Between the sizes of mt-avatar, as high as the name and the subtitle together. */
 .mt-user .mt-user__avatar {
   --mt-avatar-size: var(--scale-size-36);
+
+  flex: none;
 }
 
 .mt-user__text {
@@ -95,15 +92,6 @@ const initials = computed(() => {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.mt-user--compact .mt-user__text {
-  position: absolute;
-  width: var(--scale-size-1);
-  height: var(--scale-size-1);
-  overflow: hidden;
-  clip-path: inset(50%);
   white-space: nowrap;
 }
 </style>

@@ -41,11 +41,9 @@ const breadcrumb: BreadcrumbItem[] = [{ label: "Dashboard", icon: "dashboard" }]
       </div>
     </template>
 
-    <template #content>
-      <mt-page width="l" :breadcrumb="breadcrumb">
-        <placeholder-slot style="height: 24rem" />
-      </mt-page>
-    </template>
+    <mt-page width="l" :breadcrumb="breadcrumb">
+      <placeholder-slot style="height: 24rem" />
+    </mt-page>
   </mt-app>
 </template>
 

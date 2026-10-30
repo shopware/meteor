@@ -26,9 +26,7 @@ Put it directly into the panel slot, with the panel's content inside.
       </mt-panel>
     </template>
 
-    <template #content>
-      <RouterView />
-    </template>
+    <RouterView />
 
     <template #sidebar>
       <mt-panel
@@ -91,15 +89,16 @@ The panels of a page work the same way:
 
 ## Behavior
 
-- Without a `width`, the panel is as wide as its content. `min-width` and `max-width` limit it, and next to the content it never takes more than half of the viewport.
+- Without a `width`, the panel is as wide as its content. `min-width` and `max-width` limit it, and next to the content it never takes more than half of the layout: of the page in **Page**, of the viewport in **App**.
 - `closable` shows the panel's trigger also on desktop, where it shows and hides the panel. On small screens, panels are drawers that always have a trigger.
 - On desktop, the panel slides in and out over its outer edge when it opens or closes.
 - `appearance` sets the panel off from the content. `bordered` draws a frame in **App**, where the panel sits on the app's background next to the content, and a line on the panel's inner edge in **Page**, where it sits inside the content's frame. `plain` draws no border. The navigation is `plain` by default, the other panels are `bordered`. Drawers on small screens have no border.
-- With `resizable`, a handle on the inner edge resizes the panel on desktop: on the end edge for the navigation and the start panel, on the start edge for the sidebar and the end panel. The handle's grab area is 24px wide, half inside the panel and half over its edge. When the pointer is on the handle, it has the keyboard focus or it is dragged, a line that fades out towards the top and the bottom marks the edge: the panel's border, or for a `plain` panel in **App** the border of the content next to it. The cursor changes right away, the line follows after a moment. Double-clicking the handle eases the panel back to its starting width.
+- With `resizable`, a handle on the inner edge resizes the panel on desktop: on the end edge for the navigation and the start panel, on the start edge for the sidebar and the end panel. The handle's grab area is 16px wide: 4px over the side of the edge with a scrollbar next to it, and 12px over the other side. When the pointer is on the handle or it is dragged, a line that fades out towards the top and the bottom marks the edge: the panel's border, or for a `plain` panel in **App** the border of the content next to it. With the keyboard focus, the line is solid and in the brand color. The cursor changes right away, the line follows after a moment. Double-clicking the handle eases the panel back to its starting width.
 - A panel that is `closable` and `resizable` also closes by dragging its handle to its outer edge. Past its smallest width, the panel slides out with the pointer, and back in when the handle is dragged back. Releasing the pointer within 24px of the outer edge, or beyond it up to and past the edge of the screen, closes the panel from where it is. Releasing it earlier slides the panel back in at its smallest width. A closed panel opens again with the width it had before the drag.
 - The panel scrolls its content itself.
-- A resized panel remembers its width in the browser, one width per use: the navigation and the sidebar of the app, and the start and end panel of each page. Pages are told apart by their route, such as `/orders/:id`, so all orders share one width, or by their URL path without Vue Router. A remembered width is kept within the panel's limits.
-- `update:width` is emitted when a drag ends, on every key press and when a reset returns to the starting `width`, so `v-model:width` can follow the width the user chose.
+- A resized panel remembers its width in the browser, one width per use: the navigation and the sidebar of the app, and the start and end panel of each page. Pages are told apart by the route that renders them, such as `/orders/:id`, so all orders share one width, also across the child routes of a page, or by their URL path without Vue Router. A remembered width is kept within the panel's limits.
+- `v-model:width` follows the width the user chose: at the end of a drag, on every key press and when a reset returns to the starting width, which is `undefined` for a panel as wide as its content. With `v-model:width`, the app keeps the width, and the panel doesn't remember it in the browser.
+- A click on the handle without moving it leaves the width as it is.
 - In a drawer, the panel takes the `width` it started with, not the width it was resized to on desktop, never gets wider than the drawer, and has no resize handle.
 - With server rendering, a remembered width applies once the app has loaded, so the page first shows the panel's starting width.
 - A **Panel** inside another component still works, but on the server its label, icon and closable setting are only known once it renders, after the triggers of the page header. Server rendering then logs a warning.
