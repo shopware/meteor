@@ -67,6 +67,7 @@ The `start` and `end` slots add panels next to the content, for example a list a
 - The bottom border of the header fades in as the content starts to scroll. With panels, a close button or the triggers of the shell, the border is always shown.
 - The breakpoint for the panels is measured on the width of the page, not of the viewport, so the panels also become drawers next to an open sidebar. While a panel of the shell is being resized, the page keeps its layout until the drag ends.
 - A [**Panel**](/components/panel) with `closable` also shows its trigger on a wide page, where it shows and hides the panel.
+- On a wide page, a panel slides in and out over the page's edge when it opens or closes, as the panels of [**App**](/components/app) do. A page turning narrow or wide doesn't slide.
 - A line on the inner edge sets each panel off from the content, unless its [**Panel**](/components/panel) has the `appearance` `plain`.
 - A `close` listener replaces the navigation of the close button. Without Vue Router and without a listener, the button does nothing.
 
