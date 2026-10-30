@@ -1,60 +1,79 @@
 <template>
-  <div
-    :id="isMobile ? undefined : id"
-    ref="inline"
-    class="mt-app__region"
-    :class="[
-      `mt-app__region--${panel}`,
-      { 'mt-app__region--bordered': bordered, 'mt-app__region--with-panel': hasPanel },
-    ]"
-    :hidden="hidden || isMobile || undefined"
+  <Transition
+    name="mt-app-region-slide"
+    @enter="setSlideDistance"
+    @before-leave="setSlideDistance"
+    @after-leave="endSettling"
+    @leave-cancelled="endSettling"
   >
-    <div ref="host" class="mt-app__region-content">
-      <slot />
-    </div>
-
-    <!--
-      Inside the panel element, so the region has a single root that the layouts can style. The
-      drawer renders no element here: its backdrop and panel are teleported to the body, so they
-      show although this element is hidden in the mobile layout.
-    -->
-    <mt-drawer-root
-      v-if="isMobile"
-      :open="isOpen"
-      @update:open="(open: boolean) => (open ? controller.open(panel) : controller.close(panel))"
+    <div
+      v-show="!hidden"
+      :id="isMobile ? undefined : id"
+      ref="inline"
+      class="mt-app__region"
+      :class="[
+        `mt-app__region--${panel}`,
+        `mt-app__region--at-${side}`,
+        {
+          'mt-app__region--bordered': bordered,
+          'mt-app__region--with-panel': hasPanel,
+          'mt-app__region--settling': settleDuration !== null,
+        },
+      ]"
+      :style="{
+        '--mt-app-region-drag-offset': dragOffset ? `${dragOffset}px` : undefined,
+        '--mt-app-region-settle-duration':
+          settleDuration === null ? undefined : `${settleDuration}ms`,
+      }"
+      :hidden="isMobile || undefined"
     >
-      <mt-drawer-content
-        :id="id"
-        :side="side"
-        variant="floating"
-        :title="label"
-        class="mt-app__drawer"
-        hide-header
-        inset
-        keep-mounted
-      >
-        <div class="mt-app__drawer-layout">
-          <div class="mt-app__drawer-chrome" :class="`mt-app__drawer-chrome--${side}`">
-            <mt-drawer-close
-              :as="MtButton"
-              variant="tertiary"
-              size="small"
-              square
-              :aria-label="closeLabel"
-            >
-              <mt-icon name="regular-times-s" size="var(--scale-size-10)" decorative />
-            </mt-drawer-close>
-          </div>
+      <div ref="host" class="mt-app__region-content">
+        <slot />
+      </div>
 
-          <div ref="drawerBody" class="mt-app__drawer-body" />
-        </div>
-      </mt-drawer-content>
-    </mt-drawer-root>
-  </div>
+      <!--
+        Inside the panel element, so the region has a single root that the layouts can style. The
+        drawer renders no element here: its backdrop and panel are teleported to the body, so they
+        show although this element is hidden in the mobile layout.
+      -->
+      <mt-drawer-root
+        v-if="isMobile"
+        :open="isOpen"
+        @update:open="(open: boolean) => (open ? controller.open(panel) : controller.close(panel))"
+      >
+        <mt-drawer-content
+          :id="id"
+          :side="side"
+          variant="floating"
+          :title="label"
+          class="mt-app__drawer"
+          hide-header
+          inset
+          keep-mounted
+        >
+          <div class="mt-app__drawer-layout">
+            <div class="mt-app__drawer-chrome" :class="`mt-app__drawer-chrome--${side}`">
+              <mt-drawer-close
+                :as="MtButton"
+                variant="tertiary"
+                size="small"
+                square
+                :aria-label="closeLabel"
+              >
+                <mt-icon name="regular-times-s" size="var(--scale-size-10)" decorative />
+              </mt-drawer-close>
+            </div>
+
+            <div ref="drawerBody" class="mt-app__drawer-body" />
+          </div>
+        </mt-drawer-content>
+      </mt-drawer-root>
+    </div>
+  </Transition>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, provide, useTemplateRef, watch } from "vue";
+import { computed, onBeforeUnmount, provide, ref, useTemplateRef, watch } from "vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtDrawerRoot from "@/components/_internal/mt-drawer/mt-drawer-root.vue";
@@ -85,7 +104,11 @@ const props = defineProps<{
   label: string;
   /** The accessible name of the drawer's close button. */
   closeLabel: string;
-  /** Hides the panel in the desktop layout, because it is closed or a view hides it. */
+  /**
+   * Hides the panel in the desktop layout, because it is closed or a view hides it. The panel
+   * slides out and in when it changes. It doesn't depend on the layout, so switching to the
+   * drawers and back doesn't slide.
+   */
   hidden?: boolean;
   /** Sets the panel off from the content with a border, which the layout draws. */
   bordered?: boolean;
@@ -104,6 +127,18 @@ const drawerBody = useTemplateRef<HTMLElement>("drawerBody");
 const isMobile = computed(() => props.controller.isMobile.value);
 const isOpen = computed(() => isMobile.value && props.controller.isOpen(props.panel));
 
+/** The length of the slide when the panel opens or closes, in milliseconds. */
+const SLIDE_DURATION = 400;
+/** The shortest settle after a drag, so a panel that is nearly there doesn't snap. */
+const SHORTEST_SETTLE_DURATION = 150;
+
+// How far a drag past the panel's smallest width has pushed it out over its outer edge, in pixels.
+const dragOffset = ref(0);
+
+// While set, the panel settles after such a drag, from where the pointer left it.
+const settleDuration = ref<number | null>(null);
+let settleTimeout: ReturnType<typeof setTimeout> | undefined;
+
 // An `MtPanel` in the slot learns where it is and talks to its layout through this.
 provide(panelContextKey, {
   place: props.panel,
@@ -112,7 +147,64 @@ provide(panelContextKey, {
   isFoundInSlot: () => props.controller.hasPanelInSlot(props.panel),
   registerOptions: (options) => props.controller.registerPanelOptions(props.panel, options),
   setResizing: (resizing) => props.controller.setResizing(resizing),
+  isOpen: () => props.controller.isOpen(props.panel),
+  slideOut,
+  release,
 });
+
+/**
+ * The panel slides as far as it is wide, and over the gap next to it, so the content takes its
+ * whole place.
+ */
+function slideDistance(element: Element) {
+  const gap = parseFloat(getComputedStyle(element.parentElement ?? element).columnGap) || 0;
+
+  return element.getBoundingClientRect().width + gap;
+}
+
+/** Set when a slide starts, while the panel is shown. */
+function setSlideDistance(element: Element) {
+  (element as HTMLElement).style.setProperty(
+    "--mt-app-region-slide",
+    `${slideDistance(element)}px`,
+  );
+}
+
+/** Pushes the panel out over its outer edge during a drag, following the pointer. */
+function slideOut(offset: number) {
+  endSettling();
+  dragOffset.value = offset > 0 && inline.value ? Math.min(offset, slideDistance(inline.value)) : 0;
+}
+
+/**
+ * Ends a drag that pushed the panel out: closes the panel from where it is, or slides it back. As
+ * the panel is already moving, the settle decelerates from the start, and it is shorter the less
+ * is left of the slide.
+ */
+function release(close: boolean) {
+  const offset = dragOffset.value;
+  if (!close && offset === 0) return;
+
+  const distance = inline.value ? slideDistance(inline.value) : offset;
+  const remaining = distance > 0 ? (close ? distance - offset : offset) / distance : 0;
+  const duration = Math.max(Math.round(SLIDE_DURATION * remaining), SHORTEST_SETTLE_DURATION);
+
+  clearTimeout(settleTimeout);
+  settleDuration.value = duration;
+  settleTimeout = setTimeout(() => {
+    settleDuration.value = null;
+  }, duration);
+
+  // A closing panel leaves from its current offset, which is cleared once it has left.
+  if (close) props.controller.close(props.panel);
+  else dragOffset.value = 0;
+}
+
+function endSettling() {
+  clearTimeout(settleTimeout);
+  settleDuration.value = null;
+  dragOffset.value = 0;
+}
 
 /** Moves the slot content into the drawer in the mobile layout, and back inline otherwise. */
 function placeContent() {
@@ -134,6 +226,7 @@ watch([isMobile, drawerBody], placeContent, { flush: "post" });
 
 // A drawer that disappears while it is open would leave the focus nowhere.
 onBeforeUnmount(() => {
+  clearTimeout(settleTimeout);
   if (!isOpen.value) return;
 
   props.controller.close(props.panel);
@@ -163,6 +256,53 @@ defineExpose({
 
 .mt-app__region[hidden] {
   display: none;
+}
+
+/* A drag past the panel's smallest width pushes it out over its outer edge, with the pointer. */
+.mt-app__region--at-start {
+  margin-inline-start: calc(var(--mt-app-region-drag-offset, 0px) * -1);
+}
+
+.mt-app__region--at-end {
+  margin-inline-end: calc(var(--mt-app-region-drag-offset, 0px) * -1);
+}
+
+/*
+ * Opening and closing next to the content, the panel slides in and out over its outer edge while
+ * the content grows into its place. The transition starts with the `-to` classes, so measuring the
+ * distance at the start doesn't animate.
+ */
+.mt-app-region-slide-enter-to,
+.mt-app-region-slide-leave-to {
+  transition: margin 400ms cubic-bezier(0.3, 0, 0, 1);
+}
+
+.mt-app__region--at-start.mt-app-region-slide-enter-from,
+.mt-app__region--at-start.mt-app-region-slide-leave-to {
+  margin-inline-start: calc(var(--mt-app-region-slide, 0px) * -1);
+}
+
+.mt-app__region--at-end.mt-app-region-slide-enter-from,
+.mt-app__region--at-end.mt-app-region-slide-leave-to {
+  margin-inline-end: calc(var(--mt-app-region-slide, 0px) * -1);
+}
+
+/*
+ * After such a drag, the panel settles from where the pointer left it. It is already moving, so it
+ * decelerates from the start.
+ */
+.mt-app__region--settling,
+.mt-app__region--settling.mt-app-region-slide-leave-to {
+  transition: margin var(--mt-app-region-settle-duration) cubic-bezier(0, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-app-region-slide-enter-to,
+  .mt-app-region-slide-leave-to,
+  .mt-app__region--settling,
+  .mt-app__region--settling.mt-app-region-slide-leave-to {
+    transition: none;
+  }
 }
 
 .mt-app__region-content {
