@@ -475,9 +475,12 @@ function closeFlyoutAndFocusRow() {
   color: var(--color-icon-brand-default);
 }
 
+/* A fixed width keeps the panel steady while its rows open and close; long labels truncate */
 .mt-nav__flyout {
-  min-width: var(--scale-size-192);
-  padding: var(--scale-size-8);
+  box-sizing: border-box;
+  /* stylelint-disable-next-line meteor/prefer-sizing-token */
+  width: 264px;
+  padding: var(--scale-size-6);
   white-space: nowrap;
   background: var(--color-elevation-surface-raised);
   border: var(--scale-size-1) solid var(--color-border-secondary-default);
