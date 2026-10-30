@@ -1,4 +1,5 @@
 import { inject, type InjectionKey, type Ref } from "vue";
+import type { PanelController } from "./useAppPanels";
 import type { MtAppPanel } from "./useApp";
 import type { MtAppRegions } from "./useAppRegions";
 import type { UnsavedChangesSource } from "./createAppUnsavedChanges";
@@ -7,7 +8,7 @@ import type { UnsavedChangesSource } from "./createAppUnsavedChanges";
  * What `mt-app` shares with its parts and with `useApp()`, `useAppRegions()`,
  * `useAppLoading()` and `useUnsavedChanges()`.
  */
-export interface AppContext {
+export interface AppContext extends PanelController {
   isMobile: Readonly<Ref<boolean>>;
   isOpen(panel: MtAppPanel): boolean;
   open(panel: MtAppPanel): void;
@@ -30,6 +31,8 @@ export interface AppContext {
   isTriggerShown(panel: MtAppPanel): boolean;
   /** The accessible name of the panel's trigger. */
   triggerLabel(panel: MtAppPanel): string;
+  /** The icon of the panel's trigger. */
+  triggerIcon(panel: MtAppPanel): string;
   /** The id of the element that the panel's trigger controls: the panel or its drawer. */
   triggerControls(panel: MtAppPanel): string;
   /**
@@ -37,15 +40,11 @@ export interface AppContext {
    * until the returned function is called.
    */
   registerTrigger(panel: MtAppPanel): () => void;
+  /** Whether a panel of the shell is being resized, during which pages keep their layout. */
+  isResizing: Readonly<Ref<boolean>>;
 }
 
 export const appContextKey = Symbol("mt-app") as InjectionKey<AppContext>;
-
-/** The icons of the panels' triggers. */
-export const appTriggerIcons: Record<MtAppPanel, string> = {
-  navigation: "regular-bars",
-  sidebar: "regular-panel-right",
-};
 
 /** The context of the surrounding `mt-app`, for parts that only work inside of it. */
 export function useAppContext(component: string): AppContext {
