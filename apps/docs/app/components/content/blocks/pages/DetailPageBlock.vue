@@ -19,31 +19,29 @@ const breadcrumb: BreadcrumbItem[] = [
       <placeholder-slot name="App: navigation" style="width: 15rem" />
     </template>
 
-    <template #content>
-      <mt-page width="l" :breadcrumb="breadcrumb">
-        <template #actions>
-          <placeholder-slot name="Page: actions" />
-        </template>
+    <mt-page width="l" :breadcrumb="breadcrumb">
+      <template #actions>
+        <placeholder-slot name="Page: actions" />
+      </template>
 
-        <div class="stack">
-          <mt-content-header title="Running shoe Aero">
-            <template #actions>
-              <placeholder-slot name="Content Header: actions" />
-            </template>
+      <div class="stack">
+        <mt-content-header title="Running shoe Aero">
+          <template #actions>
+            <placeholder-slot name="Content Header: actions" />
+          </template>
 
-            <placeholder-slot name="Content Header: default" />
-          </mt-content-header>
+          <placeholder-slot name="Content Header: default" />
+        </mt-content-header>
 
-          <mt-layout>
-            <placeholder-slot name="Layout: default" style="height: 24rem" />
+        <mt-layout>
+          <placeholder-slot name="Layout: default" style="height: 24rem" />
 
-            <template #end>
-              <placeholder-slot name="Layout: end" style="height: 16rem" />
-            </template>
-          </mt-layout>
-        </div>
-      </mt-page>
-    </template>
+          <template #end>
+            <placeholder-slot name="Layout: end" style="height: 16rem" />
+          </template>
+        </mt-layout>
+      </div>
+    </mt-page>
   </mt-app>
 </template>
 

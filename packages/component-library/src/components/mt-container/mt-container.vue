@@ -28,7 +28,7 @@ withDefaults(
 );
 
 defineSlots<{
-  default?: null;
+  default?(): unknown;
 }>();
 </script>
 

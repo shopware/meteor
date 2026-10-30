@@ -103,7 +103,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSub,
 } from "reka-ui";
-// Import global styling
 import MtApp from "./components/mt-app/mt-app.vue";
 import MtAppPanelTrigger from "./components/mt-app/mt-app-panel-trigger.vue";
 import MtPanel from "./components/mt-panel/mt-panel.vue";
@@ -115,6 +114,7 @@ import MtContainer from "./components/mt-container/mt-container.vue";
 import MtPage from "./components/mt-page/mt-page.vue";
 import MtContentHeader from "./components/mt-content-header/mt-content-header.vue";
 import MtLayout from "./components/mt-layout/mt-layout.vue";
+// Import global styling
 import "./assets/css/all.css";
 
 // Importing types
@@ -147,6 +147,13 @@ export {
   MtSidebar,
   MtUserMenu,
   MtUser,
+  MtApp,
+  MtAppPanelTrigger,
+  MtPanel,
+  MtPage,
+  MtContainer,
+  MtContentHeader,
+  MtLayout,
   MtSlider,
   MtSwitch,
   MtTextField,
@@ -211,6 +218,10 @@ export {
   DeviceHelperPlugin,
   useSnackbar,
   useTheme,
+  useApp,
+  useAppRegions,
+  useAppLoading,
+  useUnsavedChanges,
   useServicePermission,
   type UseServicePermissionReturn,
   // @deprecated
@@ -253,17 +264,6 @@ export {
   MtPagination as SwPagination,
   // @deprecated
   MtSkeletonBar as SwSkeletonBar,
-  MtApp,
-  MtAppPanelTrigger,
-  MtPanel,
-  useApp,
-  useAppRegions,
-  useAppLoading,
-  useUnsavedChanges,
-  MtContainer,
-  MtPage,
-  MtContentHeader,
-  MtLayout,
 };
 
 // Exporting types

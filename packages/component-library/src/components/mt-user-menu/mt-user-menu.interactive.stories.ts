@@ -10,7 +10,7 @@ import meta, {
 
 export default {
   ...meta,
-  title: "Components/User menu/Interaction tests",
+  title: "Components/User Menu/Interaction tests",
   tags: ["!autodocs"],
 } as MtUserMenuMeta;
 

@@ -20,7 +20,7 @@ import { MtUserMenu } from "@shopware-ag/meteor-component-library";
 
 Put the entries into the default slot, built from `mt-action-menu-group` and `mt-action-menu-item` as in an [**Action Menu**](/components/action-menu). The component adds no entries of its own, so the logout is one of your entries.
 
-The `compact` prop shows only the avatar, for example in a collapsed sidebar.
+The `compact` prop shows only the avatar. The name shows on hover.
 
 ## Examples
 
@@ -53,7 +53,7 @@ Only the avatar shows. The menu keeps its own width instead of the width of the 
 ## Behavior
 
 - The menu opens above the button when there is room for it, and is as wide as the button. When compact, it keeps its own width.
-- The avatar shows the initials of `first-name` and `last-name`, or the image of `image-url`.
+- The avatar shows the initials of the first and the last word of `name`, or the image of `image-url`.
 - A name or subtitle that does not fit is cut off with an ellipsis.
 
 ## Accessibility

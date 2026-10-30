@@ -26,7 +26,7 @@ const meta: MtLayoutMeta = {
 
         <template #end>
           <mt-card title="Status">
-            <mt-text size="xs">A sidebar after the content.</mt-text>
+            <mt-text size="xs">A column after the content.</mt-text>
           </mt-card>
         </template>
       </mt-layout>`,

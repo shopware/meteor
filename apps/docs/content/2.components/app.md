@@ -24,7 +24,7 @@ The shell fills the viewport. The example above gives it a fixed height with `--
 
 ### Application setup
 
-Fill the slots you need and render the router view in `content`. Mounting the app after the router has resolved the first route lets the shell apply the [regions of that route](/utilities/composables/use-app-regions) from the first render.
+Fill the slots you need and render the router view as the main content, in the default slot. Mounting the app after the router has resolved the first route lets the shell apply the [regions of that route](/utilities/composables/use-app-regions) from the first render.
 
 ```vue [App.vue]
 <script setup lang="ts">
@@ -41,9 +41,7 @@ import AppNavigation from "./AppNavigation.vue";
       </mt-panel>
     </template>
 
-    <template #content>
-      <RouterView />
-    </template>
+    <RouterView />
   </mt-app>
 </template>
 ```
@@ -78,7 +76,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 
 - `header`: the application's own bar above the other regions. The triggers of the navigation and the sidebar sit in the header of the page. Only while no page shows them, the shell's header shows them at its start and end, also when the slot is empty.
 - `navigation`: the main navigation, such as [**Nav**](/components/nav), next to the content, usually in a [**Panel**](/components/panel).
-- `content`: the scrollable main content in a frame, usually a [**Page**](/components/page). It fills the shell without the frame when no other slot is filled, or when no other region is visible and a view sets `contentFrame: false`.
+- default slot: the scrollable main content in a frame, usually a [**Page**](/components/page). It fills the shell without the frame when no other slot is filled, or when no other region is visible and a view sets `contentFrame: false`.
 - `sidebar`: a panel next to the content, for example an assistant, usually in a [**Panel**](/components/panel). It is framed like the content unless its `appearance` is `plain`.
 
 ## API reference
@@ -110,17 +108,17 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 - In the desktop layout, a panel slides in and out over its outer edge when it opens or closes, also when a view hides or shows it, while the content grows into its place. Switching between the desktop and the mobile layout doesn't slide. With reduced motion, the panels show and hide at once.
 - **App** applies the stored theme preference, enables all future flags for the components inside, and mounts the [**Snackbar**](/components/snackbar) host.
 - With Vue Router installed, a navigation closes the open drawer and shows the new page from its top, or from the element of its URL hash.
-- With `loading-bar`, a thin bar runs along the top edge while a navigation is pending or while a view reports loading with [**useAppLoading**](/utilities/composables/use-app-loading). It appears after 200ms, so quick navigations don't show it, and stays for at least 500ms once shown.
+- With `loading-bar`, a thin bar runs along the top edge while a navigation is pending or while a view reports loading with [**useAppLoading**](/utilities/composables/use-app-loading). It appears after 200ms, so quick navigations don't show it, and stays for at least 500ms once shown. A navigation counts from the shell's own guard on, so global guards that the app registers before the shell mounts run before the bar.
 - Views report unsaved changes with [**useUnsavedChanges**](/utilities/composables/use-unsaved-changes). **App** then asks before a navigation or a reload loses them.
 
 ## Accessibility
 
 - The header is a `<header>` landmark and the content a `<main>` landmark. The navigation and the sidebar add no landmark of their own, so their content brings one, such as the `<nav>` of [**Nav**](/components/nav) or an `<aside>` named after its content.
 - The first focusable element of the shell is a "Skip to content" button. It becomes visible when it receives the focus and moves the focus to the content.
-- When a region hides while it holds the focus, the focus moves to the content.
+- When a region hides or unmounts while it holds the focus, the focus moves to the content.
 - After a navigation, screen readers announce the new document title, as after a full page load.
 - The drawers and their triggers are named by the `label` of their [**Panel**](/components/panel), or "Navigation" and "Sidebar". These defaults and the other texts of the shell are translated for English and German.
-- A trigger tells whether its panel is open and points to the panel, or to its drawer in the mobile layout.
+- A trigger is named "Toggle" and the label of its panel ("… ein- oder ausblenden" in German). It tells whether its panel is open and points to the panel, or to its drawer in the mobile layout.
 
 ## Related components
 

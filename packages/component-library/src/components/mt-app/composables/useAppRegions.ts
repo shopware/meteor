@@ -1,15 +1,7 @@
-import {
-  getCurrentInstance,
-  inject,
-  onActivated,
-  onDeactivated,
-  onScopeDispose,
-  toValue,
-  type MaybeRefOrGetter,
-} from "vue";
-import { appContextKey } from "./useAppContext";
-// Loads Vue Router's types for the augmentation of `RouteMeta` below. The generated types drop this
-// import, so apps without Vue Router don't need it.
+import { toValue, type MaybeRefOrGetter } from "vue";
+import { useAppRegistration } from "../_internal/mt-app-context";
+// Types `meta.mtAppRegions` for apps that use Vue Router. The generated types drop this import, and
+// TypeScript ignores the augmentation where Vue Router is missing.
 import type {} from "vue-router";
 
 /**
@@ -26,51 +18,23 @@ export interface MtAppRegions {
   contentFrame?: boolean;
 }
 
-// Types `meta.mtAppRegions` in apps that use Vue Router. Without Vue Router, TypeScript skips it.
 declare module "vue-router" {
   interface RouteMeta {
-    /** The parts of `mt-app` that the route hides, applied before its page renders. */
+    /**
+     * The parts of `mt-app` that the route hides, applied before its page renders. A child route
+     * overrides the parts it names and keeps the others of its parents.
+     */
     mtAppRegions?: MtAppRegions;
   }
 }
 
 /**
- * Hides regions of the surrounding `<mt-app>` for as long as the calling component (or effect
- * scope) is alive and not deactivated by `<KeepAlive>`, for example for a focus mode inside a page:
- *
- * ```ts
- * useAppRegions(() => ({ header: !focusMode.value, navigation: !focusMode.value }));
- * ```
- *
- * Regions that a whole route hides belong in its route meta instead, which the shell reads before
- * the page renders, so they don't flicker during page transitions:
- *
- * ```ts
- * { path: "/editor", component: EditorView, meta: { mtAppRegions: { header: false } } }
- * ```
- *
- * When several components hide regions, a region stays hidden until none of them hides it anymore.
- * Hidden regions stay mounted, so their state survives. Outside of a shell, the call does nothing.
+ * Hides regions of the surrounding `mt-app` while the calling component is alive, for example for
+ * a focus mode. Regions that a whole route hides belong in its meta. Outside of a shell, it does
+ * nothing.
  *
  * @experimental The API may still change in a future release.
  */
 export function useAppRegions(regions: MaybeRefOrGetter<MtAppRegions>): void {
-  const context = inject(appContextKey, null);
-  if (context === null) return;
-
-  const request = () => context.requestRegions(() => toValue(regions));
-  let release: (() => void) | undefined = request();
-
-  // A page that <KeepAlive> caches gives the regions back while it isn't shown.
-  if (getCurrentInstance()) {
-    onDeactivated(() => {
-      release?.();
-      release = undefined;
-    });
-    onActivated(() => {
-      release ??= request();
-    });
-  }
-
-  onScopeDispose(() => release?.());
+  useAppRegistration((app) => app.registerRegions(() => toValue(regions)));
 }
