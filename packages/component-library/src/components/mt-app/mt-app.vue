@@ -649,7 +649,7 @@ defineExpose({
   align-items: center;
   column-gap: var(--scale-size-8);
   min-width: 0;
-  padding-inline: var(--scale-size-8);
+  padding-inline: var(--scale-size-4);
 }
 
 .mt-app__header--with-triggers {
@@ -673,9 +673,9 @@ defineExpose({
 .mt-app__body {
   display: flex;
   flex: 1 1 0;
-  gap: var(--scale-size-8);
+  gap: var(--scale-size-4);
   min-height: 0;
-  padding: var(--scale-size-8);
+  padding: var(--scale-size-4);
 }
 
 .mt-app__header:not([hidden]) + .mt-app__body {
