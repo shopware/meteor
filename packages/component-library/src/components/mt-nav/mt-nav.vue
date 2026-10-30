@@ -258,47 +258,20 @@ function onNavigationKeydown(event: KeyboardEvent) {
 
 <style>
 .mt-nav {
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
   white-space: nowrap;
-
-  mask-image: linear-gradient(
-    to bottom,
-    transparent var(--scale-size-4),
-    #000 var(--scale-size-20),
-    #000 calc(100% - var(--scale-size-20)),
-    transparent calc(100% - var(--scale-size-4))
-  );
 }
 
 .mt-nav__body {
   position: relative;
-  height: 100%;
   display: flex;
   flex-direction: column;
   gap: var(--scale-size-16);
   padding: var(--scale-size-20) 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  scrollbar-width: none;
-}
-
-.mt-nav__body::-webkit-scrollbar {
-  display: none;
-}
-
-.mt-nav--horizontal {
-  height: auto;
-  mask-image: none;
 }
 
 .mt-nav--horizontal .mt-nav__body {
-  height: auto;
   flex-direction: row;
   align-items: center;
   padding: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
 }
 </style>
