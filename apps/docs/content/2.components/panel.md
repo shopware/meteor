@@ -93,8 +93,10 @@ The panels of a page work the same way:
 
 - Without a `width`, the panel is as wide as its content. `min-width` and `max-width` limit it, and next to the content it never takes more than half of the viewport.
 - `closable` shows the panel's trigger also on desktop, where it shows and hides the panel. On small screens, panels are drawers that always have a trigger.
+- On desktop, the panel slides in and out over its outer edge when it opens or closes.
 - `appearance` sets the panel off from the content. `bordered` draws a frame in **App**, where the panel sits on the app's background next to the content, and a line on the panel's inner edge in **Page**, where it sits inside the content's frame. `plain` draws no border. The navigation is `plain` by default, the other panels are `bordered`. Drawers on small screens have no border.
-- With `resizable`, a handle on the inner edge resizes the panel on desktop: on the end edge for the navigation and the start panel, on the start edge for the sidebar and the end panel. The handle's grab area is 24px wide, half inside the panel and half over its edge. When the pointer is on the handle, it has the keyboard focus or it is dragged, a line that fades out towards the top and the bottom marks the edge: the panel's border, or for a `plain` panel in **App** the border of the content next to it. The cursor changes right away, the line follows after a moment. Double-clicking the handle returns to the starting width.
+- With `resizable`, a handle on the inner edge resizes the panel on desktop: on the end edge for the navigation and the start panel, on the start edge for the sidebar and the end panel. The handle's grab area is 24px wide, half inside the panel and half over its edge. When the pointer is on the handle, it has the keyboard focus or it is dragged, a line that fades out towards the top and the bottom marks the edge: the panel's border, or for a `plain` panel in **App** the border of the content next to it. The cursor changes right away, the line follows after a moment. Double-clicking the handle eases the panel back to its starting width.
+- A panel that is `closable` and `resizable` also closes by dragging its handle to its outer edge. Past its smallest width, the panel slides out with the pointer, and back in when the handle is dragged back. Releasing the pointer within 24px of the outer edge, or beyond it up to and past the edge of the screen, closes the panel from where it is. Releasing it earlier slides the panel back in at its smallest width. A closed panel opens again with the width it had before the drag.
 - The panel scrolls its content itself.
 - A resized panel remembers its width in the browser, one width per use: the navigation and the sidebar of the app, and the start and end panel of each page. Pages are told apart by their route, such as `/orders/:id`, so all orders share one width, or by their URL path without Vue Router. A remembered width is kept within the panel's limits.
 - `update:width` is emitted when a drag ends, on every key press and when a reset returns to the starting `width`, so `v-model:width` can follow the width the user chose.
@@ -107,6 +109,7 @@ The panels of a page work the same way:
 - The panel adds no landmark of its own, so its content brings one, such as an `<aside>` named after it.
 - The resize handle is a separator named "Resize" followed by the panel's label. It tells its current, smallest and largest width, and points to the panel it resizes.
 - With the focus on the handle, the arrow keys resize the panel in steps of 10px, and Home and End resize it to its smallest and largest width.
+- Dragging the handle to close the panel is a shortcut for pointers. The panel's trigger, which every `closable` panel has, closes it for keyboard and screen reader users.
 - The texts of the handle are translated for English and German.
 
 ## Related components

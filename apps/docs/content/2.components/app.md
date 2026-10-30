@@ -107,6 +107,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 - Below `breakpoint` (1280px of viewport width by default), the navigation and the sidebar become drawers that open from their triggers. In the mobile layout, at most one drawer is open, and switching the layout closes it.
 - In the desktop layout, `v-model:navigation-open` and `v-model:sidebar-open` show and hide the panels. A [**Panel**](/components/panel) with `closable` also shows its trigger in the desktop layout.
 - A panel that a view hides has no trigger in either layout.
+- In the desktop layout, a panel slides in and out over its outer edge when it opens or closes, also when a view hides or shows it, while the content grows into its place. Switching between the desktop and the mobile layout doesn't slide. With reduced motion, the panels show and hide at once.
 - **App** applies the stored theme preference, enables all future flags for the components inside, and mounts the [**Snackbar**](/components/snackbar) host.
 - With Vue Router installed, a navigation closes the open drawer and shows the new page from its top, or from the element of its URL hash.
 - With `loading-bar`, a thin bar runs along the top edge while a navigation is pending or while a view reports loading with [**useAppLoading**](/utilities/composables/use-app-loading). It appears after 200ms, so quick navigations don't show it, and stays for at least 500ms once shown.
