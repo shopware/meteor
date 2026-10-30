@@ -16,6 +16,7 @@ import { render, screen, waitFor } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtApp from "./mt-app.vue";
 import MtAppPanelTrigger from "./mt-app-panel-trigger.vue";
+import MtPanel from "../mt-panel/mt-panel.vue";
 import { useApp } from "./composables/useApp";
 import { useAppRegions, type MtAppRegions } from "./composables/useAppRegions";
 import { useAppLoading } from "./composables/useAppLoading";
@@ -430,11 +431,14 @@ describe("mt-app", () => {
       // ARRANGE
       const onUpdate = vi.fn();
       await renderApp({
-        props: { sidebarClosable: true, "onUpdate:sidebarOpen": onUpdate },
+        props: { "onUpdate:sidebarOpen": onUpdate },
         slots: {
           navigation: allSlots.navigation,
           content: allSlots.content,
-          sidebar: allSlots.sidebar,
+          sidebar: () =>
+            h(MtPanel, { closable: true }, () =>
+              h("aside", { "aria-label": "Details" }, [h("button", "End action")]),
+            ),
         },
       });
       const trigger = screen.getByRole("button", { name: sidebarTriggerName });
@@ -862,17 +866,23 @@ describe("mt-app", () => {
   });
 
   describe("labels", () => {
-    it("names the panels and their triggers with the given labels", async () => {
+    it("names the panels and their triggers after the label of their mt-panel", async () => {
       // ARRANGE
-      const { rerender } = await renderApp({
-        props: mobileProps({ sidebarLabel: "Assistant" }),
+      const label = ref("Assistant");
+      await renderApp({
+        props: mobileProps(),
+        slots: {
+          content: allSlots.content,
+          sidebar: () => h(MtPanel, { label: label.value }, () => h("p", "Tools")),
+        },
       });
 
       // ASSERT
       expect(screen.getByRole("button", { name: "Open Assistant" })).toBeInTheDocument();
 
       // ACT
-      await rerender(mobileProps({ sidebarLabel: "Details" }));
+      label.value = "Details";
+      await nextTick();
 
       // ASSERT
       expect(screen.getByRole("button", { name: "Open Details" })).toBeInTheDocument();

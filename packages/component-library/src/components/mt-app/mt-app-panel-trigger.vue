@@ -17,7 +17,7 @@
       :aria-controls="trigger.controls"
       @click="trigger.toggle"
     >
-      <mt-icon :name="appTriggerIcons[panel]" size="var(--scale-size-16)" decorative />
+      <mt-icon :name="trigger.icon" size="var(--scale-size-16)" decorative />
     </mt-button>
 
     <mt-divider
@@ -41,7 +41,7 @@ import {
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtDivider from "@/components/mt-divider/mt-divider.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
-import { appContextKey, appTriggerIcons } from "./composables/useAppContext";
+import { appContextKey } from "./composables/useAppContext";
 import type { MtAppPanel } from "./composables/useApp";
 
 /**
@@ -70,6 +70,7 @@ const trigger = computed(() => {
 
   return {
     label: app.triggerLabel(panel),
+    icon: app.triggerIcon(panel),
     expanded: app.isOpen(panel),
     controls: app.triggerControls(panel),
     toggle: () => app.toggle(panel),

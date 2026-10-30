@@ -4,6 +4,7 @@ import { waitFor } from "@testing-library/vue";
 import { createI18n } from "vue-i18n";
 import MtApp from "./mt-app.vue";
 import MtPage from "../mt-page/mt-page.vue";
+import MtPanel from "../mt-panel/mt-panel.vue";
 
 function stubViewport(width: number) {
   vi.stubGlobal(
@@ -24,18 +25,19 @@ function stubViewport(width: number) {
 }
 
 interface AppOptions {
-  props?: Record<string, unknown>;
   content?: () => unknown;
+  navigation?: () => unknown;
+  sidebar?: () => unknown;
 }
 
-function createApp({ props, content }: AppOptions = {}) {
+function createApp({ content, navigation, sidebar }: AppOptions = {}) {
   return createSSRApp({
     render: () =>
-      h(MtApp, props ?? null, {
+      h(MtApp, null, {
         header: () => h("span", "Header content"),
-        navigation: () => h("a", { href: "/" }, "Orders"),
+        navigation: navigation ?? (() => h("a", { href: "/" }, "Orders")),
         content: content ?? (() => h("p", "Main content")),
-        sidebar: () => h("div", "Tools"),
+        sidebar: sidebar ?? (() => h("div", "Tools")),
       }),
   }).use(createI18n({ legacy: false, locale: "en" }));
 }
@@ -57,7 +59,11 @@ async function hydrate(width: number, options: AppOptions = {}) {
 
   const messages = [...warn.mock.calls, ...error.mock.calls].map((call) => String(call[0]));
 
-  return { container, hydrationMessages: messages.filter((message) => /hydration/i.test(message)) };
+  return {
+    html,
+    container,
+    hydrationMessages: messages.filter((message) => /hydration/i.test(message)),
+  };
 }
 
 describe("mt-app server-side rendering", () => {
@@ -88,12 +94,17 @@ describe("mt-app server-side rendering", () => {
 
   it("hydrates a page with the triggers of closable panels without mismatches", async () => {
     // ACT
-    const { container, hydrationMessages } = await hydrate(1440, {
-      props: { navigationClosable: true, sidebarClosable: true },
+    const { html, container, hydrationMessages } = await hydrate(1440, {
       content: () => h(MtPage, { breadcrumb: [{ label: "Orders" }] }),
+      navigation: () => h(MtPanel, { closable: true }, () => h("a", { href: "/" }, "Orders")),
+      sidebar: () =>
+        h(MtPanel, { closable: true, label: "Assistant", icon: "regular-sparkles" }, () =>
+          h("div", "Tools"),
+        ),
     });
 
     // ASSERT
+    expect(html).toContain('aria-label="Open Assistant"');
     expect(hydrationMessages).toEqual([]);
     expect(
       container.querySelectorAll(".mt-page__header .mt-app-panel-trigger__button"),
