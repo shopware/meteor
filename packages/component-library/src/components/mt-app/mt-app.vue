@@ -34,7 +34,7 @@
         :aria-controls="drawerIds.navigation"
         @click="panels.toggle('navigation')"
       >
-        <mt-icon :name="appTriggerIcons.navigation" size="var(--scale-size-16)" decorative />
+        <mt-icon :name="panelSettings('navigation').icon" size="var(--scale-size-16)" decorative />
       </mt-button>
 
       <div
@@ -57,7 +57,7 @@
         :aria-controls="drawerIds.sidebar"
         @click="panels.toggle('sidebar')"
       >
-        <mt-icon :name="appTriggerIcons.sidebar" size="var(--scale-size-16)" decorative />
+        <mt-icon :name="panelSettings('sidebar').icon" size="var(--scale-size-16)" decorative />
       </mt-button>
     </header>
 
@@ -69,9 +69,11 @@
         panel="navigation"
         :controller="appContext"
         side="start"
-        :label="labels.navigation"
-        :close-label="t('close', { label: labels.navigation })"
+        :label="panelLabel('navigation')"
+        :close-label="t('close', { label: panelLabel('navigation') })"
         :hidden="!isOpenInline('navigation') || undefined"
+        :bordered="panelSettings('navigation').appearance === 'bordered'"
+        :has-panel="hasPanel('navigation')"
       >
         <slot name="navigation" v-bind="panelSlotProps('navigation')" />
       </mt-app-region>
@@ -93,9 +95,11 @@
         panel="sidebar"
         :controller="appContext"
         side="end"
-        :label="labels.sidebar"
-        :close-label="t('close', { label: labels.sidebar })"
+        :label="panelLabel('sidebar')"
+        :close-label="t('close', { label: panelLabel('sidebar') })"
         :hidden="!isOpenInline('sidebar') || undefined"
+        :bordered="panelSettings('sidebar').appearance === 'bordered'"
+        :has-panel="hasPanel('sidebar')"
       >
         <slot name="sidebar" v-bind="panelSlotProps('sidebar')" />
       </mt-app-region>
@@ -141,10 +145,12 @@ import {
   onUpdated,
   provide,
   ref,
+  shallowReactive,
   shallowRef,
   useId,
   useTemplateRef,
   watch,
+  type VNodeChild,
 } from "vue";
 import { defaultWindow, useEventListener, useMediaQuery, useMounted } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
@@ -159,8 +165,14 @@ import MtText from "@/components/mt-text/mt-text.vue";
 import { provideFutureFlags, type FutureFlagsInput } from "@/composables/useFutureFlags";
 import { useTheme } from "@/composables/useTheme";
 import { hasSlotContent } from "@/utils/slot";
+import {
+  readPanelSlot,
+  resolvePanelSettings,
+  type PanelOptions,
+  type PanelSlot,
+} from "@/components/mt-panel/panel-settings";
 import MtAppRegion from "./_internal/mt-app-region.vue";
-import { appContextKey, appTriggerIcons, type AppContext } from "./composables/useAppContext";
+import { appContextKey, type AppContext } from "./composables/useAppContext";
 import { useAppPanels } from "./composables/useAppPanels";
 import { createAppRegions } from "./composables/createAppRegions";
 import { createAppTriggers } from "./composables/createAppTriggers";
@@ -182,8 +194,10 @@ import type { MtAppRegions } from "./composables/useAppRegions";
  * everything inside. Use one shell per application.
  *
  * - The navigation and the sidebar add no landmark of their own, so their slots bring one, such as
- *   `mt-nav` or an `<aside>`. The labels name the drawers and their triggers. The defaults are
- *   translated for English and German; pass both labels in other languages.
+ *   `mt-nav` or an `<aside>`.
+ * - An `mt-panel` in the `navigation` or `sidebar` slot sets the panel's label, the icon of its
+ *   trigger, whether it is closable in the desktop layout, and its width. Without it, the panels
+ *   are named "Navigation" and "Sidebar", translated for English and German.
  * - The triggers of the navigation and the sidebar sit in the header of the page, such as
  *   `mt-page`, or of a custom page with `mt-app-panel-trigger`. While no page shows them, the
  *   shell's header shows them at its start and end. They open the drawers in the mobile layout,
@@ -220,33 +234,10 @@ const props = withDefaults(
      * navigations don't flash it, and stays for at least 500ms once shown.
      */
     loadingBar?: boolean;
-    /**
-     * The accessible name of the navigation drawer and its trigger. Defaults to "Navigation".
-     */
-    navigationLabel?: string;
-    /**
-     * The accessible name of the sidebar drawer and its trigger, such as "Assistant". Defaults to
-     * "Sidebar".
-     */
-    sidebarLabel?: string;
-    /**
-     * Shows the trigger of the navigation also in the desktop layout, where it shows and hides the
-     * navigation. In the mobile layout, the navigation always has a trigger.
-     */
-    navigationClosable?: boolean;
-    /**
-     * Shows the trigger of the sidebar also in the desktop layout, where it shows and hides the
-     * sidebar. In the mobile layout, the sidebar always has a trigger.
-     */
-    sidebarClosable?: boolean;
   }>(),
   {
     future: undefined,
     breakpoint: 1280,
-    navigationLabel: undefined,
-    sidebarLabel: undefined,
-    navigationClosable: false,
-    sidebarClosable: false,
     loadingBar: false,
   },
 );
@@ -311,11 +302,6 @@ const { t } = useI18n({
   },
 });
 
-const labels = computed<Record<MtAppPanel, string>>(() => ({
-  navigation: props.navigationLabel ?? t("navigation"),
-  sidebar: props.sidebarLabel ?? t("sidebar"),
-}));
-
 const headerContentElement = useTemplateRef<HTMLElement>("headerContent");
 const mainElement = useTemplateRef<HTMLElement>("main");
 const regionElements = {
@@ -375,8 +361,11 @@ const panels = useAppPanels({
   desktopState: { navigation: navigationOpen, sidebar: sidebarOpen },
 });
 
-// Detecting empty slots renders them, so their presence is evaluated once per render.
-let slotPresence: Record<"header" | MtAppPanel | "content", boolean> | undefined;
+// Detecting empty slots renders them, so their presence is evaluated once per render. The same
+// rendering shows the options of an `mt-panel` in a panel slot before anything inside renders.
+let slotPresence:
+  | { header: boolean; content: boolean; navigation: PanelSlot; sidebar: PanelSlot }
+  | undefined;
 
 onBeforeUpdate(() => {
   slotPresence = undefined;
@@ -385,8 +374,8 @@ onBeforeUpdate(() => {
 function getSlotPresence() {
   slotPresence ??= {
     header: hasSlotContent(slots.header, headerSlotProps.value),
-    navigation: hasSlotContent(slots.navigation, panelSlotProps("navigation")),
-    sidebar: hasSlotContent(slots.sidebar, panelSlotProps("sidebar")),
+    navigation: readPanelSlot(slots.navigation?.(panelSlotProps("navigation")) as VNodeChild),
+    sidebar: readPanelSlot(slots.sidebar?.(panelSlotProps("sidebar")) as VNodeChild),
     content: hasSlotContent(slots.content),
   };
 
@@ -394,7 +383,36 @@ function getSlotPresence() {
 }
 
 function hasSlot(name: "header" | MtAppPanel) {
-  return getSlotPresence()[name];
+  const presence = getSlotPresence();
+
+  return name === "header" ? presence.header : presence[name].isFilled;
+}
+
+// The options of `mt-panel`s inside another component, which the slot doesn't show.
+const registeredPanelOptions = shallowReactive(new Map<MtAppPanel, () => PanelOptions>());
+
+function registerPanelOptions(panel: MtAppPanel, options: () => PanelOptions) {
+  registeredPanelOptions.set(panel, options);
+
+  return () => {
+    if (registeredPanelOptions.get(panel) === options) registeredPanelOptions.delete(panel);
+  };
+}
+
+/** The label, the trigger icon and whether the panel is closable, with the defaults of its place. */
+function panelSettings(panel: MtAppPanel) {
+  const options = getSlotPresence()[panel].options ?? registeredPanelOptions.get(panel)?.();
+
+  return resolvePanelSettings(panel, options, t(panel));
+}
+
+function panelLabel(panel: MtAppPanel) {
+  return panelSettings(panel).label;
+}
+
+/** Whether an `mt-panel` holds the panel's content: in the slot, or inside another component. */
+function hasPanel(panel: MtAppPanel) {
+  return getSlotPresence()[panel].options !== undefined || registeredPanelOptions.has(panel);
 }
 
 function hasContent() {
@@ -419,18 +437,13 @@ function isShownInline(panel: MtAppPanel) {
   return hasSlot(panel) && isOpenInline(panel);
 }
 
-const closable = computed<Record<MtAppPanel, boolean>>(() => ({
-  navigation: props.navigationClosable,
-  sidebar: props.sidebarClosable,
-}));
-
 /** Whether the panel has a trigger: it is available, and it is a drawer or closable. */
 function hasTrigger(panel: MtAppPanel) {
-  return isAvailable(panel) && (isMobile.value || closable.value[panel]);
+  return isAvailable(panel) && (isMobile.value || panelSettings(panel).closable);
 }
 
 function triggerLabel(panel: MtAppPanel) {
-  return t("open", { label: labels.value[panel] });
+  return t("open", { label: panelLabel(panel) });
 }
 
 const { isShownByPage, registerTrigger } = createAppTriggers();
@@ -447,17 +460,20 @@ function showsHeaderTriggers() {
   return showsHeaderTrigger("navigation") || showsHeaderTrigger("sidebar");
 }
 
-// Pages render after the shell and read the slot presence of the same render. When a later render
-// changes it, this makes them render again.
+// Pages render after the shell and read the slot presence and the panel options of the same
+// render. When a later render changes them, this makes them render again.
 const slotPresenceChanges = shallowRef(0);
 let renderedPanels = "";
 
 function trackSlotPresence() {
-  const presence = `${hasSlot("navigation")},${hasSlot("sidebar")}`;
+  const { navigation, sidebar } = getSlotPresence();
+  const presence = JSON.stringify([navigation, sidebar]);
 
   if (renderedPanels && presence !== renderedPanels) slotPresenceChanges.value++;
   renderedPanels = presence;
 }
+
+const isResizing = shallowRef(false);
 
 onMounted(trackSlotPresence);
 onUpdated(trackSlotPresence);
@@ -551,14 +567,29 @@ const appContext: AppContext = {
   registerUnsavedChanges,
   confirmLeave,
   focusContent,
+  // Pages read these while they render. The counter is tracked, so they render again when a later
+  // render of the shell changes the slot presence or the panel options.
   isTriggerShown(panel) {
-    // Tracked, so pages render again when a later render of the shell changes the slot presence.
     void slotPresenceChanges.value;
     return hasTrigger(panel);
   },
-  triggerLabel,
+  triggerLabel(panel) {
+    void slotPresenceChanges.value;
+    return triggerLabel(panel);
+  },
+  triggerIcon(panel) {
+    void slotPresenceChanges.value;
+    return panelSettings(panel).icon;
+  },
   triggerControls: (panel) => drawerIds[panel],
   registerTrigger,
+  panelLabel: (panel) => panelLabel(panel as MtAppPanel),
+  hasPanelInSlot: (panel) => getSlotPresence()[panel as MtAppPanel].options !== undefined,
+  registerPanelOptions: (panel, options) => registerPanelOptions(panel as MtAppPanel, options),
+  isResizing,
+  setResizing(resizing) {
+    isResizing.value = resizing;
+  },
 };
 
 provide(appContextKey, appContext);
@@ -671,11 +702,28 @@ defineExpose({
 }
 
 .mt-app__body {
+  --mt-app-gap: var(--scale-size-4);
+
   display: flex;
   flex: 1 1 0;
-  gap: var(--scale-size-4);
+  gap: var(--mt-app-gap);
   min-height: 0;
-  padding: var(--scale-size-4);
+  padding: var(--mt-app-gap);
+}
+
+/* A bordered panel is framed like the content, as a surface of its own on the shell's background. */
+.mt-app__body > .mt-app__region--bordered {
+  background-color: var(--color-elevation-surface-default);
+  border: 1px solid var(--color-border-secondary-default);
+  border-radius: var(--border-radius-m);
+}
+
+/*
+ * Next to a plain panel, the nearest visible edge is the content frame's border, one gap away, so
+ * the resize handle of an mt-panel moves onto it.
+ */
+.mt-app__body > .mt-app__region:not(.mt-app__region--bordered) {
+  --mt-panel-edge-offset: var(--mt-app-gap);
 }
 
 .mt-app__header:not([hidden]) + .mt-app__body {
@@ -775,7 +823,7 @@ defineExpose({
  * drawers take over. Custom breakpoints only apply once the app has mounted.
  */
 @media (width < 1280px) {
-  .mt-app--responsive:not([data-layout]) :deep(.mt-app__body > .mt-app__region) {
+  .mt-app--responsive:not([data-layout]) .mt-app__body > .mt-app__region {
     display: none;
   }
 }

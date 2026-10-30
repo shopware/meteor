@@ -79,6 +79,14 @@ export function useRouteChange({ onStart, onEnd, onNavigate }: UseRouteChangeOpt
   });
 }
 
+/**
+ * The path of the deepest route record that the current route matches, such as `/orders/:id`, at
+ * the time of the call. It names the kind of page, not one of its URLs. `undefined` without a router.
+ */
+export function useRouteRecordPath(): string | undefined {
+  return findRouter()?.currentRoute?.value?.matched?.at(-1)?.path;
+}
+
 /** The meta of the current route, which updates as soon as a navigation is confirmed. `{}` without a router. */
 export function useRouteMeta(): ComputedRef<Record<string, unknown>> {
   const router = findRouter();

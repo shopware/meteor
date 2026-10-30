@@ -1,6 +1,6 @@
 import { render } from "@testing-library/vue";
-import { defineComponent } from "vue";
-import { hasSlotContent } from "./slot";
+import { defineComponent, type VNode, type VNodeChild } from "vue";
+import { findSlotComponent, hasSlotContent } from "./slot";
 
 function hasDefaultSlotContent(template: string, items: { id: number; visible: boolean }[] = []) {
   let result: boolean | undefined;
@@ -58,5 +58,65 @@ describe("hasSlotContent", () => {
 
     // ASSERT
     expect(result).toBe(true);
+  });
+});
+
+describe("findSlotComponent", () => {
+  const Marked = defineComponent({
+    __MARKED__: true,
+    props: { label: { type: String, default: undefined } },
+    template: "<div />",
+  });
+  const Wrapper = defineComponent({
+    components: { Marked },
+    template: "<Marked label='Inside' />",
+  });
+
+  function findInSlot(template: string, data: Record<string, unknown> = {}) {
+    let found: VNode | undefined;
+
+    const Probe = defineComponent({
+      setup(_, { slots }) {
+        return () => {
+          found = findSlotComponent(slots.default?.() as VNodeChild, "__MARKED__");
+          return null;
+        };
+      },
+    });
+
+    render({
+      components: { Probe, Marked, Wrapper },
+      data: () => data,
+      template: `<Probe>${template}</Probe>`,
+    });
+
+    return found;
+  }
+
+  it("finds the marked component at the top of the slot with its props as written", () => {
+    // ACT
+    const found = findInSlot(`<Marked label="Assistant" />`);
+
+    // ASSERT
+    expect(found?.props).toEqual({ label: "Assistant" });
+  });
+
+  it("looks through v-if and fragments", () => {
+    // ACT
+    const found = findInSlot(
+      `<span v-if="false" /><template v-for="item in items" :key="item"><Marked :label="item" /></template>`,
+      { items: ["First", "Second"] },
+    );
+
+    // ASSERT
+    expect(found?.props?.label).toBe("First");
+  });
+
+  it("doesn't look into other components", () => {
+    // ACT
+    const found = findInSlot(`<Wrapper />`);
+
+    // ASSERT
+    expect(found).toBeUndefined();
   });
 });

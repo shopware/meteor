@@ -1,4 +1,5 @@
 import { readonly, shallowRef, watch, type Ref } from "vue";
+import type { PanelOptions } from "@/components/mt-panel/panel-settings";
 
 export interface UseAppPanelsOptions<Panel extends string> {
   isMobile: Readonly<Ref<boolean>>;
@@ -19,6 +20,14 @@ export interface PanelController {
   open(panel: string): void;
   close(panel: string): void;
   focusContent(): void;
+  /** The label of the panel, from its `MtPanel` or the default of its place. */
+  panelLabel(panel: string): string;
+  /** Whether the layout found an `MtPanel` at the top of the panel's slot. */
+  hasPanelInSlot(panel: string): boolean;
+  /** Reports the options of an `MtPanel` that the layout didn't find in its slot. */
+  registerPanelOptions(panel: string, options: () => PanelOptions): () => void;
+  /** Reports that a panel is being resized. */
+  setResizing(resizing: boolean): void;
 }
 
 /**
