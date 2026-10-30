@@ -99,6 +99,7 @@ import {
 } from "reka-ui";
 // Import global styling
 import MtApp from "./components/mt-app/mt-app.vue";
+import MtAppPanelTrigger from "./components/mt-app/mt-app-panel-trigger.vue";
 import { useApp, type MtAppContext, type MtAppPanel } from "./components/mt-app/composables/useApp";
 import { useAppRegions, type MtAppRegions } from "./components/mt-app/composables/useAppRegions";
 import { useAppLoading } from "./components/mt-app/composables/useAppLoading";
@@ -241,6 +242,7 @@ export {
   // @deprecated
   MtSkeletonBar as SwSkeletonBar,
   MtApp,
+  MtAppPanelTrigger,
   useApp,
   useAppRegions,
   useAppLoading,

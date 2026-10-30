@@ -4,7 +4,7 @@
     class="mt-page"
     :class="{
       'mt-page--responsive': breakpoint > 0,
-      'mt-page--header-border': closable || hasSlot('start') || hasSlot('end'),
+      'mt-page--header-border': closable || hasSlot('start') || hasSlot('end') || hasAppTriggers(),
     }"
     :data-layout="isMeasured ? (isNarrow ? 'narrow' : 'wide') : undefined"
   >
@@ -15,10 +15,13 @@
         title ||
         hasSlot('actions') ||
         showTrigger('start') ||
-        showTrigger('end')
+        showTrigger('end') ||
+        hasAppTriggers()
       "
       class="mt-page__header"
     >
+      <mt-app-panel-trigger panel="navigation" />
+
       <template v-if="closable">
         <mt-button
           class="mt-page__close"
@@ -33,15 +36,19 @@
         <mt-divider class="mt-page__close-divider" orientation="vertical" decorative />
       </template>
 
-      <mt-app-trigger
+      <mt-button
         v-if="showTrigger('start')"
-        panel="start"
-        :label="t('open', { label: labels.start })"
-        :expanded="panels.isOpen('start')"
-        :controls="drawerIds.start"
-        icon="regular-panel-left"
+        class="mt-page__panel-trigger"
+        variant="tertiary"
+        size="default"
+        square
+        :aria-label="t('open', { label: labels.start })"
+        :aria-expanded="panels.isOpen('start') ? 'true' : 'false'"
+        :aria-controls="drawerIds.start"
         @click="panels.toggle('start')"
-      />
+      >
+        <mt-icon name="regular-panel-left" size="var(--scale-size-16)" decorative />
+      </mt-button>
 
       <template v-if="title">
         <h1 class="visually-hidden">{{ title }}</h1>
@@ -58,14 +65,24 @@
         <slot name="actions" />
       </div>
 
-      <mt-app-trigger
+      <mt-button
         v-if="showTrigger('end')"
-        panel="end"
-        :label="t('open', { label: labels.end })"
-        :expanded="panels.isOpen('end')"
-        :controls="drawerIds.end"
-        icon="regular-panel-right"
+        class="mt-page__panel-trigger"
+        :class="{ 'mt-page__header-end': !hasSlot('actions') }"
+        variant="tertiary"
+        size="default"
+        square
+        :aria-label="t('open', { label: labels.end })"
+        :aria-expanded="panels.isOpen('end') ? 'true' : 'false'"
+        :aria-controls="drawerIds.end"
         @click="panels.toggle('end')"
+      >
+        <mt-icon name="regular-panel-right" size="var(--scale-size-16)" decorative />
+      </mt-button>
+
+      <mt-app-panel-trigger
+        panel="sidebar"
+        :class="{ 'mt-page__header-end': !hasSlot('actions') && !showTrigger('end') }"
       />
     </header>
 
@@ -133,8 +150,8 @@ import MtContainer from "@/components/mt-container/mt-container.vue";
 import MtDivider from "@/components/mt-divider/mt-divider.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtSkeletonBar from "@/components/mt-skeleton-bar/mt-skeleton-bar.vue";
+import MtAppPanelTrigger from "@/components/mt-app/mt-app-panel-trigger.vue";
 import MtAppRegion from "@/components/mt-app/_internal/mt-app-region.vue";
-import MtAppTrigger from "@/components/mt-app/_internal/mt-app-trigger.vue";
 import { appContextKey } from "@/components/mt-app/composables/useAppContext";
 import { useAppPanels, type PanelController } from "@/components/mt-app/composables/useAppPanels";
 import { useRouterBack } from "@/components/mt-app/composables/useAppRouter";
@@ -153,6 +170,8 @@ type PagePanel = "start" | "end";
  *   after its content.
  * - Below the breakpoint, measured on the page and not on the viewport, the panels become drawers
  *   that open from triggers in the page header.
+ * - Inside `mt-app`, the header also shows the triggers of the shell's navigation and sidebar: at
+ *   its very start and end, each separated from the rest of the header by a divider.
  * - The content is padded, less on narrow pages. `width` limits it to a centered maximum width,
  *   and `inset` removes the padding for full-bleed content such as an editor canvas.
  * - While `isLoading`, the header renders right away, with a placeholder while the label of the
@@ -309,6 +328,11 @@ const panels = useAppPanels<PagePanel>({
 const app = inject(appContextKey, null);
 const instance = getCurrentInstance();
 const goBack = useRouterBack();
+
+/** Whether the header shows a trigger of the surrounding shell. */
+function hasAppTriggers() {
+  return Boolean(app?.isTriggerShown("navigation") || app?.isTriggerShown("sidebar"));
+}
 
 /** Leaves the page: back, or up the breadcrumb, or to the start page, unless a listener closes it. */
 function close() {
@@ -469,7 +493,8 @@ watch(
 }
 
 .mt-page__close,
-.mt-page__close-divider {
+.mt-page__close-divider,
+.mt-page__panel-trigger {
   flex: none;
 }
 
@@ -488,14 +513,16 @@ watch(
 }
 
 /*
- * Right after the divider, the title is as far from it as the close icon, which sits inset in its
+ * Right after a divider, the title is as far from it as the icon before it, which sits inset in its
  * square button, so both sides of the divider look the same.
  */
-.mt-page__close-divider + .visually-hidden + .mt-page__breadcrumb {
+.mt-page__close-divider + .visually-hidden + .mt-page__breadcrumb,
+.mt-app-panel-trigger--navigation + .visually-hidden + .mt-page__breadcrumb {
   padding-inline-start: var(--scale-size-12);
 }
 
-.mt-page .mt-page__close-divider + .mt-page__title-skeleton {
+.mt-page .mt-page__close-divider + .mt-page__title-skeleton,
+.mt-page .mt-app-panel-trigger--navigation + .mt-page__title-skeleton {
   margin-inline-start: var(--scale-size-12);
 }
 
@@ -504,6 +531,11 @@ watch(
   flex: none;
   align-items: center;
   gap: var(--scale-size-8);
+  margin-inline-start: auto;
+}
+
+/* Without actions, the next element at the end of the header takes the free space before it. */
+.mt-page__header-end {
   margin-inline-start: auto;
 }
 

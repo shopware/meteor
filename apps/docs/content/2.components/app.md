@@ -52,9 +52,27 @@ const app = createApp(App).use(router);
 router.isReady().then(() => app.mount("#app"));
 ```
 
+### Triggers in a custom page
+
+The header of a [**Page**](/components/page) shows the triggers of the navigation and the sidebar on its own. A page with its own header shows them with **App Panel Trigger**: the navigation trigger at the very start and the sidebar trigger at the very end. Each brings the divider that separates it from the rest of the header.
+
+```vue
+<script setup lang="ts">
+import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library";
+</script>
+
+<template>
+  <header class="editor-header">
+    <mt-app-panel-trigger panel="navigation" />
+    <mt-text as="h1" size="xs" weight="semibold">Editor</mt-text>
+    <mt-app-panel-trigger panel="sidebar" />
+  </header>
+</template>
+```
+
 ## Anatomy
 
-- `header`: a bar above the other regions. In the mobile layout, the shell adds a trigger for the navigation drawer at its start and one for the sidebar drawer at its end, also when the slot is empty.
+- `header`: the application's own bar above the other regions. The triggers of the navigation and the sidebar sit in the header of the page. Only while no page shows them, the shell's header shows them at its start and end, also when the slot is empty.
 - `navigation`: the main navigation, such as [**Nav**](/components/nav), next to the content.
 - `content`: the scrollable main content in a frame, usually a [**Page**](/components/page). It fills the shell without the frame when no other slot is filled, or when no other region is visible and a view sets `contentFrame: false`.
 - `sidebar`: a framed panel next to the content, for example an assistant.
@@ -82,8 +100,9 @@ router.isReady().then(() => app.mount("#app"));
 ## Behavior
 
 - **App** fills the viewport by default, and the document itself never scrolls while it is mounted: the content and the panels scroll on their own. Set `--mt-app-height` to give it another height.
-- Below `breakpoint` (1280px of viewport width by default), the navigation and the sidebar become drawers that open from the triggers in the header. In the mobile layout, at most one drawer is open, and switching the layout closes it.
-- In the desktop layout, `v-model:navigation-open` and `v-model:sidebar-open` show and hide the panels.
+- Below `breakpoint` (1280px of viewport width by default), the navigation and the sidebar become drawers that open from their triggers. In the mobile layout, at most one drawer is open, and switching the layout closes it.
+- In the desktop layout, `v-model:navigation-open` and `v-model:sidebar-open` show and hide the panels. With `navigation-closable` or `sidebar-closable`, the panel's trigger also shows in the desktop layout and shows and hides the panel.
+- A panel that a view hides has no trigger in either layout.
 - **App** applies the stored theme preference, enables all future flags for the components inside, and mounts the [**Snackbar**](/components/snackbar) host.
 - With Vue Router installed, a navigation closes the open drawer and shows the new page from its top, or from the element of its URL hash.
 - With `loading-bar`, a thin bar runs along the top edge while a navigation is pending or while a view reports loading with [**useAppLoading**](/utilities/composables/use-app-loading). It appears after 200ms, so quick navigations don't show it, and stays for at least 500ms once shown.
@@ -96,6 +115,7 @@ router.isReady().then(() => app.mount("#app"));
 - When a region hides while it holds the focus, the focus moves to the content.
 - After a navigation, screen readers announce the new document title, as after a full page load.
 - The drawers and their triggers are named by `navigation-label` and `sidebar-label`. Their defaults and the other texts of the shell are translated for English and German.
+- A trigger tells whether its panel is open and points to the panel, or to its drawer in the mobile layout.
 
 ## Related components
 

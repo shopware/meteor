@@ -1,5 +1,6 @@
 <template>
   <div
+    :id="isMobile ? undefined : id"
     ref="inline"
     class="mt-app__region"
     :class="`mt-app__region--${panel}`"
@@ -66,7 +67,10 @@ const props = defineProps<{
   controller: PanelController;
   /** The edge the drawer slides in from. */
   side: "start" | "end";
-  /** The id of the drawer, which the header trigger points to with `aria-controls`. */
+  /**
+   * The id of the panel in the desktop layout and of its drawer in the mobile layout, which the
+   * trigger points to with `aria-controls`.
+   */
   id: string;
   /** The accessible name of the drawer. */
   label: string;
