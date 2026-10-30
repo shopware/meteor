@@ -1,5 +1,5 @@
 import { defineComponent, h, type App } from "vue";
-import { render, screen, within } from "@testing-library/vue";
+import { render, screen, waitFor, within } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtPage from "./mt-page.vue";
 import MtApp from "../mt-app/mt-app.vue";
@@ -118,6 +118,41 @@ describe("mt-page", () => {
       expect(onClose).toHaveBeenCalledTimes(1);
       expect(router.back).not.toHaveBeenCalled();
       expect(router.push).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("breadcrumb", () => {
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it("shows only the current page on a compact page", async () => {
+      // ARRANGE
+      vi.stubGlobal(
+        "ResizeObserver",
+        class {
+          constructor(private callback: ResizeObserverCallback) {}
+
+          observe(target: Element) {
+            this.callback(
+              [{ target, contentRect: { width: 390 } } as unknown as ResizeObserverEntry],
+              this as unknown as ResizeObserver,
+            );
+          }
+
+          unobserve() {}
+
+          disconnect() {}
+        },
+      );
+
+      // ACT
+      renderPage();
+
+      // ASSERT
+      const trail = screen.getByRole("navigation", { name: "Breadcrumb" });
+      await waitFor(() => expect(within(trail).queryByText("Content")).not.toBeInTheDocument());
+      expect(within(trail).getByText("Shopping Experiences")).toBeInTheDocument();
     });
   });
 

@@ -55,7 +55,7 @@
         <mt-breadcrumb
           class="mt-page__breadcrumb"
           size="xs"
-          :items="breadcrumb"
+          :items="headerCrumbs"
           :hide-current="isHeadingVisible"
         />
       </template>
@@ -296,6 +296,16 @@ useResizeObserver(rootElement, ([entry]) => {
 const isMeasured = computed(() => pageWidth.value !== null);
 const isNarrow = computed(
   () => pageWidth.value !== null && props.breakpoint > 0 && pageWidth.value < props.breakpoint,
+);
+
+// Below this page width, such as on phones, the content gets a smaller padding (see the container
+// query in the styles) and the header shows only the current page.
+const COMPACT_WIDTH = 640;
+const isCompact = computed(() => pageWidth.value !== null && pageWidth.value < COMPACT_WIDTH);
+
+/** The crumbs in the header. A compact page has no room for the trail, only for the current page. */
+const headerCrumbs = computed(() =>
+  isCompact.value ? props.breadcrumb.slice(-1) : props.breadcrumb,
 );
 
 // Detecting empty slots renders them, so their presence is evaluated once per render.
@@ -556,7 +566,10 @@ watch(
   overflow: auto;
 }
 
-/* Narrow pages, such as on phones or next to an open sidebar, get a smaller padding. */
+/*
+ * Compact pages, such as on phones or next to an open sidebar, get a smaller padding. The width is
+ * COMPACT_WIDTH in the script.
+ */
 @container (width < 640px) {
   .mt-page__content {
     padding: var(--scale-size-16);
