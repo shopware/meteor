@@ -163,7 +163,7 @@ const KEYBOARD_STEP = 10;
 /** The width of the zone at the outer edge that closes the panel when a drag ends in it. */
 const CLOSE_ZONE_WIDTH = 24;
 /** The length of the animation back to the starting width, as long as the panel's slide. */
-const RESET_DURATION = 400;
+const RESET_DURATION = 250;
 
 const context = inject(panelContextKey, null);
 const root = useTemplateRef<HTMLElement>("root");
@@ -454,7 +454,7 @@ if (context && !context.isFoundInSlot()) {
 }
 
 .mt-panel--resetting {
-  transition: width 400ms cubic-bezier(0.3, 0, 0, 1);
+  transition: width 250ms cubic-bezier(0.3, 0, 0, 1);
 }
 
 .mt-panel__body {
