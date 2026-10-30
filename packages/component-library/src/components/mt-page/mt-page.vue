@@ -96,7 +96,7 @@
         side="start"
         :label="panelLabel('start')"
         :close-label="t('close', { label: panelLabel('start') })"
-        :hidden="!isNarrow && !panels.isOpen('start')"
+        :hidden="!desktopOpen.start.value"
         :bordered="panelSettings('start').appearance === 'bordered'"
         :has-panel="hasPanel('start')"
       >
@@ -124,7 +124,7 @@
         side="end"
         :label="panelLabel('end')"
         :close-label="t('close', { label: panelLabel('end') })"
-        :hidden="!isNarrow && !panels.isOpen('end')"
+        :hidden="!desktopOpen.end.value"
         :bordered="panelSettings('end').appearance === 'bordered'"
         :has-panel="hasPanel('end')"
       >
@@ -385,10 +385,14 @@ function showTrigger(panel: PagePanel) {
   return hasSlot(panel) && (isNarrow.value || panelSettings(panel).closable);
 }
 
+// Whether the panels are open on a wide page. It doesn't depend on the layout, so a panel only slides
+// when it opens or closes, not when the page turns narrow or wide.
+const desktopOpen = { start: ref(true), end: ref(true) };
+
 const panels = useAppPanels<PagePanel>({
   isMobile: isNarrow,
   canOpenDrawer: hasSlot,
-  desktopState: { start: ref(true), end: ref(true) },
+  desktopState: desktopOpen,
 });
 
 const instance = getCurrentInstance();
@@ -621,6 +625,8 @@ watch(
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-rows: minmax(0, 1fr);
   min-height: 0;
+  /* A panel sliding out over the page's edge adds no scrollbar to the content around the page. */
+  overflow: clip;
 }
 
 .mt-page__content {
