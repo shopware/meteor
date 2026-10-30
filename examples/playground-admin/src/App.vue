@@ -34,7 +34,7 @@ const layout = useLayoutSettings();
     <template #sidebar>
       <mt-panel
         :label="t('sidebar.label')"
-        icon="regular-info-circle"
+        icon="regular-shopware-copilot"
         :closable="layout.sidebarClosable"
         resizable
         :width="320"
