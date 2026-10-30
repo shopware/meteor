@@ -47,7 +47,7 @@ The `start` and `end` slots add panels next to the content, for example a list a
 
 - Use one **Page** per route, and end its `breadcrumb` with the page itself.
 - Keep the actions in the header to the few that concern the whole page, such as saving.
-- Put the content of a panel into an `<aside>` named after it, such as "Blocks" or "Properties", and pass the same names as `start-label` and `end-label`.
+- Put a [**Panel**](/components/panel) with a `label` directly into the `start` and `end` slots, such as "Blocks" or "Properties", and its content into an `<aside>` with the same name.
 
 #dont
 
@@ -65,19 +65,22 @@ The `start` and `end` slots add panels next to the content, for example a list a
 - On a page narrower than 640px, such as on a phone, the header shows only the current page instead of the whole breadcrumb.
 - Inside [**App**](/components/app), the header also shows the triggers of the navigation and the sidebar of the shell, when they have one: at its very start and end, each separated from the rest of the header by a divider.
 - The bottom border of the header fades in as the content starts to scroll. With panels, a close button or the triggers of the shell, the border is always shown.
-- The breakpoint for the panels is measured on the width of the page, not of the viewport, so the panels also become drawers next to an open sidebar.
+- The breakpoint for the panels is measured on the width of the page, not of the viewport, so the panels also become drawers next to an open sidebar. While a panel of the shell is being resized, the page keeps its layout until the drag ends.
+- A [**Panel**](/components/panel) with `closable` also shows its trigger on a wide page, where it shows and hides the panel.
+- A line on the inner edge sets each panel off from the content, unless its [**Panel**](/components/panel) has the `appearance` `plain`.
 - A `close` listener replaces the navigation of the close button. Without Vue Router and without a listener, the button does nothing.
 
 ## Accessibility
 
 - The label of the last breadcrumb item is the `<h1>` of the page. It is visually hidden, because the breadcrumb shows it.
 - The panels add no landmark of their own, so their content brings one, such as an `<aside>` named after it.
-- The drawers of the panels and their triggers are named by `start-label` and `end-label`. Without them, they are named "Start panel" and "End panel".
+- The drawers of the panels and their triggers are named by the `label` of their [**Panel**](/components/panel). Without it, they are named "Start panel" and "End panel".
 - The close button is named "Close". This name and the defaults of the panel labels are translated for English and German.
 
 ## Related components
 
 - [**App**](/components/app): for the shell around the pages.
+- [**Panel**](/components/panel): for the label, the trigger icon and the width of the panels.
 - [**Content Header**](/components/content-header): for the title, the actions and the details of what the page shows.
 - [**Layout**](/components/layout): for sidebars that scroll with the content instead of panels.
 - [**Breadcrumb**](/components/breadcrumb): for the trail in the header.
