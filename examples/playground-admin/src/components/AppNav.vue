@@ -76,7 +76,6 @@ function isActive(item: NavItem) {
   display: flex;
   flex: 1;
   flex-direction: column;
-  width: 15rem;
 }
 
 .app-nav__menu {
