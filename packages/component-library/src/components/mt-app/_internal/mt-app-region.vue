@@ -128,7 +128,7 @@ const isMobile = computed(() => props.controller.isMobile.value);
 const isOpen = computed(() => isMobile.value && props.controller.isOpen(props.panel));
 
 /** The length of the slide when the panel opens or closes, in milliseconds. */
-const SLIDE_DURATION = 400;
+const SLIDE_DURATION = 250;
 /** The shortest settle after a drag, so a panel that is nearly there doesn't snap. */
 const SHORTEST_SETTLE_DURATION = 150;
 
@@ -274,7 +274,7 @@ defineExpose({
  */
 .mt-app-region-slide-enter-to,
 .mt-app-region-slide-leave-to {
-  transition: margin 400ms cubic-bezier(0.3, 0, 0, 1);
+  transition: margin 250ms cubic-bezier(0.3, 0, 0, 1);
 }
 
 .mt-app__region--at-start.mt-app-region-slide-enter-from,
