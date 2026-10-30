@@ -1,5 +1,5 @@
 import { userEvent } from "@testing-library/user-event";
-import { render, screen } from "@testing-library/vue";
+import { fireEvent, render, screen } from "@testing-library/vue";
 import { waitFor } from "@testing-library/vue";
 import MtCollapsible from "./mt-collapsible.vue";
 import MtCollapsibleContent from "./mt-collapsible-content.vue";
@@ -105,5 +105,68 @@ describe("mt-collapsible", () => {
     // ASSERT
     expect(content).toHaveAttribute("hidden", "");
     expect(screen.queryByText("Collapsible content")).not.toBeInTheDocument();
+  });
+
+  describe("animation", () => {
+    /** Whether the page shows the collapsible: a hidden ancestor leaves an element without boxes. */
+    function stubShown(isShown: boolean) {
+      vi.spyOn(HTMLElement.prototype, "getClientRects").mockReturnValue(
+        (isShown ? [{}] : []) as unknown as DOMRectList,
+      );
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("doesn't animate content that is open from the start", () => {
+      // ACT
+      renderCollapsible({ defaultOpen: true });
+
+      // ASSERT
+      expect(screen.getByText("Collapsible content")).not.toHaveClass(
+        "mt-collapsible-content--animated",
+      );
+    });
+
+    it("animates when it opens and closes while it is shown", async () => {
+      // ARRANGE
+      stubShown(true);
+      renderCollapsible();
+      const toggle = screen.getByRole("button", { name: "Toggle" });
+      const content = screen.getByText("Collapsible content");
+
+      // ACT
+      await userEvent.click(toggle);
+
+      // ASSERT
+      expect(content).toHaveClass("mt-collapsible-content--animated");
+
+      // ACT
+      await fireEvent.animationEnd(content);
+
+      // ASSERT
+      expect(content).not.toHaveClass("mt-collapsible-content--animated");
+
+      // ACT
+      await userEvent.click(toggle);
+
+      // ASSERT
+      expect(content).toHaveClass("mt-collapsible-content--animated");
+    });
+
+    it("doesn't animate when it opens while a hidden parent hides it", async () => {
+      // ARRANGE
+      stubShown(false);
+      renderCollapsible();
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Toggle" }));
+
+      // ASSERT
+      expect(screen.getByText("Collapsible content")).not.toHaveClass(
+        "mt-collapsible-content--animated",
+      );
+    });
   });
 });

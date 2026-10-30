@@ -1,17 +1,22 @@
 <template>
   <CollapsibleContent
+    ref="content"
     class="mt-collapsible-content"
+    :class="{ 'mt-collapsible-content--animated': isAnimated }"
     :as="as"
     :as-child="asChild"
     :force-mount="forceMount"
     @content-found="() => emits('contentFound')"
+    @animationend.self="isAnimated = false"
+    @animationcancel.self="onAnimationCancel"
   >
     <slot />
   </CollapsibleContent>
 </template>
 
 <script setup lang="ts">
-import { CollapsibleContent } from "reka-ui";
+import { ref, useTemplateRef, watch } from "vue";
+import { CollapsibleContent, injectCollapsibleRootContext } from "reka-ui";
 
 withDefaults(
   defineProps<{
@@ -29,6 +34,35 @@ withDefaults(
 const emits = defineEmits<{
   contentFound: [];
 }>();
+
+// The content only animates when it opens or closes where it can be seen. A CSS animation would also
+// restart when a hidden parent, such as a closed drawer, shows the content again.
+const isAnimated = ref(false);
+const root = injectCollapsibleRootContext();
+const content = useTemplateRef<InstanceType<typeof CollapsibleContent>>("content");
+
+/** Whether the place of the content is shown: a hidden ancestor leaves it without boxes. */
+function isShown() {
+  const place = (content.value?.$el as Node | undefined)?.parentElement;
+
+  return Boolean(place && place.getClientRects().length > 0);
+}
+
+/** A cancel also arrives for the animation that the next one replaces, which must keep the class. */
+function onAnimationCancel(event: AnimationEvent) {
+  const current = root.open.value ? "mt-collapsible-slide-down" : "mt-collapsible-slide-up";
+  if (event.animationName === current) isAnimated.value = false;
+}
+
+// Sync, so the class is in place when Reka looks for the closing animation before it removes the
+// content.
+watch(
+  () => root.open.value,
+  () => {
+    isAnimated.value = isShown();
+  },
+  { flush: "sync" },
+);
 </script>
 
 <style>
@@ -36,11 +70,11 @@ const emits = defineEmits<{
   overflow: hidden;
 }
 
-.mt-collapsible-content[data-state="open"] {
+.mt-collapsible-content--animated[data-state="open"] {
   animation: mt-collapsible-slide-down 300ms ease-in-out;
 }
 
-.mt-collapsible-content[data-state="closed"] {
+.mt-collapsible-content--animated[data-state="closed"] {
   animation: mt-collapsible-slide-up 300ms ease-in-out;
 }
 
@@ -63,8 +97,8 @@ const emits = defineEmits<{
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mt-collapsible-content[data-state="open"],
-  .mt-collapsible-content[data-state="closed"] {
+  .mt-collapsible-content--animated[data-state="open"],
+  .mt-collapsible-content--animated[data-state="closed"] {
     animation: none;
   }
 }

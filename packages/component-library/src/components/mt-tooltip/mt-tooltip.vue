@@ -10,6 +10,7 @@
       onBlur,
       onKeydown: (event: KeyboardEvent) => {
         const keysThatCloseTooltip = ['Escape', ' ', 'Enter'];
+        if (event.key === 'Escape' && isVisible) event.preventDefault();
         if (keysThatCloseTooltip.includes(event.key)) hide({ causedByKeyPress: true });
         mouseoverTimeout.stop();
       },
