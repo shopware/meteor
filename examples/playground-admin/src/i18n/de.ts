@@ -17,7 +17,23 @@ export const de: Messages = {
     settings: "Einstellungen",
   },
   sidebar: {
-    label: "Details",
+    label: "Assistent",
+    user: "Du",
+    assistant: "Assistent",
+    messages: {
+      sales: "Wie haben sich die Verkäufe diese Woche entwickelt?",
+      salesAnswer:
+        "Der Umsatz liegt 12 % über der Vorwoche. Das meiste Wachstum kommt von der neuen Sommerkollektion, und 3 Bestellungen warten noch auf die Zahlung.",
+      stock: "Welche Produkte werden knapp?",
+      stockAnswer:
+        "Fünf Produkte liegen unter ihrem Mindestbestand. Die Leder-Reisetasche und das Leinenhemd in Größe M sind ausverkauft.",
+      description: "Schreib eine Beschreibung für die Leder-Reisetasche.",
+      descriptionAnswer:
+        "Eine geräumige Reisetasche aus Vollnarbenleder, mit gepolstertem Laptopfach, separatem Schuhfach und Messingbeschlägen, die schön altern.",
+      shorter: "Mach sie etwas kürzer.",
+      shorterAnswer:
+        "Eine Reisetasche aus Vollnarbenleder mit gepolstertem Laptopfach und Messingbeschlägen.",
+    },
   },
   common: {
     save: "Speichern",

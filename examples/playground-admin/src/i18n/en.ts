@@ -15,7 +15,23 @@ export const en = {
     settings: "Settings",
   },
   sidebar: {
-    label: "Details",
+    label: "Assistant",
+    user: "You",
+    assistant: "Assistant",
+    messages: {
+      sales: "How did sales develop this week?",
+      salesAnswer:
+        "Revenue is up 12% compared to last week. Most of the growth comes from the new summer collection, and 3 orders are still waiting for payment.",
+      stock: "Which products are running low?",
+      stockAnswer:
+        "Five products are below their minimum stock. The Leather Weekender and the Linen Shirt in size M are sold out.",
+      description: "Write a description for the Leather Weekender.",
+      descriptionAnswer:
+        "A roomy weekend bag of full-grain leather, with a padded laptop sleeve, a separate shoe compartment and brass fittings that age beautifully.",
+      shorter: "Make it a bit shorter.",
+      shorterAnswer:
+        "A full-grain leather weekend bag with a padded laptop sleeve and brass fittings.",
+    },
   },
   common: {
     save: "Save",
