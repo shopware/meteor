@@ -18,6 +18,7 @@ import {
   MtIcon,
   MtLink,
   MtPage,
+  MtPanel,
   MtSelect,
   MtSkeletonBar,
   MtTabs,
@@ -137,12 +138,7 @@ function removeDocument(document: OrderDocument) {
 </script>
 
 <template>
-  <mt-page
-    width="m"
-    :is-loading="isLoading"
-    :breadcrumb="breadcrumb"
-    :end-label="t('orders.details.customer')"
-  >
+  <mt-page width="m" :is-loading="isLoading" :breadcrumb="breadcrumb">
     <template #actions>
       <mt-button
         variant="secondary"
@@ -408,123 +404,132 @@ function removeDocument(document: OrderDocument) {
     </div>
 
     <template v-if="order || isLoading" #end>
-      <aside
-        class="stack order-detail__panel"
-        :aria-label="t('orders.details.customer')"
+      <mt-panel
+        :label="t('orders.details.customer')"
+        resizable
+        :width="320"
+        :min-width="240"
+        :max-width="480"
       >
-        <template v-if="order">
-          <section class="stack">
-            <mt-text
-              as="h2"
-              size="xs"
-              weight="semibold"
-              color="color-text-secondary-default"
-            >
-              {{ t("orders.details.customer") }}
-            </mt-text>
-            <mt-text size="xs">
-              {{ order.customer.firstName }} {{ order.customer.lastName }}
-            </mt-text>
-            <mt-text size="xs">{{ order.customer.email }}</mt-text>
-            <mt-text size="xs">{{ order.customer.phone }}</mt-text>
-          </section>
-
-          <mt-divider />
-
-          <section class="stack">
-            <mt-text
-              as="h2"
-              size="xs"
-              weight="semibold"
-              color="color-text-secondary-default"
-            >
-              {{ t("orders.details.billingAddress") }}
-            </mt-text>
-            <mt-text size="xs">
-              <template
-                v-for="line in addressLines(order.billingAddress)"
-                :key="line"
+        <aside
+          class="stack order-detail__panel"
+          :aria-label="t('orders.details.customer')"
+        >
+          <template v-if="order">
+            <section class="stack">
+              <mt-text
+                as="h2"
+                size="xs"
+                weight="semibold"
+                color="color-text-secondary-default"
               >
-                {{ line }}<br />
-              </template>
-            </mt-text>
-          </section>
+                {{ t("orders.details.customer") }}
+              </mt-text>
+              <mt-text size="xs">
+                {{ order.customer.firstName }} {{ order.customer.lastName }}
+              </mt-text>
+              <mt-text size="xs">{{ order.customer.email }}</mt-text>
+              <mt-text size="xs">{{ order.customer.phone }}</mt-text>
+            </section>
 
-          <section class="stack">
-            <mt-text
-              as="h2"
-              size="xs"
-              weight="semibold"
-              color="color-text-secondary-default"
-            >
-              {{ t("orders.details.shippingAddress") }}
-            </mt-text>
-            <mt-text
-              v-if="shipsToBillingAddress"
-              size="xs"
-              color="color-text-secondary-default"
-            >
-              {{ t("orders.details.sameAddress") }}
-            </mt-text>
-            <mt-text v-else size="xs">
-              <template
-                v-for="line in addressLines(order.shippingAddress)"
-                :key="line"
+            <mt-divider />
+
+            <section class="stack">
+              <mt-text
+                as="h2"
+                size="xs"
+                weight="semibold"
+                color="color-text-secondary-default"
               >
-                {{ line }}<br />
-              </template>
-            </mt-text>
-          </section>
+                {{ t("orders.details.billingAddress") }}
+              </mt-text>
+              <mt-text size="xs">
+                <template
+                  v-for="line in addressLines(order.billingAddress)"
+                  :key="line"
+                >
+                  {{ line }}<br />
+                </template>
+              </mt-text>
+            </section>
 
-          <mt-divider />
+            <section class="stack">
+              <mt-text
+                as="h2"
+                size="xs"
+                weight="semibold"
+                color="color-text-secondary-default"
+              >
+                {{ t("orders.details.shippingAddress") }}
+              </mt-text>
+              <mt-text
+                v-if="shipsToBillingAddress"
+                size="xs"
+                color="color-text-secondary-default"
+              >
+                {{ t("orders.details.sameAddress") }}
+              </mt-text>
+              <mt-text v-else size="xs">
+                <template
+                  v-for="line in addressLines(order.shippingAddress)"
+                  :key="line"
+                >
+                  {{ line }}<br />
+                </template>
+              </mt-text>
+            </section>
 
-          <dl class="order-detail__values">
-            <mt-text as="dt" size="xs" color="color-text-secondary-default">
-              {{ t("orders.details.payment") }}
-            </mt-text>
-            <mt-text as="dd" size="xs">{{ order.paymentMethod }}</mt-text>
+            <mt-divider />
 
-            <mt-text as="dt" size="xs" color="color-text-secondary-default">
-              {{ t("orders.details.shipping") }}
-            </mt-text>
-            <mt-text as="dd" size="xs">{{ order.shippingMethod }}</mt-text>
+            <dl class="order-detail__values">
+              <mt-text as="dt" size="xs" color="color-text-secondary-default">
+                {{ t("orders.details.payment") }}
+              </mt-text>
+              <mt-text as="dd" size="xs">{{ order.paymentMethod }}</mt-text>
 
-            <mt-text as="dt" size="xs" color="color-text-secondary-default">
-              {{ t("orders.details.tracking") }}
-            </mt-text>
-            <mt-text as="dd" size="xs">
-              {{
-                order.trackingCodes.join(", ") || t("orders.details.noTracking")
-              }}
-            </mt-text>
-          </dl>
+              <mt-text as="dt" size="xs" color="color-text-secondary-default">
+                {{ t("orders.details.shipping") }}
+              </mt-text>
+              <mt-text as="dd" size="xs">{{ order.shippingMethod }}</mt-text>
 
-          <mt-divider />
+              <mt-text as="dt" size="xs" color="color-text-secondary-default">
+                {{ t("orders.details.tracking") }}
+              </mt-text>
+              <mt-text as="dd" size="xs">
+                {{
+                  order.trackingCodes.join(", ") ||
+                  t("orders.details.noTracking")
+                }}
+              </mt-text>
+            </dl>
 
-          <mt-banner
-            v-if="order.customerComment"
-            variant="info"
-            :title="t('orders.customerComment')"
-          >
-            {{ order.customerComment }}
-          </mt-banner>
+            <mt-divider />
 
-          <mt-select
-            v-model="order.tags"
-            :label="t('orders.fields.tags')"
-            :options="tagOptions"
-            enable-multi-selection
-          />
+            <mt-banner
+              v-if="order.customerComment"
+              variant="info"
+              :title="t('orders.customerComment')"
+            >
+              {{ order.customerComment }}
+            </mt-banner>
 
-          <mt-textarea
-            v-model="order.internalComment"
-            :label="t('orders.fields.internalComment')"
-          />
-        </template>
-        <template v-else>
-          <mt-skeleton-bar v-for="row in 6" :key="row" />
-        </template>
-      </aside>
+            <mt-select
+              v-model="order.tags"
+              :label="t('orders.fields.tags')"
+              :options="tagOptions"
+              enable-multi-selection
+            />
+
+            <mt-textarea
+              v-model="order.internalComment"
+              :label="t('orders.fields.internalComment')"
+            />
+          </template>
+          <template v-else>
+            <mt-skeleton-bar v-for="row in 6" :key="row" />
+          </template>
+        </aside>
+      </mt-panel>
     </template>
   </mt-page>
 </template>
