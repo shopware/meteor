@@ -15,6 +15,7 @@ import {
 import { render, screen, waitFor } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtApp from "./mt-app.vue";
+import MtAppPanelTrigger from "./mt-app-panel-trigger.vue";
 import { useApp } from "./composables/useApp";
 import { useAppRegions, type MtAppRegions } from "./composables/useAppRegions";
 import { useAppLoading } from "./composables/useAppLoading";
@@ -350,6 +351,127 @@ describe("mt-app", () => {
       expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
       expect(screen.getByRole("link", { name: "Orders" })).toBeVisible();
       expect(screen.getByRole("complementary", { name: "Details" })).toBeInTheDocument();
+    });
+  });
+
+  describe("triggers", () => {
+    const PageWithTriggers = defineComponent({
+      name: "PageWithTriggers",
+      render: () =>
+        h("div", [
+          h(MtAppPanelTrigger, { panel: "navigation" }),
+          h("p", "Main content"),
+          h(MtAppPanelTrigger, { panel: "sidebar" }),
+        ]),
+    });
+
+    function controlledBy(trigger: HTMLElement) {
+      return document.getElementById(trigger.getAttribute("aria-controls") ?? "");
+    }
+
+    it("leaves the triggers to a page that shows them", async () => {
+      // ACT
+      await renderApp({
+        props: mobileProps(),
+        slots: {
+          navigation: allSlots.navigation,
+          content: () => [h(PageWithTriggers)],
+          sidebar: allSlots.sidebar,
+        },
+      });
+
+      // ASSERT
+      expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+      expect(screen.getByRole("main")).toContainElement(
+        screen.getByRole("button", { name: navigationTriggerName }),
+      );
+      expect(screen.getByRole("main")).toContainElement(
+        screen.getByRole("button", { name: sidebarTriggerName }),
+      );
+      expect(drawerOf(navigationTriggerName)).toHaveAttribute("role", "dialog");
+    });
+
+    it("shows a trigger in its header while no page shows it", async () => {
+      // ARRANGE
+      const showsPage = ref(true);
+      const OtherView = defineComponent({ name: "OtherView", render: () => h("p", "Other view") });
+
+      await renderApp({
+        props: mobileProps(),
+        slots: {
+          navigation: allSlots.navigation,
+          content: () => [
+            h(KeepAlive, null, [showsPage.value ? h(PageWithTriggers) : h(OtherView)]),
+          ],
+        },
+      });
+
+      // ACT
+      showsPage.value = false;
+
+      // ASSERT
+      await waitFor(() =>
+        expect(screen.getByRole("banner")).toContainElement(
+          screen.getByRole("button", { name: navigationTriggerName }),
+        ),
+      );
+
+      // ACT
+      showsPage.value = true;
+
+      // ASSERT
+      await waitFor(() => expect(screen.queryByRole("banner")).not.toBeInTheDocument());
+      expect(screen.getByRole("main")).toContainElement(
+        screen.getByRole("button", { name: navigationTriggerName }),
+      );
+    });
+
+    it("shows the trigger of a closable panel in the desktop layout", async () => {
+      // ARRANGE
+      const onUpdate = vi.fn();
+      await renderApp({
+        props: { sidebarClosable: true, "onUpdate:sidebarOpen": onUpdate },
+        slots: {
+          navigation: allSlots.navigation,
+          content: allSlots.content,
+          sidebar: allSlots.sidebar,
+        },
+      });
+      const trigger = screen.getByRole("button", { name: sidebarTriggerName });
+
+      // ASSERT
+      expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
+      expect(trigger).toHaveAttribute("aria-expanded", "true");
+      expect(controlledBy(trigger)).toContainElement(
+        screen.getByRole("complementary", { name: "Details" }),
+      );
+
+      // ACT
+      await userEvent.click(trigger);
+
+      // ASSERT
+      expect(onUpdate).toHaveBeenCalledWith(false);
+      expect(trigger).toHaveAttribute("aria-expanded", "false");
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+    });
+
+    it("shows no trigger for a closable panel that a view hides", async () => {
+      // ARRANGE
+      const FocusView = defineComponent({
+        setup() {
+          useAppRegions({ sidebar: false });
+          return () => h("p", "Focus view");
+        },
+      });
+
+      // ACT
+      await renderApp({
+        props: { sidebarClosable: true },
+        slots: { content: () => [h(FocusView)], sidebar: allSlots.sidebar },
+      });
+
+      // ASSERT
+      expect(screen.queryByRole("button", { name: sidebarTriggerName })).not.toBeInTheDocument();
     });
   });
 

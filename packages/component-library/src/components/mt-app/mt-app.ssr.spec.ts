@@ -3,6 +3,7 @@ import { renderToString } from "vue/server-renderer";
 import { waitFor } from "@testing-library/vue";
 import { createI18n } from "vue-i18n";
 import MtApp from "./mt-app.vue";
+import MtPage from "../mt-page/mt-page.vue";
 
 function stubViewport(width: number) {
   vi.stubGlobal(
@@ -22,21 +23,26 @@ function stubViewport(width: number) {
   );
 }
 
-function createApp() {
+interface AppOptions {
+  props?: Record<string, unknown>;
+  content?: () => unknown;
+}
+
+function createApp({ props, content }: AppOptions = {}) {
   return createSSRApp({
     render: () =>
-      h(MtApp, null, {
+      h(MtApp, props ?? null, {
         header: () => h("span", "Header content"),
         navigation: () => h("a", { href: "/" }, "Orders"),
-        content: () => h("p", "Main content"),
+        content: content ?? (() => h("p", "Main content")),
         sidebar: () => h("div", "Tools"),
       }),
   }).use(createI18n({ legacy: false, locale: "en" }));
 }
 
-async function hydrate(width: number) {
+async function hydrate(width: number, options: AppOptions = {}) {
   vi.stubGlobal("matchMedia", undefined);
-  const html = await renderToString(createApp());
+  const html = await renderToString(createApp(options));
   stubViewport(width);
 
   const container = document.createElement("div");
@@ -46,7 +52,7 @@ async function hydrate(width: number) {
   const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
   const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
 
-  createApp().mount(container);
+  createApp(options).mount(container);
   await nextTick();
 
   const messages = [...warn.mock.calls, ...error.mock.calls].map((call) => String(call[0]));
@@ -78,5 +84,20 @@ describe("mt-app server-side rendering", () => {
     expect(hydrationMessages).toEqual([]);
     expect(container.querySelector(".mt-app")).toHaveAttribute("data-layout", "mobile");
     await waitFor(() => expect(document.querySelector('[role="dialog"]')).toBeInTheDocument());
+  });
+
+  it("hydrates a page with the triggers of closable panels without mismatches", async () => {
+    // ACT
+    const { container, hydrationMessages } = await hydrate(1440, {
+      props: { navigationClosable: true, sidebarClosable: true },
+      content: () => h(MtPage, { breadcrumb: [{ label: "Orders" }] }),
+    });
+
+    // ASSERT
+    expect(hydrationMessages).toEqual([]);
+    expect(
+      container.querySelectorAll(".mt-page__header .mt-app-panel-trigger__button"),
+    ).toHaveLength(2);
+    expect(container.querySelector(".mt-app__header .mt-app__trigger")).not.toBeInTheDocument();
   });
 });

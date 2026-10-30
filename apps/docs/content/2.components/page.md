@@ -62,7 +62,8 @@ The `start` and `end` slots add panels next to the content, for example a list a
 - With `width`, the content is centered at its maximum width, while the header and the panels always span the page.
 - While `is-loading` is set, the header renders right away, with a placeholder until the breadcrumb has a label, so it doesn't appear late and push the content down. The content is marked busy for assistive technology.
 - While the title of a [**Content Header**](/components/content-header) is on screen, the breadcrumb hides its current page, so the name isn't shown twice.
-- The bottom border of the header fades in as the content starts to scroll. With panels or a close button, the border is always shown.
+- Inside [**App**](/components/app), the header also shows the triggers of the navigation and the sidebar of the shell, when they have one: at its very start and end, each separated from the rest of the header by a divider.
+- The bottom border of the header fades in as the content starts to scroll. With panels, a close button or the triggers of the shell, the border is always shown.
 - The breakpoint for the panels is measured on the width of the page, not of the viewport, so the panels also become drawers next to an open sidebar.
 - A `close` listener replaces the navigation of the close button. Without Vue Router and without a listener, the button does nothing.
 
