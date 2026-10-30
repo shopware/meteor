@@ -22,7 +22,6 @@ const meta: MtSidebarMeta = {
   title: "Components/Sidebar",
   component: MtSidebar,
   args: {
-    width: "300px",
     header: "",
     actions: "",
     default: "",
@@ -178,23 +177,6 @@ export const WithActions: MtSidebarStory = {
     </mt-button>
   </template>
 
-  <mt-nav :sections="sections" />
-</mt-sidebar>`,
-      },
-    },
-  },
-};
-
-export const CustomWidth: MtSidebarStory = {
-  name: "Custom width",
-  args: {
-    width: "20rem",
-  },
-  parameters: {
-    docs: {
-      source: {
-        language: "html",
-        code: `<mt-sidebar width="20rem">
   <mt-nav :sections="sections" />
 </mt-sidebar>`,
       },

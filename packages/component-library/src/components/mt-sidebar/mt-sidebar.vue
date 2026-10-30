@@ -1,5 +1,5 @@
 <template>
-  <aside class="mt-sidebar" :style="{ '--mt-sidebar-width': width }" :aria-label="ariaLabel">
+  <aside class="mt-sidebar" :aria-label="ariaLabel">
     <header
       v-if="hasSlotContent($slots.header) || hasSlotContent($slots.actions)"
       class="mt-sidebar__header"
@@ -31,6 +31,8 @@ import { hasSlotContent } from "@/utils/slot";
  * scrolls on its own, and a fixed footer. It is a complementary landmark (`<aside>`), and the
  * `mt-nav` inside it is the navigation landmark.
  *
+ * It is 300px wide, or as wide as the `mt-panel` around it when that sets a width.
+ *
  * @experimental The API may still change in a future release.
  */
 withDefaults(
@@ -40,15 +42,9 @@ withDefaults(
      * so screen reader users can tell them apart.
      */
     ariaLabel?: string;
-    /**
-     * Width of the sidebar as a CSS length, for example "300px". It gets narrower only when its
-     * container is narrower.
-     */
-    width?: string;
   }>(),
   {
     ariaLabel: undefined,
-    width: "300px",
   },
 );
 
@@ -77,7 +73,8 @@ defineSlots<{
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: var(--mt-sidebar-width);
+  /* Fills an mt-panel that sets a width, and is 300px wide otherwise. */
+  width: var(--mt-panel-width, 300px);
   max-width: 100%;
   height: 100%;
   min-height: 0;

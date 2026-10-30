@@ -51,8 +51,6 @@ const meta: MtAppMeta = {
       <mt-app
         :breakpoint="args.breakpoint"
         :loading-bar="args.loadingBar"
-        :navigation-label="args.navigationLabel"
-        :sidebar-label="args.sidebarLabel"
       >
         <template #navigation>
           <mt-nav style="width: 15rem;" :sections="sections" :link-component="linkComponent" />

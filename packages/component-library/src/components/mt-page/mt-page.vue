@@ -42,12 +42,12 @@
         variant="tertiary"
         size="default"
         square
-        :aria-label="t('open', { label: labels.start })"
+        :aria-label="t('open', { label: panelLabel('start') })"
         :aria-expanded="panels.isOpen('start') ? 'true' : 'false'"
         :aria-controls="drawerIds.start"
         @click="panels.toggle('start')"
       >
-        <mt-icon name="regular-panel-left" size="var(--scale-size-16)" decorative />
+        <mt-icon :name="panelSettings('start').icon" size="var(--scale-size-16)" decorative />
       </mt-button>
 
       <template v-if="title">
@@ -72,12 +72,12 @@
         variant="tertiary"
         size="default"
         square
-        :aria-label="t('open', { label: labels.end })"
+        :aria-label="t('open', { label: panelLabel('end') })"
         :aria-expanded="panels.isOpen('end') ? 'true' : 'false'"
         :aria-controls="drawerIds.end"
         @click="panels.toggle('end')"
       >
-        <mt-icon name="regular-panel-right" size="var(--scale-size-16)" decorative />
+        <mt-icon :name="panelSettings('end').icon" size="var(--scale-size-16)" decorative />
       </mt-button>
 
       <mt-app-panel-trigger
@@ -94,8 +94,11 @@
         panel="start"
         :controller="controller"
         side="start"
-        :label="labels.start"
-        :close-label="t('close', { label: labels.start })"
+        :label="panelLabel('start')"
+        :close-label="t('close', { label: panelLabel('start') })"
+        :hidden="!isNarrow && !panels.isOpen('start')"
+        :bordered="panelSettings('start').appearance === 'bordered'"
+        :has-panel="hasPanel('start')"
       >
         <slot name="start" />
       </mt-app-region>
@@ -119,8 +122,11 @@
         panel="end"
         :controller="controller"
         side="end"
-        :label="labels.end"
-        :close-label="t('close', { label: labels.end })"
+        :label="panelLabel('end')"
+        :close-label="t('close', { label: panelLabel('end') })"
+        :hidden="!isNarrow && !panels.isOpen('end')"
+        :bordered="panelSettings('end').appearance === 'bordered'"
+        :has-panel="hasPanel('end')"
       >
         <slot name="end" />
       </mt-app-region>
@@ -137,10 +143,12 @@ import {
   onBeforeUpdate,
   provide,
   ref,
+  shallowReactive,
   shallowRef,
   useId,
   useTemplateRef,
   watch,
+  type VNodeChild,
 } from "vue";
 import { useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
@@ -156,6 +164,12 @@ import { appContextKey } from "@/components/mt-app/composables/useAppContext";
 import { useAppPanels, type PanelController } from "@/components/mt-app/composables/useAppPanels";
 import { useRouterBack } from "@/components/mt-app/composables/useAppRouter";
 import { hasSlotContent } from "@/utils/slot";
+import {
+  readPanelSlot,
+  resolvePanelSettings,
+  type PanelOptions,
+  type PanelSlot,
+} from "@/components/mt-panel/panel-settings";
 import { pageContextKey } from "./_internal/mt-page-context";
 
 type PagePanel = "start" | "end";
@@ -165,7 +179,9 @@ type PagePanel = "start" | "end";
  * content, and up to two panels next to it. The page fills the content area, and the content and
  * each panel scroll on their own while the header stays in place.
  *
- * - A panel is as wide as its content, so give the slot content a fixed width.
+ * - An `mt-panel` in the `start` or `end` slot sets the panel's label, the icon of its trigger,
+ *   whether it is closable on a wide page, and its width. Without it, a panel is as wide as its
+ *   content and named "Start panel" or "End panel", translated for English and German.
  * - The panels add no landmark of their own, so their slots bring one, such as an `<aside>` named
  *   after its content.
  * - Below the breakpoint, measured on the page and not on the viewport, the panels become drawers
@@ -200,10 +216,6 @@ const props = withDefaults(
      * itself: its label is the page's `<h1>`. An `icon` on the first item marks the section.
      */
     breadcrumb?: BreadcrumbItem[];
-    /** The accessible name of the start panel's drawer and its trigger. Defaults to "Start panel". */
-    startLabel?: string;
-    /** The accessible name of the end panel's drawer and its trigger. Defaults to "End panel". */
-    endLabel?: string;
     /**
      * The page width in pixels below which the panels become drawers. `0` keeps them next to the
      * content.
@@ -222,8 +234,6 @@ const props = withDefaults(
     inset: false,
     isLoading: false,
     breadcrumb: () => [],
-    startLabel: undefined,
-    endLabel: undefined,
     breakpoint: 960,
     closable: false,
   },
@@ -267,11 +277,6 @@ const { t } = useI18n({
 /** The label of the current page, the last item of the breadcrumb. */
 const title = computed(() => props.breadcrumb.at(-1)?.label ?? "");
 
-const labels = computed<Record<PagePanel, string>>(() => ({
-  start: props.startLabel ?? t("start"),
-  end: props.endLabel ?? t("end"),
-}));
-
 const rootElement = useTemplateRef<HTMLElement>("root");
 const contentElement = useTemplateRef<HTMLElement>("content");
 const regionElements = {
@@ -293,10 +298,26 @@ useResizeObserver(rootElement, ([entry]) => {
   updateHeaderBorder();
 });
 
+const app = inject(appContextKey, null);
+
 const isMeasured = computed(() => pageWidth.value !== null);
-const isNarrow = computed(
+const isMeasuredNarrow = computed(
   () => pageWidth.value !== null && props.breakpoint > 0 && pageWidth.value < props.breakpoint,
 );
+
+// While a panel of the shell is resized, the page keeps its layout, so its panels don't turn into
+// drawers and back during the drag. Sync, so the layout is kept from the first move on.
+const narrowWhileResizing = shallowRef<boolean | null>(null);
+
+watch(
+  () => app?.isResizing.value ?? false,
+  (isResizing) => {
+    narrowWhileResizing.value = isResizing ? isMeasuredNarrow.value : null;
+  },
+  { flush: "sync" },
+);
+
+const isNarrow = computed(() => narrowWhileResizing.value ?? isMeasuredNarrow.value);
 
 // Below this page width, such as on phones, the content gets a smaller padding (see the container
 // query in the styles) and the header shows only the current page.
@@ -308,25 +329,60 @@ const headerCrumbs = computed(() =>
   isCompact.value ? props.breadcrumb.slice(-1) : props.breadcrumb,
 );
 
-// Detecting empty slots renders them, so their presence is evaluated once per render.
-let slotPresence: Record<PagePanel | "actions", boolean> | undefined;
+// Detecting empty slots renders them, so their presence is evaluated once per render. The same
+// rendering shows the options of an `mt-panel` in a panel slot before anything inside renders.
+let slotPresence: { actions: boolean; start: PanelSlot; end: PanelSlot } | undefined;
 
 onBeforeUpdate(() => {
   slotPresence = undefined;
 });
 
-function hasSlot(name: PagePanel | "actions") {
+function getSlotPresence() {
   slotPresence ??= {
     actions: hasSlotContent(slots.actions),
-    start: hasSlotContent(slots.start),
-    end: hasSlotContent(slots.end),
+    start: readPanelSlot(slots.start?.() as VNodeChild),
+    end: readPanelSlot(slots.end?.() as VNodeChild),
   };
 
-  return slotPresence[name];
+  return slotPresence;
 }
 
+function hasSlot(name: PagePanel | "actions") {
+  const presence = getSlotPresence();
+
+  return name === "actions" ? presence.actions : presence[name].isFilled;
+}
+
+// The options of `mt-panel`s inside another component, which the slot doesn't show.
+const registeredPanelOptions = shallowReactive(new Map<PagePanel, () => PanelOptions>());
+
+function registerPanelOptions(panel: PagePanel, options: () => PanelOptions) {
+  registeredPanelOptions.set(panel, options);
+
+  return () => {
+    if (registeredPanelOptions.get(panel) === options) registeredPanelOptions.delete(panel);
+  };
+}
+
+/** The label, the trigger icon and whether the panel is closable, with the defaults of its place. */
+function panelSettings(panel: PagePanel) {
+  const options = getSlotPresence()[panel].options ?? registeredPanelOptions.get(panel)?.();
+
+  return resolvePanelSettings(panel, options, t(panel));
+}
+
+function panelLabel(panel: PagePanel) {
+  return panelSettings(panel).label;
+}
+
+/** Whether an `mt-panel` holds the panel's content: in the slot, or inside another component. */
+function hasPanel(panel: PagePanel) {
+  return getSlotPresence()[panel].options !== undefined || registeredPanelOptions.has(panel);
+}
+
+/** A panel's trigger shows on a narrow page, and on a wide page when the panel is closable. */
 function showTrigger(panel: PagePanel) {
-  return isNarrow.value && hasSlot(panel);
+  return hasSlot(panel) && (isNarrow.value || panelSettings(panel).closable);
 }
 
 const panels = useAppPanels<PagePanel>({
@@ -335,7 +391,6 @@ const panels = useAppPanels<PagePanel>({
   desktopState: { start: ref(true), end: ref(true) },
 });
 
-const app = inject(appContextKey, null);
 const instance = getCurrentInstance();
 const goBack = useRouterBack();
 
@@ -452,6 +507,11 @@ const controller: PanelController = {
   open: panels.open,
   close: panels.close,
   focusContent,
+  panelLabel: (panel) => panelLabel(panel as PagePanel),
+  hasPanelInSlot: (panel) => getSlotPresence()[panel as PagePanel].options !== undefined,
+  registerPanelOptions: (panel, options) => registerPanelOptions(panel as PagePanel, options),
+  // Resizing a panel of the page doesn't change the page's own width, so nothing waits for it.
+  setResizing: () => undefined,
 };
 
 // A panel that moves between the page and its drawer while it holds the focus would leave the
@@ -509,8 +569,9 @@ watch(
   height: var(--scale-size-40);
 }
 
+/* As wide as the trail, and the first to shrink and collapse when the header gets tight. */
 .mt-page__breadcrumb {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
   padding-inline-start: var(--scale-size-8);
 }
@@ -537,12 +598,16 @@ watch(
   margin-inline-start: var(--scale-size-12);
 }
 
+/*
+ * The actions take the free space of the header, so content with `width: 100%` fills it, while
+ * buttons sit at its end. They never shrink below their content.
+ */
 .mt-page__actions {
   display: flex;
-  flex: none;
+  flex: 1 0 auto;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--scale-size-8);
-  margin-inline-start: auto;
 }
 
 /* Without actions, the next element at the end of the header takes the free space before it. */
@@ -580,13 +645,20 @@ watch(
   padding: 0;
 }
 
-.mt-page__body > :deep(.mt-app__region--start) {
+.mt-page__body > .mt-app__region--start {
   grid-column: 1;
+}
+
+.mt-page__body > .mt-app__region--end {
+  grid-column: 3;
+}
+
+/* Inside the content's frame, a bordered panel is set off by a line on its inner edge. */
+.mt-page__body > .mt-app__region--start.mt-app__region--bordered {
   border-inline-end: 1px solid var(--color-border-secondary-default);
 }
 
-.mt-page__body > :deep(.mt-app__region--end) {
-  grid-column: 3;
+.mt-page__body > .mt-app__region--end.mt-app__region--bordered {
   border-inline-start: 1px solid var(--color-border-secondary-default);
 }
 
@@ -596,7 +668,7 @@ watch(
  * breakpoints only apply once the page is measured.
  */
 @container (width < 960px) {
-  .mt-page--responsive:not([data-layout]) .mt-page__body > :deep(.mt-app__region) {
+  .mt-page--responsive:not([data-layout]) .mt-page__body > .mt-app__region {
     display: none;
   }
 }

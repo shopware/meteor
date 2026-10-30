@@ -100,6 +100,7 @@ import {
 // Import global styling
 import MtApp from "./components/mt-app/mt-app.vue";
 import MtAppPanelTrigger from "./components/mt-app/mt-app-panel-trigger.vue";
+import MtPanel from "./components/mt-panel/mt-panel.vue";
 import { useApp, type MtAppContext, type MtAppPanel } from "./components/mt-app/composables/useApp";
 import { useAppRegions, type MtAppRegions } from "./components/mt-app/composables/useAppRegions";
 import { useAppLoading } from "./components/mt-app/composables/useAppLoading";
@@ -243,6 +244,7 @@ export {
   MtSkeletonBar as SwSkeletonBar,
   MtApp,
   MtAppPanelTrigger,
+  MtPanel,
   useApp,
   useAppRegions,
   useAppLoading,
