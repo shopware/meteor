@@ -115,6 +115,12 @@ export interface PanelContext {
   registerOptions(options: () => PanelOptions): () => void;
   /** Reports that the panel is being resized, so layouts can wait with switching layouts. */
   setResizing(resizing: boolean): void;
+  /** Whether the panel is open in the current layout. */
+  isOpen(): boolean;
+  /** Pushes the panel out over its outer edge by `offset` pixels during a drag, without animation. */
+  slideOut(offset: number): void;
+  /** Ends a drag that pushed the panel out: closes it from where it is, or slides it back. */
+  release(close: boolean): void;
 }
 
 export const panelContextKey = Symbol("mt-panel") as InjectionKey<PanelContext>;
