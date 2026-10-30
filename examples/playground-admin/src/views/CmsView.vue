@@ -15,6 +15,7 @@ const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
       <mt-panel
         :label="t('cms.blocks')"
         icon="regular-layout"
+        closable
         resizable
         :width="240"
         :min-width="200"
