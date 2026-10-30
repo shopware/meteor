@@ -21,6 +21,13 @@ export type MtSidebarMeta = SlottedMeta<
 const meta: MtSidebarMeta = {
   title: "Components/Sidebar",
   component: MtSidebar,
+  parameters: {
+    docs: {
+      description: {
+        component: "**Experimental.** The API may still change in a future release.",
+      },
+    },
+  },
   args: {
     header: "",
     actions: "",
@@ -84,7 +91,7 @@ export const Default: MtSidebarStory = {
   <mt-nav :sections="sections" />
 
   <template #footer>
-    <mt-user-menu first-name="Max" last-name="Mustermann" subtitle="Administrator">
+    <mt-user-menu name="Max Mustermann" subtitle="Administrator">
       <mt-action-menu-group>
         <mt-action-menu-item icon="regular-sign-out" variant="critical" @select="logout">
           Log out
@@ -141,9 +148,9 @@ export const WithActions: MtSidebarStory = {
     </template>
 
     <template #actions>
-      <mt-button variant="tertiary" size="default" square aria-label="Minimize menu">
+      <mt-button variant="tertiary" size="default" square aria-label="Notifications">
         <template #iconFront>
-          <mt-icon name="regular-panel-left" size="var(--scale-size-16)" decorative />
+          <mt-icon name="regular-bell" size="var(--scale-size-16)" decorative />
         </template>
       </mt-button>
     </template>
@@ -160,7 +167,7 @@ export const WithActions: MtSidebarStory = {
     docs: {
       description: {
         story:
-          "The `actions` slot sits next to the header, for example for a button that collapses the sidebar.",
+          "The `actions` slot sits next to the header, for example for a button that opens the notifications.",
       },
       source: {
         language: "html",
@@ -170,9 +177,9 @@ export const WithActions: MtSidebarStory = {
   </template>
 
   <template #actions>
-    <mt-button variant="tertiary" square aria-label="Minimize menu" @click="onCollapse">
+    <mt-button variant="tertiary" size="default" square aria-label="Notifications">
       <template #iconFront>
-        <mt-icon name="regular-panel-left" size="var(--scale-size-16)" decorative />
+        <mt-icon name="regular-bell" size="var(--scale-size-16)" decorative />
       </template>
     </mt-button>
   </template>

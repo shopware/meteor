@@ -3,6 +3,7 @@ import { markRaw } from "vue";
 import MtApp from "./mt-app.vue";
 import MtNav, { type NavSection } from "../mt-nav/mt-nav.vue";
 import MtPage from "../mt-page/mt-page.vue";
+import MtPanel from "../mt-panel/mt-panel.vue";
 import MtText from "../mt-text/mt-text.vue";
 import { StoryLink } from "../mt-nav/mt-nav.story-helper";
 import { useTheme } from "@/composables/useTheme";
@@ -40,7 +41,7 @@ const meta: MtAppMeta = {
     loadingBar: false,
   },
   render: (args, { globals }) => ({
-    components: { MtApp, MtNav, MtPage, MtText },
+    components: { MtApp, MtNav, MtPage, MtPanel, MtText },
     setup() {
       // The shell applies the stored theme preference, so it gets the theme of the toolbar.
       useTheme().setTheme(globals.theme ?? "light");
@@ -53,20 +54,21 @@ const meta: MtAppMeta = {
         :loading-bar="args.loadingBar"
       >
         <template #navigation>
-          <mt-nav style="width: 15rem;" :sections="sections" :link-component="linkComponent" />
+          <mt-panel :width="240">
+            <mt-nav :sections="sections" :link-component="linkComponent" />
+          </mt-panel>
         </template>
 
-        <template #content>
-          <mt-page :breadcrumb="[{ label: 'Products', icon: 'products' }]">
-
-            <mt-text size="xs">The content of the current page.</mt-text>
-          </mt-page>
-        </template>
+        <mt-page :breadcrumb="[{ label: 'Products', icon: 'products' }]">
+          <mt-text size="xs">The content of the current page.</mt-text>
+        </mt-page>
 
         <template #sidebar>
-          <div style="width: 20rem; padding: var(--scale-size-16);">
-            <mt-text size="xs">A panel next to the content.</mt-text>
-          </div>
+          <mt-panel label="Details" :width="320" closable resizable>
+            <aside aria-label="Details" style="padding: var(--scale-size-16);">
+              <mt-text size="xs">A panel next to the content.</mt-text>
+            </aside>
+          </mt-panel>
         </template>
       </mt-app>`,
   }),

@@ -6,6 +6,13 @@ export type MtBrandMeta = Meta<typeof MtBrand>;
 const meta: MtBrandMeta = {
   title: "Components/Brand",
   component: MtBrand,
+  parameters: {
+    docs: {
+      description: {
+        component: "**Experimental.** The API may still change in a future release.",
+      },
+    },
+  },
   args: {
     title: "Meteor",
     subtitle: "Shopware",
@@ -50,7 +57,7 @@ export const Default: MtBrandStory = {
 export const WithoutSubtitle: MtBrandStory = {
   name: "Without subtitle",
   args: {
-    subtitle: "",
+    subtitle: undefined,
   },
 };
 
@@ -136,11 +143,11 @@ export const Compact: MtBrandStory = {
     docs: {
       description: {
         story:
-          "Shows only the logo, for example in a collapsed sidebar. The title shows on hover and stays available to screen readers.",
+          "Shows only the logo. The title shows on hover and stays available to screen readers.",
       },
       source: {
         language: "html",
-        code: `<mt-brand compact />`,
+        code: `<mt-brand title="Demo shop" compact />`,
       },
     },
   },

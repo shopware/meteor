@@ -4,9 +4,9 @@ import { createAppRegions } from "./createAppRegions";
 describe("createAppRegions", () => {
   it("hides a region while any request hides it", () => {
     // ARRANGE
-    const { hidden, requestRegions } = createAppRegions();
-    const releaseFirst = requestRegions(() => ({ header: false }));
-    const releaseSecond = requestRegions(() => ({ header: false, sidebar: false }));
+    const { hidden, registerRegions } = createAppRegions();
+    const releaseFirst = registerRegions(() => ({ header: false }));
+    const releaseSecond = registerRegions(() => ({ header: false, sidebar: false }));
 
     // ACT
     releaseSecond();
@@ -29,8 +29,8 @@ describe("createAppRegions", () => {
   it("follows a request that changes", () => {
     // ARRANGE
     const fullscreen = ref(false);
-    const { hidden, requestRegions } = createAppRegions();
-    requestRegions(() => ({ navigation: !fullscreen.value }));
+    const { hidden, registerRegions } = createAppRegions();
+    registerRegions(() => ({ navigation: !fullscreen.value }));
 
     // ACT
     fullscreen.value = true;

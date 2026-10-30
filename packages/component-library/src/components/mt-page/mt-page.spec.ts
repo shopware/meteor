@@ -1,12 +1,16 @@
-import { defineComponent, h, type App } from "vue";
+import { defineComponent, h, nextTick } from "vue";
 import { render, screen, waitFor, within } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtPage from "./mt-page.vue";
 import MtApp from "../mt-app/mt-app.vue";
 import MtPanel from "../mt-panel/mt-panel.vue";
 import { useAppRegions } from "../mt-app/composables/useAppRegions";
+import {
+  routerPlugin,
+  stubMatchMedia,
+  stubResizeObserver,
+} from "../mt-app/__tests__/shell-test-utils";
 import type { BreadcrumbItem } from "../mt-breadcrumb/mt-breadcrumb.vue";
-import type { Router } from "vue-router";
 
 const RouterLinkStub = defineComponent({
   props: {
@@ -20,12 +24,20 @@ const breadcrumb: BreadcrumbItem[] = [
   { label: "Shopping Experiences" },
 ];
 
-function createRouter(previousPage?: string) {
+function createFakeRouter(previousPage?: string) {
+  const afterEachHooks: ((to: unknown, from: unknown) => void)[] = [];
+
   return {
     currentRoute: { value: { path: "/cms", hash: "" } },
     options: { history: { state: { back: previousPage } } },
     back: vi.fn(),
     push: vi.fn(() => Promise.resolve()),
+    afterEach: (hook: (to: unknown, from: unknown) => void) => {
+      afterEachHooks.push(hook);
+      return () => undefined;
+    },
+    completeNavigation: (to: string, from: string) =>
+      afterEachHooks.forEach((hook) => hook({ path: to, hash: "" }, { path: from, hash: "" })),
   };
 }
 
@@ -34,20 +46,16 @@ function renderPage(options: { props?: Record<string, unknown>; router?: unknown
     props: { breadcrumb, ...options.props },
     global: {
       components: { "router-link": RouterLinkStub },
-      plugins: options.router
-        ? [
-            {
-              install: (app: App) => {
-                app.config.globalProperties.$router = options.router as Router;
-              },
-            },
-          ]
-        : [],
+      plugins: options.router ? [routerPlugin(options.router)] : [],
     },
   });
 }
 
 describe("mt-page", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   describe("close button", () => {
     it("shows no close button by default", () => {
       // ACT
@@ -68,7 +76,7 @@ describe("mt-page", () => {
 
     it("goes back to the previous page of the app", async () => {
       // ARRANGE
-      const router = createRouter("/orders");
+      const router = createFakeRouter("/orders");
       renderPage({ props: { closable: true }, router });
 
       // ACT
@@ -81,7 +89,7 @@ describe("mt-page", () => {
 
     it("goes up the breadcrumb when the page was opened directly", async () => {
       // ARRANGE
-      const router = createRouter();
+      const router = createFakeRouter();
       renderPage({ props: { closable: true }, router });
 
       // ACT
@@ -93,7 +101,7 @@ describe("mt-page", () => {
 
     it("goes to the start page when the breadcrumb leads nowhere", async () => {
       // ARRANGE
-      const router = createRouter();
+      const router = createFakeRouter();
       renderPage({
         props: { closable: true, breadcrumb: [{ label: "Shopping Experiences" }] },
         router,
@@ -108,7 +116,7 @@ describe("mt-page", () => {
 
     it("leaves closing to a close listener", async () => {
       // ARRANGE
-      const router = createRouter("/orders");
+      const router = createFakeRouter("/orders");
       const onClose = vi.fn();
       renderPage({ props: { closable: true, onClose }, router });
 
@@ -136,7 +144,7 @@ describe("mt-page", () => {
         },
         global: { components: { "router-link": RouterLinkStub } },
       });
-      const trigger = screen.getByRole("button", { name: "Open Properties" });
+      const trigger = screen.getByRole("button", { name: "Toggle Properties" });
 
       // ASSERT
       expect(trigger.querySelector(".icon--regular-cog")).toBeInTheDocument();
@@ -163,11 +171,11 @@ describe("mt-page", () => {
       });
 
       // ASSERT
-      expect(document.querySelector(".mt-app__region--start")).toHaveClass(
-        "mt-app__region--bordered",
+      expect(document.querySelector(".mt-panel-region--start")).toHaveClass(
+        "mt-panel-region--bordered",
       );
-      expect(document.querySelector(".mt-app__region--end")).not.toHaveClass(
-        "mt-app__region--bordered",
+      expect(document.querySelector(".mt-panel-region--end")).not.toHaveClass(
+        "mt-panel-region--bordered",
       );
     });
 
@@ -183,34 +191,42 @@ describe("mt-page", () => {
       });
 
       // ASSERT
-      expect(screen.queryByRole("button", { name: "Open Properties" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Toggle Properties" })).not.toBeInTheDocument();
+    });
+
+    it("closes its open drawer when a navigation leads to another path", async () => {
+      // ARRANGE
+      stubResizeObserver(500);
+      const router = createFakeRouter();
+      render(MtPage, {
+        props: { breadcrumb },
+        slots: {
+          default: "<p>Order</p>",
+          start: () =>
+            h(MtPanel, { label: "Orders" }, () => h("nav", { "aria-label": "Orders" }, "List")),
+        },
+        global: {
+          components: { "router-link": RouterLinkStub },
+          plugins: [routerPlugin(router)],
+        },
+      });
+      const trigger = await screen.findByRole("button", { name: "Toggle Orders" });
+      await userEvent.click(trigger);
+      expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+      // ACT
+      router.completeNavigation("/orders/2", "/orders/1");
+      await nextTick();
+
+      // ASSERT
+      expect(trigger).toHaveAttribute("aria-expanded", "false");
     });
   });
 
   describe("breadcrumb", () => {
-    afterEach(() => {
-      vi.unstubAllGlobals();
-    });
-
     it("shows only the current page on a compact page", async () => {
       // ARRANGE
-      vi.stubGlobal(
-        "ResizeObserver",
-        class {
-          constructor(private callback: ResizeObserverCallback) {}
-
-          observe(target: Element) {
-            this.callback(
-              [{ target, contentRect: { width: 390 } } as unknown as ResizeObserverEntry],
-              this as unknown as ResizeObserver,
-            );
-          }
-
-          unobserve() {}
-
-          disconnect() {}
-        },
-      );
+      stubResizeObserver(390);
 
       // ACT
       renderPage();
@@ -223,26 +239,11 @@ describe("mt-page", () => {
   });
 
   describe("shell triggers", () => {
-    /** A phone-sized viewport for the shell's breakpoint; other media queries never match. */
-    function stubPhoneViewport() {
-      vi.stubGlobal(
-        "matchMedia",
-        vi.fn((query: string) => ({
-          matches: /\(width < [\d.]+px\)/.test(query),
-          media: query,
-          onchange: null,
-          addEventListener: () => undefined,
-          removeEventListener: () => undefined,
-          dispatchEvent: () => true,
-        })),
-      );
-    }
-
     function renderPageInApp(page: () => unknown) {
       return render(MtApp, {
         slots: {
           navigation: () => h("nav", { "aria-label": "Main" }, "Orders"),
-          content: page,
+          default: page,
           sidebar: () => h("aside", { "aria-label": "Details" }, "Tools"),
         },
         global: { components: { "router-link": RouterLinkStub } },
@@ -254,32 +255,29 @@ describe("mt-page", () => {
     }
 
     beforeEach(() => {
-      stubPhoneViewport();
-    });
-
-    afterEach(() => {
-      vi.unstubAllGlobals();
+      stubMatchMedia(390);
     });
 
     it("puts the shell's triggers at the very start and end of the header, each behind a divider", async () => {
       // ACT
       renderPageInApp(() => h(MtPage, { breadcrumb }));
-      const navigationTrigger = await screen.findByRole("button", { name: "Open Navigation" });
-      const sidebarTrigger = screen.getByRole("button", { name: "Open Sidebar" });
+      const navigationTrigger = await screen.findByRole("button", { name: "Toggle Navigation" });
+      const sidebarTrigger = screen.getByRole("button", { name: "Toggle Sidebar" });
 
       // ASSERT
       const header = pageHeader();
+      const headerEnd = header.lastElementChild;
       expect(header.firstElementChild).toContainElement(navigationTrigger);
       expect(header.firstElementChild?.lastElementChild).toHaveClass("mt-divider");
-      expect(header.lastElementChild).toContainElement(sidebarTrigger);
-      expect(header.lastElementChild?.firstElementChild).toHaveClass("mt-divider");
+      expect(headerEnd?.lastElementChild).toContainElement(sidebarTrigger);
+      expect(headerEnd?.lastElementChild?.firstElementChild).toHaveClass("mt-divider");
       expect(document.querySelector(".mt-app__header")).not.toBeInTheDocument();
     });
 
     it("puts the close button after the navigation trigger", async () => {
       // ACT
       renderPageInApp(() => h(MtPage, { breadcrumb, closable: true }));
-      const navigationTrigger = await screen.findByRole("button", { name: "Open Navigation" });
+      const navigationTrigger = await screen.findByRole("button", { name: "Toggle Navigation" });
 
       // ASSERT
       const header = pageHeader();
@@ -302,8 +300,8 @@ describe("mt-page", () => {
 
       // ASSERT
       expect(pageHeader().firstElementChild).toBe(closeButton);
-      expect(screen.queryByRole("button", { name: "Open Navigation" })).not.toBeInTheDocument();
-      expect(screen.queryByRole("button", { name: "Open Sidebar" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Toggle Navigation" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Toggle Sidebar" })).not.toBeInTheDocument();
     });
 
     it("renders the header for the shell's triggers alone", async () => {
@@ -311,7 +309,7 @@ describe("mt-page", () => {
       renderPageInApp(() => h(MtPage));
 
       // ASSERT
-      expect(await screen.findByRole("button", { name: "Open Navigation" })).toBeInTheDocument();
+      expect(await screen.findByRole("button", { name: "Toggle Navigation" })).toBeInTheDocument();
       expect(pageHeader()).toBeInTheDocument();
     });
   });

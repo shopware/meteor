@@ -1,4 +1,5 @@
 import { h, nextTick, ref, type Component } from "vue";
+import { onTestFinished } from "vitest";
 import { render, screen } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import { useModalLayer } from "./useModalLayer";
@@ -196,6 +197,7 @@ describe("useModalLayer", () => {
     const background = document.createElement("div");
     background.textContent = "Background";
     document.body.appendChild(background);
+    onTestFinished(() => background.remove());
     const first = ref(false);
     const second = ref(false);
     const Layers: Component = {
@@ -240,6 +242,5 @@ describe("useModalLayer", () => {
 
     // ASSERT
     expect(background).not.toHaveAttribute("inert");
-    background.remove();
   });
 });

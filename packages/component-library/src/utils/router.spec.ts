@@ -1,17 +1,18 @@
-import { defineComponent, h, shallowRef, type App } from "vue";
+import { defineComponent, h, shallowRef } from "vue";
 import { render } from "@testing-library/vue";
+import { NavigationFailureType } from "vue-router";
+import { routerPlugin } from "@/components/mt-app/__tests__/shell-test-utils";
 import {
+  useMatchedRouteMeta,
   useRouteChange,
   useRouteGuard,
-  useRouteMeta,
   useRouterBack,
   type RouteLike,
-} from "./useAppRouter";
-import type { Router } from "vue-router";
+} from "./router";
 
 type AfterEachHook = (to: RouteLike, from: RouteLike, failure?: unknown) => void;
 
-function createRouter() {
+function createFakeRouter() {
   const guards = new Set<() => void>();
   const hooks = new Set<AfterEachHook>();
   const errorHandlers = new Set<() => void>();
@@ -25,7 +26,7 @@ function createRouter() {
   return {
     guards,
     hooks,
-    currentRoute: shallowRef<RouteLike>({ path: "/", hash: "", meta: {} }),
+    currentRoute: shallowRef<RouteLike>({ path: "/", hash: "" }),
     options: { history: { state: {} as Record<string, unknown> } },
     back: vi.fn(),
     push: vi.fn(() => Promise.resolve()),
@@ -47,32 +48,22 @@ function renderWithRouter(router: unknown, setup: () => void) {
     },
   });
 
-  return render(Consumer, {
-    global: {
-      plugins: [
-        {
-          install: (app: App) => {
-            app.config.globalProperties.$router = router as Router;
-          },
-        },
-      ],
-    },
-  });
+  return render(Consumer, { global: { plugins: [routerPlugin(router)] } });
 }
 
-describe("useAppRouter", () => {
+describe("router", () => {
   describe("useRouteChange", () => {
     it("reports the start, the end and completed navigations", () => {
       // ARRANGE
-      const router = createRouter();
+      const router = createFakeRouter();
       const options = { onStart: vi.fn(), onEnd: vi.fn(), onNavigate: vi.fn() };
       renderWithRouter(router, () => useRouteChange(options));
 
       // ACT
       router.start();
       router.end();
-      router.end({ type: 16 });
-      router.end({ type: 4 });
+      router.end({ type: NavigationFailureType.duplicated });
+      router.end({ type: NavigationFailureType.aborted });
       router.fail();
 
       // ASSERT
@@ -85,9 +76,22 @@ describe("useAppRouter", () => {
       );
     });
 
+    it("doesn't end the loading for a navigation that a newer one cancelled", () => {
+      // ARRANGE
+      const router = createFakeRouter();
+      const options = { onEnd: vi.fn() };
+      renderWithRouter(router, () => useRouteChange(options));
+
+      // ACT
+      router.end({ type: NavigationFailureType.cancelled });
+
+      // ASSERT
+      expect(options.onEnd).not.toHaveBeenCalled();
+    });
+
     it("stops listening when the component unmounts", () => {
       // ARRANGE
-      const router = createRouter();
+      const router = createFakeRouter();
       const { unmount } = renderWithRouter(router, () => useRouteChange({}));
 
       // ACT
@@ -106,7 +110,7 @@ describe("useAppRouter", () => {
   describe("useRouteGuard", () => {
     it("guards the navigations until the component unmounts", () => {
       // ARRANGE
-      const router = createRouter();
+      const router = createFakeRouter();
       const guard = vi.fn(() => false);
 
       // ACT
@@ -131,7 +135,7 @@ describe("useAppRouter", () => {
   describe("useRouterBack", () => {
     it("goes back to the previous page of the app", () => {
       // ARRANGE
-      const router = createRouter();
+      const router = createFakeRouter();
       router.options.history.state.back = "/orders";
       let goBack: ReturnType<typeof useRouterBack> | undefined;
       renderWithRouter(router, () => (goBack = useRouterBack()));
@@ -146,7 +150,7 @@ describe("useAppRouter", () => {
 
     it("goes to the fallback when the app has no previous page", () => {
       // ARRANGE
-      const router = createRouter();
+      const router = createFakeRouter();
       let goBack: ReturnType<typeof useRouterBack> | undefined;
       renderWithRouter(router, () => (goBack = useRouterBack()));
 
@@ -168,29 +172,33 @@ describe("useAppRouter", () => {
     });
   });
 
-  describe("useRouteMeta", () => {
-    it("follows the meta of the current route", () => {
+  describe("useMatchedRouteMeta", () => {
+    it("follows the meta of the matched route records", () => {
       // ARRANGE
-      const router = createRouter();
-      let meta: ReturnType<typeof useRouteMeta> | undefined;
-      renderWithRouter(router, () => (meta = useRouteMeta()));
+      const router = createFakeRouter();
+      let meta: ReturnType<typeof useMatchedRouteMeta> | undefined;
+      renderWithRouter(router, () => (meta = useMatchedRouteMeta()));
 
       // ACT
-      router.currentRoute.value = { path: "/editor", hash: "", meta: { fullscreen: true } };
+      router.currentRoute.value = {
+        path: "/editor/1",
+        hash: "",
+        matched: [{ path: "/editor", meta: { fullscreen: true } }, { path: "/editor/:id" }],
+      };
 
       // ASSERT
-      expect(meta?.value).toEqual({ fullscreen: true });
+      expect(meta?.value).toEqual([{ fullscreen: true }, {}]);
     });
 
     it("is empty without a router", () => {
       // ARRANGE
-      let meta: ReturnType<typeof useRouteMeta> | undefined;
+      let meta: ReturnType<typeof useMatchedRouteMeta> | undefined;
 
       // ACT
-      renderWithRouter(undefined, () => (meta = useRouteMeta()));
+      renderWithRouter(undefined, () => (meta = useMatchedRouteMeta()));
 
       // ASSERT
-      expect(meta?.value).toEqual({});
+      expect(meta?.value).toEqual([]);
     });
   });
 });

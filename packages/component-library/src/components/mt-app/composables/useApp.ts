@@ -1,5 +1,5 @@
 import { computed, inject, type Ref } from "vue";
-import { appContextKey } from "./useAppContext";
+import { appContextKey } from "../_internal/mt-app-context";
 
 /**
  * A panel of the shell that can be opened and closed: the navigation or the sidebar.
@@ -36,10 +36,8 @@ export interface MtAppContext {
 }
 
 /**
- * Reads and controls the surrounding `<mt-app>`. It only works in components inside the shell,
- * such as pages. In the component that renders `<mt-app>`, use the props of the `header` slot or
- * a template ref instead. Outside of a shell, it returns inert defaults, so components that use it
- * keep working on their own.
+ * Reads and controls the surrounding `mt-app` from components inside it, such as pages. Outside of
+ * a shell, it returns inert defaults.
  *
  * @experimental The API may still change in a future release.
  */

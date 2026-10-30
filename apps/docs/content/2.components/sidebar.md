@@ -18,7 +18,7 @@ description: The main navigation of an application, with a fixed header and foot
 import { MtSidebar } from "@shopware-ag/meteor-component-library";
 ```
 
-Put an `mt-nav` into the default slot, a [**Brand**](/components/brand) into the `header` slot and a [**User Menu**](/components/user-menu) into the `footer` slot. The `actions` slot sits next to the header, for example for a button that collapses the sidebar. The sidebar fills the height of its container, so give the container a height.
+Put an `mt-nav` into the default slot, a [**Brand**](/components/brand) into the `header` slot and a [**User Menu**](/components/user-menu) into the `footer` slot. The `actions` slot sits next to the header, for example for a button that opens the notifications. The sidebar fills the height of its container, so give the container a height.
 
 ## API reference
 
@@ -49,6 +49,6 @@ Put an `mt-nav` into the default slot, a [**Brand**](/components/brand) into the
 
 ## Accessibility
 
-- **Sidebar** is an `<aside>`, which screen readers announce as a complementary landmark. It has no name by default. Use `aria-label` to name it when the page has another `<aside>`, so screen reader users can tell them apart.
+- **Sidebar** is an `<aside>`, which screen readers announce as a complementary landmark. It has no name by default. Give it an `aria-label` when the page has another `<aside>`, so screen reader users can tell them apart.
 - The `mt-nav` inside it is the navigation landmark, named "Main" ("Hauptmenü" in German).
 - Header and footer of the sidebar are not landmarks of their own.

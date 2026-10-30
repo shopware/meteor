@@ -21,7 +21,6 @@
         v-show="isOpen"
         ref="dropdownRef"
         class="mt-unit-select"
-        data-mt-overlay
         :style="{
           ...floatingStyles,
           ...(props.zIndex != null ? { zIndex: props.zIndex } : {}),
@@ -165,11 +164,16 @@ const navigateWithKeyboard = (event: KeyboardEvent) => {
         selectUnit(props.units[activeIndex.value]);
       }
       break;
-    case "Escape":
-      event.preventDefault();
-      closeDropdown();
-      break;
   }
+};
+
+// Captured, so Escape closes the open dropdown before an overlay around it, such as a drawer, sees
+// the key.
+const closeOnEscape = (event: KeyboardEvent) => {
+  if (!isOpen.value || event.key !== "Escape") return;
+
+  event.preventDefault();
+  closeDropdown();
 };
 
 watch(
@@ -182,6 +186,7 @@ watch(
 onMounted(() => {
   activeIndex.value = props.units.findIndex((unit) => unit === props.modelValue);
   window.addEventListener("keydown", navigateWithKeyboard);
+  window.addEventListener("keydown", closeOnEscape, true);
   nextTick(() => {
     update?.();
   });
@@ -189,11 +194,13 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener("keydown", navigateWithKeyboard);
+  window.removeEventListener("keydown", closeOnEscape, true);
 });
 </script>
 
 <style lang="css" scoped>
 .mt-unit-select {
+  z-index: 1100;
   max-width: var(--scale-size-256);
   padding: var(--scale-size-4);
   border: 1px solid var(--color-border-secondary-default);

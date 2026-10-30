@@ -5,7 +5,7 @@
         <button type="button" class="mt-user-menu__trigger">
           <mt-user
             class="mt-user-menu__user"
-            :name="fullName"
+            :name="name"
             :subtitle="subtitle"
             :image-url="imageUrl"
             :compact="compact"
@@ -28,11 +28,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
 import { DropdownMenuPortal, DropdownMenuRoot, DropdownMenuTrigger } from "reka-ui";
-import MtActionMenu from "../mt-action-menu/mt-action-menu.vue";
-import MtIcon from "../mt-icon/mt-icon.vue";
-import MtUser from "../mt-user/mt-user.vue";
+import MtActionMenu from "@/components/mt-action-menu/mt-action-menu.vue";
+import MtIcon from "@/components/mt-icon/mt-icon.vue";
+import MtUser from "@/components/mt-user/mt-user.vue";
 
 /**
  * The logged-in user as a button with avatar, name and an optional subtitle, which opens a menu
@@ -40,32 +39,21 @@ import MtUser from "../mt-user/mt-user.vue";
  *
  * @experimental The API may still change in a future release.
  */
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    /**
-     * First name of the logged-in user. Shown next to the avatar and used for its initials.
-     */
-    firstName: string;
-    /**
-     * Last name of the logged-in user.
-     */
-    lastName?: string;
-    /**
-     * Second line below the name, for example the role of the user.
-     */
+    /** The display name of the logged-in user. The avatar shows the initials of its first and last word. */
+    name: string;
+    /** A second line below the name, for example the role of the user. */
     subtitle?: string;
-    /**
-     * Image shown in the avatar instead of the initials.
-     */
+    /** An image for the avatar instead of the initials. */
     imageUrl?: string;
     /**
-     * Shows only the avatar, for example in a collapsed sidebar. The name and subtitle stay
-     * available to screen readers.
+     * Shows only the avatar. The name and the subtitle stay available to assistive technology, and
+     * the name shows on hover.
      */
     compact?: boolean;
   }>(),
   {
-    lastName: undefined,
     subtitle: undefined,
     imageUrl: undefined,
     compact: false,
@@ -74,13 +62,11 @@ const props = withDefaults(
 
 defineSlots<{
   /**
-   * The entries of the menu, such as a profile link and the logout. Use mt-action-menu-group and
-   * mt-action-menu-item.
+   * The entries of the menu, such as a profile link and the logout. Use `mt-action-menu-group` and
+   * `mt-action-menu-item`.
    */
-  default?: null;
+  default?(): unknown;
 }>();
-
-const fullName = computed(() => [props.firstName, props.lastName].filter(Boolean).join(" "));
 </script>
 
 <style scoped>

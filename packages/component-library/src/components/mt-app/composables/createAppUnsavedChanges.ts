@@ -1,33 +1,17 @@
-import { computed, shallowReactive, shallowRef, type ComponentInternalInstance } from "vue";
-import type { RouteLike, RouteRecordLike } from "./useAppRouter";
+import {
+  computed,
+  onScopeDispose,
+  shallowReactive,
+  shallowRef,
+  type ComponentInternalInstance,
+} from "vue";
+import { findRenderingRecord, type RouteLike } from "@/utils/router";
 
 /** Unsaved changes that a view reports with `useUnsavedChanges()`. */
 export interface UnsavedChangesSource {
   hasChanges(): boolean;
   /** The component that reports the changes, which tells the route that renders them. */
   owner: ComponentInternalInstance | null;
-}
-
-/** The route record that renders the component: the deepest one that renders it or an ancestor. */
-function findRenderingRecord(owner: ComponentInternalInstance, matched: RouteRecordLike[]) {
-  const lineage = new Set<ComponentInternalInstance>();
-  let component: ComponentInternalInstance | null = owner;
-
-  while (component) {
-    lineage.add(component);
-    component = component.parent;
-  }
-
-  // A record keeps the public instances it renders. `$` leads back to the internal instance, also
-  // for the closed instances of `<script setup>` components.
-  const isInLineage = (instance: unknown) => {
-    const internal = (instance as { $?: ComponentInternalInstance } | null)?.$;
-    return internal !== undefined && lineage.has(internal);
-  };
-
-  return [...matched]
-    .reverse()
-    .find((record) => Object.values(record.instances ?? {}).some(isInLineage));
 }
 
 /**
@@ -53,14 +37,14 @@ function isLeaving(source: UnsavedChangesSource, to: RouteLike, from: RouteLike)
  */
 export function createAppUnsavedChanges() {
   const sources = shallowReactive(new Set<UnsavedChangesSource>());
-  const pending = shallowRef<{ answer: Promise<boolean>; resolve(discard: boolean): void } | null>(
+  const pending = shallowRef<{ promise: Promise<boolean>; resolve(discard: boolean): void } | null>(
     null,
   );
 
   const hasUnsavedChanges = computed(() =>
     Array.from(sources).some((source) => source.hasChanges()),
   );
-  const isConfirming = computed(() => pending.value !== null);
+  const isConfirmingLeave = computed(() => pending.value !== null);
 
   /** Reports unsaved changes until the returned function is called. */
   function registerUnsavedChanges(source: UnsavedChangesSource) {
@@ -72,17 +56,17 @@ export function createAppUnsavedChanges() {
   }
 
   function askToDiscard(): Promise<boolean> {
-    if (pending.value) return pending.value.answer;
+    if (pending.value) return pending.value.promise;
 
     let resolve: (discard: boolean) => void = () => undefined;
-    const answer = new Promise<boolean>((done) => (resolve = done));
-    pending.value = { answer, resolve };
+    const promise = new Promise<boolean>((done) => (resolve = done));
+    pending.value = { promise, resolve };
 
-    return answer;
+    return promise;
   }
 
   /** Resolves the open confirmation: `true` discards the changes. */
-  function answer(discard: boolean) {
+  function answerLeave(discard: boolean) {
     const current = pending.value;
 
     pending.value = null;
@@ -103,12 +87,15 @@ export function createAppUnsavedChanges() {
     return isLosingChanges ? askToDiscard() : true;
   }
 
+  // A confirmation that the shell takes along when it unmounts keeps the changes.
+  onScopeDispose(() => answerLeave(false));
+
   return {
     hasUnsavedChanges,
-    isConfirming,
+    isConfirmingLeave,
     registerUnsavedChanges,
     confirmLeave,
     guardNavigation,
-    answer,
+    answerLeave,
   };
 }
