@@ -42,7 +42,7 @@ Put an `mt-nav` into the default slot, a [**Brand**](/components/brand) into the
 
 ## Behavior
 
-- **Sidebar** is 300px wide by default. `width` takes any CSS length, and the sidebar only gets narrower when its container is narrower.
+- **Sidebar** is 300px wide, or as wide as the [**Panel**](/components/panel) around it when that sets a width, also while it is resized. It only gets narrower when its container is narrower.
 - It fills the height of its container. Header and footer keep their height, and the navigation gets the space in between.
 - An `mt-nav` in the default slot scrolls on its own and fades its rows out at the top and bottom edge while they scroll past.
 - Empty `header`, `actions` and `footer` slots render nothing.
