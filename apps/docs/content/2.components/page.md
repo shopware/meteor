@@ -24,7 +24,7 @@ Pass the trail from the root to the page as `breadcrumb`. The last item is the p
 
 ### Panels
 
-The `start` and `end` slots add panels next to the content, for example a list and its properties. A panel is as wide as its content, so give the content a fixed width. On a page narrower than `breakpoint` (960px by default), the panels become drawers that open from triggers in the header. Drag the corner of the box to try it.
+The `start` and `end` slots add panels next to the content, for example a list and its properties. On a page narrower than `breakpoint` (960px by default), the panels become drawers that open from triggers in the header. Drag the corner of the box to try it.
 
 ::component-example{name="page-panels-example" fullWidth inset}
 ::

@@ -7,7 +7,7 @@ import { MtPage, MtPanel } from "@shopware-ag/meteor-component-library";
     <mt-page :breadcrumb="[{ label: 'Shopping Experiences', icon: 'image-text' }]">
       <template #start>
         <mt-panel label="Blocks">
-          <placeholder-slot name="start" inset style="width: 10rem" />
+          <placeholder-slot name="start" inset />
         </mt-panel>
       </template>
 
@@ -15,7 +15,7 @@ import { MtPage, MtPanel } from "@shopware-ag/meteor-component-library";
 
       <template #end>
         <mt-panel label="Properties">
-          <placeholder-slot name="end" inset style="width: 12rem" />
+          <placeholder-slot name="end" inset />
         </mt-panel>
       </template>
     </mt-page>

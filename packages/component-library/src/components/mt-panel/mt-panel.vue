@@ -64,6 +64,7 @@ import { useI18n } from "vue-i18n";
 import { useRenderingRoutePath } from "@/utils/router";
 import {
   PANEL_SLIDE_DURATION,
+  defaultPanelSizes,
   panelContextKey,
   panelWidthStorageKey,
   type PanelAppearance,
@@ -94,9 +95,15 @@ const props = withDefaults(
      * @values bordered, plain
      */
     appearance?: PanelAppearance;
-    /** The smallest width in pixels, also when resizing. */
+    /**
+     * The smallest width in pixels, also when resizing. Defaults to 200 for the navigation and the
+     * start panel, and to 240 for the sidebar and the end panel.
+     */
     minWidth?: number;
-    /** The largest width in pixels, also when resizing. */
+    /**
+     * The largest width in pixels, also when resizing. Defaults to 400 for the navigation and the
+     * start panel, and to 480 for the sidebar and the end panel.
+     */
     maxWidth?: number;
     /** Adds a handle on the inner edge to resize the panel in the desktop layout. */
     resizable?: boolean;
@@ -113,8 +120,9 @@ const props = withDefaults(
 );
 
 /**
- * The width in pixels. Without it, the panel is as wide as its content. It changes when the user
- * resizes the panel: at the end of a drag, on a key press, or when the handle resets it.
+ * The width in pixels. Defaults to 240 for the navigation and the start panel, and to 320 for the
+ * sidebar and the end panel. It changes when the user resizes the panel: at the end of a drag, on a
+ * key press, or when the handle resets it.
  */
 const width = defineModel<number>("width");
 
@@ -134,16 +142,12 @@ const { t } = useI18n({
   },
 });
 
-/** The smallest width when resizing, so a panel can't be dragged out of reach. */
-const SMALLEST_WIDTH = 160;
 /** How far the arrow keys move the handle, in pixels. */
 const KEYBOARD_STEP = 10;
-/** The pointer's speed at its release comes from its movement in this time before, in milliseconds. */
-const FLING_WINDOW = 50;
-/** A flung panel goes on as far as the pointer would get at its speed in this time, in milliseconds. */
-const FLING_PROJECTION = 100;
 
 const context = inject(panelContextKey, null);
+// Outside a layout, the panel has no place, and so no default size.
+const defaults = context ? defaultPanelSizes[context.place] : undefined;
 const root = useTemplateRef<HTMLElement>("root");
 const panelId = useId();
 const isMounted = useMounted();
@@ -153,12 +157,12 @@ const renderingRoutePath = useRenderingRoutePath();
 const vnodeProps = getCurrentInstance()?.vnode.props ?? {};
 const isWidthControlled = "width" in vnodeProps && "onUpdate:width" in vnodeProps;
 
-const startingWidth = width.value;
+const startingWidth = width.value ?? defaults?.width;
 const renderedWidth = ref<number | null>(null);
 // The width while a drag is going on. It is only stored and emitted when the drag ends.
 const dragWidth = ref<number | null>(null);
-// A panel dragged into the close zone keeps the dragged width while it slides out, and opens again
-// with the width it had before the drag.
+// A panel closed by a drag keeps the dragged width while it slides out, and opens again with the
+// width it had before the drag.
 const closingWidth = ref<number | null>(null);
 const isDragging = ref(false);
 const isResetting = ref(false);
@@ -166,7 +170,8 @@ const isResetting = ref(false);
 const isInDrawer = computed(() => context?.isDrawer.value ?? false);
 const hasHandle = computed(() => props.resizable && context !== null && !isInDrawer.value);
 const canCloseByDrag = computed(() => hasHandle.value && props.closable);
-const smallestWidth = computed(() => props.minWidth ?? SMALLEST_WIDTH);
+const smallestWidth = computed(() => props.minWidth ?? defaults?.minWidth ?? 0);
+const maxWidth = computed(() => props.maxWidth ?? defaults?.maxWidth);
 
 // Panels before the content (navigation, start) are resized at their end edge, the others at their
 // start edge.
@@ -178,12 +183,12 @@ const panelStyle = computed(() => {
   // A drawer takes the width the panel started with, not one the user resized it to on desktop.
   const shownWidth = isInDrawer.value
     ? startingWidth
-    : dragWidth.value ?? closingWidth.value ?? width.value;
+    : dragWidth.value ?? closingWidth.value ?? width.value ?? startingWidth;
 
   return {
     "--mt-panel-width": shownWidth === undefined ? undefined : `${shownWidth}px`,
-    "--mt-panel-min-width": props.minWidth === undefined ? undefined : `${props.minWidth}px`,
-    "--mt-panel-max-width": props.maxWidth === undefined ? undefined : `${props.maxWidth}px`,
+    "--mt-panel-min-width": `${smallestWidth.value}px`,
+    "--mt-panel-max-width": maxWidth.value === undefined ? undefined : `${maxWidth.value}px`,
   };
 });
 
@@ -191,7 +196,7 @@ const panelStyle = computed(() => {
 function largestWidth() {
   const layoutWidth = context?.layoutWidth() ?? window.innerWidth;
 
-  return Math.min(props.maxWidth ?? Infinity, Math.floor(layoutWidth / 2));
+  return Math.min(maxWidth.value ?? Infinity, Math.floor(layoutWidth / 2));
 }
 
 function clamp(next: number) {
@@ -256,8 +261,6 @@ let dragStart: {
 
 // How far past its smallest width the pointer has pushed the panel out over its outer edge.
 let slideOffset = 0;
-// The pointer's latest positions during a drag, for its speed when it is released.
-let samples: { x: number; time: number }[] = [];
 
 function startDrag(event: PointerEvent) {
   if (event.button !== 0 || dragStart || !root.value) return;
@@ -277,20 +280,18 @@ function startDrag(event: PointerEvent) {
   };
   documentStyle.userSelect = "none";
   documentStyle.cursor = "col-resize";
-  samples = [{ x: event.clientX, time: event.timeStamp }];
 
   isDragging.value = true;
   stopResetting();
   context?.setResizing(true);
 }
 
-function follow(x: number, time: number) {
+function follow(x: number) {
   if (!dragStart) return;
 
   const distance = x - dragStart.x;
   const next = dragStart.width + (handleEdge.value === "end" ? distance : -distance);
   dragWidth.value = clamp(next);
-  samples = [...samples.filter((sample) => time - sample.time <= FLING_WINDOW), { x, time }];
 
   if (!canCloseByDrag.value) return;
 
@@ -308,30 +309,17 @@ function drag(event: PointerEvent) {
     return;
   }
 
-  follow(event.clientX, event.timeStamp);
+  follow(event.clientX);
 }
 
-/** How fast the pointer moved towards the outer edge before its release, in pixels per millisecond. */
-function outwardSpeed(releaseTime: number) {
-  const recent = samples.filter((sample) => releaseTime - sample.time <= FLING_WINDOW);
-  const first = recent[0];
-  const last = recent[recent.length - 1];
-  if (!first || !last || last.time === first.time) return 0;
-
-  const towardsOutside = handleEdge.value === "end" ? -1 : 1;
-  return ((last.x - first.x) * towardsOutside) / (last.time - first.time);
-}
-
-/** Ends a drag where the pointer is released. A flung panel closes if it would get halfway out. */
+/** Ends a drag where the pointer is released. A panel that has slid halfway out closes. */
 function dropHandle(event: PointerEvent) {
   if (!dragStart || event.pointerId !== dragStart.pointerId) return;
 
   // On a quick drag, the last moves before the release may not have reached the handle.
-  if (event.clientX !== samples[samples.length - 1]?.x) follow(event.clientX, event.timeStamp);
+  if (dragWidth.value !== null || event.clientX !== dragStart.x) follow(event.clientX);
 
-  // A fling only counts once the panel slides out, so a quick resize doesn't close it.
-  const projected = slideOffset + outwardSpeed(event.timeStamp) * FLING_PROJECTION;
-  endDrag(slideOffset > 0 && isHalfwayOut(projected));
+  endDrag(isHalfwayOut(slideOffset));
 }
 
 /** Ends a drag that the browser cuts off before the release, as the panel shows it. */
@@ -357,7 +345,6 @@ function endDrag(closes: boolean) {
   dragWidth.value = null;
   isDragging.value = false;
   slideOffset = 0;
-  samples = [];
   context?.setResizing(false);
   context?.release(closes);
 

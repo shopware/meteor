@@ -34,8 +34,6 @@ Put it directly into the panel slot, with the panel's content inside.
         icon="regular-sparkles"
         closable
         resizable
-        :width="360"
-        :min-width="280"
         :max-width="640"
       >
         <AppAssistant />
@@ -59,7 +57,7 @@ The panels of a page work the same way:
     <CmsCanvas />
 
     <template #end>
-      <mt-panel label="Properties" icon="regular-cog" closable :width="320">
+      <mt-panel label="Properties" icon="regular-cog" closable>
         <BlockProperties />
       </mt-panel>
     </template>
@@ -78,7 +76,7 @@ The panels of a page work the same way:
 
 - Put **Panel** directly into the slot, so the shell and the page know its label, icon and closable setting before anything inside renders.
 - Give the panel a `label` that names its content, such as "Assistant" or "Properties", and use the same name for the `<aside>` of the content.
-- Set `min-width` and `max-width` on resizable panels, so their content always fits.
+- Keep the default width and limits, and only set `width`, `min-width` and `max-width` when the content needs other ones.
 
 #dont
 
@@ -89,15 +87,15 @@ The panels of a page work the same way:
 
 ## Behavior
 
-- Without a `width`, the panel is as wide as its content. `min-width` and `max-width` limit it, and next to the content it never takes more than half of the layout: of the page in **Page**, of the viewport in **App**.
+- By default, the navigation and the start panel are 240px wide, at least 200px and at most 400px. The sidebar and the end panel are 320px wide, at least 240px and at most 480px. `width`, `min-width` and `max-width` change this. Next to the content, a panel never takes more than half of the layout: of the page in **Page**, of the viewport in **App**.
 - `closable` shows the panel's trigger also on desktop, where it shows and hides the panel. On small screens, panels are drawers that always have a trigger.
 - On desktop, the panel slides in and out over its outer edge when it opens or closes.
 - `appearance` sets the panel off from the content. `bordered` draws a frame in **App**, where the panel sits on the app's background next to the content, and a line on the panel's inner edge in **Page**, where it sits inside the content's frame. `plain` draws no border. The navigation is `plain` by default, the other panels are `bordered`. Drawers on small screens have no border.
 - With `resizable`, a handle on the inner edge resizes the panel on desktop: on the end edge for the navigation and the start panel, on the start edge for the sidebar and the end panel. The handle's grab area is 16px wide: 4px over the side of the edge with a scrollbar next to it, and 12px over the other side. When the pointer is on the handle or it is dragged, a line that fades out towards the top and the bottom marks the edge: the panel's border, or for a `plain` panel in **App** the border of the content next to it. With the keyboard focus, the line is solid and in the brand color. The cursor changes right away, the line follows after a moment. Double-clicking the handle eases the panel back to its starting width.
-- A panel that is `closable` and `resizable` also closes by dragging its handle to its outer edge. Past its smallest width, the panel slides out with the pointer, and back in when the handle is dragged back. Releasing the pointer once half of the smallest width has slid out, or flicking the handle towards the outer edge while the panel slides out, closes the panel from where it is. Releasing it earlier, or flicking it back, slides the panel back in at its smallest width. A quick resize that stays above the smallest width never closes the panel. A drag that the browser cuts off before the pointer is released ends as the panel shows it. A closed panel opens again with the width it had before the drag.
+- A panel that is `closable` and `resizable` also closes by dragging its handle to its outer edge. Past its smallest width, the panel slides out with the pointer, and back in when the handle is dragged back. Releasing the pointer once half of the smallest width has slid out closes the panel from where it is. Releasing it earlier slides the panel back in at its smallest width. A drag that the browser cuts off before the pointer is released ends as the panel shows it. A closed panel opens again with the width it had before the drag.
 - The panel scrolls its content itself.
 - A resized panel remembers its width in the browser, one width per use: the navigation and the sidebar of the app, and the start and end panel of each page. Pages are told apart by the route that renders them, such as `/orders/:id`, so all orders share one width, also across the child routes of a page, or by their URL path without Vue Router. A remembered width is kept within the panel's limits.
-- `v-model:width` follows the width the user chose: at the end of a drag, on every key press and when a reset returns to the starting width, which is `undefined` for a panel as wide as its content. With `v-model:width`, the app keeps the width, and the panel doesn't remember it in the browser.
+- `v-model:width` follows the width the user chose: at the end of a drag, on every key press and when a reset returns to the starting width, which is the default width of the panel's place without a `width`. With `v-model:width`, the app keeps the width, and the panel doesn't remember it in the browser.
 - A click on the handle without moving it leaves the width as it is.
 - In a drawer, the panel takes the `width` it started with, not the width it was resized to on desktop, never gets wider than the drawer, and has no resize handle.
 - With server rendering, a remembered width applies once the app has loaded, so the page first shows the panel's starting width.
