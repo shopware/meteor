@@ -48,12 +48,8 @@ export interface PanelContext {
   isOpen(): boolean;
   /** Pushes the panel out over its outer edge by `offset` pixels during a drag, without animation. */
   slideOut(offset: number): void;
-  /**
-   * Ends a drag that pushed the panel out: closes it from where it is, or slides it back. `speed` is
-   * how fast the pointer moved towards the outer edge at the end, in pixels per millisecond, so a
-   * flung panel goes on as fast as it was flung.
-   */
-  release(close: boolean, speed?: number): void;
+  /** Ends a drag that pushed the panel out: closes it from where it is, or slides it back. */
+  release(close: boolean): void;
 }
 
 /** The marker on `MtPanel`'s definition, by which layouts find it in their slots. */
