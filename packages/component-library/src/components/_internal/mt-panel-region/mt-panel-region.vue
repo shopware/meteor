@@ -172,14 +172,21 @@ function slideOut(offset: number) {
   dragOffset.value = offset > 0 && inline.value ? Math.min(offset, slideDistance(inline.value)) : 0;
 }
 
-/** The settle is shorter the less is left of the slide. */
-function release(close: boolean) {
+/**
+ * The settle is shorter the less is left of the slide, and a flung panel goes on at least as fast as
+ * it was flung.
+ */
+function release(close: boolean, speed = 0) {
   const offset = dragOffset.value;
   if (!close && offset === 0) return;
 
   const distance = inline.value ? slideDistance(inline.value) : offset;
-  const remaining = distance > 0 ? (close ? distance - offset : offset) / distance : 0;
-  const duration = Math.max(Math.round(PANEL_SLIDE_DURATION * remaining), SHORTEST_SETTLE_DURATION);
+  const remaining = close ? distance - offset : offset;
+  const share = distance > 0 ? (PANEL_SLIDE_DURATION * remaining) / distance : 0;
+  // The speed is towards the outer edge, so a panel sliding back in follows a fling back inwards.
+  const speedToTarget = close ? speed : -speed;
+  const flung = speedToTarget > 0 ? remaining / speedToTarget : Infinity;
+  const duration = Math.max(Math.round(Math.min(share, flung)), SHORTEST_SETTLE_DURATION);
 
   clearTimeout(settleTimeout);
   settleDuration.value = duration;
