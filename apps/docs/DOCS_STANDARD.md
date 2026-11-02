@@ -27,13 +27,14 @@ Component pages use this order:
 2. Status banner (optional)
 3. Basic example
 4. Usage
-5. Examples (optional)
-6. Anatomy (optional)
-7. API reference
-8. Best practices
-9. Behavior (optional)
-10. Accessibility (optional)
-11. Related components (optional)
+5. Migration (deprecated components only)
+6. Examples (optional)
+7. Anatomy (optional)
+8. API reference
+9. Best practices
+10. Behavior (optional)
+11. Accessibility (optional)
+12. Related components (optional)
 
 `Basic example`, `Usage`, `API reference`, and `Best practices` are always present. `Examples` is included whenever the component has more than its basic usage to show. The optional sections are included when they add value. Keep the order stable: if a section is not needed, omit it instead of moving sections around.
 
@@ -100,6 +101,17 @@ Follow the text with the import statement, showing how to import the component f
 import { MtComponentName } from "@shopware-ag/meteor-component-library";
 ```
 ````
+
+## Migration
+
+Deprecated components that have a replacement get a `Migration` section directly after `Usage`. Open with a short paragraph on how the setup differs, then map each part of the old API to its replacement in a table. Say plainly when something has no equivalent instead of leaving it out.
+
+```md
+| Toast         | Snackbar                                                      |
+| ------------- | ------------------------------------------------------------- |
+| `msg`         | `message`                                                     |
+| `dismissible` | No equivalent. Snackbars close on their own after `duration`. |
+```
 
 ## Examples
 

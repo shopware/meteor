@@ -13,6 +13,15 @@ export type MtToastMeta = SlottedMeta<typeof MtToast, "">;
 export default {
   title: "Components/Toast",
   component: MtToast,
+  tags: ["deprecated"],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "**Deprecated.** Will be removed in the next major version. Use `mt-snackbar` with `useSnackbar` instead.",
+      },
+    },
+  },
   render: (args) => ({
     components: { MtToast, MtButton, MtSelect, MtTextField, MtCheckbox },
     template: `
