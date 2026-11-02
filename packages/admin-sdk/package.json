@@ -40,6 +40,10 @@
       "import": "./es/telemetry/index.js",
       "require": "./umd/telemetry/index.js"
     },
+    "./es/_private/bridge": {
+      "import": "./es/_private/bridge/index.js",
+      "require": "./umd/_private/bridge/index.js"
+    },
     "./es/_private/context": {
       "import": "./es/_private/context/index.js",
       "require": "./umd/_private/context/index.js"
@@ -133,7 +137,8 @@
     "jwt-decode": "^4.0.0",
     "localforage": "^1.10.0",
     "lodash-es": "^4.17.21",
-    "semver": "^7.7.1"
+    "semver": "^7.7.1",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@playwright/test": "^1.45.0",

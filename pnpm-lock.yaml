@@ -224,6 +224,9 @@ importers:
       semver:
         specifier: ^7.7.1
         version: 7.7.1
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@playwright/test':
         specifier: ^1.45.0
