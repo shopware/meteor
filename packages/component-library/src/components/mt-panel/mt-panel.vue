@@ -138,10 +138,8 @@ const { t } = useI18n({
 const SMALLEST_WIDTH = 160;
 /** How far the arrow keys move the handle, in pixels. */
 const KEYBOARD_STEP = 10;
-/** How much of the pointer's last movement sets its speed when it is released, in milliseconds. */
-const FLING_WINDOW = 100;
-/** A pause between two moves of the pointer after which the earlier moves don't count, in milliseconds. */
-const FLING_PAUSE = 50;
+/** The pointer's speed at its release comes from its movement in this time before, in milliseconds. */
+const FLING_WINDOW = 50;
 /** A flung panel goes on as far as the pointer would get at its speed in this time, in milliseconds. */
 const FLING_PROJECTION = 100;
 
@@ -281,15 +279,11 @@ function startDrag(event: PointerEvent) {
   documentStyle.cursor = "col-resize";
   samples = [{ x: event.clientX, time: event.timeStamp }];
 
-  // Switching to another window mid-drag doesn't always end the pointer's capture.
-  window.addEventListener("blur", interruptDrag);
-
   isDragging.value = true;
   stopResetting();
   context?.setResizing(true);
 }
 
-/** Resizes the panel to the pointer, and slides it out with the pointer past its smallest width. */
 function follow(x: number, time: number) {
   if (!dragStart) return;
 
@@ -317,63 +311,44 @@ function drag(event: PointerEvent) {
   follow(event.clientX, event.timeStamp);
 }
 
-/**
- * How fast the pointer moved towards the panel's outer edge when it was released, in pixels per
- * millisecond: over its last movement, and 0 if it had come to rest.
- */
+/** How fast the pointer moved towards the outer edge before its release, in pixels per millisecond. */
 function outwardSpeed(releaseTime: number) {
-  const last = samples[samples.length - 1];
-  if (!last || releaseTime - last.time > FLING_PAUSE) return 0;
-
-  let first = last;
-  for (const sample of samples.slice(0, -1).reverse()) {
-    if (first.time - sample.time > FLING_PAUSE || last.time - sample.time > FLING_WINDOW) break;
-    first = sample;
-  }
-  if (last.time === first.time) return 0;
+  const recent = samples.filter((sample) => releaseTime - sample.time <= FLING_WINDOW);
+  const first = recent[0];
+  const last = recent[recent.length - 1];
+  if (!first || !last || last.time === first.time) return 0;
 
   const towardsOutside = handleEdge.value === "end" ? -1 : 1;
   return ((last.x - first.x) * towardsOutside) / (last.time - first.time);
 }
 
-/**
- * Ends a drag where the pointer is released. A panel that has slid out by half its smallest width,
- * or is flung towards its outer edge, closes.
- */
+/** Ends a drag where the pointer is released. A flung panel closes if it would get halfway out. */
 function dropHandle(event: PointerEvent) {
   if (!dragStart || event.pointerId !== dragStart.pointerId) return;
 
   // On a quick drag, the last moves before the release may not have reached the handle.
   if (event.clientX !== samples[samples.length - 1]?.x) follow(event.clientX, event.timeStamp);
 
-  const speed = outwardSpeed(event.timeStamp);
-
   // A fling only counts once the panel slides out, so a quick resize doesn't close it.
-  endDrag(slideOffset > 0 && isHalfwayOut(slideOffset + speed * FLING_PROJECTION), speed);
+  const projected = slideOffset + outwardSpeed(event.timeStamp) * FLING_PROJECTION;
+  endDrag(slideOffset > 0 && isHalfwayOut(projected));
 }
 
-/**
- * Ends a drag that is cut off before the pointer is released, for example when the window loses
- * the focus. It ends as the panel shows it: slid out by half its smallest width, the panel closes.
- */
-function interruptDrag(event?: PointerEvent | FocusEvent) {
-  if (!dragStart || (event && "pointerId" in event && event.pointerId !== dragStart.pointerId)) {
-    return;
-  }
+/** Ends a drag that the browser cuts off before the release, as the panel shows it. */
+function interruptDrag(event?: PointerEvent) {
+  if (!dragStart || (event && event.pointerId !== dragStart.pointerId)) return;
 
   endDrag(isHalfwayOut(slideOffset));
 }
 
-/** Whether a panel pushed out this far closes: once it has slid out by half its smallest width. */
 function isHalfwayOut(offset: number) {
   return offset > 0 && offset >= smallestWidth.value / 2;
 }
 
 /** Ends a drag: closes the panel from where it is, or keeps the width it was dragged to. */
-function endDrag(closes: boolean, speed = 0) {
+function endDrag(closes: boolean) {
   if (!dragStart) return;
 
-  window.removeEventListener("blur", interruptDrag);
   document.documentElement.style.userSelect = dragStart.userSelect;
   document.documentElement.style.cursor = dragStart.cursor;
   dragStart = null;
@@ -384,7 +359,7 @@ function endDrag(closes: boolean, speed = 0) {
   slideOffset = 0;
   samples = [];
   context?.setResizing(false);
-  context?.release(closes, speed);
+  context?.release(closes);
 
   if (closes) {
     closingWidth.value = draggedWidth;
@@ -469,7 +444,7 @@ if (context) {
   );
 }
 
-// A drag that is cut off when the panel unmounts mustn't keep the page unselectable.
+// A drag that is cut off, for example when the panel unmounts, mustn't keep the page unselectable.
 onScopeDispose(() => {
   endDrag(false);
   stopResetting();

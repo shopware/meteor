@@ -357,8 +357,6 @@ describe("mt-panel", () => {
     });
 
     describe("closing by drag", () => {
-      // The speed of the pointer comes from the times of its events, which only move on when a
-      // test moves them.
       beforeEach(() => {
         vi.setSystemTime(0);
       });
