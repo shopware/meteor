@@ -404,13 +404,7 @@ function removeDocument(document: OrderDocument) {
     </div>
 
     <template v-if="order || isLoading" #end>
-      <mt-panel
-        :label="t('orders.details.customer')"
-        resizable
-        :width="320"
-        :min-width="240"
-        :max-width="480"
-      >
+      <mt-panel :label="t('orders.details.customer')" resizable>
         <aside
           class="stack order-detail__panel"
           :aria-label="t('orders.details.customer')"
