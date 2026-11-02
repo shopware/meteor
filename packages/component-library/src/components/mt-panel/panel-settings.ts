@@ -77,6 +77,25 @@ const defaultAppearances: Record<PanelPlace, PanelAppearance> = {
   end: "bordered",
 };
 
+/** The width of a panel and its limits when resizing, in pixels. */
+export interface PanelSize {
+  width: number;
+  minWidth: number;
+  maxWidth: number;
+}
+
+const leadingPanelSize: PanelSize = { width: 240, minWidth: 200, maxWidth: 400 };
+const trailingPanelSize: PanelSize = { width: 320, minWidth: 240, maxWidth: 480 };
+
+// The panels before the content hold lists to pick from, the ones after it details and tools, which
+// need more room.
+export const defaultPanelSizes: Record<PanelPlace, PanelSize> = {
+  navigation: leadingPanelSize,
+  start: leadingPanelSize,
+  sidebar: trailingPanelSize,
+  end: trailingPanelSize,
+};
+
 /**
  * Reads a panel slot's rendered content once for both: whether it is filled, and the options of the
  * `MtPanel` at its top. The options come from its props as written, before anything inside the slot

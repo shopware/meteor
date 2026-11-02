@@ -17,9 +17,6 @@ const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
         icon="regular-layout"
         closable
         resizable
-        :width="240"
-        :min-width="200"
-        :max-width="400"
       >
         <aside :aria-label="t('cms.blocks')">
           <ul class="cms-blocks">
@@ -45,9 +42,6 @@ const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
         icon="regular-cog"
         closable
         resizable
-        :width="320"
-        :min-width="240"
-        :max-width="480"
       >
         <aside class="cms-properties" :aria-label="t('cms.properties')">
           <mt-text size="xs" color="color-text-secondary-default">

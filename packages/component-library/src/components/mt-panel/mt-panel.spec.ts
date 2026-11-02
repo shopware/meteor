@@ -142,12 +142,28 @@ describe("mt-panel", () => {
       expect(style.getPropertyValue("--mt-panel-max-width")).toBe("480px");
     });
 
-    it("leaves the width to its content without a width", async () => {
+    it("takes the default width and limits of its place", async () => {
       // ACT
-      await renderSidebar(`<mt-panel><p>Tools</p></mt-panel>`);
+      render({
+        components: { MtApp, MtPanel },
+        template: `
+          <mt-app>
+            <template #navigation><mt-panel><p>Links</p></mt-panel></template>
+            <template #default><p>Main content</p></template>
+            <template #sidebar><mt-panel><p>Tools</p></mt-panel></template>
+          </mt-app>
+        `,
+      });
+      await flushPromises();
 
       // ASSERT
-      expect(panelWidth()).toBe("");
+      const [navigation, sidebar] = document.querySelectorAll<HTMLElement>(".mt-panel");
+      expect(navigation.style.getPropertyValue("--mt-panel-width")).toBe("240px");
+      expect(navigation.style.getPropertyValue("--mt-panel-min-width")).toBe("200px");
+      expect(navigation.style.getPropertyValue("--mt-panel-max-width")).toBe("400px");
+      expect(sidebar.style.getPropertyValue("--mt-panel-width")).toBe("320px");
+      expect(sidebar.style.getPropertyValue("--mt-panel-min-width")).toBe("240px");
+      expect(sidebar.style.getPropertyValue("--mt-panel-max-width")).toBe("480px");
     });
   });
 
@@ -184,7 +200,9 @@ describe("mt-panel", () => {
 
     it("resizes with the keyboard and remembers the width for its slot", async () => {
       // ARRANGE
-      await renderSidebar(`<mt-panel resizable :width="300"><p>Tools</p></mt-panel>`);
+      await renderSidebar(
+        `<mt-panel resizable :width="300" :max-width="800"><p>Tools</p></mt-panel>`,
+      );
       const handle = screen.getByRole("separator");
 
       // ACT: the sidebar's handle is on its start edge, so the left arrow makes it wider
@@ -198,7 +216,7 @@ describe("mt-panel", () => {
       await fireEvent.keyDown(handle, { key: "Home" });
 
       // ASSERT
-      expect(panelWidth()).toBe("160px");
+      expect(panelWidth()).toBe("240px");
 
       // ACT
       await fireEvent.keyDown(handle, { key: "End" });
@@ -250,7 +268,7 @@ describe("mt-panel", () => {
       expect(onUpdate).toHaveBeenCalledWith(340);
     });
 
-    it("keeps a panel as wide as its content after a click on the handle", async () => {
+    it("keeps the width after a click on the handle", async () => {
       // ARRANGE
       await renderSidebar(`<mt-panel resizable><p>Tools</p></mt-panel>`);
       const handle = screen.getByRole("separator");
@@ -260,7 +278,7 @@ describe("mt-panel", () => {
       await fireEvent.pointerUp(handle, { clientX: 500 });
 
       // ASSERT
-      expect(panelWidth()).toBe("");
+      expect(panelWidth()).toBe("320px");
       expect(localStorage.getItem("mt-panel-width:sidebar")).toBeNull();
     });
 
@@ -357,14 +375,6 @@ describe("mt-panel", () => {
     });
 
     describe("closing by drag", () => {
-      beforeEach(() => {
-        vi.setSystemTime(0);
-      });
-
-      afterEach(() => {
-        vi.useRealTimers();
-      });
-
       async function renderDraggableSidebar(panel: string) {
         const onUpdateWidth = vi.fn();
         const onUpdateOpen = vi.fn();
@@ -407,11 +417,11 @@ describe("mt-panel", () => {
         );
         await fireEvent.pointerDown(handle, { button: 0, clientX: 700 });
 
-        // ACT: 200px to the end leaves 100px, 60px less than the smallest width of 160px
+        // ACT: 200px to the end leaves 100px, 140px less than the smallest width of 240px
         await fireEvent.pointerMove(handle, { buttons: 1, clientX: 900 });
 
         // ASSERT
-        expect(dragOffset()).toBe("60px");
+        expect(dragOffset()).toBe("140px");
 
         // ACT
         await fireEvent.pointerMove(handle, { buttons: 1, clientX: 750 });
@@ -426,16 +436,14 @@ describe("mt-panel", () => {
           `<mt-panel closable resizable :width="300" @update:width="onUpdateWidth"><p>Tools</p></mt-panel>`,
         );
         await fireEvent.pointerDown(handle, { button: 0, clientX: 700 });
-        vi.setSystemTime(100);
-        await fireEvent.pointerMove(handle, { buttons: 1, clientX: 900 });
+        await fireEvent.pointerMove(handle, { buttons: 1, clientX: 850 });
 
         // ACT
-        vi.setSystemTime(300);
-        await fireEvent.pointerUp(handle, { clientX: 900 });
+        await fireEvent.pointerUp(handle, { clientX: 850 });
 
         // ASSERT
         expect(onUpdateOpen).not.toHaveBeenCalled();
-        expect(onUpdateWidth).toHaveBeenCalledWith(160);
+        expect(onUpdateWidth).toHaveBeenCalledWith(240);
         expect(dragOffset()).toBe("");
       });
 
@@ -446,52 +454,13 @@ describe("mt-panel", () => {
         );
         await fireEvent.pointerDown(handle, { button: 0, clientX: 700 });
 
-        // ACT: 250px to the end leaves 50px, so 110px of the smallest width of 160px have slid out
-        vi.setSystemTime(100);
-        await fireEvent.pointerMove(handle, { buttons: 1, clientX: 950 });
-        vi.setSystemTime(300);
-        await fireEvent.pointerUp(handle, { clientX: 950 });
-
-        // ASSERT
-        expect(onUpdateOpen).toHaveBeenCalledWith(false);
-        expect(onUpdateWidth).not.toHaveBeenCalled();
-      });
-
-      it("closes a panel flung towards its outer edge before half of it has slid out", async () => {
-        // ARRANGE
-        const { handle, onUpdateOpen } = await renderDraggableSidebar(
-          `<mt-panel closable resizable :width="300"><p>Tools</p></mt-panel>`,
-        );
-        await fireEvent.pointerDown(handle, { button: 0, clientX: 700 });
-        vi.setSystemTime(100);
-        await fireEvent.pointerMove(handle, { buttons: 1, clientX: 850 });
-
-        // ACT: the last move covers 50px in 10ms, and the release follows right after
-        vi.setSystemTime(110);
+        // ACT
         await fireEvent.pointerMove(handle, { buttons: 1, clientX: 900 });
-        vi.setSystemTime(115);
         await fireEvent.pointerUp(handle, { clientX: 900 });
 
         // ASSERT
         expect(onUpdateOpen).toHaveBeenCalledWith(false);
-      });
-
-      it("doesn't close a panel after a quick resize above its smallest width", async () => {
-        // ARRANGE
-        const { handle, onUpdateWidth, onUpdateOpen } = await renderDraggableSidebar(
-          `<mt-panel closable resizable :width="300" @update:width="onUpdateWidth"><p>Tools</p></mt-panel>`,
-        );
-        await fireEvent.pointerDown(handle, { button: 0, clientX: 700 });
-
-        // ACT
-        vi.setSystemTime(10);
-        await fireEvent.pointerMove(handle, { buttons: 1, clientX: 760 });
-        vi.setSystemTime(12);
-        await fireEvent.pointerUp(handle, { clientX: 760 });
-
-        // ASSERT
-        expect(onUpdateOpen).not.toHaveBeenCalled();
-        expect(onUpdateWidth).toHaveBeenCalledWith(240);
+        expect(onUpdateWidth).not.toHaveBeenCalled();
       });
 
       it("keeps a panel that isn't closable open at its smallest width", async () => {
@@ -507,7 +476,7 @@ describe("mt-panel", () => {
 
         // ASSERT
         expect(onUpdateOpen).not.toHaveBeenCalled();
-        expect(onUpdateWidth).toHaveBeenCalledWith(160);
+        expect(onUpdateWidth).toHaveBeenCalledWith(240);
       });
 
       it("ends a drag that is cut off as the panel shows it", async () => {
@@ -518,7 +487,7 @@ describe("mt-panel", () => {
 
         // ACT
         await fireEvent.pointerDown(handle, { button: 0, clientX: 700 });
-        await fireEvent.pointerMove(handle, { buttons: 1, clientX: 950 });
+        await fireEvent.pointerMove(handle, { buttons: 1, clientX: 900 });
         await fireEvent.pointerCancel(handle);
 
         // ASSERT

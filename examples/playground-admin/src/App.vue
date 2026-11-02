@@ -18,9 +18,6 @@ const layout = useLayoutSettings();
         :label="t('nav.label')"
         :closable="layout.navigationClosable"
         resizable
-        :width="240"
-        :min-width="200"
-        :max-width="400"
       >
         <AppNav />
       </mt-panel>
@@ -35,8 +32,6 @@ const layout = useLayoutSettings();
         icon="regular-shopware-copilot"
         :closable="layout.sidebarClosable"
         resizable
-        :width="320"
-        :min-width="240"
         :max-width="560"
       >
         <AppSidebar />
