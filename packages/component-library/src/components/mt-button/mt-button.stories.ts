@@ -23,6 +23,14 @@ export default {
     click: fn(action("click")),
   },
   argTypes: {
+    variant: {
+      control: { type: "select" },
+      options: ["primary", "secondary", "tertiary", "critical", "action"],
+    },
+    size: {
+      control: { type: "select" },
+      options: ["x-small", "small", "default", "large"],
+    },
     showFrontIcon: {
       control: "boolean",
       description: "Show/hide front icon",
