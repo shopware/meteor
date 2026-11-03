@@ -35,7 +35,7 @@ interface RouterLike {
   push(to: unknown): Promise<unknown>;
   beforeEach(guard: (to: RouteLike, from: RouteLike) => RouteGuardResult): () => void;
   afterEach(hook: (to: RouteLike, from: RouteLike, failure?: unknown) => void): () => void;
-  onError(handler: () => void): () => void;
+  onError(handler: (error: unknown) => void): () => void;
 }
 
 // Vue Router's `NavigationFailureType` values. The library doesn't depend on Vue Router.
@@ -73,14 +73,20 @@ export function useRouteChange({ onStart, onEnd, onNavigate }: UseRouteChangeOpt
     if (typeof router?.afterEach !== "function") return;
 
     unsubscribe = [
-      router.beforeEach?.(() => onStart?.()),
-      router.afterEach((to, from, failure) => {
-        const type = (failure as { type?: unknown } | undefined)?.type;
+      onStart && router.beforeEach?.(() => onStart()),
+      (onEnd || onNavigate) &&
+        router.afterEach((to, from, failure) => {
+          const type = (failure as { type?: unknown } | undefined)?.type;
 
-        if (type !== CANCELLED_NAVIGATION) onEnd?.();
-        if (!failure || type === DUPLICATED_NAVIGATION) onNavigate?.(to, from);
-      }),
-      router.onError?.(() => onEnd?.()),
+          if (type !== CANCELLED_NAVIGATION) onEnd?.();
+          if (!failure || type === DUPLICATED_NAVIGATION) onNavigate?.(to, from);
+        }),
+      // Vue Router stops logging navigation errors as soon as a handler exists.
+      onEnd &&
+        router.onError?.((error) => {
+          onEnd();
+          console.error(error);
+        }),
     ].filter((stop): stop is () => void => typeof stop === "function");
   });
 

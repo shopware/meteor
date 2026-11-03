@@ -15,7 +15,7 @@ type AfterEachHook = (to: RouteLike, from: RouteLike, failure?: unknown) => void
 function createFakeRouter() {
   const guards = new Set<() => void>();
   const hooks = new Set<AfterEachHook>();
-  const errorHandlers = new Set<() => void>();
+  const errorHandlers = new Set<(error: unknown) => void>();
   const subscribe =
     <T>(set: Set<T>) =>
     (callback: T) => {
@@ -26,6 +26,7 @@ function createFakeRouter() {
   return {
     guards,
     hooks,
+    errorHandlers,
     currentRoute: shallowRef<RouteLike>({ path: "/", hash: "" }),
     options: { history: { state: {} as Record<string, unknown> } },
     back: vi.fn(),
@@ -36,7 +37,7 @@ function createFakeRouter() {
     start: () => guards.forEach((guard) => guard()),
     end: (failure?: unknown) =>
       hooks.forEach((hook) => hook({ path: "/b", hash: "" }, { path: "/a", hash: "" }, failure)),
-    fail: () => errorHandlers.forEach((handler) => handler()),
+    fail: (error: unknown) => errorHandlers.forEach((handler) => handler(error)),
   };
 }
 
@@ -58,17 +59,22 @@ describe("router", () => {
       const router = createFakeRouter();
       const options = { onStart: vi.fn(), onEnd: vi.fn(), onNavigate: vi.fn() };
       renderWithRouter(router, () => useRouteChange(options));
+      const error = new Error("Failed to load the page");
+      const logError = vi.spyOn(console, "error").mockImplementation(() => {});
 
       // ACT
       router.start();
       router.end();
       router.end({ type: NavigationFailureType.duplicated });
       router.end({ type: NavigationFailureType.aborted });
-      router.fail();
+      router.fail(error);
 
       // ASSERT
       expect(options.onStart).toHaveBeenCalledTimes(1);
       expect(options.onEnd).toHaveBeenCalledTimes(4);
+      expect(logError).toHaveBeenCalledWith(error);
+
+      logError.mockRestore();
       expect(options.onNavigate).toHaveBeenCalledTimes(2);
       expect(options.onNavigate).toHaveBeenCalledWith(
         { path: "/b", hash: "" },
@@ -92,7 +98,10 @@ describe("router", () => {
     it("stops listening when the component unmounts", () => {
       // ARRANGE
       const router = createFakeRouter();
-      const { unmount } = renderWithRouter(router, () => useRouteChange({}));
+      const { unmount } = renderWithRouter(router, () => useRouteChange({ onNavigate: vi.fn() }));
+      expect(router.guards.size).toBe(0);
+      expect(router.hooks.size).toBe(1);
+      expect(router.errorHandlers.size).toBe(0);
 
       // ACT
       unmount();
