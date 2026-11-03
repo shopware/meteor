@@ -39,13 +39,12 @@
           </span>
         </span>
 
-        <span v-if="hasChildren" class="mt-nav__link-expand-icon-box">
-          <mt-icon
-            :name="subtreeOpen ? 'regular-chevron-up-xs' : 'regular-chevron-down-xs'"
-            size="8"
-            class="mt-nav__link-expand-icon"
-          />
-        </span>
+        <mt-icon
+          v-if="hasChildren"
+          :name="subtreeOpen ? 'regular-chevron-up-xs' : 'regular-chevron-down-xs'"
+          size="8"
+          class="mt-nav__link-expand-icon"
+        />
       </component>
     </div>
 
@@ -59,6 +58,7 @@
       <div
         ref="flyoutElement"
         class="mt-nav__flyout"
+        :class="{ 'mt-nav__flyout--instant': context.flyoutSwitched.value }"
         @keydown="onFlyoutKeydown"
         @pointerenter="onFlyoutPointerEnter"
         @pointerleave="onFlyoutPointerLeave"
@@ -147,8 +147,9 @@ const isFlyout = computed(
 const itemRowElement = ref<HTMLElement | null>(null);
 const flyoutElement = ref<HTMLElement | null>(null);
 
-// Open state of the floating panel. Unlike the inline branches, it never opens on its own.
-const flyoutOpen = ref(false);
+// Open state of the floating panel. The navigation keeps one open at a time, and unlike the inline
+// branches it never opens on its own.
+const flyoutOpen = computed(() => context.isFlyoutOpen(props.branchKey));
 
 // Time the pointer may spend outside the row and panel, e.g. crossing the gap between them
 const FLYOUT_CLOSE_DELAY = 200;
@@ -165,7 +166,7 @@ if (props.depth === 1) {
   provide(NAV_CONTEXT, {
     ...context,
     onNavigate: (item) => {
-      flyoutOpen.value = false;
+      context.onFlyoutToggle(props.branchKey, false);
       context.onNavigate(item);
     },
   });
@@ -310,7 +311,7 @@ function onFlyoutPointerEnter(event: PointerEvent) {
   clearTimeout(flyoutCloseTimer);
 
   if (!flyoutOpen.value) {
-    flyoutOpen.value = true;
+    context.onFlyoutToggle(props.branchKey, true);
     flyoutOpenedByHover = true;
   }
 }
@@ -329,7 +330,7 @@ function setSubtreeOpen(open: boolean) {
   // Opens or closes the nested rows: the navigation decides for top-level rows, the row itself below
   if (isFlyout.value) {
     clearTimeout(flyoutCloseTimer);
-    flyoutOpen.value = open;
+    context.onFlyoutToggle(props.branchKey, open);
     flyoutOpenedByHover = false;
   } else if (props.depth === 1) {
     context.onBranchToggle(props.branchKey, open);
@@ -363,7 +364,7 @@ function onRowKeydown(event: KeyboardEvent) {
 function onFlyoutKeydown(event: KeyboardEvent) {
   // Moves focus between the rows of the floating panel; Escape closes it and returns to its row
   if (event.key === "Escape") {
-    flyoutOpen.value = false;
+    context.onFlyoutToggle(props.branchKey, false);
     itemRowElement.value?.querySelector<HTMLElement>(".mt-nav__link")?.focus();
     return;
   }
@@ -392,7 +393,7 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  padding: 0 var(--scale-size-6) 0 var(--scale-size-10);
+  padding: 0 var(--scale-size-10);
   text-decoration: none;
   text-align: left;
   font-size: var(--font-size-xs);
@@ -437,15 +438,6 @@ function onFlyoutKeydown(event: KeyboardEvent) {
 
 .mt-nav__link-expand-icon {
   color: var(--color-icon-primary-default);
-}
-
-.mt-nav__link-expand-icon-box {
-  width: var(--scale-size-24);
-  height: var(--scale-size-24);
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   margin-left: auto;
 }
 
@@ -589,6 +581,11 @@ function onFlyoutKeydown(event: KeyboardEvent) {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* A panel taking over from another open panel shows at once, so moving along the bar stays quick */
+.mt-nav__flyout--instant {
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

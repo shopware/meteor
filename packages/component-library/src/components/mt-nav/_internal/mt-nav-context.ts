@@ -152,6 +152,12 @@ export interface NavContext {
   isBranchExpanded: (key: string) => boolean;
   /** Reports the user toggling a top-level row. */
   onBranchToggle: (key: string, open: boolean) => void;
+  /** Whether the floating panel of the top-level row with the given key is open. Only one is open at a time. */
+  isFlyoutOpen: (key: string) => boolean;
+  /** Opens or closes the floating panel of a top-level row. Opening one closes any other. */
+  onFlyoutToggle: (key: string, open: boolean) => void;
+  /** Whether the open floating panel replaced another one, so it shows without animating in. */
+  flyoutSwitched: ComputedRef<boolean>;
   onNavigate: (item: NavItem) => void;
 }
 

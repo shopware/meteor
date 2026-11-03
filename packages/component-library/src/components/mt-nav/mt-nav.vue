@@ -113,6 +113,12 @@ const navBodyElement = ref<HTMLElement | null>(null);
 // Keys of the open top-level rows. Nested rows keep their own open state.
 const expandedKeys = ref<string[]>([]);
 
+// Key of the top-level row whose floating panel is open, in a horizontal navigation
+const openFlyoutKey = ref<string | null>(null);
+
+// Set when the open panel took over from another open panel instead of opening from closed
+const flyoutSwitched = ref(false);
+
 // The top-level rows of every section, with the keys their open state is kept under
 const branches = computed(() =>
   props.sections.flatMap((section, sectionIndex) =>
@@ -154,6 +160,9 @@ provide(NAV_CONTEXT, {
   slots,
   isBranchExpanded,
   onBranchToggle,
+  isFlyoutOpen: (key) => openFlyoutKey.value === key,
+  onFlyoutToggle,
+  flyoutSwitched: computed(() => flyoutSwitched.value),
   onNavigate: (item) => emit("navigate", item),
 });
 
@@ -185,6 +194,16 @@ function onBranchToggle(key: string, open: boolean) {
 
   collapseInactiveBranches(key);
   expandBranch(key);
+}
+
+function onFlyoutToggle(key: string, open: boolean) {
+  // Opens the panel with this key in place of any other, or closes it if it is still the open one
+  if (open) {
+    flyoutSwitched.value = openFlyoutKey.value !== null && openFlyoutKey.value !== key;
+    openFlyoutKey.value = key;
+  } else if (openFlyoutKey.value === key) {
+    openFlyoutKey.value = null;
+  }
 }
 
 function collapseInactiveBranches(exceptKey: string | null) {
