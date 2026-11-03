@@ -1,5 +1,12 @@
 # meteor-docs
 
+## 0.0.14
+
+### Patch Changes
+
+- Updated dependencies [[`076e0c4`](https://github.com/shopware/meteor/commit/076e0c4d7242ab6426d998b2fc24885bdd564006)]:
+  - @shopware-ag/meteor-component-library@5.10.0
+
 ## 0.0.13
 
 ### Patch Changes
