@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.17.0
+
+### Minor Changes
+
+- [#1471](https://github.com/shopware/meteor/pull/1471) [`7d6249d`](https://github.com/shopware/meteor/commit/7d6249da788bbcd6f0259e97166f99a960b6d436) Thanks [@feliopterix](https://github.com/feliopterix)! - Add optional `tabs` to `ui.mediaModal.open` to show additional tabs that render locations of the app opening the modal, and `ui.mediaModal.select` for such a tab to pass its selection to the modal's callback and close the modal.
+
 ## 6.16.0
 
 ### Minor Changes
