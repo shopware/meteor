@@ -37,6 +37,7 @@ import MtToast, { type Toast } from "./components/mt-toast/mt-toast.vue";
 import MtSnackbar from "./components/mt-snackbar/mt-snackbar.vue";
 import MtAvatar from "./components/mt-avatar/mt-avatar.vue";
 import MtExtensionIcon from "./components/mt-extension-icon/mt-extension-icon.vue";
+import MtCopyButton from "./components/mt-copy-button/mt-copy-button.vue";
 import MtNav from "./components/mt-nav/mt-nav.vue";
 import type {
   NavActiveMatcher,
@@ -72,6 +73,12 @@ import {
   useServicePermission,
   type UseServicePermissionReturn,
 } from "./composables/useServicePermission";
+import {
+  useCopyToClipboard,
+  type CopyStatus,
+  type UseCopyToClipboardOptions,
+  type UseCopyToClipboardReturn,
+} from "./composables/useCopyToClipboard";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 import MtTooltip from "./components/mt-tooltip/mt-tooltip.vue";
@@ -164,6 +171,7 @@ export {
   TooltipDirective,
   MtAvatar,
   MtExtensionIcon,
+  MtCopyButton,
   MtNav,
   type NavActiveMatcher,
   type NavItem,
@@ -185,6 +193,10 @@ export {
   useTheme,
   useServicePermission,
   type UseServicePermissionReturn,
+  useCopyToClipboard,
+  type CopyStatus,
+  type UseCopyToClipboardOptions,
+  type UseCopyToClipboardReturn,
   // @deprecated
   MtBanner as SwBanner,
   // @deprecated
