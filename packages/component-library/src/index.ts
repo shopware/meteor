@@ -36,6 +36,7 @@ import MtSkeletonBar from "./components/mt-skeleton-bar/mt-skeleton-bar.vue";
 import MtToast, { type Toast } from "./components/mt-toast/mt-toast.vue";
 import MtSnackbar from "./components/mt-snackbar/mt-snackbar.vue";
 import MtAvatar from "./components/mt-avatar/mt-avatar.vue";
+import MtExtensionIcon from "./components/mt-extension-icon/mt-extension-icon.vue";
 import MtNav from "./components/mt-nav/mt-nav.vue";
 import type {
   NavActiveMatcher,
@@ -162,6 +163,7 @@ export {
   MtEntitySelect,
   TooltipDirective,
   MtAvatar,
+  MtExtensionIcon,
   MtNav,
   type NavActiveMatcher,
   type NavItem,
