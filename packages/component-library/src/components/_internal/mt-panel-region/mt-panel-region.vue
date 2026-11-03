@@ -178,8 +178,9 @@ function release(close: boolean) {
   if (!close && offset === 0) return;
 
   const distance = inline.value ? slideDistance(inline.value) : offset;
-  const remaining = distance > 0 ? (close ? distance - offset : offset) / distance : 0;
-  const duration = Math.max(Math.round(PANEL_SLIDE_DURATION * remaining), SHORTEST_SETTLE_DURATION);
+  const left = close ? distance - offset : offset;
+  const share = distance > 0 ? left / distance : 0;
+  const duration = Math.max(Math.round(PANEL_SLIDE_DURATION * share), SHORTEST_SETTLE_DURATION);
 
   clearTimeout(settleTimeout);
   settleDuration.value = duration;

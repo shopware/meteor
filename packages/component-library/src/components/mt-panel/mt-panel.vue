@@ -146,23 +146,19 @@ const { t } = useI18n({
 const KEYBOARD_STEP = 10;
 
 const context = inject(panelContextKey, null);
-// Outside a layout, the panel has no place, and so no default size.
 const defaults = context ? defaultPanelSizes[context.place] : undefined;
 const root = useTemplateRef<HTMLElement>("root");
 const panelId = useId();
 const isMounted = useMounted();
 const renderingRoutePath = useRenderingRoutePath();
 
-// With `v-model:width`, the app keeps the width, so the panel doesn't remember it itself.
 const vnodeProps = getCurrentInstance()?.vnode.props ?? {};
 const isWidthControlled = "width" in vnodeProps && "onUpdate:width" in vnodeProps;
 
 const startingWidth = width.value ?? defaults?.width;
 const renderedWidth = ref<number | null>(null);
-// The width while a drag is going on. It is only stored and emitted when the drag ends.
 const dragWidth = ref<number | null>(null);
-// A panel closed by a drag keeps the dragged width while it slides out, and opens again with the
-// width it had before the drag.
+// Keeps the dragged width while a panel closed by a drag slides out.
 const closingWidth = ref<number | null>(null);
 const isDragging = ref(false);
 const isResetting = ref(false);
@@ -173,8 +169,6 @@ const canCloseByDrag = computed(() => hasHandle.value && props.closable);
 const smallestWidth = computed(() => props.minWidth ?? defaults?.minWidth ?? 0);
 const maxWidth = computed(() => props.maxWidth ?? defaults?.maxWidth);
 
-// Panels before the content (navigation, start) are resized at their end edge, the others at their
-// start edge.
 const handleEdge = computed(() =>
   context?.place === "navigation" || context?.place === "start" ? "end" : "start",
 );
@@ -203,7 +197,6 @@ function clamp(next: number) {
   return Math.round(Math.min(Math.max(next, smallestWidth.value), largestWidth()));
 }
 
-// The width is only stored in the browser, so the key is known once the panel has mounted.
 let storageKey: string | null = null;
 
 function readStoredWidth() {
@@ -213,7 +206,6 @@ function readStoredWidth() {
     const stored = Number(localStorage.getItem(storageKey));
     return stored > 0 ? stored : undefined;
   } catch {
-    // The browser blocks the storage, so there is no remembered width.
     return undefined;
   }
 }
@@ -225,7 +217,7 @@ function storeWidth(next: number | undefined) {
     if (next === undefined) localStorage.removeItem(storageKey);
     else localStorage.setItem(storageKey, String(next));
   } catch {
-    // The browser blocks the storage, so the width lasts until the page reloads.
+    // Blocked storage: the width lasts until the page reloads.
   }
 }
 
@@ -241,7 +233,7 @@ function stopResetting() {
   isResetting.value = false;
 }
 
-/** Goes back to the width the panel started with: `width`, or the width of its content. */
+/** Eases the panel back to its starting width and forgets the stored one. */
 function reset() {
   stopResetting();
   isResetting.value = true;
@@ -259,7 +251,7 @@ let dragStart: {
   cursor: string;
 } | null = null;
 
-// How far past its smallest width the pointer has pushed the panel out over its outer edge.
+// How far the pointer has pushed the panel out past its smallest width.
 let slideOffset = 0;
 
 function startDrag(event: PointerEvent) {
@@ -286,7 +278,7 @@ function startDrag(event: PointerEvent) {
   context?.setResizing(true);
 }
 
-function follow(x: number) {
+function dragTo(x: number) {
   if (!dragStart) return;
 
   const distance = x - dragStart.x;
@@ -309,28 +301,28 @@ function drag(event: PointerEvent) {
     return;
   }
 
-  follow(event.clientX);
+  dragTo(event.clientX);
 }
 
-/** Ends a drag where the pointer is released. A panel that has slid halfway out closes. */
 function dropHandle(event: PointerEvent) {
   if (!dragStart || event.pointerId !== dragStart.pointerId) return;
 
-  // On a quick drag, the last moves before the release may not have reached the handle.
-  if (dragWidth.value !== null || event.clientX !== dragStart.x) follow(event.clientX);
+  // The release position counts too, but a click without moving keeps the width as it is.
+  const hasMoved = dragWidth.value !== null || event.clientX !== dragStart.x;
+  if (hasMoved) dragTo(event.clientX);
 
-  endDrag(isHalfwayOut(slideOffset));
+  endDrag(isHalfwayOut());
 }
 
 /** Ends a drag that the browser cuts off before the release, as the panel shows it. */
 function interruptDrag(event?: PointerEvent) {
   if (!dragStart || (event && event.pointerId !== dragStart.pointerId)) return;
 
-  endDrag(isHalfwayOut(slideOffset));
+  endDrag(isHalfwayOut());
 }
 
-function isHalfwayOut(offset: number) {
-  return offset > 0 && offset >= smallestWidth.value / 2;
+function isHalfwayOut() {
+  return slideOffset > 0 && slideOffset >= smallestWidth.value / 2;
 }
 
 /** Ends a drag: closes the panel from where it is, or keeps the width it was dragged to. */
@@ -403,14 +395,12 @@ watch(
   },
 );
 
-// The remembered width only exists in the browser. The router knows the page that renders the
-// panel once the page has mounted.
+// The route that names the stored width is known once the page has mounted.
 onMounted(async () => {
   if (!context || isWidthControlled) return;
 
   await nextTick();
 
-  // Without a router, the URL path names the page.
   storageKey = panelWidthStorageKey(context.place, renderingRoutePath() ?? location.pathname);
   if (!props.resizable) return;
 
@@ -418,8 +408,7 @@ onMounted(async () => {
   if (stored !== undefined) width.value = clamp(stored);
 });
 
-// The layout reads the options from its slot while it renders. A panel inside another component
-// is only known from these.
+// A panel inside another component reports its options from here.
 if (context) {
   onScopeDispose(
     context.registerOptions(() => ({
@@ -431,7 +420,7 @@ if (context) {
   );
 }
 
-// A drag that is cut off, for example when the panel unmounts, mustn't keep the page unselectable.
+// Restores the page's selection and cursor when the panel unmounts mid-drag.
 onScopeDispose(() => {
   endDrag(false);
   stopResetting();

@@ -87,8 +87,6 @@ export interface PanelSize {
 const leadingPanelSize: PanelSize = { width: 240, minWidth: 200, maxWidth: 400 };
 const trailingPanelSize: PanelSize = { width: 320, minWidth: 240, maxWidth: 480 };
 
-// The panels before the content hold lists to pick from, the ones after it details and tools, which
-// need more room.
 export const defaultPanelSizes: Record<PanelPlace, PanelSize> = {
   navigation: leadingPanelSize,
   start: leadingPanelSize,
