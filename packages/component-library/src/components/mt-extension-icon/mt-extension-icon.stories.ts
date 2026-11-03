@@ -3,12 +3,11 @@ import MtExtensionIcon from "./mt-extension-icon.vue";
 
 export type MtExtensionIconMeta = Meta<typeof MtExtensionIcon>;
 
-export const sizes = [16, 20, 24, 32, 40, 48, 56, 64, 72, 80, 96] as const;
+const sizes = [16, 20, 24, 32, 40, 48, 56, 64, 72, 80, 96] as const;
 
 const meta: MtExtensionIconMeta = {
   title: "Components/Extension Icon",
   component: MtExtensionIcon,
-  excludeStories: ["sizes"],
   args: {
     src: "/extension-icon-example.svg",
     alt: "Example extension",
