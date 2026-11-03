@@ -58,7 +58,7 @@
       <div
         ref="flyoutElement"
         class="mt-nav__flyout"
-        :class="{ 'mt-nav__flyout--instant': context.flyoutSwitched.value }"
+        :class="{ 'mt-nav__flyout--switched': context.flyoutSwitched.value }"
         @keydown="onFlyoutKeydown"
         @pointerenter="onFlyoutPointerEnter"
         @pointerleave="onFlyoutPointerLeave"
@@ -393,7 +393,7 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  padding: 0 var(--scale-size-10);
+  padding: 0 var(--scale-size-12);
   text-decoration: none;
   text-align: left;
   font-size: var(--font-size-xs);
@@ -561,7 +561,7 @@ function onFlyoutKeydown(event: KeyboardEvent) {
 .mt-nav__flyout {
   box-sizing: border-box;
   /* stylelint-disable-next-line meteor/prefer-sizing-token */
-  width: 264px;
+  width: 220px;
   padding: var(--scale-size-6);
   white-space: nowrap;
   background: var(--color-elevation-surface-raised);
@@ -583,9 +583,21 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   }
 }
 
-/* A panel taking over from another open panel shows at once, so moving along the bar stays quick */
-.mt-nav__flyout--instant {
-  animation: none;
+/* A panel taking over from another open panel slides in sideways, so moving along the bar stays quick */
+.mt-nav__flyout--switched {
+  animation-name: mt-nav-flyout-switch-in;
+}
+
+@keyframes mt-nav-flyout-switch-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--scale-size-4)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -600,7 +612,7 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   > .mt-nav__list-item--nested
   > .mt-nav__item-row
   > .mt-nav__link {
-  padding-left: var(--scale-size-10);
+  padding-left: var(--scale-size-12);
 }
 
 .mt-nav__flyout
@@ -620,6 +632,6 @@ function onFlyoutKeydown(event: KeyboardEvent) {
 /* Their nested rows hang from the label instead */
 .mt-nav__flyout > .mt-nav__sub-list > .mt-nav__list-item--nested > .mt-nav__sub-list {
   margin-left: 0;
-  padding-left: var(--scale-size-10);
+  padding-left: var(--scale-size-12);
 }
 </style>

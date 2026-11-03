@@ -385,10 +385,28 @@ const horizontalSource = `
 <mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" @navigate="onNavigate" />`;
 
 /**
+ * The shop navigation with a single level of submenus.
+ */
+const flatShopItems: NavItem[] = shopItems.map((item) => ({
+  ...item,
+  children: item.children?.map((child) => ({ ...child, children: undefined })),
+}));
+
+/**
  * With `orientation="horizontal"` the top-level rows run in a line. A row with nested rows opens
  * them in a floating panel when hovered, or when clicked with the keyboard or touch.
  */
 export const Horizontal: MtNavStory = {
+  ...createStory([{ items: flatShopItems }], horizontalSource),
+  args: {
+    orientation: "horizontal",
+  },
+};
+
+/**
+ * Submenus inside the floating panel open and close inline, up to three levels in total.
+ */
+export const HorizontalNestedSubmenus: MtNavStory = {
   ...createStory([{ items: nestedItems }], horizontalSource, "", "language.index"),
   args: {
     orientation: "horizontal",

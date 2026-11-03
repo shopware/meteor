@@ -156,7 +156,7 @@ export interface NavContext {
   isFlyoutOpen: (key: string) => boolean;
   /** Opens or closes the floating panel of a top-level row. Opening one closes any other. */
   onFlyoutToggle: (key: string, open: boolean) => void;
-  /** Whether the open floating panel replaced another one, so it shows without animating in. */
+  /** Whether the open floating panel replaced another one, so it slides in sideways instead. */
   flyoutSwitched: ComputedRef<boolean>;
   onNavigate: (item: NavItem) => void;
 }
