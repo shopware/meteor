@@ -385,12 +385,15 @@ const horizontalSource = `
 <mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" @navigate="onNavigate" />`;
 
 /**
- * The shop navigation with a single level of submenus.
+ * The shop navigation with a single level of submenus, ending in an external link.
  */
-const flatShopItems: NavItem[] = shopItems.map((item) => ({
-  ...item,
-  children: item.children?.map((child) => ({ ...child, children: undefined })),
-}));
+const flatShopItems: NavItem[] = [
+  ...shopItems.map((item) => ({
+    ...item,
+    children: item.children?.map((child) => ({ ...child, children: undefined })),
+  })),
+  { label: "Docs", icon: "regular-books", href: "https://docs.shopware.com", target: "_blank" },
+];
 
 /**
  * With `orientation="horizontal"` the top-level rows run in a line. A row with nested rows opens
