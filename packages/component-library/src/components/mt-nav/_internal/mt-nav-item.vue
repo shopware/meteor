@@ -41,7 +41,7 @@
 
         <mt-icon
           v-if="hasChildren"
-          :name="subtreeOpen ? 'regular-chevron-up-xs' : 'regular-chevron-down-xs'"
+          name="regular-chevron-down-xs"
           size="8"
           class="mt-nav__link-expand-icon"
         />
@@ -408,6 +408,12 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   background: var(--color-interaction-secondary-hover);
 }
 
+/* Rows of a horizontal navigation, in the bar and in its panels, fade into their hover background */
+.mt-nav--horizontal .mt-nav__link,
+.mt-nav__flyout .mt-nav__link {
+  transition: background-color 0.2s ease-out;
+}
+
 .mt-nav__link:focus-visible {
   outline: var(--scale-size-2) solid var(--color-border-brand-default);
   outline-offset: calc(-1 * var(--scale-size-2));
@@ -439,6 +445,12 @@ function onFlyoutKeydown(event: KeyboardEvent) {
 .mt-nav__link-expand-icon {
   color: var(--color-icon-primary-default);
   margin-left: auto;
+  transition: transform 0.15s ease-out;
+}
+
+/* The chevron turns to point up while the row's nested rows are open */
+.mt-nav__list-item.is--open > .mt-nav__item-row .mt-nav__link-expand-icon {
+  transform: rotate(180deg);
 }
 
 .mt-nav__link-external-icon-box {
@@ -568,7 +580,7 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   border: var(--scale-size-1) solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-card);
   box-shadow: 0 var(--scale-size-8) var(--scale-size-20) 0 var(--color-elevation-shadow-default);
-  animation: mt-nav-flyout-in 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+  animation: mt-nav-flyout-in 0.3s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @keyframes mt-nav-flyout-in {
@@ -603,6 +615,10 @@ function onFlyoutKeydown(event: KeyboardEvent) {
 @media (prefers-reduced-motion: reduce) {
   .mt-nav__flyout {
     animation: none;
+  }
+
+  .mt-nav__link-expand-icon {
+    transition: none;
   }
 }
 
