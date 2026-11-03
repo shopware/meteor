@@ -16,11 +16,21 @@ function deleteProduct() {
 function restoreProduct() {
   addSnackbar({ message: "Product restored", variant: "success" });
 }
+
+function showLink() {
+  addSnackbar({
+    message: "Snackbar added",
+    link: { text: "Read the docs", url: "/utilities/composables/use-snackbar" },
+  });
+}
 </script>
 
 <template>
   <mt-button variant="secondary" size="small" @click="deleteProduct"
     >Delete product</mt-button
+  >
+  <mt-button variant="secondary" size="small" @click="showLink"
+    >Show link</mt-button
   >
 
   <mt-snackbar />
