@@ -1,6 +1,12 @@
 <template>
   <component :is="rowComponent" v-bind="rowProps" class="mt-nav__list-item" :class="rowClasses">
-    <div ref="itemRowElement" class="mt-nav__item-row" @keydown="onRowKeydown">
+    <div
+      ref="itemRowElement"
+      class="mt-nav__item-row"
+      @keydown="onRowKeydown"
+      @pointerenter="onFlyoutPointerEnter"
+      @pointerleave="onFlyoutPointerLeave"
+    >
       <component
         :is="linkTag"
         class="mt-nav__link"
@@ -50,7 +56,13 @@
       :is-opened="subtreeOpen"
       @close="setSubtreeOpen(false)"
     >
-      <div ref="flyoutElement" class="mt-nav__flyout" @keydown="onFlyoutKeydown">
+      <div
+        ref="flyoutElement"
+        class="mt-nav__flyout"
+        @keydown="onFlyoutKeydown"
+        @pointerenter="onFlyoutPointerEnter"
+        @pointerleave="onFlyoutPointerLeave"
+      >
         <ul class="mt-nav__sub-list">
           <mt-nav-item
             v-for="child in item.children"
@@ -76,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, provide, ref, watch } from "vue";
+import { computed, onBeforeUnmount, provide, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
@@ -137,6 +149,16 @@ const flyoutElement = ref<HTMLElement | null>(null);
 
 // Open state of the floating panel. Unlike the inline branches, it never opens on its own.
 const flyoutOpen = ref(false);
+
+// Time the pointer may spend outside the row and panel, e.g. crossing the gap between them
+const FLYOUT_CLOSE_DELAY = 200;
+
+let flyoutCloseTimer: ReturnType<typeof setTimeout> | undefined;
+
+// Set while the panel is open because the mouse rests on it, so a click does not close it again
+let flyoutOpenedByHover = false;
+
+onBeforeUnmount(() => clearTimeout(flyoutCloseTimer));
 
 // Choosing a page inside the floating panel closes it
 if (props.depth === 1) {
@@ -252,7 +274,7 @@ const linkAttrs = computed(() => {
     return {
       type: "button",
       "aria-expanded": subtreeOpen.value,
-      onClick: () => setSubtreeOpen(!subtreeOpen.value),
+      onClick: onFlyoutRowClick,
     };
   }
 
@@ -269,10 +291,46 @@ function onLinkClick() {
   context.onNavigate(props.item);
 }
 
+function onFlyoutRowClick() {
+  // Keyboard and touch toggle the panel; a click on a panel the mouse already opened keeps it open
+  if (flyoutOpenedByHover && flyoutOpen.value) {
+    flyoutOpenedByHover = false;
+    return;
+  }
+
+  setSubtreeOpen(!flyoutOpen.value);
+}
+
+function onFlyoutPointerEnter(event: PointerEvent) {
+  // The mouse opens the panel while it rests on the row or the panel; touch opens it with a tap
+  if (!isFlyout.value || event.pointerType !== "mouse") {
+    return;
+  }
+
+  clearTimeout(flyoutCloseTimer);
+
+  if (!flyoutOpen.value) {
+    flyoutOpen.value = true;
+    flyoutOpenedByHover = true;
+  }
+}
+
+function onFlyoutPointerLeave(event: PointerEvent) {
+  // Closes the panel once the mouse has left both the row and the panel
+  if (!isFlyout.value || event.pointerType !== "mouse") {
+    return;
+  }
+
+  clearTimeout(flyoutCloseTimer);
+  flyoutCloseTimer = setTimeout(() => setSubtreeOpen(false), FLYOUT_CLOSE_DELAY);
+}
+
 function setSubtreeOpen(open: boolean) {
   // Opens or closes the nested rows: the navigation decides for top-level rows, the row itself below
   if (isFlyout.value) {
+    clearTimeout(flyoutCloseTimer);
     flyoutOpen.value = open;
+    flyoutOpenedByHover = false;
   } else if (props.depth === 1) {
     context.onBranchToggle(props.branchKey, open);
   } else {
@@ -518,5 +576,53 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   border: var(--scale-size-1) solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-card);
   box-shadow: 0 var(--scale-size-8) var(--scale-size-20) 0 var(--color-elevation-shadow-default);
+  animation: mt-nav-flyout-in 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes mt-nav-flyout-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--scale-size-4)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-nav__flyout {
+    animation: none;
+  }
+}
+
+/* The first level of the panel has no row above it to hang from, so it drops the tree line, indicator and indent */
+.mt-nav__flyout
+  > .mt-nav__sub-list
+  > .mt-nav__list-item--nested
+  > .mt-nav__item-row
+  > .mt-nav__link {
+  padding-left: var(--scale-size-10);
+}
+
+.mt-nav__flyout
+  > .mt-nav__sub-list
+  > .mt-nav__list-item--nested
+  > .mt-nav__item-row
+  > .mt-nav__link::before,
+.mt-nav__flyout
+  > .mt-nav__sub-list
+  > .mt-nav__list-item--nested
+  > .mt-nav__item-row
+  > .mt-nav__link::after,
+.mt-nav__flyout > .mt-nav__sub-list > .mt-nav__list-item--nested > .mt-nav__sub-list::before {
+  content: none;
+}
+
+/* Their nested rows hang from the label instead */
+.mt-nav__flyout > .mt-nav__sub-list > .mt-nav__list-item--nested > .mt-nav__sub-list {
+  margin-left: 0;
+  padding-left: var(--scale-size-10);
 }
 </style>

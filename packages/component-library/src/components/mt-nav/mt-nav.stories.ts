@@ -386,10 +386,38 @@ const horizontalSource = `
 
 /**
  * With `orientation="horizontal"` the top-level rows run in a line. A row with nested rows opens
- * them in a floating panel when clicked.
+ * them in a floating panel when hovered, or when clicked with the keyboard or touch.
  */
 export const Horizontal: MtNavStory = {
   ...createStory([{ items: nestedItems }], horizontalSource, "", "language.index"),
+  args: {
+    orientation: "horizontal",
+  },
+};
+
+const horizontalBadgesSource = `
+<mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" @navigate="onNavigate">
+  <template #suffix="{ item }">
+    <mt-badge v-if="badges[item.label]" :variant="badges[item.label].variant">
+      {{ badges[item.label].text }}
+    </mt-badge>
+  </template>
+</mt-nav>`;
+
+/**
+ * The `suffix` slot works the same in a horizontal navigation, on the top-level rows and on the
+ * rows inside their floating panels.
+ */
+export const HorizontalBadges: MtNavStory = {
+  ...createStory(
+    [{ items: shopItems }],
+    horizontalBadgesSource,
+    `<template #suffix="{ item }">
+    <mt-badge v-if="badges[item.label]" :variant="badges[item.label].variant">
+      {{ badges[item.label].text }}
+    </mt-badge>
+  </template>`,
+  ),
   args: {
     orientation: "horizontal",
   },

@@ -74,7 +74,7 @@ const props = withDefaults(
     isActive?: NavActiveMatcher;
     /**
      * Direction the top-level rows run in. Horizontal rows show their nested rows in a floating
-     * panel that opens on click.
+     * panel that opens on hover, or on click with the keyboard or touch.
      */
     orientation?: NavOrientation;
   }>(),
