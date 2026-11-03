@@ -49,7 +49,7 @@ import { MtPromoBadge } from "@shopware-ag/meteor-component-library";
 
 ## Behavior
 
-- **Promo Badge** wraps [**Badge**](/components/badge) and maps each promotional variant to a predefined label, icon, and badge style.
+- **Promo Badge** wraps [**Badge**](/components/badge) and maps each promotional variant to a predefined label and badge style. The `beta` and `shopware-ai` variants also show an icon.
 - The visible text is controlled by the selected `variant`, so it stays consistent across products and languages.
 - The component is intentionally limited to a small set of promotional meanings rather than being a general status label.
 
