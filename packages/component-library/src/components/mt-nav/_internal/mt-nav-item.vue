@@ -1,12 +1,6 @@
 <template>
   <component :is="rowComponent" v-bind="rowProps" class="mt-nav__list-item" :class="rowClasses">
-    <div
-      ref="itemRowElement"
-      class="mt-nav__item-row"
-      @keydown="onRowKeydown"
-      @pointerenter="onFlyoutPointerEnter"
-      @pointerleave="onFlyoutPointerLeave"
-    >
+    <div ref="itemRowElement" class="mt-nav__item-row" v-on="isFlyout ? flyoutRowListeners : {}">
       <component
         :is="linkTag"
         class="mt-nav__link"
@@ -19,6 +13,7 @@
           :name="iconName"
           size="16"
           class="mt-nav__link-icon"
+          decorative
         />
 
         <span class="mt-nav__link-label">
@@ -44,6 +39,7 @@
           name="regular-chevron-down-xs"
           size="8"
           class="mt-nav__link-expand-icon"
+          decorative
         />
       </component>
     </div>
@@ -56,10 +52,12 @@
       @close="setSubtreeOpen(false)"
     >
       <div
+        :id="flyoutId"
         ref="flyoutElement"
         class="mt-nav__flyout"
         :class="{ 'mt-nav__flyout--switched': context.flyoutSwitched.value }"
         @keydown="onFlyoutKeydown"
+        @focusout="onFlyoutFocusOut"
         @pointerenter="onFlyoutPointerEnter"
         @pointerleave="onFlyoutPointerLeave"
       >
@@ -88,23 +86,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, provide, ref, watch } from "vue";
+import { computed, ref, useId, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { useTimeoutFn } from "@vueuse/core";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
 import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
+import { getTabbables } from "@/utils/focus";
 import {
   MAX_NESTING_LEVEL,
-  NAV_CONTEXT,
-  focusableLinks,
   hasNestedItems,
   itemKey,
-  moveLinkFocus,
   useNavContext,
   type NavItem,
 } from "./mt-nav-context";
+import { focusableLinks, moveLinkFocus, tabbableAfterTrigger } from "./mt-nav-focus";
 
 const props = defineProps<{
   item: NavItem;
@@ -136,41 +134,52 @@ if (isLeafDepth && hasNestedItems(props.item)) {
   );
 }
 
+if (hasNestedItems(props.item) && (props.item.to || props.item.href)) {
+  console.error(
+    `[mt-nav] The navigation item "${props.item.label}" has both a link and nested items. ` +
+      "A row either links to a page or holds nested rows, so its link is ignored.",
+  );
+}
+
 // Rows on the last supported level are leaves even when they have nested items
 const hasChildren = computed(() => hasNestedItems(props.item) && !isLeafDepth);
 
-// Top-level rows of a horizontal navigation show their nested rows in a floating panel
 const isFlyout = computed(
   () => context.orientation.value === "horizontal" && props.depth === 1 && hasChildren.value,
 );
 
+const isPanelTop = computed(() => context.orientation.value === "horizontal" && props.depth === 2);
+
 const itemRowElement = ref<HTMLElement | null>(null);
 const flyoutElement = ref<HTMLElement | null>(null);
+const flyoutId = `mt-nav-flyout-${useId()}`;
 
-// Open state of the floating panel. The navigation keeps one open at a time, and unlike the inline
-// branches it never opens on its own.
 const flyoutOpen = computed(() => context.isFlyoutOpen(props.branchKey));
 
 // Time the pointer may spend outside the row and panel, e.g. crossing the gap between them
 const FLYOUT_CLOSE_DELAY = 200;
 
-let flyoutCloseTimer: ReturnType<typeof setTimeout> | undefined;
+const { start: scheduleFlyoutClose, stop: cancelFlyoutClose } = useTimeoutFn(
+  () => context.onFlyoutToggle(props.branchKey, false),
+  FLYOUT_CLOSE_DELAY,
+  { immediate: false },
+);
 
 // Set while the panel is open because the mouse rests on it, so a click does not close it again
 let flyoutOpenedByHover = false;
 
-onBeforeUnmount(() => clearTimeout(flyoutCloseTimer));
+// The panel unmounts when it closes, so the focus inside it moves back to its row
+watch(flyoutOpen, (open) => {
+  if (open) {
+    return;
+  }
 
-// Choosing a page inside the floating panel closes it
-if (props.depth === 1) {
-  provide(NAV_CONTEXT, {
-    ...context,
-    onNavigate: (item) => {
-      context.onFlyoutToggle(props.branchKey, false);
-      context.onNavigate(item);
-    },
-  });
-}
+  flyoutOpenedByHover = false;
+
+  if (flyoutElement.value?.contains(document.activeElement)) {
+    triggerLink()?.focus();
+  }
+});
 
 // The nested row that is active or holds the active row
 const activeChildKey = computed(() => {
@@ -208,8 +217,7 @@ const isCurrentPage = computed(() => context.isRowActive(props.item) && !hasActi
 // A closed branch stands in for the active row it hides, and so does a floating panel, open or not
 const rowActive = computed(
   () =>
-    isCurrentPage.value ||
-    (hasActiveDescendant.value && (isFlyout.value || !subtreeOpen.value)),
+    isCurrentPage.value || (hasActiveDescendant.value && (isFlyout.value || !subtreeOpen.value)),
 );
 
 const childActive = computed(
@@ -224,76 +232,71 @@ const iconName = computed(() =>
 );
 
 // Rows leaving the app through a plain anchor mark themselves with a trailing icon
-const isExternal = computed(() => !props.item.to && !!props.item.href);
+const isExternal = computed(() => !hasChildren.value && !props.item.to && !!props.item.href);
 
 const isCollapsible = computed(() => hasChildren.value && !isFlyout.value);
 
 const rowComponent = computed(() => (isCollapsible.value ? MtCollapsible : "li"));
 
 const rowProps = computed(() =>
-  isCollapsible.value
-    ? { as: "li", open: subtreeOpen.value, "onUpdate:open": setSubtreeOpen }
-    : {},
+  isCollapsible.value ? { as: "li", open: subtreeOpen.value, "onUpdate:open": setSubtreeOpen } : {},
 );
 
 const rowClasses = computed(() => ({
-  "mt-nav__list-item--nested": props.depth > 1,
+  "mt-nav__list-item--nested": props.depth > 1 && !isPanelTop.value,
+  "mt-nav__list-item--panel-top": isPanelTop.value,
   "is--open": subtreeOpen.value,
   "is--child-active": childActive.value,
 }));
 
 const linkTag = computed(() => {
+  if (hasChildren.value) {
+    return isFlyout.value ? "button" : MtCollapsibleTrigger;
+  }
+
   if (props.item.to) {
     return context.linkComponent.value;
   }
 
-  if (props.item.href) {
-    return "a";
-  }
-
-  if (isFlyout.value) {
-    return "button";
-  }
-
-  return hasChildren.value ? MtCollapsibleTrigger : "span";
+  return props.item.href ? "a" : "span";
 });
 
 const linkAttrs = computed(() => {
-  if (props.item.to) {
-    return {
-      to: props.item.to,
-      "aria-expanded": hasChildren.value ? subtreeOpen.value : undefined,
-      onClick: onLinkClick,
-    };
-  }
-
-  if (props.item.href) {
-    return { href: props.item.href, target: props.item.target, onClick: onLinkClick };
-  }
-
   if (isFlyout.value) {
     return {
       type: "button",
       "aria-expanded": subtreeOpen.value,
+      "aria-controls": subtreeOpen.value ? flyoutId : undefined,
       onClick: onFlyoutRowClick,
     };
   }
 
   // The collapsible trigger toggles the nested rows itself
-  return hasChildren.value ? { type: "button" } : {};
-});
-
-function onLinkClick() {
-  // Reports the click to the navigation and, for a link with nested rows, toggles them too
   if (hasChildren.value) {
-    setSubtreeOpen(!subtreeOpen.value);
+    return { type: "button" };
   }
 
+  if (props.item.to) {
+    return { to: props.item.to, onClick: onLinkClick };
+  }
+
+  return props.item.href
+    ? { href: props.item.href, target: props.item.target, onClick: onLinkClick }
+    : {};
+});
+
+const flyoutRowListeners = {
+  keydown: onRowKeydown,
+  focusout: onFlyoutFocusOut,
+  pointerenter: onFlyoutPointerEnter,
+  pointerleave: onFlyoutPointerLeave,
+};
+
+function onLinkClick() {
   context.onNavigate(props.item);
 }
 
 function onFlyoutRowClick() {
-  // Keyboard and touch toggle the panel; a click on a panel the mouse already opened keeps it open
   if (flyoutOpenedByHover && flyoutOpen.value) {
     flyoutOpenedByHover = false;
     return;
@@ -303,12 +306,11 @@ function onFlyoutRowClick() {
 }
 
 function onFlyoutPointerEnter(event: PointerEvent) {
-  // The mouse opens the panel while it rests on the row or the panel; touch opens it with a tap
-  if (!isFlyout.value || event.pointerType !== "mouse") {
+  if (event.pointerType !== "mouse") {
     return;
   }
 
-  clearTimeout(flyoutCloseTimer);
+  cancelFlyoutClose();
 
   if (!flyoutOpen.value) {
     context.onFlyoutToggle(props.branchKey, true);
@@ -317,21 +319,16 @@ function onFlyoutPointerEnter(event: PointerEvent) {
 }
 
 function onFlyoutPointerLeave(event: PointerEvent) {
-  // Closes the panel once the mouse has left both the row and the panel
-  if (!isFlyout.value || event.pointerType !== "mouse") {
-    return;
+  if (event.pointerType === "mouse") {
+    scheduleFlyoutClose();
   }
-
-  clearTimeout(flyoutCloseTimer);
-  flyoutCloseTimer = setTimeout(() => setSubtreeOpen(false), FLYOUT_CLOSE_DELAY);
 }
 
 function setSubtreeOpen(open: boolean) {
   // Opens or closes the nested rows: the navigation decides for top-level rows, the row itself below
   if (isFlyout.value) {
-    clearTimeout(flyoutCloseTimer);
+    cancelFlyoutClose();
     context.onFlyoutToggle(props.branchKey, open);
-    flyoutOpenedByHover = false;
   } else if (props.depth === 1) {
     context.onBranchToggle(props.branchKey, open);
   } else {
@@ -339,21 +336,34 @@ function setSubtreeOpen(open: boolean) {
   }
 }
 
-function onRowKeydown(event: KeyboardEvent) {
-  // ArrowDown on a row whose floating panel is open moves focus to the first row in the panel
-  const target = event.target;
+function triggerLink() {
+  return itemRowElement.value?.querySelector<HTMLElement>(".mt-nav__link") ?? null;
+}
 
-  if (
-    event.key !== "ArrowDown" ||
-    !subtreeOpen.value ||
-    !flyoutElement.value ||
-    !(target instanceof HTMLElement) ||
-    !target.matches(".mt-nav__link")
-  ) {
+// mt-floating-ui wraps the panel in a focusable container at the end of the body
+function panelContainer() {
+  return (
+    flyoutElement.value?.closest<HTMLElement>(".mt-floating-ui__content") ?? flyoutElement.value
+  );
+}
+
+function onRowKeydown(event: KeyboardEvent) {
+  const panel = flyoutElement.value;
+
+  if (!flyoutOpen.value || !panel || event.target !== triggerLink()) {
     return;
   }
 
-  const firstLink = focusableLinks(flyoutElement.value)[0];
+  if (event.key === "Escape") {
+    event.preventDefault();
+    setSubtreeOpen(false);
+    return;
+  }
+
+  const firstLink =
+    event.key === "ArrowDown" || (event.key === "Tab" && !event.shiftKey)
+      ? focusableLinks(panel)[0]
+      : undefined;
 
   if (firstLink) {
     event.preventDefault();
@@ -362,15 +372,53 @@ function onRowKeydown(event: KeyboardEvent) {
 }
 
 function onFlyoutKeydown(event: KeyboardEvent) {
-  // Moves focus between the rows of the floating panel; Escape closes it and returns to its row
-  if (event.key === "Escape") {
-    context.onFlyoutToggle(props.branchKey, false);
-    itemRowElement.value?.querySelector<HTMLElement>(".mt-nav__link")?.focus();
+  const panel = flyoutElement.value;
+
+  if (!panel) {
     return;
   }
 
-  if (flyoutElement.value) {
-    moveLinkFocus(flyoutElement.value, event, { next: "ArrowDown", previous: "ArrowUp" });
+  if (event.key === "Escape") {
+    event.preventDefault();
+    setSubtreeOpen(false);
+  } else if (event.key === "Tab") {
+    onFlyoutTab(event, panel);
+  } else {
+    moveLinkFocus(panel, event, { next: "ArrowDown", previous: "ArrowUp" });
+  }
+}
+
+function onFlyoutTab(event: KeyboardEvent, panel: HTMLElement) {
+  const trigger = triggerLink();
+  const tabbables = getTabbables(panel);
+  const edge = event.shiftKey ? tabbables[0] : tabbables[tabbables.length - 1];
+
+  if (!trigger || event.target !== edge) {
+    return;
+  }
+
+  event.preventDefault();
+
+  if (event.shiftKey) {
+    trigger.focus();
+    return;
+  }
+
+  const next = tabbableAfterTrigger(trigger, panelContainer() ?? panel) ?? trigger;
+
+  setSubtreeOpen(false);
+  next.focus();
+}
+
+function onFlyoutFocusOut(event: FocusEvent) {
+  const next = event.relatedTarget;
+
+  if (
+    next instanceof Node &&
+    !itemRowElement.value?.contains(next) &&
+    !panelContainer()?.contains(next)
+  ) {
+    setSubtreeOpen(false);
   }
 }
 </script>
@@ -408,7 +456,7 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   background: var(--color-interaction-secondary-hover);
 }
 
-/* Rows of a horizontal navigation, in the bar and in its panels, fade into their hover background */
+/* The panels are teleported to the body, outside of .mt-nav--horizontal */
 .mt-nav--horizontal .mt-nav__link,
 .mt-nav__flyout .mt-nav__link {
   transition: background-color 0.2s ease-out;
@@ -448,7 +496,6 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   transition: transform 0.15s ease-out;
 }
 
-/* The chevron turns to point up while the row's nested rows are open */
 .mt-nav__list-item.is--open > .mt-nav__item-row .mt-nav__link-expand-icon {
   transform: rotate(180deg);
 }
@@ -595,7 +642,6 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   }
 }
 
-/* A panel taking over from another open panel slides in sideways, so moving along the bar stays quick */
 .mt-nav__flyout--switched {
   animation-name: mt-nav-flyout-switch-in;
 }
@@ -622,32 +668,8 @@ function onFlyoutKeydown(event: KeyboardEvent) {
   }
 }
 
-/* The first level of the panel has no row above it to hang from, so it drops the tree line, indicator and indent */
-.mt-nav__flyout
-  > .mt-nav__sub-list
-  > .mt-nav__list-item--nested
-  > .mt-nav__item-row
-  > .mt-nav__link {
-  padding-left: var(--scale-size-12);
-}
-
-.mt-nav__flyout
-  > .mt-nav__sub-list
-  > .mt-nav__list-item--nested
-  > .mt-nav__item-row
-  > .mt-nav__link::before,
-.mt-nav__flyout
-  > .mt-nav__sub-list
-  > .mt-nav__list-item--nested
-  > .mt-nav__item-row
-  > .mt-nav__link::after,
-.mt-nav__flyout > .mt-nav__sub-list > .mt-nav__list-item--nested > .mt-nav__sub-list::before {
-  content: none;
-}
-
-/* Their nested rows hang from the label instead */
-.mt-nav__flyout > .mt-nav__sub-list > .mt-nav__list-item--nested > .mt-nav__sub-list {
-  margin-left: 0;
+/* The first level of a panel has no tree line, so its nested rows hang from its label */
+.mt-nav__list-item--panel-top > .mt-nav__sub-list {
   padding-left: var(--scale-size-12);
 }
 </style>

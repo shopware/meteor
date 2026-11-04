@@ -1,5 +1,6 @@
 import { onMounted, onScopeDispose, watch, type Ref } from "vue";
 import { useEventListener } from "@vueuse/core";
+import { getTabbables } from "@/utils/focus";
 
 /**
  * Marks an element at the top of the body that stays usable while a modal layer is open, such as
@@ -20,20 +21,6 @@ export interface UseModalLayerOptions {
   /** The elements outside the panel that become inert while the layer is active. */
   inertTargets?: () => Iterable<Element | null | undefined>;
 }
-
-const TABBABLE_SELECTOR = [
-  "a[href]",
-  "area[href]",
-  "button:not([disabled])",
-  'input:not([disabled]):not([type="hidden"])',
-  "select:not([disabled])",
-  "textarea:not([disabled])",
-  "iframe",
-  "audio[controls]",
-  "video[controls]",
-  '[contenteditable]:not([contenteditable="false"])',
-  "[tabindex]",
-].join(",");
 
 /** The active layers in activation order; only the last one handles Escape. */
 const activeLayers: symbol[] = [];
@@ -65,17 +52,6 @@ function releaseInert(element: Element) {
 
   inertReferences.delete(element);
   element.removeAttribute("inert");
-}
-
-function getTabbables(root: HTMLElement): HTMLElement[] {
-  return Array.from(root.querySelectorAll<HTMLElement>(TABBABLE_SELECTOR)).filter((element) => {
-    const tabindex = element.getAttribute("tabindex");
-    if (tabindex !== null && Number(tabindex) < 0) return false;
-
-    if (element.closest("[hidden],[inert]")) return false;
-
-    return typeof element.checkVisibility !== "function" || element.checkVisibility();
-  });
 }
 
 function wrapTab(event: KeyboardEvent, root: HTMLElement) {

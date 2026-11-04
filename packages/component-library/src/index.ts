@@ -46,6 +46,7 @@ import type {
   NavItem,
   NavLinkComponent,
   NavLinkTarget,
+  NavOrientation,
   NavSection,
 } from "./components/mt-nav/mt-nav.vue";
 import { useSnackbar, type Snackbar } from "./components/mt-snackbar/composables/use-snackbar";
@@ -193,6 +194,7 @@ export {
   type NavItem,
   type NavLinkComponent,
   type NavLinkTarget,
+  type NavOrientation,
   type NavSection,
   MtActionMenu,
   MtActionMenuItem,

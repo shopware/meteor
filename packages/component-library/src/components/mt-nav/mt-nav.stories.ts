@@ -18,11 +18,8 @@ const shopItems: NavItem[] = [
     label: "Products",
     icon: "regular-products",
     children: [
-      {
-        label: "Overview",
-        to: { name: "product.index" },
-        children: [{ label: "Reviews", to: { name: "review.index" } }],
-      },
+      { label: "Overview", to: { name: "product.index" } },
+      { label: "Reviews", to: { name: "review.index" } },
       { label: "Categories", to: { name: "category.index" } },
       { label: "Manufacturers", to: { name: "manufacturer.index" } },
     ],
@@ -70,14 +67,18 @@ const nestedItems: NavItem[] = [
     icon: "regular-products",
     children: [
       {
-        label: "Overview",
-        to: { name: "product.index" },
-        children: [{ label: "Reviews", to: { name: "review.index" } }],
+        label: "Catalogue",
+        children: [
+          { label: "Overview", to: { name: "product.index" } },
+          { label: "Reviews", to: { name: "review.index" } },
+        ],
       },
       {
         label: "Categories",
-        to: { name: "category.index" },
-        children: [{ label: "Dynamic product groups", to: { name: "product-stream.index" } }],
+        children: [
+          { label: "All categories", to: { name: "category.index" } },
+          { label: "Dynamic product groups", to: { name: "product-stream.index" } },
+        ],
       },
       { label: "Manufacturers", to: { name: "manufacturer.index" } },
     ],
@@ -190,11 +191,8 @@ const sections: NavSection[] = [
         label: "Products",
         icon: "regular-products",
         children: [
-          {
-            label: "Overview",
-            to: { name: "product.index" },
-            children: [{ label: "Reviews", to: { name: "review.index" } }],
-          },
+          { label: "Overview", to: { name: "product.index" } },
+          { label: "Reviews", to: { name: "review.index" } },
           { label: "Categories", to: { name: "category.index" } },
         ],
       },
@@ -371,8 +369,8 @@ export const Badges: MtNavStory = createStory(
 );
 
 /**
- * Submenus can hold submenus of their own, up to three levels in total. A nested row without a
- * `to` only toggles its rows; one with a `to` is a link and opens its rows when clicked.
+ * Submenus can hold submenus of their own, up to three levels in total. A row with nested rows
+ * opens and closes them and isn't a link itself.
  */
 export const NestedSubmenus: MtNavStory = createStory(
   [{ items: nestedItems }],
@@ -384,14 +382,8 @@ export const NestedSubmenus: MtNavStory = createStory(
 const horizontalSource = `
 <mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" @navigate="onNavigate" />`;
 
-/**
- * The shop navigation with a single level of submenus, ending in an external link.
- */
 const flatShopItems: NavItem[] = [
-  ...shopItems.map((item) => ({
-    ...item,
-    children: item.children?.map((child) => ({ ...child, children: undefined })),
-  })),
+  ...shopItems,
   { label: "Docs", icon: "regular-books", href: "https://docs.shopware.com", target: "_blank" },
 ];
 

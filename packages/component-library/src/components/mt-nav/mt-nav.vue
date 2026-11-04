@@ -34,7 +34,6 @@ import {
   isItemActive,
   isRowActive,
   itemKey,
-  moveLinkFocus,
   type NavActiveMatcher,
   type NavItem,
   type NavLinkComponent,
@@ -42,6 +41,7 @@ import {
   type NavSection,
   type NavSlots,
 } from "./_internal/mt-nav-context";
+import { moveLinkFocus } from "./_internal/mt-nav-focus";
 
 export type {
   NavActiveMatcher,
@@ -113,10 +113,7 @@ const navBodyElement = ref<HTMLElement | null>(null);
 // Keys of the open top-level rows. Nested rows keep their own open state.
 const expandedKeys = ref<string[]>([]);
 
-// Key of the top-level row whose floating panel is open, in a horizontal navigation
 const openFlyoutKey = ref<string | null>(null);
-
-// Set when the open panel took over from another open panel instead of opening from closed
 const flyoutSwitched = ref(false);
 
 // The top-level rows of every section, with the keys their open state is kept under
@@ -163,10 +160,20 @@ provide(NAV_CONTEXT, {
   isFlyoutOpen: (key) => openFlyoutKey.value === key,
   onFlyoutToggle,
   flyoutSwitched: computed(() => flyoutSwitched.value),
-  onNavigate: (item) => emit("navigate", item),
+  onNavigate: (item) => {
+    openFlyoutKey.value = null;
+    emit("navigate", item);
+  },
 });
 
 watch(activeRowSignature, openBranchOfActiveItem, { immediate: true });
+
+watch(
+  () => props.orientation,
+  () => {
+    openFlyoutKey.value = null;
+  },
+);
 
 function isBranchExpanded(key: string) {
   // Tells whether the top-level row with this key is open
@@ -197,7 +204,7 @@ function onBranchToggle(key: string, open: boolean) {
 }
 
 function onFlyoutToggle(key: string, open: boolean) {
-  // Opens the panel with this key in place of any other, or closes it if it is still the open one
+  // A late close of the previous panel, e.g. from its hover timer, leaves the new one open
   if (open) {
     flyoutSwitched.value = openFlyoutKey.value !== null && openFlyoutKey.value !== key;
     openFlyoutKey.value = key;
@@ -236,7 +243,6 @@ function openBranchOfActiveItem() {
 }
 
 function onNavigationKeydown(event: KeyboardEvent) {
-  // Moves focus between the visible links with the arrow keys of the orientation, Home and End
   if (!navBodyElement.value) {
     return;
   }

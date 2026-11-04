@@ -20,27 +20,46 @@ export type NavActiveMatcher = (item: NavItem) => boolean;
  */
 export type NavOrientation = "vertical" | "horizontal";
 
-/**
- * One row of the navigation. Rows nest through `children`, up to three levels deep in total.
- */
-export interface NavItem {
+interface NavItemBase {
   /** Stable identifier of the row. Siblings need distinct ids; without one, the label is used. */
   id?: string;
   /** Translated label of the row. */
   label: string;
   /** Icon name of the meteor icon kit, e.g. `regular-products`. Shown on top-level rows only. */
   icon?: string;
+  /** Whether the row is the current page. Its ancestors open and highlight accordingly. Alternative to `isActive` on `mt-nav`. */
+  active?: boolean;
+}
+
+/**
+ * A row linking to a page, or a row with only a label.
+ */
+interface NavLinkItem extends NavItemBase {
   /** Route location handed to the link component as `to`. */
   to?: NavLinkTarget;
   /** External URL, rendered as a plain anchor when no `to` is set. */
   href?: string;
   /** Anchor target for `href`. */
   target?: string;
-  /** Whether the row is the current page. Its ancestors open and highlight accordingly. Alternative to `isActive` on `mt-nav`. */
-  active?: boolean;
-  /** Nested rows. A row with nested rows and no `to` renders as a button toggling them. */
-  children?: NavItem[];
+  children?: never;
 }
+
+/**
+ * A row holding nested rows, which it opens and closes. It isn't a link itself.
+ */
+interface NavGroupItem extends NavItemBase {
+  /** Nested rows. */
+  children: NavItem[];
+  to?: never;
+  href?: never;
+  target?: never;
+}
+
+/**
+ * One row of the navigation: either a link or a group of nested rows, never both. Rows nest up to
+ * three levels deep in total.
+ */
+export type NavItem = NavLinkItem | NavGroupItem;
 
 /**
  * A group of rows below an optional header.
@@ -81,51 +100,6 @@ export function itemKey(item: NavItem): string {
 export function branchKey(sectionIndex: number, item: NavItem): string {
   // Identifies a top-level row across sections, for the open state the navigation keeps
   return `${sectionIndex}/${itemKey(item)}`;
-}
-
-export function focusableLinks(container: HTMLElement): HTMLElement[] {
-  // Lists the visible links in the container; label-only rows render as a span and can't take focus
-  return Array.from(container.querySelectorAll<HTMLElement>(".mt-nav__link")).filter(
-    (link) => link.tabIndex >= 0 && !link.closest("[hidden]"),
-  );
-}
-
-export function moveLinkFocus(
-  container: HTMLElement,
-  event: KeyboardEvent,
-  keys: { next: string; previous: string },
-): void {
-  // Moves focus between the visible links in the container with the given keys, Home and End, without wrapping
-  const target = event.target;
-
-  // Keys pressed inside slotted content, e.g. a button in a suffix, keep their meaning
-  if (!(target instanceof HTMLElement) || !target.matches(".mt-nav__link")) {
-    return;
-  }
-
-  const links = focusableLinks(container);
-  const currentIndex = links.indexOf(target);
-  let nextIndex: number;
-
-  switch (event.key) {
-    case keys.next:
-      nextIndex = Math.min(currentIndex + 1, links.length - 1);
-      break;
-    case keys.previous:
-      nextIndex = Math.max(currentIndex - 1, 0);
-      break;
-    case "Home":
-      nextIndex = 0;
-      break;
-    case "End":
-      nextIndex = links.length - 1;
-      break;
-    default:
-      return;
-  }
-
-  event.preventDefault();
-  links[nextIndex]?.focus();
 }
 
 /**
