@@ -15,6 +15,7 @@ export const de: Messages = {
     content: "Inhalte",
     cms: "Erlebniswelten",
     settings: "Einstellungen",
+    logout: "Abmelden",
   },
   sidebar: {
     label: "Assistent",

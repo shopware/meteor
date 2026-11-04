@@ -11,7 +11,7 @@ interface LayoutSettings {
 
 const defaults: LayoutSettings = {
   navigationClosable: false,
-  sidebarClosable: false,
+  sidebarClosable: true,
 };
 
 const settings = reactive<LayoutSettings>({

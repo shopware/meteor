@@ -13,6 +13,7 @@ export const en = {
     content: "Content",
     cms: "Shopping Experiences",
     settings: "Settings",
+    logout: "Log out",
   },
   sidebar: {
     label: "Assistant",
