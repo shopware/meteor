@@ -1,15 +1,23 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import {
+  MtActionMenuGroup,
+  MtActionMenuItem,
+  MtBrand,
   MtNav,
+  MtSidebar,
+  MtUserMenu,
   type NavItem,
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
+import { useCurrentUser } from "../composables/useCurrentUser";
 
 const { t } = useI18n();
 const route = useRoute();
+const router = useRouter();
+const user = useCurrentUser();
 
 /** The menu of the Shopware Administration, with the modules this playground has. */
 const sections = computed<NavSection[]>(() => [
@@ -66,20 +74,33 @@ function isActive(item: NavItem) {
 </script>
 
 <template>
-  <div class="app-nav">
-    <mt-nav class="app-nav__menu" :sections="sections" :is-active="isActive" />
-  </div>
+  <mt-sidebar>
+    <template #header>
+      <mt-brand title="Playground" subtitle="Shopware" />
+    </template>
+
+    <mt-nav :sections="sections" :is-active="isActive" />
+
+    <template #footer>
+      <mt-user-menu
+        :name="`${user.firstName} ${user.lastName}`"
+        :subtitle="user.email"
+      >
+        <mt-action-menu-group>
+          <mt-action-menu-item
+            icon="regular-cog"
+            @select="router.push('/settings')"
+          >
+            {{ t("nav.settings") }}
+          </mt-action-menu-item>
+        </mt-action-menu-group>
+
+        <mt-action-menu-group>
+          <mt-action-menu-item icon="regular-sign-out" variant="critical">
+            {{ t("nav.logout") }}
+          </mt-action-menu-item>
+        </mt-action-menu-group>
+      </mt-user-menu>
+    </template>
+  </mt-sidebar>
 </template>
-
-<style scoped>
-.app-nav {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-}
-
-.app-nav__menu {
-  flex: 1;
-  min-height: 0;
-}
-</style>
