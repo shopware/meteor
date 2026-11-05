@@ -382,6 +382,9 @@ export const NestedSubmenus: MtNavStory = createStory(
 const horizontalSource = `
 <mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" @navigate="onNavigate" />`;
 
+/**
+ * The shop navigation, ending in an external link.
+ */
 const flatShopItems: NavItem[] = [
   ...shopItems,
   { label: "Docs", icon: "regular-books", href: "https://docs.shopware.com", target: "_blank" },

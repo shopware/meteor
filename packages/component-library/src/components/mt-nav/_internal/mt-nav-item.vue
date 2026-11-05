@@ -144,6 +144,7 @@ if (hasNestedItems(props.item) && (props.item.to || props.item.href)) {
 // Rows on the last supported level are leaves even when they have nested items
 const hasChildren = computed(() => hasNestedItems(props.item) && !isLeafDepth);
 
+// Top-level rows of a horizontal navigation show their nested rows in a floating panel
 const isFlyout = computed(
   () => context.orientation.value === "horizontal" && props.depth === 1 && hasChildren.value,
 );
@@ -154,6 +155,8 @@ const itemRowElement = ref<HTMLElement | null>(null);
 const flyoutElement = ref<HTMLElement | null>(null);
 const flyoutId = `mt-nav-flyout-${useId()}`;
 
+// Open state of the floating panel. The navigation keeps one open at a time, and unlike the inline
+// branches it never opens on its own.
 const flyoutOpen = computed(() => context.isFlyoutOpen(props.branchKey));
 
 // Time the pointer may spend outside the row and panel, e.g. crossing the gap between them
@@ -293,10 +296,12 @@ const flyoutRowListeners = {
 };
 
 function onLinkClick() {
+  // Reports the click to the navigation
   context.onNavigate(props.item);
 }
 
 function onFlyoutRowClick() {
+  // Keyboard and touch toggle the panel; a click on a panel the mouse already opened keeps it open
   if (flyoutOpenedByHover && flyoutOpen.value) {
     flyoutOpenedByHover = false;
     return;
@@ -306,6 +311,7 @@ function onFlyoutRowClick() {
 }
 
 function onFlyoutPointerEnter(event: PointerEvent) {
+  // The mouse opens the panel while it rests on the row or the panel; touch opens it with a tap
   if (event.pointerType !== "mouse") {
     return;
   }
@@ -319,6 +325,7 @@ function onFlyoutPointerEnter(event: PointerEvent) {
 }
 
 function onFlyoutPointerLeave(event: PointerEvent) {
+  // Closes the panel once the mouse has left both the row and the panel
   if (event.pointerType === "mouse") {
     scheduleFlyoutClose();
   }
@@ -348,6 +355,8 @@ function panelContainer() {
 }
 
 function onRowKeydown(event: KeyboardEvent) {
+  // On a row whose floating panel is open, ArrowDown and Tab move focus to the first row in the
+  // panel, and Escape closes it
   const panel = flyoutElement.value;
 
   if (!flyoutOpen.value || !panel || event.target !== triggerLink()) {
@@ -372,6 +381,7 @@ function onRowKeydown(event: KeyboardEvent) {
 }
 
 function onFlyoutKeydown(event: KeyboardEvent) {
+  // Moves focus between the rows of the floating panel; Escape closes it and returns to its row
   const panel = flyoutElement.value;
 
   if (!panel) {
@@ -456,7 +466,8 @@ function onFlyoutFocusOut(event: FocusEvent) {
   background: var(--color-interaction-secondary-hover);
 }
 
-/* The panels are teleported to the body, outside of .mt-nav--horizontal */
+/* Rows of a horizontal navigation, in the bar and in its panels, fade into their hover background.
+   The panels are teleported to the body, outside of .mt-nav--horizontal. */
 .mt-nav--horizontal .mt-nav__link,
 .mt-nav__flyout .mt-nav__link {
   transition: background-color 0.2s ease-out;
@@ -496,6 +507,7 @@ function onFlyoutFocusOut(event: FocusEvent) {
   transition: transform 0.15s ease-out;
 }
 
+/* The chevron turns to point up while the row's nested rows are open */
 .mt-nav__list-item.is--open > .mt-nav__item-row .mt-nav__link-expand-icon {
   transform: rotate(180deg);
 }
@@ -642,6 +654,7 @@ function onFlyoutFocusOut(event: FocusEvent) {
   }
 }
 
+/* A panel taking over from another open panel slides in sideways, so moving along the bar stays quick */
 .mt-nav__flyout--switched {
   animation-name: mt-nav-flyout-switch-in;
 }

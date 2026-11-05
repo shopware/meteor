@@ -1,7 +1,7 @@
 import { getTabbables } from "@/utils/focus";
 
 export function focusableLinks(container: HTMLElement): HTMLElement[] {
-  // Label-only rows render as a span and can't take focus
+  // Lists the visible links in the container; label-only rows render as a span and can't take focus
   return Array.from(container.querySelectorAll<HTMLElement>(".mt-nav__link")).filter(
     (link) => link.tabIndex >= 0 && !link.closest("[hidden]"),
   );
@@ -12,6 +12,7 @@ export function moveLinkFocus(
   event: KeyboardEvent,
   keys: { next: string; previous: string },
 ): void {
+  // Moves focus between the visible links in the container with the given keys, Home and End, without wrapping
   const target = event.target;
 
   // Keys pressed inside slotted content, e.g. a button in a suffix, keep their meaning
