@@ -29,7 +29,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
     // Only section nodes (those with children) redirect; leaf pages and unknown
     // routes fall through to normal rendering / 404.
     if (!node?.children?.length) return;
-    const target = firstLeafPath(node);
+    // Group like the sidebar, so the target is its first entry.
+    const target = firstLeafPath({
+      ...node,
+      children: groupComponentNavigation(node.children),
+    });
     if (target && target !== path) {
       // 302 (temporary): the target is derived from navigation order and can
       // change as pages are added or reordered, so it must not be hard-cached.
@@ -49,7 +53,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
 // are non-critical if navigation is momentarily unavailable.
 const SECTION_ROOT_FALLBACKS: Record<string, string> = {
   "/documentation": "/documentation/getting-started/installation",
-  "/components": "/components/action-menu",
+  "/components": "/components/app",
+  "/blocks": "/blocks/application/sidebar-navigation",
   "/utilities": "/utilities/components/inset",
 };
 

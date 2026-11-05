@@ -14,7 +14,7 @@ export const VisualTestSections: MtNavStory = {
   name: "Render sections with headers",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const navigation = canvas.getByRole("navigation", { name: "Main navigation" });
+    const navigation = canvas.getByRole("navigation", { name: "Main" });
 
     expect(within(navigation).getByRole("heading", { name: "Shop" })).toBeVisible();
     expect(within(navigation).getByRole("heading", { name: "System" })).toBeVisible();

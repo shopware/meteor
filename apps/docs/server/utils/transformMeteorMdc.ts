@@ -606,7 +606,7 @@ export function transformMeteorMdc(
       ]);
     }
 
-    if (tag === "component-example") {
+    if (tag === "component-example" || tag === "block-preview") {
       // A manual #code slot already contains a code block: export that block
       // instead of the auto-generated source.
       const manualCode = findPre(children);

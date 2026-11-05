@@ -56,7 +56,8 @@ const props = withDefaults(
      */
     linkComponent?: NavLinkComponent;
     /**
-     * Accessible name of the navigation. Defaults to the translated "Main navigation".
+     * Accessible name of the navigation. Defaults to the translated "Main". Pass another name when
+     * the page has more than one `mt-nav`, for example "Settings".
      */
     label?: string;
     /**
@@ -84,10 +85,10 @@ const slots = defineSlots<NavSlots>();
 const { t } = useI18n({
   messages: {
     en: {
-      navigationLabel: "Main navigation",
+      navigationLabel: "Main",
     },
     de: {
-      navigationLabel: "Hauptnavigation",
+      navigationLabel: "Hauptmenü",
     },
   },
 });

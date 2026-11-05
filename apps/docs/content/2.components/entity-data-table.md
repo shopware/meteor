@@ -4,7 +4,7 @@ description: A repository-backed Data Table that owns loading and table state fo
 ---
 
 ::warning
-**Experimental.** The API may still change in a future release. It builds on [**Data Table**](/components/data-table).
+**Experimental:** This component is in a testing phase, and its API and behavior are not stable yet. Props, events, slots, visual behavior, or accessibility details may change without notice, and the component may be removed at any time. It builds on [**Data Table**](/components/data-table).
 ::
 
 ::component-example{name="entity-data-table-default-example" fullWidth}

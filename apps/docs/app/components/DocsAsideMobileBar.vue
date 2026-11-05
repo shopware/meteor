@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { ContentTocLink } from "@nuxt/ui";
 
-// Overrides Docus' DocsAsideMobileBar. Only change from upstream: the mobile
-// "Menu" drawer expands every section at once (type="multiple", no default-open)
-// instead of only the active one, matching the desktop sidebar.
+// Overrides Docus' DocsAsideMobileBar. Changes from upstream: the mobile "Menu"
+// drawer expands every section at once (type="multiple", no default-open)
+// instead of only the active one, and groups the component pages, matching
+// the desktop sidebar.
 defineProps<{
   links?: ContentTocLink[];
 }>();
@@ -13,6 +14,10 @@ const { subNavigationMode, sidebarNavigation, currentSection } =
 const { t } = useDocusI18n();
 
 const contentTocVariants = useUIConfig("contentToc");
+
+const groupedNavigation = computed(() =>
+  groupComponentNavigation(sidebarNavigation.value ?? []),
+);
 
 const menuDrawerOpen = ref(false);
 const tocDrawerOpen = ref(false);
@@ -43,7 +48,7 @@ const tocDrawerOpen = ref(false);
 
       <template #body>
         <UContentNavigation
-          :navigation="sidebarNavigation"
+          :navigation="groupedNavigation"
           :highlight="false"
           variant="pill"
           color="neutral"
