@@ -28,7 +28,7 @@ import { hasSlotContent } from "@/utils/slot";
 
 /**
  * The frame around the main navigation of an application: a fixed header and footer around the
- * navigation, which scrolls on its own. It is a complementary landmark (`<aside>`).
+ * navigation, which scrolls between them. It is a complementary landmark (`<aside>`).
  *
  * @experimental The API may still change in a future release.
  */
