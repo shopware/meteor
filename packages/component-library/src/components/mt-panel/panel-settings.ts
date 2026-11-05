@@ -56,7 +56,7 @@ export interface PanelContext {
 export const PANEL_MARKER = "__MT_PANEL__";
 
 /** The length of a panel's slide and of its return to its starting width, in milliseconds. */
-export const PANEL_SLIDE_DURATION = 250;
+export const PANEL_SLIDE_DURATION = 200;
 
 export const PANEL_SLIDE_EASING = "cubic-bezier(0.3, 0, 0, 1)";
 
