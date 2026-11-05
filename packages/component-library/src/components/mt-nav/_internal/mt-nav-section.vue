@@ -60,4 +60,19 @@ const headerId = `mt-nav-section-header-${useId()}`;
   margin: 0;
   padding: 0;
 }
+
+.mt-nav--horizontal .mt-nav__section {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--scale-size-4);
+}
+
+.mt-nav--horizontal .mt-nav__section-header {
+  margin: 0;
+}
+
+.mt-nav--horizontal .mt-nav__list {
+  display: flex;
+  gap: var(--scale-size-4);
+}
 </style>

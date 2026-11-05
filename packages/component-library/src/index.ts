@@ -48,6 +48,7 @@ import type {
   NavItem,
   NavLinkComponent,
   NavLinkTarget,
+  NavOrientation,
   NavSection,
 } from "./components/mt-nav/mt-nav.vue";
 import {
@@ -204,6 +205,7 @@ export {
   type NavItem,
   type NavLinkComponent,
   type NavLinkTarget,
+  type NavOrientation,
   type NavSection,
   MtActionMenu,
   MtActionMenuItem,
