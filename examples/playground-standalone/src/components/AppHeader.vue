@@ -6,16 +6,14 @@ import {
   MtActionMenuGroup,
   MtActionMenuItem,
   MtBrand,
+  MtButton,
+  MtIcon,
   MtNav,
-  MtUserMenu,
   type NavItem,
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
-
-defineProps<{
-  /** Whether the shell shows its mobile layout, from the header slot of `mt-app`. */
-  isMobile: boolean;
-}>();
+import AppHeaderPrototype from "../prototypes/AppHeaderPrototype.vue";
+import UserMenuPrototype from "../prototypes/UserMenuPrototype.vue";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -65,49 +63,61 @@ function isActive(item: NavItem) {
 </script>
 
 <template>
-  <div class="app-header">
-    <mt-brand title="Playground" subtitle="Shopware" :compact="isMobile" />
+  <AppHeaderPrototype>
+    <template #brand="{ compact }">
+      <mt-brand title="Playground" subtitle="Shopware" :compact="compact" />
+    </template>
 
-    <mt-nav
-      orientation="horizontal"
-      :sections="sections"
-      :is-active="isActive"
-    />
+    <template #navigation="{ orientation }">
+      <mt-nav
+        :orientation="orientation"
+        :sections="sections"
+        :is-active="isActive"
+      />
+    </template>
 
-    <mt-user-menu
-      class="app-header__user"
-      name="Jane Doe"
-      subtitle="jane.doe@example.com"
-      compact
-    >
-      <mt-action-menu-group>
-        <mt-action-menu-item
-          icon="regular-cog"
-          @select="router.push('/settings')"
-        >
-          {{ t("nav.settings") }}
-        </mt-action-menu-item>
-      </mt-action-menu-group>
+    <template #actions>
+      <!-- Placeholders: there is no search and there are no notifications yet. -->
+      <mt-button
+        variant="tertiary"
+        size="default"
+        square
+        :aria-label="t('nav.search')"
+      >
+        <mt-icon name="regular-search" size="var(--scale-size-16)" decorative />
+      </mt-button>
 
-      <mt-action-menu-group>
-        <mt-action-menu-item icon="regular-sign-out" variant="critical">
-          {{ t("nav.logout") }}
-        </mt-action-menu-item>
-      </mt-action-menu-group>
-    </mt-user-menu>
-  </div>
+      <mt-button
+        variant="tertiary"
+        size="default"
+        square
+        :aria-label="t('nav.notifications')"
+      >
+        <mt-icon name="regular-bell" size="var(--scale-size-16)" decorative />
+      </mt-button>
+
+      <UserMenuPrototype name="Jane Doe" subtitle="jane.doe@example.com">
+        <mt-action-menu-group>
+          <mt-action-menu-item
+            icon="regular-cog"
+            @select="router.push('/settings/general')"
+          >
+            {{ t("nav.settings") }}
+          </mt-action-menu-item>
+          <mt-action-menu-item
+            icon="regular-user"
+            @select="router.push('/settings/account')"
+          >
+            {{ t("settings.sections.account") }}
+          </mt-action-menu-item>
+        </mt-action-menu-group>
+
+        <mt-action-menu-group>
+          <mt-action-menu-item icon="regular-sign-out" variant="critical">
+            {{ t("nav.logout") }}
+          </mt-action-menu-item>
+        </mt-action-menu-group>
+      </UserMenuPrototype>
+    </template>
+  </AppHeaderPrototype>
 </template>
-
-<style scoped>
-.app-header {
-  display: flex;
-  align-items: center;
-  gap: var(--scale-size-24);
-  padding-block: var(--scale-size-8);
-  margin-inline: var(--scale-size-8);
-}
-
-.app-header__user {
-  margin-inline-start: auto;
-}
-</style>

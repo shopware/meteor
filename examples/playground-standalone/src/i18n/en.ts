@@ -9,6 +9,8 @@ export const en = {
     releaseNotes: "Release notes",
     settings: "Settings",
     logout: "Log out",
+    notifications: "Notifications",
+    search: "Search",
   },
   editor: {
     title: "Editor",
@@ -25,6 +27,11 @@ export const en = {
   page: {
     title: "Page",
     placeholder: "This is a placeholder page.",
+  },
+  menu: {
+    label: "Menu",
+    open: "Open menu",
+    close: "Close menu",
   },
   copilot: {
     title: "Copilot",

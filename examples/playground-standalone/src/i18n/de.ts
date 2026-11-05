@@ -11,6 +11,8 @@ export const de: Messages = {
     releaseNotes: "Versionshinweise",
     settings: "Einstellungen",
     logout: "Abmelden",
+    notifications: "Benachrichtigungen",
+    search: "Suche",
   },
   editor: {
     title: "Editor",
@@ -27,6 +29,11 @@ export const de: Messages = {
   page: {
     title: "Seite",
     placeholder: "Das ist eine Platzhalterseite.",
+  },
+  menu: {
+    label: "Menü",
+    open: "Menü öffnen",
+    close: "Menü schließen",
   },
   copilot: {
     title: "Copilot",

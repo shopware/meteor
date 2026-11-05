@@ -10,8 +10,8 @@ const { t } = useI18n();
 
 <template>
   <mt-app loading-bar>
-    <template #header="{ isMobile }">
-      <AppHeader :is-mobile="isMobile" />
+    <template #header>
+      <AppHeader />
     </template>
 
     <RouterView />
