@@ -18,7 +18,12 @@ description: The main navigation of an application, with sections of rows that c
 import { MtNav, type NavItem, type NavSection } from "@shopware-ag/meteor-component-library";
 ```
 
-Pass the rows as `sections`, each with an optional `header` and its `items`. A row with a `to` renders through `link-component`, which is `router-link` by default; a row with an `href` renders as a plain anchor. A row with `children` and no `to` is a button that opens and closes its nested rows. Mark the current page with `is-active`, a function that compares a row with the current route, or with `active` on the row itself.
+Pass the rows as `sections`, each with an optional `header` and its `items`. A row either links to a page or holds nested rows, never both, and the `NavItem` type only allows one of them:
+
+- A row with a `to` renders through `link-component`, which is `router-link` by default. A row with an `href` renders as a plain anchor.
+- A row with `children` is a button that opens and closes its nested rows.
+
+Mark the current page with `is-active`, a function that compares a row with the current route, or with `active` on the row itself.
 
 ## Examples
 
@@ -36,6 +41,13 @@ The `suffix` slot renders after the label of every row and receives the row as `
 ::component-example{name="nav-suffix-example"}
 ::
 
+### Horizontal
+
+With `orientation="horizontal"`, the top-level rows run in a line, for example in the header of an application. A row with nested rows opens them in a panel below it.
+
+::component-example{name="nav-horizontal-example"}
+::
+
 ## API reference
 
 :component-api
@@ -47,7 +59,7 @@ The `suffix` slot renders after the label of every row and receives the row as `
 
 - Give every top-level row an icon, and keep the labels short.
 - Match the current route in `is-active` instead of setting `active` on the rows on every navigation.
-- Give **Nav** a fixed width and the height of its container, for example `15rem` wide in the `navigation` slot of [**App**](/components/app).
+- Give a vertical **Nav** a fixed width, for example `15rem` in the `navigation` slot of [**App**](/components/app), and put it into a container that scrolls, such as [**Sidebar**](/components/sidebar).
 
 #dont
 
@@ -60,15 +72,16 @@ The `suffix` slot renders after the label of every row and receives the row as `
 
 - Rows nest through `children`, up to three levels in total. Icons are shown on top-level rows only.
 - The top-level row that holds the current page opens on its own. Opening another top-level row closes the others, except the one holding the current page.
-- A row with nested rows and a `to` is a link that also opens its rows when clicked.
-- `navigate` is emitted when a row with a `to` or an `href` is clicked. Rows that only open nested rows don't emit it.
-- The rows scroll when they don't fit, and the edges fade out.
+- `navigate` is emitted when a row with a `to` or an `href` is clicked. Rows that open nested rows don't emit it.
+- **Nav** grows with its rows and doesn't scroll on its own. When the rows don't fit, the container around it scrolls.
+- In a horizontal **Nav**, a panel opens right away when the pointer rests on its row, and when the row is clicked, tapped or activated with Enter or Space. Only one panel is open at a time. It closes when the pointer leaves the row and the panel, when a link in it is chosen and when the focus moves out of it.
 
 ## Accessibility
 
 - **Nav** is a `<nav>` landmark named by `label`, which defaults to "Main" ("Hauptmenü" in German). Screen readers add the role, so they announce it as "Main, navigation". Pass another `label` when a page has more than one **Nav**, such as "Settings".
-- The current page carries `aria-current="page"`, and rows that open nested rows announce whether they are expanded.
-- The rows can be reached with the Tab key. The arrow keys move between the visible rows, and Home and End move to the first and the last row.
+- The current page carries `aria-current="page"`, and rows that open nested rows announce whether they are expanded. In a horizontal **Nav**, the row also points to its panel with `aria-controls` while the panel is open.
+- The rows can be reached with the Tab key. The arrow keys move between the visible rows, Up and Down in a vertical **Nav** and Left and Right in a horizontal one, and Home and End move to the first and the last row.
+- In a horizontal **Nav**, Tab moves from a row into its open panel and from the end of the panel on to the next row, as if the panel followed its row on the page. Down moves into the open panel, Up and Down move between its rows, and Escape closes it and returns the focus to its row.
 
 ## Related components
 

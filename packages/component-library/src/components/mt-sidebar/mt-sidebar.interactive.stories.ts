@@ -41,8 +41,8 @@ export const VisualTestWithActions: MtSidebarStory = {
 export const VisualTestScrolledToBottom: MtSidebarStory = {
   name: "Render sidebar scrolled to the bottom",
   play: async ({ canvasElement }) => {
-    const body = canvasElement.querySelector<HTMLElement>(".mt-nav__body");
-    if (!body) throw new Error("Navigation body not found");
+    const body = canvasElement.querySelector<HTMLElement>(".mt-sidebar__body");
+    if (!body) throw new Error("Sidebar body not found");
 
     body.scrollTop = body.scrollHeight;
 
@@ -56,8 +56,8 @@ export const TestKeepsHeaderAndFooterVisibleWhileScrolling: MtSidebarStory = {
   name: "Keeps header and footer visible while the navigation scrolls",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const body = canvasElement.querySelector<HTMLElement>(".mt-nav__body");
-    if (!body) throw new Error("Navigation body not found");
+    const body = canvasElement.querySelector<HTMLElement>(".mt-sidebar__body");
+    if (!body) throw new Error("Sidebar body not found");
 
     expect(body.scrollHeight).toBeGreaterThan(body.clientHeight);
 
