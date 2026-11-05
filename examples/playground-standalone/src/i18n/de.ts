@@ -5,18 +5,12 @@ export const de: Messages = {
     title: "Standalone-Playground",
   },
   nav: {
-    label: "Haupt",
     home: "Start",
     editor: "Editor",
     docs: "Doku",
     releaseNotes: "Versionshinweise",
     settings: "Einstellungen",
     logout: "Abmelden",
-  },
-  menu: {
-    label: "Menü",
-    open: "Menü öffnen",
-    close: "Menü schließen",
   },
   editor: {
     title: "Editor",
@@ -34,13 +28,8 @@ export const de: Messages = {
     title: "Seite",
     placeholder: "Das ist eine Platzhalterseite.",
   },
-  panel: {
-    close: "{title} schließen",
-    toggle: "{title} ein- oder ausblenden",
-  },
   copilot: {
     title: "Copilot",
-    open: "Copilot öffnen",
   },
   chat: {
     user: "Du:",

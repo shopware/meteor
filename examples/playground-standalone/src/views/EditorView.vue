@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import {
@@ -9,7 +9,6 @@ import {
   MtPanel,
   MtText,
   MtTextField,
-  useApp,
 } from "@shopware-ag/meteor-component-library";
 import AppSkeleton from "../components/AppSkeleton.vue";
 import { useFakeLoading } from "../composables/useFakeLoading";
@@ -29,39 +28,13 @@ const icons: Record<BlockType, string> = {
 };
 
 const props = defineProps<{
-  /** Shown on its own route, for which the shell hides its header and the sidebar starts closed. */
+  /** Shown on its own route, for which the shell hides its header and sidebar. */
   fullScreen?: boolean;
 }>();
 
 const { t } = useI18n();
 const router = useRouter();
-const app = useApp();
 const isLoading = useFakeLoading();
-
-/**
- * Full screen starts with the sidebar closed and gives it back as it was when leaving; its trigger
- * in the page header still opens it. Vue Router keeps this view between the editor's two routes,
- * so it follows the prop instead of running once.
- */
-let wasSidebarOpen = false;
-
-watch(
-  () => props.fullScreen,
-  (fullScreen) => {
-    if (fullScreen) {
-      wasSidebarOpen = app.isOpen("sidebar");
-      app.close("sidebar");
-    } else if (wasSidebarOpen) {
-      app.open("sidebar");
-      wasSidebarOpen = false;
-    }
-  },
-  { immediate: true },
-);
-
-onBeforeUnmount(() => {
-  if (props.fullScreen && wasSidebarOpen) app.open("sidebar");
-});
 
 const breadcrumb = computed(() =>
   props.fullScreen

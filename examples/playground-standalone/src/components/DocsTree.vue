@@ -49,5 +49,6 @@ function isActive(item: NavItem) {
 .docs-tree {
   flex: 1;
   min-height: 0;
+  padding-inline: var(--scale-size-12);
 }
 </style>

@@ -1,27 +1,11 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { RouterView, useRoute } from "vue-router";
-import {
-  MtApp,
-  MtPanel,
-  type MtAppRegions,
-} from "@shopware-ag/meteor-component-library";
-import AppCopilotPanel from "./components/AppCopilotPanel.vue";
+import { RouterView } from "vue-router";
+import { MtApp, MtPanel } from "@shopware-ag/meteor-component-library";
+import AppChat from "./components/AppChat.vue";
 import AppHeader from "./components/AppHeader.vue";
 
 const { t } = useI18n();
-const route = useRoute();
-
-/**
- * The header brings the sidebar's trigger. Without the header, as in full screen, the panel is
- * closable, so the page header shows its trigger instead.
- */
-const isHeaderHidden = computed(() => {
-  // The library's built types don't carry its `RouteMeta` augmentation.
-  const regions = route.meta.mtAppRegions as MtAppRegions | undefined;
-  return regions?.header === false;
-});
 </script>
 
 <template>
@@ -36,10 +20,10 @@ const isHeaderHidden = computed(() => {
       <mt-panel
         :label="t('copilot.title')"
         icon="regular-shopware-copilot"
-        :closable="isHeaderHidden"
+        closable
         resizable
       >
-        <AppCopilotPanel />
+        <AppChat />
       </mt-panel>
     </template>
   </mt-app>

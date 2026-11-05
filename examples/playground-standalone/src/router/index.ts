@@ -36,16 +36,11 @@ export const router = createRouter({
       name: "editor-full-screen",
       component: () => import("../views/EditorView.vue"),
       props: { fullScreen: true },
-      // The shell hides its header before the page renders. The sidebar stays available, closed
-      // by the editor, so the page header keeps its trigger.
-      meta: { title: "editor.title", mtAppRegions: { header: false } },
-    },
-    {
-      path: "/copilot",
-      name: "copilot",
-      component: () => import("../views/CopilotView.vue"),
-      // The page shows the conversation, so the sidebar would only repeat it.
-      meta: { title: "copilot.title", mtAppRegions: { sidebar: false } },
+      // The shell hides its regions before the page renders.
+      meta: {
+        title: "editor.title",
+        mtAppRegions: { header: false, sidebar: false },
+      },
     },
     {
       path: "/pages/:id",

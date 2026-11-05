@@ -1,29 +1,57 @@
 <script setup lang="ts">
-import { nextTick, useTemplateRef } from "vue";
+import { nextTick, ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   MtButton,
   MtText,
   MtTextarea,
 } from "@shopware-ag/meteor-component-library";
-import { useChat } from "../composables/useChat";
+
+interface Message {
+  id: number;
+  author: "user" | "assistant";
+  /** An i18n key for the placeholder messages, the typed text for the user's own. */
+  text: string;
+  translated?: boolean;
+}
 
 const { t } = useI18n();
-const chat = useChat();
-const { messages, draft } = chat;
+
+// Placeholder content: there is no assistant behind the chat.
+const messages = ref<Message[]>([
+  { id: 1, author: "user", text: "chat.messages.question", translated: true },
+  {
+    id: 2,
+    author: "assistant",
+    text: "chat.messages.answer",
+    translated: true,
+  },
+]);
+const draft = ref("");
 const list = useTemplateRef("list");
 
 async function send() {
-  if (!chat.send()) return;
+  const text = draft.value.trim();
+  if (!text) return;
+
+  messages.value.push(
+    { id: messages.value.length + 1, author: "user", text },
+    {
+      id: messages.value.length + 2,
+      author: "assistant",
+      text: "chat.messages.placeholder",
+      translated: true,
+    },
+  );
+  draft.value = "";
 
   await nextTick();
   list.value?.scrollTo({ top: list.value.scrollHeight });
 }
 </script>
 
-<!-- The surrounding panel or page brings the landmark and the title. -->
 <template>
-  <div class="app-chat">
+  <aside class="app-chat" :aria-label="t('copilot.title')">
     <ol ref="list" class="app-chat__messages" role="log">
       <li
         v-for="message in messages"
@@ -49,7 +77,7 @@ async function send() {
         {{ t("chat.send") }}
       </mt-button>
     </form>
-  </div>
+  </aside>
 </template>
 
 <style scoped>

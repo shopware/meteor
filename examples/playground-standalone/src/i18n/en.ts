@@ -3,18 +3,12 @@ export const en = {
     title: "Standalone playground",
   },
   nav: {
-    label: "Main",
     home: "Home",
     editor: "Editor",
     docs: "Docs",
     releaseNotes: "Release notes",
     settings: "Settings",
     logout: "Log out",
-  },
-  menu: {
-    label: "Menu",
-    open: "Open menu",
-    close: "Close menu",
   },
   editor: {
     title: "Editor",
@@ -32,13 +26,8 @@ export const en = {
     title: "Page",
     placeholder: "This is a placeholder page.",
   },
-  panel: {
-    close: "Close {title}",
-    toggle: "Show or hide {title}",
-  },
   copilot: {
     title: "Copilot",
-    open: "Open Copilot",
   },
   chat: {
     user: "You:",

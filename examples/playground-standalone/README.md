@@ -3,13 +3,12 @@
 A playground app built from `examples/playground-template`: Vue 3, Vite, TypeScript and the Meteor
 component library, set up the way the Meteor docs recommend.
 
-- the `mt-app` application shell, filled with placeholder content: the brand, links and the user
-  menu in the header, and a Copilot chat in the sidebar that also opens as its own page,
-  continuing the same conversation
-- header links that move into a drawer behind a menu button when they don't fit next to the brand
-  and the user menu
-- one `mt-page` per route: documentation pages with their tree in a panel next to the content,
-  and an editor page with a panel on each side of its content
+- the `mt-app` application shell with placeholder content, built only from what the library
+  provides: the brand, a horizontal `mt-nav` and the user menu in the header, and a Copilot chat
+  in the sidebar
+- one `mt-page` per route: documentation pages with their tree in a panel next to the content, an
+  editor with a panel on each side and a full-screen route, and settings with a vertical `mt-nav`
+- pages that load fake data after the route changes, with skeletons and the shell's loading bar
 - Vue Router, mounted after the first route resolves, with a 404 page
 - vue-i18n in English and German, remembered per browser and set on `<html lang>`
 - the page title in the browser tab, announced to screen readers by the shell
