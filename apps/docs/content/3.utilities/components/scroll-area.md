@@ -64,7 +64,7 @@ Set `scrollbar` to show the native scrollbar of the operating system.
 
 - The fade follows the scroll position. At rest the start edge is crisp and the end edge fades. Once scrolled, both edges fade. At the end, the end edge is crisp again.
 - `fade` is on by default and fades both edges of each scrolling direction: top and bottom for `vertical`, start and end for `horizontal`, all four for `both`. Start and end follow the reading direction, so they mirror in right-to-left layouts.
-- By default the fade takes 15% of the area, up to `--scale-size-48`, so tall areas stay subtle. Set `fade-size` to a token step for all edges, or to an object such as `{ top: 16, bottom: 48 }` per edge.
+- By default the fade takes 12% of the area, up to `--scale-size-40`, so tall areas stay subtle. Set `fade-size` to a token step from 4 to 64 for a fixed fade on all edges, or to an object such as `{ top: 16, bottom: 48 }` per edge.
 - The fade is driven by CSS scroll-driven animations, without scroll listeners. In browsers without them, the edges fade statically while the content overflows.
 - The scrollbar is hidden by default. With `scrollbar`, the area shows the native scrollbar of the operating system while the content overflows. On systems with classic scrollbars, such as Windows, it takes up space inside the area.
 - The scrolling element is exposed as `viewport`, for example to scroll to the newest message:
