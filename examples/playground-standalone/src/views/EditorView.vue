@@ -10,8 +10,6 @@ import {
   MtText,
   MtTextField,
 } from "@shopware-ag/meteor-component-library";
-import AppSkeleton from "../components/AppSkeleton.vue";
-import { useFakeLoading } from "../composables/useFakeLoading";
 
 type BlockType = "heading" | "text" | "image";
 
@@ -34,7 +32,6 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const router = useRouter();
-const isLoading = useFakeLoading();
 
 const breadcrumb = computed(() =>
   props.fullScreen
@@ -64,12 +61,7 @@ const selected = computed(() =>
 
 <template>
   <!-- A lower breakpoint keeps both panels next to the canvas while the shell's panels are open. -->
-  <mt-page
-    :breadcrumb="breadcrumb"
-    :breakpoint="720"
-    :closable="fullScreen"
-    :is-loading="isLoading"
-  >
+  <mt-page :breadcrumb="breadcrumb" :breakpoint="720" :closable="fullScreen">
     <template v-if="!fullScreen" #actions>
       <mt-button
         variant="secondary"
@@ -90,33 +82,29 @@ const selected = computed(() =>
     <template #start>
       <mt-panel :label="t('editor.blocks')" closable resizable>
         <aside class="editor-blocks" :aria-label="t('editor.blocks')">
-          <AppSkeleton v-if="isLoading" :lines="4" />
-          <template v-else>
-            <button
-              v-for="block in blocks"
-              :key="block.id"
-              type="button"
-              class="editor-blocks__item"
-              :aria-pressed="block.id === selectedId"
-              @click="selectedId = block.id"
-            >
-              <mt-icon
-                :name="icons[block.type]"
-                size="16"
-                class="editor-blocks__icon"
-                decorative
-              />
-              <mt-text as="span" size="xs" class="editor-blocks__label">
-                {{ block.content }}
-              </mt-text>
-            </button>
-          </template>
+          <button
+            v-for="block in blocks"
+            :key="block.id"
+            type="button"
+            class="editor-blocks__item"
+            :aria-pressed="block.id === selectedId"
+            @click="selectedId = block.id"
+          >
+            <mt-icon
+              :name="icons[block.type]"
+              size="16"
+              class="editor-blocks__icon"
+              decorative
+            />
+            <mt-text as="span" size="xs" class="editor-blocks__label">
+              {{ block.content }}
+            </mt-text>
+          </button>
         </aside>
       </mt-panel>
     </template>
 
-    <AppSkeleton v-if="isLoading" :lines="5" />
-    <div v-else class="editor-canvas">
+    <div class="editor-canvas">
       <div
         v-for="block in blocks"
         :key="block.id"
@@ -144,8 +132,7 @@ const selected = computed(() =>
     <template #end>
       <mt-panel :label="t('editor.properties')" closable resizable>
         <aside class="editor-properties" :aria-label="t('editor.properties')">
-          <AppSkeleton v-if="isLoading" :lines="2" />
-          <template v-else-if="selected">
+          <template v-if="selected">
             <mt-text size="xs" color="color-text-secondary-default">
               {{ t(`editor.types.${selected.type}`) }}
             </mt-text>

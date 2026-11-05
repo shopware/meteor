@@ -8,7 +8,6 @@ component library, set up the way the Meteor docs recommend.
   in the sidebar
 - one `mt-page` per route: documentation pages with their tree in a panel next to the content, an
   editor with a panel on each side and a full-screen route, and settings with a vertical `mt-nav`
-- pages that load fake data after the route changes, with skeletons and the shell's loading bar
 - Vue Router, mounted after the first route resolves, with a 404 page
 - vue-i18n in English and German, remembered per browser and set on `<html lang>`
 - the page title in the browser tab, announced to screen readers by the shell

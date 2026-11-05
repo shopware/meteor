@@ -104,6 +104,7 @@ function isActive(item: NavItem) {
   align-items: center;
   gap: var(--scale-size-24);
   padding-block: var(--scale-size-8);
+  margin-inline: var(--scale-size-8);
 }
 
 .app-header__user {

@@ -7,11 +7,8 @@ import {
   MtPage,
   MtText,
 } from "@shopware-ag/meteor-component-library";
-import AppSkeleton from "../components/AppSkeleton.vue";
-import { useFakeLoading } from "../composables/useFakeLoading";
 
 const { t } = useI18n();
-const isLoading = useFakeLoading();
 
 // Placeholder content: a marketing overview without real data behind it.
 const stats = [
@@ -35,107 +32,83 @@ const ideas = [
 </script>
 
 <template>
-  <mt-page
-    width="m"
-    :breadcrumb="[{ label: t('home.title'), icon: 'home' }]"
-    :is-loading="isLoading"
-  >
+  <mt-page width="m" :breadcrumb="[{ label: t('home.title'), icon: 'home' }]">
     <mt-layout>
-      <template v-if="isLoading">
-        <mt-card v-for="card in 3" :key="card">
-          <AppSkeleton :lines="card === 2 ? 2 : 4" />
-        </mt-card>
-      </template>
-
-      <template v-else>
-        <mt-card title="Spring sale" subtitle="Running until 31 May">
-          <div class="home-card">
-            <mt-text size="s">
-              Seasonal offers on garden and outdoor products, announced by email
-              and on the storefront.
-            </mt-text>
-            <div class="home-card__actions">
-              <mt-button variant="secondary">Edit campaign</mt-button>
-              <mt-button variant="secondary">View report</mt-button>
-            </div>
+      <mt-card title="Spring sale" subtitle="Running until 31 May">
+        <div class="home-card">
+          <mt-text size="s">
+            Seasonal offers on garden and outdoor products, announced by email
+            and on the storefront.
+          </mt-text>
+          <div class="home-card__actions">
+            <mt-button variant="secondary">Edit campaign</mt-button>
+            <mt-button variant="secondary">View report</mt-button>
           </div>
-        </mt-card>
+        </div>
+      </mt-card>
 
-        <mt-card title="This month">
-          <dl class="home-stats">
-            <div
-              v-for="stat in stats"
-              :key="stat.label"
-              class="home-stats__item"
-            >
-              <mt-text as="dt" size="xs" color="color-text-secondary-default">
-                {{ stat.label }}
-              </mt-text>
-              <mt-text as="dd" size="xl" weight="semibold">
-                {{ stat.value }}
-              </mt-text>
-              <mt-text as="dd" size="xs" color="color-text-secondary-default">
-                {{ stat.change }}
+      <mt-card title="This month">
+        <dl class="home-stats">
+          <div v-for="stat in stats" :key="stat.label" class="home-stats__item">
+            <mt-text as="dt" size="xs" color="color-text-secondary-default">
+              {{ stat.label }}
+            </mt-text>
+            <mt-text as="dd" size="xl" weight="semibold">
+              {{ stat.value }}
+            </mt-text>
+            <mt-text as="dd" size="xs" color="color-text-secondary-default">
+              {{ stat.change }}
+            </mt-text>
+          </div>
+        </dl>
+      </mt-card>
+
+      <mt-card title="Campaigns">
+        <ul class="home-list">
+          <li
+            v-for="campaign in campaigns"
+            :key="campaign.name"
+            class="home-list__item"
+          >
+            <div>
+              <mt-text size="s" weight="medium">{{ campaign.name }}</mt-text>
+              <mt-text size="xs" color="color-text-secondary-default">
+                {{ campaign.channel }}
               </mt-text>
             </div>
-          </dl>
-        </mt-card>
-
-        <mt-card title="Campaigns">
-          <ul class="home-list">
-            <li
-              v-for="campaign in campaigns"
-              :key="campaign.name"
-              class="home-list__item"
-            >
-              <div>
-                <mt-text size="s" weight="medium">{{ campaign.name }}</mt-text>
-                <mt-text size="xs" color="color-text-secondary-default">
-                  {{ campaign.channel }}
-                </mt-text>
-              </div>
-              <mt-text size="xs" color="color-text-secondary-default">
-                {{ campaign.status }}
-              </mt-text>
-            </li>
-          </ul>
-        </mt-card>
-      </template>
+            <mt-text size="xs" color="color-text-secondary-default">
+              {{ campaign.status }}
+            </mt-text>
+          </li>
+        </ul>
+      </mt-card>
 
       <!-- The side column sits directly on the page, without cards. -->
       <template #end>
-        <template v-if="isLoading">
-          <section v-for="section in 2" :key="section" class="home-aside">
-            <AppSkeleton :lines="3" />
-          </section>
-        </template>
-
-        <template v-else>
-          <section class="home-aside">
-            <div>
-              <mt-text as="h2" size="s" weight="semibold">Newsletter</mt-text>
-              <mt-text size="xs" color="color-text-secondary-default">
-                2,340 subscribers
-              </mt-text>
-            </div>
-            <mt-text size="s">
-              The next issue goes out on Friday. Add a product highlight before
-              Thursday.
+        <section class="home-aside">
+          <div>
+            <mt-text as="h2" size="s" weight="semibold">Newsletter</mt-text>
+            <mt-text size="xs" color="color-text-secondary-default">
+              2,340 subscribers
             </mt-text>
-            <div class="home-card__actions">
-              <mt-button variant="secondary">Open draft</mt-button>
-            </div>
-          </section>
+          </div>
+          <mt-text size="s">
+            The next issue goes out on Friday. Add a product highlight before
+            Thursday.
+          </mt-text>
+          <div class="home-card__actions">
+            <mt-button variant="secondary">Open draft</mt-button>
+          </div>
+        </section>
 
-          <section class="home-aside">
-            <mt-text as="h2" size="s" weight="semibold">Ideas</mt-text>
-            <ul class="home-ideas">
-              <li v-for="idea in ideas" :key="idea">
-                <mt-text size="s">{{ idea }}</mt-text>
-              </li>
-            </ul>
-          </section>
-        </template>
+        <section class="home-aside">
+          <mt-text as="h2" size="s" weight="semibold">Ideas</mt-text>
+          <ul class="home-ideas">
+            <li v-for="idea in ideas" :key="idea">
+              <mt-text size="s">{{ idea }}</mt-text>
+            </li>
+          </ul>
+        </section>
       </template>
     </mt-layout>
   </mt-page>
