@@ -24,7 +24,7 @@ import { computed, ref, useTemplateRef } from "vue";
 import { useResizeObserver } from "@vueuse/core";
 
 type FadeEdge = "top" | "bottom" | "start" | "end";
-type FadeSize = 8 | 12 | 16 | 20 | 24 | 32 | 40 | 48 | 56 | 64;
+type FadeSize = 4 | 8 | 12 | 16 | 20 | 24 | 32 | 40 | 48 | 56 | 64;
 
 const props = withDefaults(
   defineProps<{
@@ -45,9 +45,9 @@ const props = withDefaults(
     fade?: boolean | FadeEdge;
     /**
      * The size of the fade, as a step of the `--scale-size-*` token scale, either for all
-     * edges or per edge. By default the fade takes 15% of the area, up to `--scale-size-48`.
+     * edges or per edge. By default the fade takes 12% of the area, up to `--scale-size-40`.
      *
-     * @values 8, 12, 16, 20, 24, 32, 40, 48, 56, 64
+     * @values 4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64
      */
     fadeSize?: FadeSize | Partial<Record<FadeEdge, FadeSize>>;
   }>(),
@@ -139,7 +139,7 @@ defineExpose({
 }
 
 .mt-scroll-area {
-  --mt-scroll-area-fade-size-default: min(15%, var(--scale-size-48));
+  --mt-scroll-area-fade-size-default: min(12%, var(--scale-size-40));
   --mt-scroll-area-fade-size-top: 0px;
   --mt-scroll-area-fade-size-bottom: 0px;
   --mt-scroll-area-fade-size-start: 0px;
@@ -226,10 +226,10 @@ defineExpose({
     animation-timeline: scroll(self block), scroll(self block), scroll(self inline),
       scroll(self inline);
     animation-range:
-      0 var(--scale-size-48),
-      calc(100% - var(--scale-size-48)) 100%,
-      0 var(--scale-size-48),
-      calc(100% - var(--scale-size-48)) 100%;
+      0 var(--scale-size-96),
+      calc(100% - var(--scale-size-96)) 100%,
+      0 var(--scale-size-96),
+      calc(100% - var(--scale-size-96)) 100%;
   }
 }
 
