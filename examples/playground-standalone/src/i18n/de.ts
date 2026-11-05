@@ -18,23 +18,12 @@ export const de: Messages = {
     open: "Menü öffnen",
     close: "Menü schließen",
   },
-  pageTree: {
-    label: "Seiten",
-  },
   editor: {
     title: "Editor",
     fullScreen: "Vollbild",
     blocks: "Blöcke",
     properties: "Eigenschaften",
     content: "Inhalt",
-    layouts: "Layouts",
-    layoutNames: {
-      fullWidth: "Volle Breite",
-      sidebarStart: "Seitenleiste links",
-      sidebarEnd: "Seitenleiste rechts",
-      twoColumns: "Zwei Spalten",
-      threeColumns: "Drei Spalten",
-    },
     types: {
       heading: "Überschrift",
       text: "Text",
@@ -47,6 +36,7 @@ export const de: Messages = {
   },
   panel: {
     close: "{title} schließen",
+    toggle: "{title} ein- oder ausblenden",
   },
   copilot: {
     title: "Copilot",
@@ -73,6 +63,18 @@ export const de: Messages = {
     title: "Einstellungen",
     language: "Sprache",
     theme: "Design",
+    name: "Name",
+    email: "E-Mail",
+    sections: {
+      general: "Allgemein",
+      account: "Konto",
+      notifications: "Benachrichtigungen",
+    },
+    notifications: {
+      orders: "Bestellupdates",
+      report: "Wöchentlicher Bericht",
+      news: "Produktneuigkeiten",
+    },
   },
   notFound: {
     title: "Seite nicht gefunden",

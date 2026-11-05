@@ -6,11 +6,6 @@ declare module "vue-router" {
   interface RouteMeta {
     /** The i18n key of the page title, shown in the browser tab. */
     title?: string;
-    /**
-     * The i18n key of the label and the icon of the navigation panel, for a route with its own
-     * `navigation` view. Other routes show the page tree.
-     */
-    navigation?: { label: string; icon: string };
   }
 }
 
@@ -21,36 +16,29 @@ export const router = createRouter({
       path: "/",
       name: "home",
       component: () => import("../views/HomeView.vue"),
-      meta: { title: "home.title", mtAppRegions: { navigation: false } },
+      meta: { title: "home.title" },
     },
     {
-      path: "/settings",
+      path: "/settings/:section?",
       name: "settings",
       component: () => import("../views/SettingsView.vue"),
-      meta: { title: "settings.title", mtAppRegions: { navigation: false } },
+      props: true,
+      meta: { title: "settings.title" },
     },
     {
       path: "/editor",
       name: "editor",
-      components: {
-        default: () => import("../views/EditorView.vue"),
-        navigation: () => import("../components/EditorLayoutPicker.vue"),
-      },
-      meta: {
-        title: "editor.title",
-        navigation: { label: "editor.layouts", icon: "regular-layout" },
-      },
+      component: () => import("../views/EditorView.vue"),
+      meta: { title: "editor.title" },
     },
     {
       path: "/editor/full-screen",
       name: "editor-full-screen",
       component: () => import("../views/EditorView.vue"),
       props: { fullScreen: true },
-      // The shell hides its regions before the page renders.
-      meta: {
-        title: "editor.title",
-        mtAppRegions: { header: false, navigation: false, sidebar: false },
-      },
+      // The shell hides its header before the page renders. The sidebar stays available, closed
+      // by the editor, so the page header keeps its trigger.
+      meta: { title: "editor.title", mtAppRegions: { header: false } },
     },
     {
       path: "/copilot",

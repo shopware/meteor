@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, useTemplateRef } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
-import { RouterLink, useRouter } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import {
   MtActionMenuGroup,
   MtActionMenuItem,
@@ -10,16 +10,31 @@ import {
   MtIcon,
   MtText,
   MtUserMenu,
+  useApp,
+  type MtAppRegions,
 } from "@shopware-ag/meteor-component-library";
 import AppHeaderMenu, { type HeaderLink } from "./AppHeaderMenu.vue";
 
-defineProps<{
+const props = defineProps<{
   /** Whether the shell shows its mobile layout, from the header slot of `mt-app`. */
   isMobile: boolean;
 }>();
 
 const { t } = useI18n();
+const route = useRoute();
 const router = useRouter();
+const app = useApp();
+
+/**
+ * A stand-in for the sidebar's trigger: the Copilot panel is closable only while the header is
+ * hidden, so pages show its trigger only then. In the mobile layout the panel is a drawer, whose
+ * trigger every page shows, and on routes that hide the sidebar there is nothing to toggle.
+ */
+const hasSidebarTrigger = computed(() => {
+  // The library's built types don't carry its `RouteMeta` augmentation.
+  const regions = route.meta.mtAppRegions as MtAppRegions | undefined;
+  return !props.isMobile && regions?.sidebar !== false;
+});
 
 // A placeholder until the horizontal navigation component is merged.
 const links: HeaderLink[] = [
@@ -37,26 +52,25 @@ const links: HeaderLink[] = [
 const header = useTemplateRef("header");
 const brand = useTemplateRef("brand");
 const nav = useTemplateRef("nav");
-const user = useTemplateRef("user");
+const end = useTemplateRef("end");
 
-/** Whether the links don't fit next to the brand and the user menu, so they move to the menu. */
+/** Whether the links don't fit next to the brand and the end of the header, so they move to the menu. */
 const isCollapsed = ref(false);
 const isMenuOpen = ref(false);
 
 /**
- * Compares the width the header has with the width the brand, the links and the user menu need
- * side by side. The links stay measurable while collapsed, so they expand again once they fit.
+ * Compares the width the header has with the width the brand, the links and the user menu with the
+ * sidebar trigger need side by side. The links stay measurable while collapsed, so they expand again once they fit.
  */
 function updateCollapsed() {
   const brandElement = brand.value?.$el as HTMLElement | undefined;
-  const userElement = user.value?.$el as HTMLElement | undefined;
-  if (!header.value || !brandElement || !nav.value || !userElement) return;
+  if (!header.value || !brandElement || !nav.value || !end.value) return;
 
   const gap = parseFloat(getComputedStyle(header.value).columnGap) || 0;
   const needed =
     brandElement.offsetWidth +
     nav.value.offsetWidth +
-    userElement.offsetWidth +
+    end.value.offsetWidth +
     2 * gap;
 
   isCollapsed.value = needed > header.value.clientWidth;
@@ -71,7 +85,7 @@ onMounted(() => {
     header.value,
     brand.value?.$el,
     nav.value,
-    user.value?.$el,
+    end.value,
   ]) {
     if (element instanceof Element) observer.observe(element);
   }
@@ -115,7 +129,7 @@ onBeforeUnmount(() => observer?.disconnect());
     >
       <RouterLink
         v-for="link in links"
-        v-slot="{ isExactActive }"
+        v-slot="{ isActive }"
         :key="link.to"
         :to="link.to"
         class="app-header__link"
@@ -125,7 +139,7 @@ onBeforeUnmount(() => observer?.disconnect());
           size="xs"
           weight="medium"
           :color="
-            isExactActive
+            isActive
               ? 'color-text-primary-default'
               : 'color-text-secondary-default'
           "
@@ -135,28 +149,39 @@ onBeforeUnmount(() => observer?.disconnect());
       </RouterLink>
     </nav>
 
-    <mt-user-menu
-      ref="user"
-      class="app-header__user"
-      name="Jane Doe"
-      subtitle="jane.doe@example.com"
-      :compact="isMobile"
-    >
-      <mt-action-menu-group>
-        <mt-action-menu-item
-          icon="regular-cog"
-          @select="router.push('/settings')"
-        >
-          {{ t("nav.settings") }}
-        </mt-action-menu-item>
-      </mt-action-menu-group>
+    <div ref="end" class="app-header__end">
+      <mt-button
+        v-if="hasSidebarTrigger"
+        variant="tertiary"
+        square
+        :aria-label="t('panel.toggle', { title: t('copilot.title') })"
+        :aria-expanded="app.isOpen('sidebar')"
+        @click="app.toggle('sidebar')"
+      >
+        <mt-icon
+          name="regular-shopware-copilot"
+          size="var(--scale-size-16)"
+          decorative
+        />
+      </mt-button>
 
-      <mt-action-menu-group>
-        <mt-action-menu-item icon="regular-sign-out" variant="critical">
-          {{ t("nav.logout") }}
-        </mt-action-menu-item>
-      </mt-action-menu-group>
-    </mt-user-menu>
+      <mt-user-menu name="Jane Doe" subtitle="jane.doe@example.com" compact>
+        <mt-action-menu-group>
+          <mt-action-menu-item
+            icon="regular-cog"
+            @select="router.push('/settings')"
+          >
+            {{ t("nav.settings") }}
+          </mt-action-menu-item>
+        </mt-action-menu-group>
+
+        <mt-action-menu-group>
+          <mt-action-menu-item icon="regular-sign-out" variant="critical">
+            {{ t("nav.logout") }}
+          </mt-action-menu-item>
+        </mt-action-menu-group>
+      </mt-user-menu>
+    </div>
 
     <AppHeaderMenu v-model:open="isMenuOpen" :links="links" />
   </div>
@@ -198,14 +223,15 @@ onBeforeUnmount(() => observer?.disconnect());
 }
 
 .app-header__link:hover,
-.app-header__link[aria-current="page"] {
+.app-header__link.router-link-active {
   background-color: var(--color-background-secondary-default);
 }
 
-/* The user menu fills the width of a sidebar footer by default. */
-.app-header .app-header__user {
+.app-header__end {
+  display: flex;
   flex-shrink: 0;
-  width: auto;
+  align-items: center;
+  gap: var(--scale-size-8);
   margin-inline-start: auto;
 }
 </style>

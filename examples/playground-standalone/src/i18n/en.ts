@@ -16,23 +16,12 @@ export const en = {
     open: "Open menu",
     close: "Close menu",
   },
-  pageTree: {
-    label: "Pages",
-  },
   editor: {
     title: "Editor",
     fullScreen: "Full screen",
     blocks: "Blocks",
     properties: "Properties",
     content: "Content",
-    layouts: "Layouts",
-    layoutNames: {
-      fullWidth: "Full width",
-      sidebarStart: "Sidebar left",
-      sidebarEnd: "Sidebar right",
-      twoColumns: "Two columns",
-      threeColumns: "Three columns",
-    },
     types: {
       heading: "Heading",
       text: "Text",
@@ -45,6 +34,7 @@ export const en = {
   },
   panel: {
     close: "Close {title}",
+    toggle: "Show or hide {title}",
   },
   copilot: {
     title: "Copilot",
@@ -70,6 +60,18 @@ export const en = {
     title: "Settings",
     language: "Language",
     theme: "Theme",
+    name: "Name",
+    email: "Email",
+    sections: {
+      general: "General",
+      account: "Account",
+      notifications: "Notifications",
+    },
+    notifications: {
+      orders: "Order updates",
+      report: "Weekly report",
+      news: "Product news",
+    },
   },
   notFound: {
     title: "Page not found",

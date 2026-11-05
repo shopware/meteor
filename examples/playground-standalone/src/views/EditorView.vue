@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import {
@@ -9,7 +9,10 @@ import {
   MtPanel,
   MtText,
   MtTextField,
+  useApp,
 } from "@shopware-ag/meteor-component-library";
+import AppSkeleton from "../components/AppSkeleton.vue";
+import { useFakeLoading } from "../composables/useFakeLoading";
 
 type BlockType = "heading" | "text" | "image";
 
@@ -26,12 +29,39 @@ const icons: Record<BlockType, string> = {
 };
 
 const props = defineProps<{
-  /** Shown on its own route, for which the shell hides its header, navigation and sidebar. */
+  /** Shown on its own route, for which the shell hides its header and the sidebar starts closed. */
   fullScreen?: boolean;
 }>();
 
 const { t } = useI18n();
 const router = useRouter();
+const app = useApp();
+const isLoading = useFakeLoading();
+
+/**
+ * Full screen starts with the sidebar closed and gives it back as it was when leaving; its trigger
+ * in the page header still opens it. Vue Router keeps this view between the editor's two routes,
+ * so it follows the prop instead of running once.
+ */
+let wasSidebarOpen = false;
+
+watch(
+  () => props.fullScreen,
+  (fullScreen) => {
+    if (fullScreen) {
+      wasSidebarOpen = app.isOpen("sidebar");
+      app.close("sidebar");
+    } else if (wasSidebarOpen) {
+      app.open("sidebar");
+      wasSidebarOpen = false;
+    }
+  },
+  { immediate: true },
+);
+
+onBeforeUnmount(() => {
+  if (props.fullScreen && wasSidebarOpen) app.open("sidebar");
+});
 
 const breadcrumb = computed(() =>
   props.fullScreen
@@ -61,7 +91,12 @@ const selected = computed(() =>
 
 <template>
   <!-- A lower breakpoint keeps both panels next to the canvas while the shell's panels are open. -->
-  <mt-page :breadcrumb="breadcrumb" :breakpoint="720" :closable="fullScreen">
+  <mt-page
+    :breadcrumb="breadcrumb"
+    :breakpoint="720"
+    :closable="fullScreen"
+    :is-loading="isLoading"
+  >
     <template v-if="!fullScreen" #actions>
       <mt-button
         variant="secondary"
@@ -82,29 +117,33 @@ const selected = computed(() =>
     <template #start>
       <mt-panel :label="t('editor.blocks')" closable resizable>
         <aside class="editor-blocks" :aria-label="t('editor.blocks')">
-          <button
-            v-for="block in blocks"
-            :key="block.id"
-            type="button"
-            class="editor-blocks__item"
-            :aria-pressed="block.id === selectedId"
-            @click="selectedId = block.id"
-          >
-            <mt-icon
-              :name="icons[block.type]"
-              size="16"
-              class="editor-blocks__icon"
-              decorative
-            />
-            <mt-text as="span" size="xs" class="editor-blocks__label">
-              {{ block.content }}
-            </mt-text>
-          </button>
+          <AppSkeleton v-if="isLoading" :lines="4" />
+          <template v-else>
+            <button
+              v-for="block in blocks"
+              :key="block.id"
+              type="button"
+              class="editor-blocks__item"
+              :aria-pressed="block.id === selectedId"
+              @click="selectedId = block.id"
+            >
+              <mt-icon
+                :name="icons[block.type]"
+                size="16"
+                class="editor-blocks__icon"
+                decorative
+              />
+              <mt-text as="span" size="xs" class="editor-blocks__label">
+                {{ block.content }}
+              </mt-text>
+            </button>
+          </template>
         </aside>
       </mt-panel>
     </template>
 
-    <div class="editor-canvas">
+    <AppSkeleton v-if="isLoading" :lines="5" />
+    <div v-else class="editor-canvas">
       <div
         v-for="block in blocks"
         :key="block.id"
@@ -132,7 +171,8 @@ const selected = computed(() =>
     <template #end>
       <mt-panel :label="t('editor.properties')" closable resizable>
         <aside class="editor-properties" :aria-label="t('editor.properties')">
-          <template v-if="selected">
+          <AppSkeleton v-if="isLoading" :lines="2" />
+          <template v-else-if="selected">
             <mt-text size="xs" color="color-text-secondary-default">
               {{ t(`editor.types.${selected.type}`) }}
             </mt-text>

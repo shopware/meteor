@@ -40,8 +40,10 @@ const sections = computed<NavSection[]>(() => [
   },
 ]);
 
+/** A link is active on its own page and on the pages below it, such as a section of the settings. */
 function isActive(item: NavItem) {
-  return item.to === route.path;
+  if (typeof item.to !== "string") return false;
+  return route.path === item.to || route.path.startsWith(`${item.to}/`);
 }
 
 // The native modal dialog traps focus, closes on Escape and returns focus to the trigger.
