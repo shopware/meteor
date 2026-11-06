@@ -11,7 +11,7 @@
           <mt-popover
             v-if="button.children"
             :key="button.name"
-            @update:is-opened="(isOpened: boolean) => !isOpened && resetChildSearch(button)"
+            @update:is-opened="(isOpened: boolean) => onChildPopoverToggle(button, isOpened)"
           >
             <template #trigger="{ toggleFloatingUi }">
               <mt-text-editor-toolbar-button
@@ -23,7 +23,11 @@
             </template>
 
             <template #popover-items__base="{ toggleFloatingUi }">
-              <label v-if="button.searchable" class="mt-text-editor-toolbar__children-search">
+              <label
+                v-if="button.searchable"
+                :ref="(element) => setChildSearchLabel(button, element)"
+                class="mt-text-editor-toolbar__children-search"
+              >
                 <span class="visually-hidden">{{
                   t("mt-text-editor-toolbar.childSearch.label")
                 }}</span>
@@ -48,6 +52,7 @@
                 v-if="button.searchable && getVisibleChildren(button).length === 0"
                 class="mt-text-editor-toolbar__children-empty"
                 size="xs"
+                color="color-text-secondary-default"
               >
                 {{ t("mt-text-editor-toolbar.childSearch.noResults") }}
               </mt-text>
@@ -78,7 +83,7 @@
           <mt-popover
             v-if="button.children"
             :key="button.name"
-            @update:is-opened="(isOpened: boolean) => !isOpened && resetChildSearch(button)"
+            @update:is-opened="(isOpened: boolean) => onChildPopoverToggle(button, isOpened)"
           >
             <template #trigger="{ toggleFloatingUi }">
               <mt-text-editor-toolbar-button
@@ -90,7 +95,11 @@
             </template>
 
             <template #popover-items__base>
-              <label v-if="button.searchable" class="mt-text-editor-toolbar__children-search">
+              <label
+                v-if="button.searchable"
+                :ref="(element) => setChildSearchLabel(button, element)"
+                class="mt-text-editor-toolbar__children-search"
+              >
                 <span class="visually-hidden">{{
                   t("mt-text-editor-toolbar.childSearch.label")
                 }}</span>
@@ -110,6 +119,7 @@
                 v-if="button.searchable && getVisibleChildren(button).length === 0"
                 class="mt-text-editor-toolbar__children-empty"
                 size="xs"
+                color="color-text-secondary-default"
               >
                 {{ t("mt-text-editor-toolbar.childSearch.noResults") }}
               </mt-text>
@@ -131,7 +141,7 @@
 
 <script setup lang="ts">
 import type { Editor } from "@tiptap/vue-3";
-import { computed, ref, watch, type PropType } from "vue";
+import { computed, nextTick, ref, watch, type ComponentPublicInstance, type PropType } from "vue";
 import mtPopover from "@/components/mt-popover/mt-popover.vue";
 import mtPopoverItem from "@/components/mt-popover-item/mt-popover-item.vue";
 import mtSearch from "@/components/mt-search/mt-search.vue";
@@ -146,7 +156,7 @@ export interface CustomButton {
   isActive?: (editor: Editor) => boolean;
   action?: (editor: Editor) => void;
   children?: CustomButton[];
-  // Shows a search field above the children, which filters them by name and label
+  // Shows a search field above the children of a toolbar dropdown; contextual buttons ignore it
   searchable?: boolean;
   alignment?: "left" | "right";
   // For sorting the button order. Default using 1000s steps to provide space for custom buttons
@@ -470,8 +480,27 @@ const getVisibleChildren = (button: CustomButton) => {
   );
 };
 
-const resetChildSearch = (button: CustomButton) => {
-  childSearchTerms.value[button.name] = "";
+const childSearchLabels: Record<string, HTMLElement | null> = {};
+
+const setChildSearchLabel = (
+  button: CustomButton,
+  element: Element | ComponentPublicInstance | null,
+) => {
+  childSearchLabels[button.name] = element as HTMLElement | null;
+};
+
+const onChildPopoverToggle = async (button: CustomButton, isOpened: boolean) => {
+  if (!isOpened) {
+    childSearchTerms.value[button.name] = "";
+    return;
+  }
+
+  if (!button.searchable) {
+    return;
+  }
+
+  await nextTick();
+  childSearchLabels[button.name]?.querySelector("input")?.focus();
 };
 
 const handleButtonClick = (button: CustomButton) => {
@@ -543,7 +572,6 @@ watch(
 
 .mt-text-editor-toolbar__children-empty {
   padding: var(--scale-size-8) 0;
-  color: var(--color-text-secondary-default);
 }
 
 .mt-text-editor-toolbar :deep(.mt-floating-ui) {

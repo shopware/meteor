@@ -127,7 +127,7 @@ Add custom buttons to the toolbar by passing an array of `CustomButton` objects 
 - **`isActive`**: A function returning whether the button is currently active (for example, when bold is toggled on).
 - **`action`**: A function that runs when the button is clicked, where you apply an editor command.
 - **`children`**: An array of child buttons to build a dropdown or multi-level menu.
-- **`searchable`**: Whether a dropdown shows a search field that filters its `children` by name and label.
+- **`searchable`**: Whether a toolbar dropdown shows a search field that filters its `children` by name and label.
 - **`alignment`**: Whether the button appears on the `left` or `right` of the toolbar.
 - **`position`**: The button's order in the toolbar. Lower values appear first.
 - **`disabled`**: A function returning whether the button should be disabled.
@@ -209,7 +209,8 @@ Use the `children` property to build a dropdown. Each child is another `CustomBu
 
 Set `searchable: true` on the parent button when the dropdown holds many children, such as a list of variables.
 A search field then appears above the children and filters them by `name` and translated `label`.
-The search term resets when the dropdown closes.
+The search field gets the focus when the dropdown opens, and the search term resets when it closes.
+`searchable` applies to toolbar buttons only, not to buttons returned by `contextualButtons`.
 
 ### Contextual footer buttons
 

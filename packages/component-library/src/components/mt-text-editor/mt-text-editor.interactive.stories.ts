@@ -1701,6 +1701,9 @@ export const SearchableCustomButtonChildren: MtTextEditorStory = defineStory({
     await userEvent.click(canvas.getByLabelText("Insert variable"));
     const searchInput = screen.getByLabelText("Search entries");
 
+    await waitUntil(() => document.activeElement === searchInput);
+    expect(searchInput).toHaveFocus();
+
     await userEvent.type(searchInput, "unknown");
     expect(screen.getByText("No results found.")).toBeDefined();
 
