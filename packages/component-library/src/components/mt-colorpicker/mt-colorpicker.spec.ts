@@ -1,7 +1,7 @@
 import { defineComponent } from "vue";
 import userEvent from "@testing-library/user-event";
 import MtColorpicker from "./mt-colorpicker.vue";
-import { render, screen } from "@testing-library/vue";
+import { fireEvent, render, screen } from "@testing-library/vue";
 
 describe("mt-colorpicker", () => {
   it("opens with keyboard", async () => {
@@ -193,6 +193,152 @@ describe("mt-colorpicker", () => {
 
     // ASSERT
     expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+  });
+
+  describe("value conversion", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it.each([
+      "#e69f00",
+      "#E69F00",
+      "#fff",
+      "#022a3f",
+      "rgb(230, 159, 0)",
+      "rgba(230, 159, 0, 0.5)",
+      "hsl(41, 100%, 45%)",
+    ])("keeps the value %s when opening the picker", async (modelValue) => {
+      // ARRANGE
+      const handler = vi.fn();
+
+      render(MtColorpicker, {
+        props: {
+          label: "Some label",
+          modelValue,
+          "onUpdate:modelValue": handler,
+        },
+      });
+
+      const user = userEvent.setup({
+        advanceTimers: vi.advanceTimersByTime,
+      });
+
+      // ACT
+      await user.click(screen.getByRole("button", { name: "colorpicker-toggle" }));
+      vi.advanceTimersByTime(50);
+
+      // ASSERT
+      expect(screen.getByTestId("mt-colorpicker-dialog")).toBeVisible();
+      expect(screen.getByRole("textbox", { name: "Some label" })).toHaveValue(modelValue);
+      expect(handler).not.toHaveBeenCalled();
+    });
+
+    it("keeps the exact color typed into the hex field", async () => {
+      // ARRANGE
+      const handler = vi.fn();
+
+      render(MtColorpicker, {
+        props: {
+          modelValue: "#000000",
+          "onUpdate:modelValue": handler,
+        },
+      });
+
+      const user = userEvent.setup({
+        advanceTimers: vi.advanceTimersByTime,
+      });
+
+      // ACT
+      await user.click(screen.getByRole("button", { name: "colorpicker-toggle" }));
+      await user.clear(screen.getByRole("textbox", { name: "hex-value" }));
+      await user.type(screen.getByRole("textbox", { name: "hex-value" }), "#e69f00");
+      await user.tab();
+      vi.advanceTimersByTime(50);
+
+      // ASSERT
+      expect(handler).toHaveBeenLastCalledWith("#e69f00");
+    });
+
+    it("keeps the exact channel value entered into the RGB fields", async () => {
+      // ARRANGE
+      const handler = vi.fn();
+
+      render(MtColorpicker, {
+        props: {
+          modelValue: "#e69f00",
+          "onUpdate:modelValue": handler,
+        },
+      });
+
+      const user = userEvent.setup({
+        advanceTimers: vi.advanceTimersByTime,
+      });
+
+      // ACT
+      await user.click(screen.getByRole("button", { name: "colorpicker-toggle" }));
+      await fireEvent.update(screen.getByRole("spinbutton", { name: "green-value" }), "160");
+      vi.advanceTimersByTime(50);
+
+      // ASSERT
+      expect(screen.getByRole("spinbutton", { name: "green-value" })).toHaveValue(160);
+      expect(handler).toHaveBeenLastCalledWith("#e6a000");
+    });
+
+    it("keeps small saturation and lightness changes entered into the RGB fields", async () => {
+      // ARRANGE
+      const handler = vi.fn();
+
+      render(MtColorpicker, {
+        props: {
+          modelValue: "#808080",
+          "onUpdate:modelValue": handler,
+        },
+      });
+
+      const user = userEvent.setup({
+        advanceTimers: vi.advanceTimersByTime,
+      });
+
+      // ACT
+      await user.click(screen.getByRole("button", { name: "colorpicker-toggle" }));
+      await fireEvent.update(screen.getByRole("spinbutton", { name: "red-value" }), "129");
+      vi.advanceTimersByTime(50);
+
+      // ASSERT
+      expect(handler).toHaveBeenLastCalledWith("#818080");
+    });
+
+    it("applies the value in the output format in apply mode", async () => {
+      // ARRANGE
+      const handler = vi.fn();
+
+      render(MtColorpicker, {
+        props: {
+          modelValue: "#e69f00",
+          colorOutput: "hsl",
+          applyMode: true,
+          "onUpdate:modelValue": handler,
+        },
+      });
+
+      const user = userEvent.setup({
+        advanceTimers: vi.advanceTimersByTime,
+      });
+
+      // ACT
+      await user.click(screen.getByRole("button", { name: "colorpicker-toggle" }));
+      await user.click(screen.getByRole("button", { name: "colorpicker-apply-color" }));
+      vi.advanceTimersByTime(50);
+
+      // ASSERT
+      expect(handler).toHaveBeenCalledOnce();
+      expect(handler).toHaveBeenCalledWith("hsl(41.48, 100%, 45.1%)");
+    });
   });
 });
 
