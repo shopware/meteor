@@ -8,7 +8,11 @@
           :disabled="disabled"
           :button="button"
         >
-          <mt-popover v-if="button.children" :key="button.name">
+          <mt-popover
+            v-if="button.children"
+            :key="button.name"
+            @update:is-opened="(isOpened: boolean) => onChildPopoverToggle(button, isOpened)"
+          >
             <template #trigger="{ toggleFloatingUi }">
               <mt-text-editor-toolbar-button
                 :button="button"
@@ -19,8 +23,19 @@
             </template>
 
             <template #popover-items__base="{ toggleFloatingUi }">
+              <label
+                v-if="button.searchable"
+                :ref="(element) => setChildSearchLabel(button, element)"
+                class="mt-text-editor-toolbar__children-search"
+              >
+                <span class="visually-hidden">{{
+                  t("mt-text-editor-toolbar.childSearch.label")
+                }}</span>
+                <mt-search v-model="childSearchTerms[button.name]" size="small" />
+              </label>
+
               <mt-popover-item
-                v-for="child in button.children"
+                v-for="child in getVisibleChildren(button)"
                 :key="child.name"
                 :label="t(child.label)"
                 :icon="child.icon"
@@ -32,6 +47,15 @@
                   }
                 "
               />
+
+              <mt-text
+                v-if="button.searchable && getVisibleChildren(button).length === 0"
+                class="mt-text-editor-toolbar__children-empty"
+                size="xs"
+                color="color-text-secondary-default"
+              >
+                {{ t("mt-text-editor-toolbar.childSearch.noResults") }}
+              </mt-text>
             </template>
           </mt-popover>
 
@@ -56,7 +80,11 @@
           :disabled="disabled"
           :button="button"
         >
-          <mt-popover v-if="button.children" :key="button.name">
+          <mt-popover
+            v-if="button.children"
+            :key="button.name"
+            @update:is-opened="(isOpened: boolean) => onChildPopoverToggle(button, isOpened)"
+          >
             <template #trigger="{ toggleFloatingUi }">
               <mt-text-editor-toolbar-button
                 :button="button"
@@ -67,14 +95,34 @@
             </template>
 
             <template #popover-items__base>
+              <label
+                v-if="button.searchable"
+                :ref="(element) => setChildSearchLabel(button, element)"
+                class="mt-text-editor-toolbar__children-search"
+              >
+                <span class="visually-hidden">{{
+                  t("mt-text-editor-toolbar.childSearch.label")
+                }}</span>
+                <mt-search v-model="childSearchTerms[button.name]" size="small" />
+              </label>
+
               <mt-popover-item
-                v-for="child in button.children"
+                v-for="child in getVisibleChildren(button)"
                 :key="child.name"
                 :label="t(child.label)"
                 :icon="child.icon"
                 :type="child.isActive && child.isActive(props.editor) ? 'active' : 'default'"
                 :onLabelClick="() => handleButtonClick(child)"
               />
+
+              <mt-text
+                v-if="button.searchable && getVisibleChildren(button).length === 0"
+                class="mt-text-editor-toolbar__children-empty"
+                size="xs"
+                color="color-text-secondary-default"
+              >
+                {{ t("mt-text-editor-toolbar.childSearch.noResults") }}
+              </mt-text>
             </template>
           </mt-popover>
 
@@ -93,9 +141,11 @@
 
 <script setup lang="ts">
 import type { Editor } from "@tiptap/vue-3";
-import { computed, watch, type PropType } from "vue";
+import { computed, nextTick, ref, watch, type ComponentPublicInstance, type PropType } from "vue";
 import mtPopover from "@/components/mt-popover/mt-popover.vue";
 import mtPopoverItem from "@/components/mt-popover-item/mt-popover-item.vue";
+import mtSearch from "@/components/mt-search/mt-search.vue";
+import mtText from "@/components/mt-text/mt-text.vue";
 import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
 import { useI18n } from "vue-i18n";
 
@@ -106,6 +156,8 @@ export interface CustomButton {
   isActive?: (editor: Editor) => boolean;
   action?: (editor: Editor) => void;
   children?: CustomButton[];
+  // Shows a search field above the children of a toolbar dropdown; contextual buttons ignore it
+  searchable?: boolean;
   alignment?: "left" | "right";
   // For sorting the button order. Default using 1000s steps to provide space for custom buttons
   position?: number;
@@ -143,6 +195,10 @@ const { t } = useI18n({
           undo: "Undo",
           redo: "Redo",
         },
+        childSearch: {
+          label: "Search entries",
+          noResults: "No results found.",
+        },
       },
     },
     de: {
@@ -171,6 +227,10 @@ const { t } = useI18n({
           "numbered-list": "Sortierte Liste einfügen",
           undo: "Rückgängig",
           redo: "Wiederholen",
+        },
+        childSearch: {
+          label: "Einträge durchsuchen",
+          noResults: "Keine Ergebnisse gefunden.",
         },
       },
     },
@@ -405,6 +465,44 @@ const buttonsRight = computed(() => {
     });
 });
 
+const childSearchTerms = ref<Record<string, string>>({});
+
+const getVisibleChildren = (button: CustomButton) => {
+  const children = button.children ?? [];
+  const term = (childSearchTerms.value[button.name] ?? "").trim().toLowerCase();
+
+  if (!button.searchable || !term) {
+    return children;
+  }
+
+  return children.filter((child) =>
+    [child.name, t(child.label)].some((value) => value.toLowerCase().includes(term)),
+  );
+};
+
+const childSearchLabels: Record<string, HTMLElement | null> = {};
+
+const setChildSearchLabel = (
+  button: CustomButton,
+  element: Element | ComponentPublicInstance | null,
+) => {
+  childSearchLabels[button.name] = element as HTMLElement | null;
+};
+
+const onChildPopoverToggle = async (button: CustomButton, isOpened: boolean) => {
+  if (!isOpened) {
+    childSearchTerms.value[button.name] = "";
+    return;
+  }
+
+  if (!button.searchable) {
+    return;
+  }
+
+  await nextTick();
+  childSearchLabels[button.name]?.querySelector("input")?.focus();
+};
+
 const handleButtonClick = (button: CustomButton) => {
   if (!button.action) {
     return;
@@ -461,6 +559,19 @@ watch(
 
 .mt-text-editor-toolbar__buttons-right {
   margin-left: auto;
+}
+
+.mt-text-editor-toolbar__children-search {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: var(--scale-size-8) 0 var(--scale-size-4);
+  background-color: var(--color-background-primary-default);
+}
+
+.mt-text-editor-toolbar__children-empty {
+  padding: var(--scale-size-8) 0;
 }
 
 .mt-text-editor-toolbar :deep(.mt-floating-ui) {
