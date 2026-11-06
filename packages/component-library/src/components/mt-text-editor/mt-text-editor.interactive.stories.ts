@@ -1680,7 +1680,11 @@ export const SearchableCustomButtonChildren: MtTextEditorStory = defineStory({
         label: "Insert variable",
         icon: "regular-variables-xs",
         searchable: true,
-        children: ["product.name", "product.customFields.color"].map((variable) => ({
+        children: [
+          "product.name",
+          "product.customFields.color",
+          ...Array.from({ length: 48 }, (_, index) => `product.customFields.field_${index + 1}`),
+        ].map((variable) => ({
           name: variable,
           label: variable,
           action: (editor: Editor) =>
