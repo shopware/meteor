@@ -1,5 +1,17 @@
 # Changelog
 
+## 5.11.0
+
+### Minor Changes
+
+- [#1486](https://github.com/shopware/meteor/pull/1486) [`630bc61`](https://github.com/shopware/meteor/commit/630bc61f5d36ba1e8ea431cb472acc30e8ca8896) Thanks [@MartinKrzykawski](https://github.com/MartinKrzykawski)! - Add the `searchable` option to custom buttons with `children` in `mt-text-editor`. The dropdown then shows a search field that filters the children by name and translated label, and an empty state when nothing matches.
+
+### Patch Changes
+
+- [#1477](https://github.com/shopware/meteor/pull/1477) [`8b14c5d`](https://github.com/shopware/meteor/commit/8b14c5d10be43780d2af641c2f6617aa38bbf24b) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Make the check mark of a checked or indeterminate, disabled `mt-checkbox` visible in dark mode. It used a border token as its color and now uses `--color-icon-primary-disabled`, like the dot of a checked, disabled radio.
+
+- [#1474](https://github.com/shopware/meteor/pull/1474) [`7c465bf`](https://github.com/shopware/meteor/commit/7c465bf0536291cb544eda1cccb147687f42cbb6) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Remove the party horn icon from the `new` variant of `mt-promo-badge`.
+
 ## 5.10.0
 
 ### Minor Changes
