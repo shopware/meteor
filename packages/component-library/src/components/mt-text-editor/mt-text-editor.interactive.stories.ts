@@ -1704,6 +1704,19 @@ export const SearchableCustomButtonChildren: MtTextEditorStory = defineStory({
     await waitUntil(() => document.activeElement === searchInput);
     expect(searchInput).toHaveFocus();
 
+    // At this scroll position an entry lies behind the sticky search field
+    const popoverContent = searchInput.closest(".mt-popover__content") as HTMLElement;
+    popoverContent.scrollTop = 160;
+    await waitUntil(() => popoverContent.scrollTop === 160);
+
+    const { x, y, width, height } = searchInput.getBoundingClientRect();
+    const elementAtSearchField = document.elementFromPoint(x + width / 2, y + height / 2);
+    expect(elementAtSearchField).toBe(searchInput);
+
+    await userEvent.click(elementAtSearchField as HTMLElement);
+    expect(args.updateModelValue).not.toHaveBeenCalled();
+    expect(searchInput).toHaveFocus();
+
     await userEvent.type(searchInput, "unknown");
     expect(screen.getByText("No results found.")).toBeDefined();
 

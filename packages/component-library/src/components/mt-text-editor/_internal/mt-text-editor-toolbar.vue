@@ -565,7 +565,7 @@ watch(
   display: block;
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   padding: var(--scale-size-8) 0 var(--scale-size-4);
   background-color: var(--color-background-primary-default);
 }
