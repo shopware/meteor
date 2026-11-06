@@ -28,6 +28,21 @@ export const en = {
     title: "Page",
     placeholder: "This is a placeholder page.",
   },
+  context: {
+    store: "Store",
+    stores: "Stores",
+    createStore: "Create store",
+    salesChannel: "Sales channel",
+    salesChannels: "Sales channels",
+    createSalesChannel: "Create sales channel",
+  },
+  help: {
+    label: "Help",
+    documentation: "Documentation",
+    support: "Request support",
+    shortcuts: "Keyboard shortcuts",
+    whatsNew: "What's new",
+  },
   menu: {
     label: "Menu",
     open: "Open menu",

@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import {
+  MtActionMenu,
   MtActionMenuGroup,
   MtActionMenuItem,
   MtBrand,
   MtButton,
+  MtDropdownMenuPortal,
+  MtDropdownMenuRoot,
+  MtDropdownMenuTrigger,
   MtIcon,
   MtNav,
   type NavItem,
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
 import AppHeaderPrototype from "../prototypes/AppHeaderPrototype.vue";
+import ContextSwitcherPrototype from "../prototypes/ContextSwitcherPrototype.vue";
 import UserMenuPrototype from "../prototypes/UserMenuPrototype.vue";
 
 const { t } = useI18n();
@@ -55,6 +60,20 @@ const sections = computed<NavSection[]>(() => [
   },
 ]);
 
+// Placeholders: the playground has no stores or sales channels to switch between.
+const stores = [
+  { id: "demo", name: "Demo Store", badge: "Pro" },
+  { id: "outdoor", name: "Outdoor Gear", badge: "Pro" },
+  { id: "coffee", name: "Coffee Roasters", badge: "Free" },
+];
+const salesChannels = [
+  { id: "storefront", name: "Storefront" },
+  { id: "headless", name: "Headless" },
+  { id: "b2b", name: "B2B Portal" },
+];
+const store = ref("demo");
+const salesChannel = ref("storefront");
+
 /** A row is active on its own page and on the pages below it, such as a section of the settings. */
 function isActive(item: NavItem) {
   if (typeof item.to !== "string") return false;
@@ -64,8 +83,27 @@ function isActive(item: NavItem) {
 
 <template>
   <AppHeaderPrototype>
-    <template #brand="{ compact }">
-      <mt-brand title="Playground" subtitle="Shopware" :compact="compact" />
+    <template #brand>
+      <mt-brand title="Playground" />
+    </template>
+
+    <template #context="{ orientation }">
+      <ContextSwitcherPrototype
+        v-model="store"
+        :label="t('context.store')"
+        :heading="t('context.stores')"
+        :create-label="t('context.createStore')"
+        :options="stores"
+        :orientation="orientation"
+      />
+      <ContextSwitcherPrototype
+        v-model="salesChannel"
+        :label="t('context.salesChannel')"
+        :heading="t('context.salesChannels')"
+        :create-label="t('context.createSalesChannel')"
+        :options="salesChannels"
+        :orientation="orientation"
+      />
     </template>
 
     <template #navigation="{ orientation }">
@@ -95,6 +133,56 @@ function isActive(item: NavItem) {
       >
         <mt-icon name="regular-bell" size="var(--scale-size-16)" decorative />
       </mt-button>
+
+      <mt-dropdown-menu-root>
+        <mt-dropdown-menu-trigger as-child>
+          <mt-button
+            variant="tertiary"
+            size="default"
+            square
+            :aria-label="t('help.label')"
+          >
+            <mt-icon
+              name="regular-question-circle"
+              size="var(--scale-size-16)"
+              decorative
+            />
+          </mt-button>
+        </mt-dropdown-menu-trigger>
+
+        <mt-dropdown-menu-portal>
+          <!-- Opens at the same height as the user menu. The shortcuts link is a placeholder: the
+               docs have no page for the keyboard shortcuts, so it searches them. -->
+          <mt-action-menu side="bottom" align="end" :side-offset="4">
+            <mt-action-menu-group>
+              <mt-action-menu-item
+                icon="regular-books"
+                link="https://docs.shopware.com/en"
+              >
+                {{ t("help.documentation") }}
+              </mt-action-menu-item>
+              <mt-action-menu-item
+                icon="regular-headset"
+                link="https://account.shopware.com"
+              >
+                {{ t("help.support") }}
+              </mt-action-menu-item>
+              <mt-action-menu-item
+                icon="regular-keyboard"
+                link="https://docs.shopware.com/en/search?q=keyboard+shortcuts"
+              >
+                {{ t("help.shortcuts") }}
+              </mt-action-menu-item>
+              <mt-action-menu-item
+                icon="regular-gift"
+                link="https://www.shopware.com/en/changelog/"
+              >
+                {{ t("help.whatsNew") }}
+              </mt-action-menu-item>
+            </mt-action-menu-group>
+          </mt-action-menu>
+        </mt-dropdown-menu-portal>
+      </mt-dropdown-menu-root>
 
       <UserMenuPrototype name="Jane Doe" subtitle="jane.doe@example.com">
         <mt-action-menu-group>

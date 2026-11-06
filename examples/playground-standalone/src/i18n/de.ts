@@ -30,6 +30,21 @@ export const de: Messages = {
     title: "Seite",
     placeholder: "Das ist eine Platzhalterseite.",
   },
+  context: {
+    store: "Shop",
+    stores: "Shops",
+    createStore: "Shop erstellen",
+    salesChannel: "Verkaufskanal",
+    salesChannels: "Verkaufskanäle",
+    createSalesChannel: "Verkaufskanal erstellen",
+  },
+  help: {
+    label: "Hilfe",
+    documentation: "Dokumentation",
+    support: "Support anfragen",
+    shortcuts: "Tastenkürzel",
+    whatsNew: "Neuigkeiten",
+  },
   menu: {
     label: "Menü",
     open: "Menü öffnen",
