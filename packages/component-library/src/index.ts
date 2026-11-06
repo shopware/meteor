@@ -45,7 +45,11 @@ import type {
   NavLinkTarget,
   NavSection,
 } from "./components/mt-nav/mt-nav.vue";
-import { useSnackbar, type Snackbar } from "./components/mt-snackbar/composables/use-snackbar";
+import {
+  useSnackbar,
+  type Snackbar,
+  type SnackbarLink,
+} from "./components/mt-snackbar/composables/use-snackbar";
 import MtPromoBadge from "./components/mt-promo-badge/mt-promo-badge.vue";
 import MtStatusDot from "./components/mt-status-dot/mt-status-dot.vue";
 import MtPopover from "./components/mt-popover/mt-popover.vue";
@@ -228,7 +232,7 @@ export {
 };
 
 // Exporting types
-export type { Filter, Option, Toast, Snackbar, ChartOptions, BreadcrumbItem };
+export type { Filter, Option, Toast, Snackbar, SnackbarLink, ChartOptions, BreadcrumbItem };
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";

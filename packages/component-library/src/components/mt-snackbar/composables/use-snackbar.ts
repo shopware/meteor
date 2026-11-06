@@ -1,15 +1,17 @@
 import { createId } from "@/utils/id";
 import { computed, onMounted, onUnmounted, ref, reactive, readonly, type Ref } from "vue";
 
+/** A follow-up action. It needs a `url`, an `onClick`, or both. */
+export type SnackbarLink =
+  | { text: string; url: string; onClick?: () => void }
+  | { text: string; url?: string; onClick: () => void };
+
 export interface Snackbar {
   id: string;
   message: string;
   variant?: "success" | "error" | "warning" | "progress";
   icon?: string;
-  link?: {
-    text: string;
-    url: string;
-  };
+  link?: SnackbarLink;
   duration?: number;
   progressPercentage?: number;
   uploadState?: "success" | "error";
