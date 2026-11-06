@@ -138,6 +138,9 @@ export {
   MtDataTable,
   MtPagination,
   MtSkeletonBar,
+  /**
+   * @deprecated tag:v6 - Will be removed in the next major version. Use `mt-snackbar` with `useSnackbar` instead.
+   */
   MtToast,
   MtSnackbar,
   MtPromoBadge,
