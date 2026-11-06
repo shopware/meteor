@@ -7,13 +7,17 @@ import { kebabCase } from "scule";
 interface ExampleComponent {
   pascalName: string;
   filePath: string;
-  /** Owning component slug, derived from the examples/<group>/ folder. */
+  /** A component example, or a block (a page template) from the Blocks section. */
+  kind: "example" | "block";
+  /** Owning component slug, or the group of a block, derived from the
+   *  examples/<group>/ or blocks/<group>/ folder. */
   component?: string;
   code?: string;
 }
 
 /**
- * Collects the example SFCs under app/components/content/examples and makes
+ * Collects the example SFCs under app/components/content/examples and the block
+ * SFCs under app/components/content/blocks, and makes
  * their source code available at build and runtime: as JSON files in the
  * build dir, and as the `#component-example/nitro` virtual module used by
  * the API route and the raw-markdown transform. Adapted from Nuxt UI's
@@ -57,6 +61,7 @@ export default defineNuxtModule({
       const index = Object.values(components).map((component) => ({
         name: kebabCase(component.pascalName),
         pascalName: component.pascalName,
+        kind: component.kind,
         component: component.component,
       }));
       await fsp.writeFile(
@@ -78,18 +83,23 @@ export default defineNuxtModule({
     }
 
     nuxt.hook("components:extend", async (allComponents) => {
-      components = allComponents
-        .filter((component) =>
-          component.shortPath.includes("components/content/examples/"),
-        )
-        .reduce<Record<string, ExampleComponent>>((acc, component) => {
+      components = allComponents.reduce<Record<string, ExampleComponent>>(
+        (acc, component) => {
+          const match = component.shortPath.match(
+            /components\/content\/(examples|blocks)\/([^/]+)\//,
+          );
+          if (!match) return acc;
+
           acc[component.pascalName] = {
             pascalName: component.pascalName,
             filePath: component.filePath,
-            component: component.shortPath.match(/examples\/([^/]+)\//)?.[1],
+            kind: match[1] === "blocks" ? "block" : "example",
+            component: match[2],
           };
           return acc;
-        }, {});
+        },
+        {},
+      );
       await writeOutput();
     });
 

@@ -3,7 +3,7 @@ import { listComponentExamples } from "#component-example/nitro";
 
 export default defineMcpResource({
   description:
-    "Catalog of all documented Meteor examples (name, pascalName, owning component).",
+    "Catalog of all documented Meteor examples and blocks (name, pascalName, kind, owning component or block group).",
   uri: "meteor://examples",
   metadata: { mimeType: "application/json" },
   cache: "1h",
