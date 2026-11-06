@@ -1,6 +1,7 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 import { waitUntil } from "../../_internal/test-helper";
+import type { Editor } from "@tiptap/vue-3";
 
 import meta, { type MtTextEditorMeta, type MtTextEditorStory } from "./mt-text-editor.stories";
 import { defineStory } from "@/_internal/story-helper";
@@ -1666,5 +1667,48 @@ export const VisualTestTableCellSelectionShowsContent: MtTextEditorStory = defin
     const cellStyles = window.getComputedStyle(cells[0], "::after");
     const bg = cellStyles.getPropertyValue("background-color");
     expect(bg).toMatch(/rgba?\(.+,|color\(.+\//);
+  },
+});
+
+export const SearchableCustomButtonChildren: MtTextEditorStory = defineStory({
+  name: "Should filter the children of a searchable custom button",
+  args: {
+    modelValue: "<p>Hello World</p>",
+    customButtons: [
+      {
+        name: "variables",
+        label: "Insert variable",
+        icon: "regular-variables-xs",
+        searchable: true,
+        children: ["product.name", "product.customFields.color"].map((variable) => ({
+          name: variable,
+          label: variable,
+          action: (editor: Editor) =>
+            editor.chain().focus().insertContent(`{{ ${variable} }}`).run(),
+        })),
+      },
+    ],
+  },
+  play: async ({ canvasElement, args, screen }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByLabelText("Insert variable"));
+    const searchInput = screen.getByLabelText("Search entries");
+
+    await userEvent.type(searchInput, "unknown");
+    expect(screen.getByText("No results found.")).toBeDefined();
+
+    await userEvent.clear(searchInput);
+    await userEvent.type(searchInput, "COLOR");
+    expect(screen.queryByText("product.name")).toBeNull();
+
+    await userEvent.click(screen.getByText("product.customFields.color"));
+
+    await waitUntil(() => args.updateModelValue.mock.calls.length > 0);
+    expect(args.updateModelValue).toHaveBeenLastCalledWith(
+      expect.stringContaining("{{ product.customFields.color }}"),
+    );
   },
 });
