@@ -1,6 +1,6 @@
 ---
 title: App
-description: The root shell of a standalone Meteor application, with a header, a navigation, the content and a sidebar.
+description: The root shell of a standalone Meteor application, with a header or a navigation, the content and a sidebar.
 ---
 
 ::warning
@@ -12,7 +12,7 @@ description: The root shell of a standalone Meteor application, with a header, a
 
 ## Usage
 
-**App** is the root of a standalone application. It arranges the header, the navigation, the content and the sidebar, turns the navigation and the sidebar into drawers on small screens, and provides the theme, the future flags and the [**Snackbar**](/components/snackbar) host to everything inside. Use one shell per application, with a [**Page**](/components/page) for each route in its content.
+**App** is the root of a standalone application. It arranges a header or a navigation, the content and the sidebar, turns the navigation and the sidebar into drawers on small screens, and provides the theme, the future flags and the [**Snackbar**](/components/snackbar) host to everything inside. Use one shell per application, with a [**Page**](/components/page) for each route in its content.
 
 ```ts
 import { MtApp } from "@shopware-ag/meteor-component-library";
@@ -24,7 +24,7 @@ The shell fills the viewport. The example above gives it a fixed height with `--
 
 ### Application setup
 
-Fill the slots you need and render the router view as the main content, in the default slot. Mounting the app after the router has resolved the first route lets the shell apply the [regions of that route](/utilities/composables/use-app-regions) from the first render.
+Fill the slots you need, with either the `header` or the `navigation`, and render the router view as the main content, in the default slot. Mounting the app after the router has resolved the first route lets the shell apply the [regions of that route](/utilities/composables/use-app-regions) from the first render.
 
 ```vue [App.vue]
 <script setup lang="ts">
@@ -94,6 +94,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 ::do-dont{vertical}
 #do
 
+- Fill either the `header` or the `navigation`.
 - Put a [**Panel**](/components/panel) directly into the `navigation` and `sidebar` slots to set their labels and widths.
 - Make sure every view shows the triggers of the navigation and the sidebar: through [**App Header**](/components/app-header) in the header, through [**Page**](/components/page), or with **App Panel Trigger**.
 - Set the `label` of each panel in languages other than English and German.
@@ -101,6 +102,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 #dont
 
 - Do not use **App** in an Administration extension or inside an existing page layout; the Administration already provides the header and the navigation.
+- Do not fill the `header` and the `navigation` together. **App** still renders both, but warns in the console.
 
 ::
 

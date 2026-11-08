@@ -143,8 +143,8 @@ import type { MtAppContext, MtAppPanel } from "./composables/useApp";
 import type { MtAppRegions } from "./composables/useAppRegions";
 
 /**
- * The root shell of a standalone application: a header, the navigation, the content and a sidebar,
- * whose panels become drawers on small screens. Use one shell per application.
+ * The root shell of a standalone application: a header or the navigation, the content and a
+ * sidebar, whose panels become drawers on small screens. Use one shell per application.
  *
  * @experimental The API may still change in a future release.
  */
@@ -191,12 +191,15 @@ const slots = defineSlots<{
   /**
    * The header bar of the application. A component in it that shows the triggers of the navigation
    * and the sidebar, such as `mt-app-header`, shows them instead of the pages. The shell shows no
-   * triggers of its own.
+   * triggers of its own. Fill either the header or the navigation, not both.
    */
   header?(props: HeaderSlotProps): unknown;
   /** The scrollable main content. */
   default?(): unknown;
-  /** The navigation. Becomes a drawer in the mobile layout. */
+  /**
+   * The navigation. Becomes a drawer in the mobile layout. Fill either the header or the
+   * navigation, not both.
+   */
   navigation?(): unknown;
   /** A panel next to the content, for example an assistant. Becomes a drawer in the mobile layout. */
   sidebar?(): unknown;
@@ -358,6 +361,22 @@ function trackPanelSlots() {
 
 onMounted(trackPanelSlots);
 onUpdated(trackPanelSlots);
+
+// An app has either a header or a navigation. With both, the shell still renders both and warns once.
+let hasWarnedAboutHeaderAndNavigation = false;
+
+function warnAboutHeaderAndNavigation() {
+  if (hasWarnedAboutHeaderAndNavigation || !hasSlot("header") || !hasSlot("navigation")) return;
+
+  hasWarnedAboutHeaderAndNavigation = true;
+  console.warn(
+    "[mt-app] The header and navigation slots are both filled. " +
+      "An app uses either the header or the navigation, not both.",
+  );
+}
+
+onMounted(warnAboutHeaderAndNavigation);
+onUpdated(warnAboutHeaderAndNavigation);
 
 watch(hiddenRegions, (hidden) => {
   const drawer = panels.drawer.value;
