@@ -66,7 +66,7 @@ function routeName(item: NavItem) {
 }
 
 const meta: Meta<FlyoutMotionArgs> = {
-  title: "Components/Nav/Flyout motion",
+  title: "Components/Nav/Animation tests",
   args: {
     slowMotion: false,
   },
