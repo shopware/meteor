@@ -6,6 +6,7 @@ High-level repo guide for orientation. Stay at this level first; read package-lo
 
 - `packages/` — reusable Meteor packages
 - `examples/` — reference consumers for the packages
+- `examples/playground-template` — the starting point for new playground apps; copy it
 - `docs/admin-sdk/` — hand-written Admin SDK docs
 - `scripts/` — repo maintenance
 
