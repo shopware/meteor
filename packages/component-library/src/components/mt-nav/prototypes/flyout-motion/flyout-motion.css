@@ -1,0 +1,204 @@
+/*
+ * Prototype only: opening animations for the floating panel of a horizontal mt-nav.
+ * The story sets data-mt-nav-flyout-motion on <html>, since the panel is teleported to the body,
+ * and data-proto-input to the last input used, keyboard or pointer.
+ * Each variant outranks the component's own .mt-nav__flyout rules through the attribute selector,
+ * so each one also brings its own reduced-motion rule.
+ *
+ * The new variants transition from @starting-style when the panel mounts, instead of keyframes.
+ * mt-floating-ui marks its wrapper with mt-floating-ui--bottom when the panel flips above its row,
+ * and the variants turn their direction around to match.
+ *
+ * --proto-motion-scale slows every duration down for feel checks (the "Slow motion" control).
+ */
+
+:root {
+  --proto-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Every variant, the baseline included, turns the chevron of an opening row faster: 100ms on the
+   strong ease-out instead of the component's 150ms ease-out */
+
+[data-mt-nav-flyout-motion] .mt-nav__link-expand-icon {
+  transition: transform calc(100ms * var(--proto-motion-scale, 1))
+    var(--proto-ease-out);
+}
+
+/* The baseline keeps the component's own animation, sideways slide included */
+
+[data-mt-nav-flyout-motion="current"] .mt-nav__flyout {
+  animation-duration: calc(300ms * var(--proto-motion-scale, 1));
+}
+
+/* The new variants replace the component's keyframes */
+
+[data-mt-nav-flyout-motion]:not([data-mt-nav-flyout-motion="current"])
+  .mt-nav__flyout {
+  animation: none;
+}
+
+/* Fade: opacity only, nothing moves */
+
+[data-mt-nav-flyout-motion="fade"] .mt-nav__flyout {
+  transition: opacity calc(150ms * var(--proto-motion-scale, 1))
+    var(--proto-ease-out);
+}
+
+@starting-style {
+  [data-mt-nav-flyout-motion="fade"] .mt-nav__flyout {
+    opacity: 0;
+  }
+}
+
+/* Grow: scales out of the corner where its row is */
+
+[data-mt-nav-flyout-motion="grow"] .mt-nav__flyout {
+  transform-origin: top left;
+  transition:
+    opacity calc(200ms * var(--proto-motion-scale, 1)) var(--proto-ease-out),
+    transform calc(200ms * var(--proto-motion-scale, 1)) var(--proto-ease-out);
+}
+
+[data-mt-nav-flyout-motion="grow"] .mt-floating-ui--bottom .mt-nav__flyout {
+  transform-origin: bottom left;
+}
+
+@starting-style {
+  [data-mt-nav-flyout-motion="grow"] .mt-nav__flyout {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+/* Unroll: revealed from the edge at its row, without fading.
+   The resting inset is negative so the shadow isn't cut off. */
+
+[data-mt-nav-flyout-motion="unroll"] .mt-nav__flyout {
+  clip-path: inset(calc(-1 * var(--scale-size-40)));
+  transition: clip-path calc(220ms * var(--proto-motion-scale, 1))
+    var(--proto-ease-out);
+}
+
+@starting-style {
+  [data-mt-nav-flyout-motion="unroll"] .mt-nav__flyout {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  [data-mt-nav-flyout-motion="unroll"] .mt-floating-ui--bottom .mt-nav__flyout {
+    clip-path: inset(100% 0 0 0);
+  }
+}
+
+/* Cascade: the panel fades in and its rows follow 30ms apart, done within 240ms */
+
+[data-mt-nav-flyout-motion="cascade"] .mt-nav__flyout {
+  transition: opacity calc(150ms * var(--proto-motion-scale, 1))
+    var(--proto-ease-out);
+}
+
+[data-mt-nav-flyout-motion="cascade"]
+  .mt-nav__flyout
+  > .mt-nav__sub-list
+  > .mt-nav__list-item {
+  transition:
+    opacity calc(150ms * var(--proto-motion-scale, 1)) var(--proto-ease-out),
+    transform calc(150ms * var(--proto-motion-scale, 1)) var(--proto-ease-out);
+}
+
+[data-mt-nav-flyout-motion="cascade"]
+  .mt-nav__flyout
+  > .mt-nav__sub-list
+  > .mt-nav__list-item:nth-child(2) {
+  transition-delay: calc(30ms * var(--proto-motion-scale, 1));
+}
+
+[data-mt-nav-flyout-motion="cascade"]
+  .mt-nav__flyout
+  > .mt-nav__sub-list
+  > .mt-nav__list-item:nth-child(3) {
+  transition-delay: calc(60ms * var(--proto-motion-scale, 1));
+}
+
+[data-mt-nav-flyout-motion="cascade"]
+  .mt-nav__flyout
+  > .mt-nav__sub-list
+  > .mt-nav__list-item:nth-child(n + 4) {
+  transition-delay: calc(90ms * var(--proto-motion-scale, 1));
+}
+
+@starting-style {
+  [data-mt-nav-flyout-motion="cascade"] .mt-nav__flyout {
+    opacity: 0;
+  }
+
+  [data-mt-nav-flyout-motion="cascade"]
+    .mt-nav__flyout
+    > .mt-nav__sub-list
+    > .mt-nav__list-item {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--scale-size-4)));
+  }
+
+  [data-mt-nav-flyout-motion="cascade"]
+    .mt-floating-ui--bottom
+    .mt-nav__flyout
+    > .mt-nav__sub-list
+    > .mt-nav__list-item {
+    transform: translateY(var(--scale-size-4));
+  }
+}
+
+/* Reduced motion keeps a short fade and drops all movement. The baseline keeps the component's
+   own reduced-motion rule, which turns the animation off. */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-mt-nav-flyout-motion="current"] .mt-nav__flyout {
+    animation: none;
+  }
+
+  [data-mt-nav-flyout-motion] .mt-nav__link-expand-icon {
+    transition: none;
+  }
+
+  [data-mt-nav-flyout-motion]:not([data-mt-nav-flyout-motion="current"])
+    .mt-nav__flyout {
+    transition: opacity calc(150ms * var(--proto-motion-scale, 1)) ease;
+  }
+
+  [data-mt-nav-flyout-motion="cascade"]
+    .mt-nav__flyout
+    > .mt-nav__sub-list
+    > .mt-nav__list-item {
+    transition: none;
+  }
+
+  @starting-style {
+    [data-mt-nav-flyout-motion]:not([data-mt-nav-flyout-motion="current"])
+      .mt-nav__flyout {
+      opacity: 0;
+      transform: none;
+      clip-path: inset(calc(-1 * var(--scale-size-40)));
+    }
+  }
+}
+
+/* In every new variant, a panel opened from the keyboard, or taking over from another open panel,
+   appears at once: keyboard use is too frequent to wait on, and moving the mouse along the bar
+   shouldn't either. These come last so they also win over reduced motion. */
+
+[data-mt-nav-flyout-motion]:not([data-mt-nav-flyout-motion="current"])
+  .mt-nav__flyout--switched,
+[data-mt-nav-flyout-motion]:not(
+    [data-mt-nav-flyout-motion="current"]
+  )[data-proto-input="keyboard"]
+  .mt-nav__flyout,
+[data-mt-nav-flyout-motion="cascade"]
+  .mt-nav__flyout--switched
+  > .mt-nav__sub-list
+  > .mt-nav__list-item,
+[data-mt-nav-flyout-motion="cascade"][data-proto-input="keyboard"]
+  .mt-nav__flyout
+  > .mt-nav__sub-list
+  > .mt-nav__list-item {
+  transition: none;
+}
