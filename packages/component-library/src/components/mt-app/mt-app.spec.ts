@@ -151,10 +151,24 @@ function visibleBackdrops() {
     .filter((backdrop) => backdrop.style.display !== "none");
 }
 
+const headerAndNavigationWarning = "The header and navigation slots are both filled";
+
+function headerAndNavigationWarnings() {
+  return vi
+    .mocked(console.warn)
+    .mock.calls.filter((call) => String(call[0]).includes(headerAndNavigationWarning));
+}
+
 describe("mt-app", () => {
   beforeEach(() => {
     vi.stubGlobal("localStorage", createLocalStorageMock());
     stubMatchMedia();
+
+    // Most tests fill every slot, so they leave out the warning about the header and the navigation.
+    const warn = console.warn;
+    vi.spyOn(console, "warn").mockImplementation((...args: unknown[]) => {
+      if (!String(args[0]).includes(headerAndNavigationWarning)) warn(...args);
+    });
   });
 
   afterEach(() => {
@@ -240,6 +254,69 @@ describe("mt-app", () => {
       expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
       expect(screen.queryByRole("button", { name: sidebarTriggerName })).not.toBeInTheDocument();
       expect(screen.getByRole("main")).not.toHaveAttribute("inert");
+    });
+  });
+
+  describe("header and navigation", () => {
+    it("warns once when both are filled, and still renders both", async () => {
+      // ARRANGE
+      const { rerender } = await renderApp();
+
+      // ACT
+      await rerender({ loadingBar: true });
+
+      // ASSERT
+      expect(headerAndNavigationWarnings()).toHaveLength(1);
+      expect(screen.getByRole("banner")).toHaveTextContent("Header content");
+      expect(screen.getByRole("link", { name: "Orders" })).toBeVisible();
+    });
+
+    it.each(["header", "navigation"] as const)(
+      "doesn't warn when only the %s is filled",
+      async (slot) => {
+        // ACT
+        await renderApp({ slots: { default: allSlots.default, [slot]: allSlots[slot] } });
+
+        // ASSERT
+        expect(headerAndNavigationWarnings()).toHaveLength(0);
+      },
+    );
+
+    it("doesn't warn when the header renders nothing", async () => {
+      // ACT
+      await renderApp({
+        slots: {
+          default: allSlots.default,
+          header: () => [createCommentVNode("v-if")],
+          navigation: allSlots.navigation,
+        },
+      });
+
+      // ASSERT
+      expect(headerAndNavigationWarnings()).toHaveLength(0);
+    });
+
+    it("warns when the navigation is added to an app with a header", async () => {
+      // ARRANGE
+      const Wrapper = defineComponent({
+        components: { MtApp },
+        props: { showNavigation: Boolean },
+        template: `
+          <mt-app>
+            <template #header><span>Header content</span></template>
+            <template #default><p>Main content</p></template>
+            <template v-if="showNavigation" #navigation><a href="/">Orders</a></template>
+          </mt-app>
+        `,
+      });
+      const { rerender } = render(Wrapper, { props: { showNavigation: false } });
+      await nextTick();
+
+      // ACT
+      await rerender({ showNavigation: true });
+
+      // ASSERT
+      expect(headerAndNavigationWarnings()).toHaveLength(1);
     });
   });
 
