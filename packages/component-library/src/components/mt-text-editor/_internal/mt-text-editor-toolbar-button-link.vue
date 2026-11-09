@@ -14,7 +14,7 @@
           <mt-text-field
             v-model="linkHref"
             :label="t('mt-text-editor-toolbar-button-link.linkUrl')"
-            placeholder="https://example.com"
+            :placeholder="linkPlaceholder"
             required
           />
           <mt-switch
@@ -75,7 +75,7 @@ import mtModal from "@/components/mt-modal/mt-modal.vue";
 import mtButton from "@/components/mt-button/mt-button.vue";
 import mtTextField from "@/components/mt-text-field/mt-text-field.vue";
 import mtSwitch from "@/components/mt-switch/mt-switch.vue";
-import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
+import mtTextEditorToolbarButton from "../mt-text-editor-toolbar-button.vue";
 import mtModalClose from "@/components/mt-modal/sub-components/mt-modal-close.vue";
 import { useI18n } from "vue-i18n";
 
@@ -121,6 +121,9 @@ const props = defineProps({
     default: false,
   },
 });
+
+// vue-tsc 3.3 breaks on "//" in a template prop value: https://github.com/vuejs/language-tools/issues/6322
+const linkPlaceholder = "https://example.com";
 
 const showLinkModal = ref(false);
 const linkHref = ref("");

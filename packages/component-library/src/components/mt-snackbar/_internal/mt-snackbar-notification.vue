@@ -57,7 +57,7 @@ import MtText from "@/components/mt-text/mt-text.vue";
 import MtLink from "@/components/mt-link/mt-link.vue";
 import MtLoader from "@/components/mt-loader/mt-loader.vue";
 import { toRefs, type PropType, computed, watch, ref, onBeforeUnmount, onMounted } from "vue";
-import type { Snackbar } from "../composables/use-snackbar";
+import type { Snackbar } from "@/composables/useSnackbar";
 import type { HeightT } from "../mt-snackbar.vue";
 
 const emit = defineEmits<{

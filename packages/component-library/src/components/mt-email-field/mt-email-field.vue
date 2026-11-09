@@ -42,11 +42,11 @@
       </mt-field-affix>
 
       <input
+        :id="id"
+        ref="inputRef"
         v-model="model"
         class="mt-email-field__input"
         type="email"
-        ref="inputRef"
-        :id="id"
         :required="required"
         :disabled="disabled || isInherited"
         :name="name"
@@ -90,7 +90,7 @@
         </template>
       </mt-tooltip>
 
-      <mt-field-affix type="suffix" v-else-if="$slots.suffix">
+      <mt-field-affix v-else-if="$slots.suffix" type="suffix">
         <slot name="suffix" />
       </mt-field-affix>
     </div>
@@ -111,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef, useId, useSlots } from "vue";
+import { ref, useId, useSlots } from "vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
@@ -121,7 +121,7 @@ import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
 import { useI18n } from "vue-i18n";
 import { useClipboard } from "@vueuse/core";
-import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useFutureFlags } from "@/composables/_internal/useFutureFlags";
 
 const futureFlags = useFutureFlags();
 
@@ -157,7 +157,13 @@ const slots = useSlots();
 const showFieldHint = () =>
   !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
 
-defineEmits(["change", "blur", "focus", "inheritance-restore", "inheritance-remove"]);
+defineEmits<{
+  change: [value: string];
+  blur: [];
+  focus: [];
+  "inheritance-restore": [];
+  "inheritance-remove": [];
+}>();
 
 const id = useId();
 

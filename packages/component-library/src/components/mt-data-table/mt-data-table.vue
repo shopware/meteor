@@ -600,47 +600,14 @@
 </template>
 
 <script lang="ts">
-import useScrollPossibilitiesClasses from "./composables/useScrollPossibilitiesClasses";
-import type { PropType, Ref } from "vue";
-import { defineComponent, computed, onBeforeUpdate, onMounted, onBeforeUnmount, ref } from "vue";
-import MtCard from "../mt-card/mt-card.vue";
-import MtButton from "../mt-button/mt-button.vue";
-import MtSelect from "../mt-select/mt-select.vue";
-import MtIcon from "../mt-icon/mt-icon.vue";
-import MtPagination from "../mt-pagination/mt-pagination.vue";
-import MtSearch from "../mt-search/mt-search.vue";
-import MtContextButton from "../mt-context-button/mt-context-button.vue";
-import MtContextMenuItem from "../mt-context-menu-item/mt-context-menu-item.vue";
-import MtDataTableSettings from "./sub-components/mt-data-table-settings/mt-data-table-settings.vue";
-import MtPopover from "../mt-popover/mt-popover.vue";
-import MtPopoverItem, { type MtPopoverItemType } from "../mt-popover-item/mt-popover-item.vue";
-import MtPopoverItemResult from "../mt-popover-item-result/mt-popover-item-result.vue";
-import MtSkeletonBar from "../mt-skeleton-bar/mt-skeleton-bar.vue";
-import MtCheckbox from "../mt-checkbox/mt-checkbox.vue";
-import type { DropConfig, DragConfig } from "../../directives/dragdrop.directive";
-import { draggable, droppable } from "../../directives/dragdrop.directive";
-import type { TextColumnDefinition } from "./renderer/mt-data-table-text-renderer.vue";
-import MtDataTableTextRenderer from "./renderer/mt-data-table-text-renderer.vue";
-import type { NumberColumnDefinition } from "./renderer/mt-data-table-number-renderer.vue";
-import MtDataTableNumberRenderer from "./renderer/mt-data-table-number-renderer.vue";
-import type { BadgeColumnDefinition } from "./renderer/mt-data-table-badge-renderer.vue";
-import MtDataTableBadgeRenderer from "./renderer/mt-data-table-badge-renderer.vue";
-import MtDataTablePriceRenderer from "./renderer/mt-data-table-price-renderer.vue";
-import type { PriceColumnDefinition } from "./renderer/mt-data-table-price-renderer.vue";
-import MtSegmentedControl from "../mt-segmented-control/mt-segmented-control.vue";
-import type { SegmentedControlActionsProp } from "../mt-segmented-control/mt-segmented-control.vue";
-import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
-import MtTooltipDirective from "../../directives/tooltip.directive";
-import MtEmptyState from "../mt-empty-state/mt-empty-state.vue";
-import StickyColumn from "../../directives/stickyColumn.directive";
-import MtDataTableResetFilterButton from "./sub-components/mt-data-table-reset-filter-button/mt-data-table-reset-filter-button.vue";
-import MtDataTableFilter from "./sub-components/mt-data-table-filter/mt-data-table-filter.vue";
-import MtInset from "@/components/mt-inset/mt-inset.vue";
-import { throttle } from "@/utils/throttle";
-import { reactive } from "vue";
+import type { PropType } from "vue";
+import type { DropConfig, DragConfig } from "@/directives/_internal/dragdrop.directive";
+import type { TextColumnDefinition } from "./_internal/renderer/mt-data-table-text-renderer.vue";
+import type { NumberColumnDefinition } from "./_internal/renderer/mt-data-table-number-renderer.vue";
+import type { BadgeColumnDefinition } from "./_internal/renderer/mt-data-table-badge-renderer.vue";
+import type { PriceColumnDefinition } from "./_internal/renderer/mt-data-table-price-renderer.vue";
+import type { SegmentedControlActionsProp } from "../_internal/mt-segmented-control/mt-segmented-control.vue";
 import type { Filter } from "./mt-data-table.interfaces";
-import { useI18n } from "vue-i18n";
-import { useDebounceFn } from "@vueuse/core";
 
 export interface BaseColumnDefinition {
   label: string; // the label for the column
@@ -672,1360 +639,1298 @@ type DataSourcePropType = {
 }[];
 
 type ColumnProperty = ColumnDefinition[];
+</script>
+
+<script setup lang="ts">
+import useScrollPossibilitiesClasses from "./composables/useScrollPossibilitiesClasses";
+import { computed, onBeforeUpdate, onMounted, onBeforeUnmount, ref } from "vue";
+import MtCard from "../mt-card/mt-card.vue";
+import MtButton from "../mt-button/mt-button.vue";
+import MtSelect from "../mt-select/mt-select.vue";
+import MtIcon from "../mt-icon/mt-icon.vue";
+import MtPagination from "../mt-pagination/mt-pagination.vue";
+import MtSearch from "../mt-search/mt-search.vue";
+import MtContextButton from "../_internal/mt-context-button/mt-context-button.vue";
+import MtContextMenuItem from "../_internal/mt-context-menu-item/mt-context-menu-item.vue";
+import MtDataTableSettings from "./_internal/mt-data-table-settings/mt-data-table-settings.vue";
+import MtPopover from "../mt-popover/mt-popover.vue";
+import MtPopoverItem, { type MtPopoverItemType } from "../mt-popover-item/mt-popover-item.vue";
+import MtPopoverItemResult from "../mt-popover-item-result/mt-popover-item-result.vue";
+import MtSkeletonBar from "../mt-skeleton-bar/mt-skeleton-bar.vue";
+import MtCheckbox from "../mt-checkbox/mt-checkbox.vue";
+import { draggable, droppable } from "@/directives/_internal/dragdrop.directive";
+import MtDataTableTextRenderer from "./_internal/renderer/mt-data-table-text-renderer.vue";
+import MtDataTableNumberRenderer from "./_internal/renderer/mt-data-table-number-renderer.vue";
+import MtDataTableBadgeRenderer from "./_internal/renderer/mt-data-table-badge-renderer.vue";
+import MtDataTablePriceRenderer from "./_internal/renderer/mt-data-table-price-renderer.vue";
+import MtSegmentedControl from "../_internal/mt-segmented-control/mt-segmented-control.vue";
+import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
+import { TooltipDirective as MtTooltipDirective } from "@/directives/TooltipDirective";
+import MtEmptyState from "../mt-empty-state/mt-empty-state.vue";
+import StickyColumn from "@/directives/_internal/stickyColumn.directive";
+import MtDataTableResetFilterButton from "./_internal/mt-data-table-reset-filter-button/mt-data-table-reset-filter-button.vue";
+import MtDataTableFilter from "./_internal/mt-data-table-filter/mt-data-table-filter.vue";
+import MtInset from "@/components/mt-inset/mt-inset.vue";
+import { throttle } from "@/utils/throttle";
+import { reactive } from "vue";
+import { useI18n } from "vue-i18n";
+import { useDebounceFn } from "@vueuse/core";
 
 /**
  * @experimental - This component can be used but there are no guarantees for API stability yet.
  */
-export default defineComponent({
-  directives: {
-    draggable: draggable,
-    droppable: droppable,
-    tooltip: MtTooltipDirective,
-    stickyColumn: StickyColumn,
+
+const vDraggable = draggable;
+const vDroppable = droppable;
+const vTooltip = MtTooltipDirective;
+const vStickyColumn = StickyColumn;
+
+const props = defineProps({
+  /**
+   * The data source which contains the data for the current
+   * state of the table.
+   */
+  dataSource: {
+    type: Array as PropType<DataSourcePropType>,
+    required: true,
   },
-  components: {
-    "mt-card": MtCard,
-    "mt-button": MtButton,
-    "mt-select": MtSelect,
-    "mt-icon": MtIcon,
-    "mt-pagination": MtPagination,
-    "mt-search": MtSearch,
-    "mt-checkbox": MtCheckbox,
-    "mt-context-button": MtContextButton,
-    "mt-data-table-settings": MtDataTableSettings,
-    "mt-popover": MtPopover,
-    "mt-popover-item": MtPopoverItem,
-    "mt-popover-item-result": MtPopoverItemResult,
-    "mt-skeleton-bar": MtSkeletonBar,
-    "mt-context-menu-item": MtContextMenuItem,
-    "mt-floating-ui": MtFloatingUi,
-    "mt-segmented-control": MtSegmentedControl,
-    "mt-empty-state": MtEmptyState,
-    "mt-data-table-text-renderer": MtDataTableTextRenderer,
-    "mt-data-table-number-renderer": MtDataTableNumberRenderer,
-    "mt-data-table-badge-renderer": MtDataTableBadgeRenderer,
-    "mt-data-table-price-renderer": MtDataTablePriceRenderer,
-    "mt-data-table-reset-filter-button": MtDataTableResetFilterButton,
-    "mt-data-table-filter": MtDataTableFilter,
-    "mt-inset": MtInset,
-  },
-  props: {
-    /**
-     * The data source which contains the data for the current
-     * state of the table.
-     */
-    dataSource: {
-      type: Array as PropType<DataSourcePropType>,
-      required: true,
-    },
-    /**
-     * The defintions for the columns which should be displayed in the table.
-     */
-    columns: {
-      type: Array as PropType<ColumnProperty>,
-      required: true,
-      validator: (columnsValue: Record<string, unknown>[]) => {
-        /**
-         * This validator checks if every colum entry is matching the definition.
-         */
-        const validValues = columnsValue.map((value) => {
-          const hasLabel = typeof value.label === "string" && value.label;
-          const hasProperty = typeof value.property === "string" && value.property;
-          const hasRenderer =
-            typeof value.renderer === "string" &&
-            ["text", "number", "price", "badge"].includes(value.renderer);
-          const hasPosition = typeof value.position === "number";
-          const isInvalid = !hasLabel || !hasProperty || !hasRenderer || !hasPosition;
-          return isInvalid ? false : true;
-        });
-        return validValues.every((value) => value);
-      },
-    },
-    /**
-     * Optional property. When you want to override the current column
-     * information with the given changes, you can pass them here.
-     * The changes will be applied to the current column information.
-     * This is useful for saving and loading the current column configuration
-     * when the user customizes the table.
-     */
-    columnChanges: {
-      type: Object as PropType<Record<string, ColumnChanges>>,
-      required: false,
-      default: () => reactive({}),
-    },
-    /**
-     * Define the title of the table.
-     */
-    title: {
-      type: String,
-      required: false,
-      default: "",
-    },
-    /**
-     * Define the subtitle of the table.
-     */
-    subtitle: {
-      type: String,
-      required: false,
-      default: "",
-    },
-    /**
-     * The layout of the data table.
-     * @values default, full
-     */
-    layout: {
-      type: String as PropType<"default" | "full">,
-      required: false,
-      default: "default",
-    },
-    /**
-     * Activate the reload button at the top right corner of the table.
-     */
-    enableReload: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    /**
-     * Define the current page of the table.
-     */
-    currentPage: {
-      type: Number,
-      required: true,
-    },
-    /**
-     * Define the limit of items per page.
-     */
-    paginationLimit: {
-      type: Number,
-      required: true,
-    },
-    /**
-     * Define the total amount of items.
-     */
-    paginationTotalItems: {
-      type: Number,
-      required: true,
-    },
-    /**
-     * Define the available pagination limits.
-     */
-    paginationOptions: {
-      type: Array as PropType<number[]>,
-      required: false,
-      default: () => [5, 10, 25, 50],
-    },
-    /**
-     * Define the current sort by property.
-     */
-    sortBy: {
-      type: String,
-      required: false,
-      default: "",
-    },
-    /**
-     * Define the current sort direction.
-     */
-    sortDirection: {
-      type: String as PropType<"ASC" | "DESC">,
-      required: false,
-      default: "ASC",
-    },
-    /**
-     * If active then the search input will be disabled.
-     */
-    disableSearch: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    /**
-     * Define the current search value.
-     */
-    searchValue: {
-      type: String,
-      required: false,
-      default: "",
-    },
-    /**
-     * If active then the table will be in loading state.
-     */
-    isLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    /**
-     * If active user can select rows and can perform actions on them.
-     */
-    allowRowSelection: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    disableRowSelect: {
-      type: Array as PropType<string[]>,
-      required: false,
-      default: () => [],
-    },
-
-    selectedRows: {
-      type: Array as PropType<string[]>,
-      required: false,
-      default: () => [],
-    },
-
-    /**
-     * If active user can do bulk edit by selecting items
-     */
-    allowBulkEdit: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    /**
-     * If active user can do bulk delete by selecting items
-     */
-    allowBulkDelete: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Add more custom bulk edit actions
-     */
-    bulkEditMoreActions: {
-      type: Array as PropType<
-        {
-          id: string;
-          label: string;
-          onClick: () => void;
-          icon?: "default" | "critical" | "active" | string;
-          type?: MtPopoverItemType;
-          metaCopy?: string;
-          contextualDetail?: string;
-        }[]
-      >,
-      required: false,
-      default: () => [],
-    },
-
-    /***
-     * Enable numbered rows
-     */
-    enableRowNumbering: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Enable or disable the stripe design for the table.
-     */
-    showStripes: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-
-    /**
-     * Enable or disable outlines for the table.
-     */
-    showOutlines: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-
-    /**
-     * Enable or disable outline framing on hover
-     */
-    enableOutlineFraming: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Disable the possibility to delete items
-     */
-    disableDelete: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Disable the possibility to edit items
-     */
-    disableEdit: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Disable the possibility to settings table
-     */
-    disableSettingsTable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Caption for accessibility
-     */
-    caption: {
-      type: String,
-      required: false,
-      default: "Data table",
-    },
-
-    /**
-     * All available filters
-     */
-    filters: {
-      type: Array as PropType<Filter[]>,
-      required: false,
-      default: () => [],
-    },
-
-    /**
-     * Filters in use by the user
-     */
-    appliedFilters: {
-      type: Array as PropType<Filter[]>,
-      required: false,
-      default: () => [],
-    },
-
-    /**
-     * Displays how many results are found
-     */
-    numberOfResults: {
-      type: Number,
-      required: false,
-      default: undefined,
-    },
-
-    /**
-     * Additional context buttons to show in the context menu
-     */
-    additionalContextButtons: {
-      type: Array as PropType<
-        Array<{
-          type?: "default" | "active" | "critical";
-          label: string;
-          key: string;
-        }>
-      >,
-      required: false,
-      default: () => [],
+  /**
+   * The defintions for the columns which should be displayed in the table.
+   */
+  columns: {
+    type: Array as PropType<ColumnProperty>,
+    required: true,
+    validator: (columnsValue: Record<string, unknown>[]) => {
+      /**
+       * This validator checks if every colum entry is matching the definition.
+       */
+      const validValues = columnsValue.map((value) => {
+        const hasLabel = typeof value.label === "string" && value.label;
+        const hasProperty = typeof value.property === "string" && value.property;
+        const hasRenderer =
+          typeof value.renderer === "string" &&
+          ["text", "number", "price", "badge"].includes(value.renderer);
+        const hasPosition = typeof value.position === "number";
+        const isInvalid = !hasLabel || !hasProperty || !hasRenderer || !hasPosition;
+        return isInvalid ? false : true;
+      });
+      return validValues.every((value) => value);
     },
   },
-  emits: [
-    "reload",
-    "pagination-limit-change",
-    "pagination-current-page-change",
-    "search-value-change",
-    "sort-change",
-    "open-details",
-    "selection-change",
-    "multiple-selection-change",
-    "bulk-edit",
-    "bulk-delete",
-    "change-show-outlines",
-    "change-show-stripes",
-    "change-outline-framing",
-    "change-enable-row-numbering",
-    "item-delete",
-    "update:appliedFilters",
-    "context-select",
-  ],
-  setup(props, { emit }) {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          itemsPerPage: "Items per page",
-          filter: {
-            numberOfResults: "No results found for | One result found for | {n} results found for",
-            addFilter: "Add filter",
-            fetchingFilteredResults: "Getting filtered results...",
-          },
-          columnSettings: {
-            sortAscending: "Sort ascending",
-            sortDescending: "Sort descending",
-            hideColumn: "Hide column",
-          },
-          addColumnIndicator: {
-            popoverTitle: "Add column content",
-            tooltipMessage: "Add column",
-          },
-          contextButtons: {
-            edit: "Edit",
-            delete: "Delete",
-          },
-          emptyState: {
-            headline: "Add your first item",
-            description: "Currently no items are available yet.",
-          },
-          bulkEdit: {
-            itemsSelected: "1 item selected | {n} items selected",
-            edit: "Edit",
-            delete: "Delete",
-            more: "...",
-          },
-          reload: {
-            tooltip: "Reload",
-          },
-        },
-        de: {
-          itemsPerPage: "Einträge pro Seite",
-          filter: {
-            numberOfResults:
-              "Keine Einträge gefunden | Ein Eintrag gefunden | {n} Einträge gefunden",
-            addFilter: "Filter hinzufügen",
-            fetchingFilteredResults: "Filterergebnisse werden geladen...",
-          },
-          columnSettings: {
-            sortAscending: "Aufsteigend sortieren",
-            sortDescending: "Absteigend sortieren",
-            hideColumn: "Spalte ausblenden",
-          },
-          addColumnIndicator: {
-            popoverTitle: "Spalteninhalt hinzufügen",
-            tooltipMessage: "Spalte hinzufügen",
-          },
-          contextButtons: {
-            edit: "Bearbeiten",
-            delete: "Löschen",
-          },
-          emptyState: {
-            headline: "Füge dein erstes Element hinzu",
-            description: "Aktuell sind noch keine Elemente vorhanden.",
-          },
-          bulkEdit: {
-            itemsSelected: "1 Element ausgewählt | {n} Elemente ausgewählt",
-            edit: "Bearbeiten",
-            delete: "Löschen",
-            more: "...",
-          },
-          reload: {
-            tooltip: "Neu laden",
-          },
-        },
-      },
-    });
-
-    const filterChildViews = computed(() => {
-      return props.filters.map(({ id, label }) => ({ name: id, title: label }));
-    });
-
-    /**
-     * General
-     */
-    const sortedColumns = computed(() => {
-      return columnsWithChanges.value.slice().sort((a, b) => a.position - b.position);
-    });
-
-    const currentHoveredColumn = ref<string | null>(null);
-    const currentHoveredRow = ref<string | null>(null);
-
-    const setCurrentHoveredCell = (columnProperty: string | null, rowId: string) => {
-      currentHoveredColumn.value = columnProperty;
-      currentHoveredRow.value = rowId;
-    };
-
-    const visibleColumns = computed(() => {
-      return sortedColumns.value.filter((column) => column.visible !== false);
-    });
-
-    const isFirstVisibleColumn = (column: ColumnDefinition) => {
-      return visibleColumns.value[0].property === column.property;
-    };
-
-    const isPrimaryColumn = (column: ColumnDefinition) => {
-      return props.columns[0].property === column.property;
-    };
-
-    /***
-     * Add column indicator
-     */
-    const addColumnOptionsSearch = ref("");
-    const onAddColumnSearch = (value: string) => {
-      addColumnOptionsSearch.value = value;
-    };
-    const addColumnOptions = computed(() => {
-      return sortedColumns.value
-        .map((column) => {
-          return {
-            id: column.property,
-            label: column.label,
-            parentGroup: undefined,
-            position: column.position,
-            isVisible: column.visible ?? true,
-            isClickable: column.visible === false ? true : false,
-            isSortable: false,
-            isHidable: false,
-            disabled: column.visible === false ? false : true,
-          };
-        })
-        .filter((column) => {
-          return column.label.toLowerCase().includes(addColumnOptionsSearch.value.toLowerCase());
-        });
-    });
-
-    const onAddColumnOptionClick = (columnProperty: string, previousColumnProperty: string) => {
-      changeColumnPosition(columnProperty, previousColumnProperty, "after");
-      changeColumnVisibility(columnProperty, true);
-    };
-
-    /***
-     * Colum changes helper
-     */
-    const resetAllChanges = () => {
-      Object.keys(props.columnChanges).forEach((key) => {
-        // eslint-disable-next-line vue/no-mutating-props
-        props.columnChanges[key] = {};
-      });
-    };
-
-    const addToColumnChanges = (columnProperty: string, columnChanges: ColumnChanges) => {
-      if (!props.columnChanges[columnProperty]) {
-        // eslint-disable-next-line vue/no-mutating-props
-        props.columnChanges[columnProperty] = {};
-      }
-
-      // save new width to columnChanges to make changes permanent
-
-      // eslint-disable-next-line vue/no-mutating-props
-      props.columnChanges[columnProperty] = {
-        ...props.columnChanges[columnProperty],
-        ...columnChanges,
-      };
-    };
-
-    const columnsWithChanges = computed(() => {
-      return props.columns.map((column) => {
-        const columnChanges = props.columnChanges[column.property];
-
-        if (!columnChanges) {
-          return column;
-        }
-
-        return {
-          ...column,
-          ...columnChanges,
-        };
-      });
-    });
-
-    /***
-     * Handle column resizing
-     */
-
-    // save all column and table refs
-    const dataTable = ref<HTMLElement | null>(null);
-    const columnHeaderRefs = ref<Record<string, HTMLElement>>({});
-    const columnDataCellRefs = ref<Record<string, HTMLElement[]>>({});
-    const setColumnDataCellRefs = ({
-      el,
-      column,
-      index,
-    }: {
-      el?: HTMLElement;
-      column: ColumnDefinition;
-      index: number;
-    }) => {
-      if (el) {
-        if (!Array.isArray(columnDataCellRefs.value[column.property])) {
-          columnDataCellRefs.value[column.property] = [];
-        }
-
-        columnDataCellRefs.value[column.property][index] = el;
-      }
-    };
-
-    // reset all column refs before each update
-    onBeforeUpdate(() => {
-      columnHeaderRefs.value = {};
-      columnDataCellRefs.value = {};
-    });
-
-    /***
-     * This method will be executed when the user press the mouse down on the hidden resize bar of the column
-     */
-    const startColumnResizing = (column: ColumnDefinition | null) => {
-      if (!column) {
-        return;
-      }
-
-      makeAllColumnsFixedWidth();
-
-      // get the refs for the column header and all column data cells
-      const currentColumnHeaderCell = columnHeaderRefs.value[column.property];
-      const currentColumnDataCells = columnDataCellRefs.value[column.property];
-
-      // stop resizing when resizing for the column is not allowed
-      if (
-        !currentColumnHeaderCell ||
-        (typeof column.allowResize === "boolean" && !column.allowResize)
-      ) {
-        return;
-      }
-
-      // save the iniital position and width of the column header for later use
-      const columnHeaderBoundingClientRect = currentColumnHeaderCell.getBoundingClientRect();
-      const startColumnHeaderWidth = columnHeaderBoundingClientRect.width;
-
-      // remove transition on table
-      if (dataTable.value) {
-        dataTable.value.classList.add("--no-transition");
-        dataTable.value.classList.add("--resizing");
-      }
-
-      // set cursor globally to resize
-      document.body.style.cursor = "col-resize";
-
-      // this method gets executed when the mouse will be moved
-      const mouseMoveHandler = (e: MouseEvent) => {
-        // disable selection, etc. with mouse while dragging
-        e.stopPropagation();
-        e.preventDefault();
-
-        // calculate the new width based on mouse position and position of the table header
-        const newWidth = Math.ceil(e.pageX - columnHeaderBoundingClientRect.left);
-
-        // set width for column header and column cells
-        setColumnHeaderWidthInline(currentColumnHeaderCell, newWidth);
-        setColumnDataCellsWidthInline(currentColumnDataCells, newWidth);
-
-        // add additional padding to right so that the horizontal width don't change by reducing column size
-        if (dataTable.value) {
-          const paddingRight = startColumnHeaderWidth - newWidth;
-          dataTable.value.style.paddingRight = paddingRight > 0 ? `${paddingRight}px` : "";
-        }
-      };
-
-      // this method will be executed when the user stops pressing the mouse
-      const mouseUpHandler = () => {
-        // reset global cursor
-        document.body.style.cursor = "";
-
-        addToColumnChanges(column.property, {
-          width: parseInt(currentColumnHeaderCell.style.width, 10),
-        });
-
-        // reset additional paddingRight after finished the resizing
-        if (dataTable.value) {
-          dataTable.value.classList.remove("--no-transition");
-          dataTable.value.classList.remove("--resizing");
-          dataTable.value.style.removeProperty("padding-right");
-        }
-
-        // Remove all handlers
-        window.removeEventListener("mousemove", mouseMoveHandler);
-        window.removeEventListener("mouseup", mouseUpHandler);
-      };
-
-      // Watcher for mouse position to calculate width of the column
-      window.addEventListener("mousemove", mouseMoveHandler);
-      window.addEventListener("mouseup", mouseUpHandler);
-    };
-
-    const makeAllColumnsFixedWidth = () => {
-      const currentWidths: Record<string, number> = {};
-
-      Object.entries(columnHeaderRefs.value).forEach(([columnProperty, columnHeaderElement]) => {
-        const currentColumnDefinition = props.columns.find(
-          (column) => column.property === columnProperty,
-        );
-
-        // skip the columns which shouldn't be resized and have fixed with
-        if (
-          currentColumnDefinition &&
-          currentColumnDefinition.allowResize === false &&
-          typeof currentColumnDefinition.width === "number"
-        ) {
-          return;
-        }
-
-        // save the current width
-        const columnHeaderBoundingClientRect = columnHeaderElement.getBoundingClientRect();
-        currentWidths[columnProperty] = columnHeaderBoundingClientRect.width;
-
-        // set the current width
-        setColumnHeaderWidthInline(columnHeaderElement, currentWidths[columnProperty]);
-      });
-
-      Object.entries(columnDataCellRefs.value).forEach(([columnProperty, columnDataCells]) => {
-        if (currentWidths[columnProperty]) {
-          setColumnDataCellsWidthInline(columnDataCells, currentWidths[columnProperty]);
-        }
-      });
-    };
-
-    const setColumnHeaderWidthInline = (columnHeader: HTMLElement, width: number) => {
-      columnHeader.style.width = `${width}px`;
-      columnHeader.style.minWidth = `${width}px`;
-    };
-
-    const setColumnDataCellsWidthInline = (columnDataCells: HTMLElement[], width: number) => {
-      columnDataCells.forEach((columnDataCell) => {
-        columnDataCell.style.width = `${width}px`;
-        columnDataCell.style.minWidth = `${width}px`;
-        columnDataCell.style.maxWidth = `${width}px`;
-      });
-    };
-
-    const renderColumnDefaultStyle = (column: ColumnDefinition) => {
-      const customColumnWidth = props.columnChanges[column.property]?.width;
-      const defaultColumnWidth = "auto";
-      const minimumColumnWidth = "100px";
-
-      const width = (() => {
-        if (customColumnWidth && column.allowResize !== false) {
-          return `${customColumnWidth}px`;
-        }
-
-        return typeof column.width === "number" ? `${column.width}px` : defaultColumnWidth;
-      })();
-
-      const minWidth = (() => {
-        if (customColumnWidth && column.allowResize !== false) {
-          return `${customColumnWidth}px`;
-        }
-
-        return typeof column.width === "number" ? `${column.width}px` : minimumColumnWidth;
-      })();
-
-      const maxWidth = (() => {
-        if (customColumnWidth && column.allowResize !== false) {
-          return `${customColumnWidth}px`;
-        }
-
-        if (column.cellWrap === "normal") {
-          return "auto";
-        }
-
-        if (typeof column.width === "number") {
-          return `${column.width}px`;
-        }
-        // The maxWidth fallback is the minimum width. In table this behaves differently so it can be larger than the minWidth
-        return minimumColumnWidth;
-      })();
-      const whiteSpace = typeof column.cellWrap === "string" ? column.cellWrap : "nowrap";
-
-      return {
-        width: width,
-        "min-width": minWidth,
-        "max-width": maxWidth,
-        "white-space": whiteSpace,
-      };
-    };
-
-    const renderColumnHeaderStyle = (column: ColumnDefinition) => {
-      return {
-        ...renderColumnDefaultStyle(column),
-        "max-width": "fit-content",
-      };
-    };
-
-    const renderColumnDataCellStyle = (column: ColumnDefinition) => {
-      return {
-        ...renderColumnDefaultStyle(column),
-      };
-    };
-
-    const getColumnDataCellClasses = (column: ColumnDefinition) => {
-      const classes = [];
-
-      if (highlightedColumn.value === column.property) {
-        classes.push("--highlighted");
-      }
-
-      if (currentHoveredColumn.value === column.property) {
-        classes.push("--hovered");
-      }
-
-      return classes;
-    };
-
-    const getColumnHeaderClasses = (column: ColumnDefinition) => {
-      const classes = [];
-
-      if (highlightedColumn.value === column.property) {
-        classes.push("--highlighted");
-      }
-
-      if (currentHoveredColumn.value === column.property) {
-        classes.push("--hovered");
-      }
-
-      return classes;
-    };
-
-    const getColumnDataRowClasses = (rowId: string) => {
-      const classes = [];
-
-      if (currentHoveredRow.value === rowId) {
-        classes.push("--hovered");
-      }
-
-      return classes;
-    };
-
-    const isColumnVisible = (column: ColumnDefinition) => {
-      return column.visible ?? true;
-    };
-
-    const isMouseOver = ref<boolean>(false);
-    const forceHighlightedColumn = ref<boolean>(false);
-    const highlightedColumn = ref<string | null>(null);
-
-    const setHighlightedColumn = (column: ColumnDefinition | null) => {
-      if (dataTable.value?.classList.contains("--resizing")) {
-        return;
-      }
-
-      if (!column) {
-        if (forceHighlightedColumn.value) {
-          return;
-        }
-
-        isMouseOver.value = false;
-
-        window.setTimeout(() => {
-          if (!isMouseOver.value) {
-            highlightedColumn.value = null;
-          }
-        }, 100);
-        return;
-      }
-
-      if (forceHighlightedColumn.value) {
-        return;
-      }
-
-      isMouseOver.value = true;
-      highlightedColumn.value = column.property;
-    };
-
-    /***
-     * Pagination
-     */
-    const emitReload = () => emit("reload");
-
-    const emitPaginationLimitChange = (limitValue: number) => {
-      emit("pagination-limit-change", limitValue);
-    };
-
-    const emitPaginationCurrentPageChange = (currentPage: number) => {
-      emit("pagination-current-page-change", currentPage);
-    };
-
-    /***
-     * Search
-     */
-    const emitSearchValueChange = (searchValue: string) => {
-      emit("search-value-change", searchValue);
-    };
-
-    const debouncedEmitSearchValueChange = useDebounceFn((value: string) => {
-      emitSearchValueChange(value);
-    }, 300); // 300ms debounce delay
-
-    const handleSearchUpdate = (value: string) => {
-      debouncedEmitSearchValueChange(value);
-    };
-
-    const paginationOptionsConverted = computed(() => {
-      return props.paginationOptions.map((paginationNumber) => ({
-        id: paginationNumber,
-        label: paginationNumber.toString(),
-        value: paginationNumber,
-      }));
-    });
-
-    /***
-     * Column Reordering
-     */
-    const changeColumnPosition = (
-      columnId: string,
-      targetColumnId: string,
-      insertPosition: "before" | "after" = "before",
-    ) => {
-      const column = columnsWithChanges.value.find((column) => column.property === columnId);
-      const targetColumn = columnsWithChanges.value.find(
-        (column) => column.property === targetColumnId,
-      );
-
-      if (!column || !targetColumn) {
-        return;
-      }
-
-      [...columnsWithChanges.value]
-        .sort((columnA, columnB) => {
-          return columnA.position - columnB.position;
-        })
-        .sort((columnA, columnB) => {
-          // The logic for inserting the column before or after the target column
-          if (columnB.property === column.property) {
-            if (insertPosition === "after") {
-              return columnA.position <= targetColumn.position ? -1 : 1;
-            } else {
-              return columnA.position < targetColumn.position ? -1 : 1;
-            }
-          }
-
-          if (columnA.property === column.property) {
-            if (insertPosition === "after") {
-              return columnB.position > targetColumn.position ? -1 : 1;
-            } else {
-              return columnB.position >= targetColumn.position ? -1 : 1;
-            }
-          }
-
-          return 0;
-        })
-        .forEach((column, index) => {
-          addToColumnChanges(column.property, { position: index * 100 });
-        });
-    };
-
-    const isDragging = ref<boolean>(false);
-    const DRAG_GROUP_COLUMN = "drag-group-column";
-
-    const dragConfig: Partial<DragConfig<ColumnDefinition & { dropZone?: "before" | "after" }>> = {
-      dragGroup: DRAG_GROUP_COLUMN,
-      preventEvent: false,
-      validateDragStart: (dragConfigData, el, event) => {
-        const allDragZones = document.querySelectorAll(".mt-data-table__table-head-dragzone");
-        // @ts-expect-error - TS doesn't know that target is a valid element
-        const isChild = [...allDragZones].some((dragZone) => dragZone.contains(event.target));
-
-        return isChild;
-      },
-      onDragStart: () => {
-        // add drag information to the table
-        if (dataTable.value) {
-          dataTable.value.classList.add("is--dragging-inside");
-        }
-
-        // set cursor globally to grabbing
-        document.body.style.cursor = "grabbing";
-        isDragging.value = true;
-      },
-      onDrop: (dragConfigData, dropConfigData) => {
-        // remove drag information to the table
-        if (dataTable.value) {
-          dataTable.value.classList.remove("is--dragging-inside");
-        }
-
-        // reset global cursor
-        document.body.style.cursor = "";
-        isDragging.value = false;
-
-        if (dragConfigData && dropConfigData) {
-          changeColumnPosition(
-            dragConfigData.property,
-            dropConfigData.property,
-            dropConfigData.dropZone,
-          );
-        }
-      },
-    };
-
-    const dropConfig: Partial<DropConfig & { dropZone?: "before" | "after" }> = {
-      dragGroup: DRAG_GROUP_COLUMN,
-    };
-
-    const changeColumnVisibility = (columnProperty: string, visibility: boolean) => {
-      const column = columnsWithChanges.value.find((column) => column.property === columnProperty);
-
-      if (!column) {
-        return;
-      }
-
-      addToColumnChanges(columnProperty, {
-        visible: visibility,
-      });
-    };
-
-    /**
-     * Methods for sorting and filtering the data
-     */
-    const emitSortChange = (property: string, direction: "ASC" | "DESC") => {
-      emit("sort-change", property, direction);
-    };
-
-    const onColumnSettingsSortChange = (
-      property: string,
-      direction: "ASC" | "DESC",
-      chainMethod?: () => void,
-    ) => {
-      emitSortChange(property, direction);
-
-      if (chainMethod) {
-        chainMethod();
-      }
-    };
-
-    function removeFilter(id: string) {
-      const updatedFilters = props.appliedFilters.filter((filter) => filter.id !== id);
-
-      emit("update:appliedFilters", updatedFilters);
-    }
-
-    function addOption(filterId: string, optionId: string) {
-      const filter = props.filters.find((filter) => filter.id === filterId);
-      if (!filter)
-        throw new Error(
-          `Failed to add filter option: Filter with the id "${filterId}" is not correct`,
-        );
-
-      const filterAlreadyInUse = !!props.appliedFilters.find((appliedFilter) => {
-        return appliedFilter.id === filter.id;
-      });
-
-      if (!filterAlreadyInUse) {
-        emit("update:appliedFilters", [
-          ...props.appliedFilters,
-          {
-            ...filter,
-            type: {
-              ...filter.type,
-              options: [filter.type.options.find((option) => option.id === optionId)],
-            },
-          },
-        ]);
-
-        return;
-      }
-
-      emit("update:appliedFilters", [
-        ...props.appliedFilters.map((appliedFilter) => {
-          if (appliedFilter.id === filter.id) {
-            return {
-              ...appliedFilter,
-              type: {
-                ...appliedFilter.type,
-                options: [
-                  ...appliedFilter.type.options,
-                  filter.type.options.find((option) => option.id === optionId),
-                ],
-              },
-            };
-          }
-
-          return appliedFilter;
-        }),
-      ]);
-    }
-
-    function removeOption(filterId: string, optionId: string) {
-      const removingLastOptionInFilter = props.appliedFilters.some((appliedFilter) => {
-        if (appliedFilter.id === filterId) {
-          if (appliedFilter.type.options.length === 1) {
-            return true;
-          }
-        }
-
-        return false;
-      });
-
-      if (removingLastOptionInFilter) {
-        const newFilters = props.appliedFilters.filter(
-          (appliedFilter) => appliedFilter.id !== filterId,
-        );
-
-        emit("update:appliedFilters", newFilters);
-
-        return;
-      }
-
-      const newFilters = props.appliedFilters.map((appliedFilter) => {
-        if (appliedFilter.id === filterId) {
-          return {
-            ...appliedFilter,
-            type: {
-              ...appliedFilter.type,
-              options: appliedFilter.type.options.filter((option) => option.id !== optionId),
-            },
-          };
-        }
-
-        return appliedFilter;
-      });
-
-      emit("update:appliedFilters", newFilters);
-    }
-
-    function isOptionSelected(filterId: string, optionId: string) {
-      const filterInUse = props.appliedFilters.find((appliedFilter) => {
-        return appliedFilter.id === filterId;
-      });
-
-      if (!filterInUse) return false;
-      return !!filterInUse.type.options.find((option) => option.id === optionId);
-    }
-
-    const showData = computed(() => {
-      return props.dataSource.length > 0 || props.isLoading;
-    });
-
-    /***
-     * Add scroll possibilities to tableWrapper
-     */
-    const tableWrapper = ref();
-    useScrollPossibilitiesClasses(tableWrapper, showData);
-
-    /**
-     * General classes for whole data table
-     */
-    const MtDataTableClasses = computed(() => {
-      return {
-        "mt-data-table__layout-default": props.layout === "default",
-        "mt-data-table__layout-full": props.layout === "full",
-        "mt-data-table__first-column-fixed": props.allowRowSelection,
-        // could be relevant in the feature when you can disable the context button
-        "mt-data-table__last-column-fixed": true,
-        "mt-data-table__stripes": props.showStripes,
-        "mt-data-table__outlines": props.showOutlines,
-        "mt-data-table__column-outline-framing-active": props.enableOutlineFraming,
-      };
-    });
-
-    const getColumnHeaderInnerWrapperClasses = (column: ColumnDefinition) => {
-      return [`mt-data-table__table-head-inner-wrapper-${column.renderer}-renderer`];
-    };
-
-    const leftFixedColumnWidth = ref<number>(0);
-
-    const calculateLeftFixedColumnWith = () => {
-      if (dataTable.value) {
-        const stickyColumns = dataTable.value.querySelectorAll("thead th[data-sticky-column]");
-
-        const lastStickyColumn = stickyColumns[stickyColumns.length - 1] as HTMLElement;
-
-        if (!lastStickyColumn) {
-          return;
-        }
-
-        const lastStickyColumnRight = lastStickyColumn.dataset.stickyColumnRight;
-
-        leftFixedColumnWidth.value = Number(lastStickyColumnRight);
-      }
-    };
-
-    let tableMutationObserver: MutationObserver | undefined;
-
-    const createTableMutationObserver = () => {
-      if (dataTable.value) {
-        tableMutationObserver = new MutationObserver(
-          throttle(() => {
-            calculateLeftFixedColumnWith();
-          }, 60),
-        );
-
-        tableMutationObserver.observe(dataTable.value as HTMLElement, {
-          childList: true,
-          subtree: true,
-          attributes: true,
-        });
-      }
-    };
-
-    onMounted(() => {
-      createTableMutationObserver();
-      calculateLeftFixedColumnWith();
-    });
-
-    onBeforeUnmount(() => {
-      if (tableMutationObserver) {
-        tableMutationObserver.disconnect();
-      }
-    });
-
-    /**
-     * Adjust table variables
-     */
-    const tableStylingVariables = computed(() => {
-      return {
-        "--fixed-left-column-width": `${leftFixedColumnWidth.value}px`,
-        "--fixed-right-column-width": "105px",
-      };
-    });
-
-    /**
-     * Row selection
-     */
-    const getSelectionValue = (dataId: string) => {
-      if (props.allowRowSelection) {
-        return props.selectedRows.includes(dataId);
-      }
-
-      return false;
-    };
-
-    const onRowSelect = (dataId: string) => {
-      if (props.allowRowSelection && !props.disableRowSelect.includes(dataId)) {
-        const previousValue = getSelectionValue(dataId);
-
-        emit("selection-change", {
-          id: dataId,
-          value: !previousValue,
-        });
-      }
-    };
-
-    const somethingSelected = computed(() => {
-      return props.selectedRows.length > 0;
-    });
-
-    const bulkEditSegmentedControlActions = computed(() => {
-      const actions: SegmentedControlActionsProp = [
-        {
-          id: "item-selection-count",
-          label: t("bulkEdit.itemsSelected", { n: props.selectedRows.length }),
-          onClick: () => {
-            emit("multiple-selection-change", {
-              selections: props.selectedRows,
-              value: false,
-            });
-          },
-          isPressed: true,
-          checked: true,
-          hasCheckbox: true,
-        },
-      ];
-
-      if (props.allowBulkEdit && !props.disableEdit) {
-        actions.push({
-          id: "edit",
-          label: t("bulkEdit.edit"),
-          onClick: () => emit("bulk-edit"),
-        });
-      }
-
-      if (props.allowBulkDelete && !props.disableDelete) {
-        actions.push({
-          id: "delete",
-          label: t("bulkEdit.delete"),
-          onClick: () => emit("bulk-delete"),
-          isCritical: true,
-        });
-      }
-
-      if (props.bulkEditMoreActions.length > 0) {
-        actions.push({
-          id: "more",
-          label: t("bulkEdit.more"),
-          popover: {},
-        });
-      }
-
-      return actions;
-    });
-
-    const handleSelectAll = () => {
-      emit("multiple-selection-change", {
-        selections: props.dataSource
-          .filter((r) => !props.disableRowSelect.includes(r.id))
-          .map((r) => r.id),
-        value: true,
-      });
-    };
-
-    const getPreviousVisibleColumn = (column: ColumnDefinition): ColumnDefinition | null => {
-      const visibleColumns = sortedColumns.value.filter((c) => isColumnVisible(c));
-
-      const index = visibleColumns.findIndex((c) => c.property === column.property);
-
-      if (index <= 0) {
-        return null;
-      }
-
-      return visibleColumns[index - 1];
-    };
-
-    /**
-     * Add empty data to source when data is loading
-     */
-    const emptyData = computed(() => {
-      return Array.from({ length: props.paginationLimit }, () => ({}));
-    });
-
-    /**
-     * Calculate the real index number based on page, limit and index
-     */
-    const getRealIndex = (index: number) => {
-      return (props.currentPage - 1) * props.paginationLimit + index + 1;
-    };
-
-    return {
-      t,
-      sortedColumns,
-      isFirstVisibleColumn,
-      addColumnOptions,
-      renderColumnDataCellStyle,
-      renderColumnHeaderStyle,
-      tableWrapper,
-      emitReload,
-      emitPaginationLimitChange,
-      emitPaginationCurrentPageChange,
-      emitSearchValueChange,
-      paginationOptionsConverted,
-      startColumnResizing,
-      columnHeaderRefs,
-      columnDataCellRefs,
-      setColumnDataCellRefs,
-      dataTable: dataTable as Ref<HTMLElement | null>,
-      dragConfig,
-      dropConfig,
-      resetAllChanges,
-      changeColumnPosition,
-      isColumnVisible,
-      changeColumnVisibility,
-      emitSortChange,
-      onColumnSettingsSortChange,
-      MtDataTableClasses,
-      tableStylingVariables,
-      getSelectionValue,
-      onRowSelect,
-      somethingSelected,
-      bulkEditSegmentedControlActions,
-      handleSelectAll,
-      highlightedColumn,
-      setHighlightedColumn,
-      getColumnDataCellClasses,
-      getColumnHeaderClasses,
-      getPreviousVisibleColumn,
-      getColumnDataRowClasses,
-      getColumnHeaderInnerWrapperClasses,
-      forceHighlightedColumn,
-      addColumnOptionsSearch,
-      onAddColumnOptionClick,
-      onAddColumnSearch,
-      currentHoveredColumn,
-      currentHoveredRow,
-      setCurrentHoveredCell,
-      isPrimaryColumn,
-      emptyData,
-      getRealIndex,
-      isDragging,
-      filterChildViews,
-      removeFilter,
-      addOption,
-      removeOption,
-      isOptionSelected,
-      handleSearchUpdate: handleSearchUpdate, // Use explicit assignment
-    };
+  /**
+   * Optional property. When you want to override the current column
+   * information with the given changes, you can pass them here.
+   * The changes will be applied to the current column information.
+   * This is useful for saving and loading the current column configuration
+   * when the user customizes the table.
+   */
+  columnChanges: {
+    type: Object as PropType<Record<string, ColumnChanges>>,
+    required: false,
+    default: () => reactive({}),
+  },
+  /**
+   * Define the title of the table.
+   */
+  title: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  /**
+   * Define the subtitle of the table.
+   */
+  subtitle: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  /**
+   * The layout of the data table.
+   * @values default, full
+   */
+  layout: {
+    type: String as PropType<"default" | "full">,
+    required: false,
+    default: "default",
+  },
+  /**
+   * Activate the reload button at the top right corner of the table.
+   */
+  enableReload: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  /**
+   * Define the current page of the table.
+   */
+  currentPage: {
+    type: Number,
+    required: true,
+  },
+  /**
+   * Define the limit of items per page.
+   */
+  paginationLimit: {
+    type: Number,
+    required: true,
+  },
+  /**
+   * Define the total amount of items.
+   */
+  paginationTotalItems: {
+    type: Number,
+    required: true,
+  },
+  /**
+   * Define the available pagination limits.
+   */
+  paginationOptions: {
+    type: Array as PropType<number[]>,
+    required: false,
+    default: () => [5, 10, 25, 50],
+  },
+  /**
+   * Define the current sort by property.
+   */
+  sortBy: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  /**
+   * Define the current sort direction.
+   */
+  sortDirection: {
+    type: String as PropType<"ASC" | "DESC">,
+    required: false,
+    default: "ASC",
+  },
+  /**
+   * If active then the search input will be disabled.
+   */
+  disableSearch: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  /**
+   * Define the current search value.
+   */
+  searchValue: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  /**
+   * If active then the table will be in loading state.
+   */
+  isLoading: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  /**
+   * If active user can select rows and can perform actions on them.
+   */
+  allowRowSelection: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  disableRowSelect: {
+    type: Array as PropType<string[]>,
+    required: false,
+    default: () => [],
+  },
+
+  selectedRows: {
+    type: Array as PropType<string[]>,
+    required: false,
+    default: () => [],
+  },
+
+  /**
+   * If active user can do bulk edit by selecting items
+   */
+  allowBulkEdit: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  /**
+   * If active user can do bulk delete by selecting items
+   */
+  allowBulkDelete: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Add more custom bulk edit actions
+   */
+  bulkEditMoreActions: {
+    type: Array as PropType<
+      {
+        id: string;
+        label: string;
+        onClick: () => void;
+        icon?: "default" | "critical" | "active" | string;
+        type?: MtPopoverItemType;
+        metaCopy?: string;
+        contextualDetail?: string;
+      }[]
+    >,
+    required: false,
+    default: () => [],
+  },
+
+  /***
+   * Enable numbered rows
+   */
+  enableRowNumbering: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Enable or disable the stripe design for the table.
+   */
+  showStripes: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+
+  /**
+   * Enable or disable outlines for the table.
+   */
+  showOutlines: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+
+  /**
+   * Enable or disable outline framing on hover
+   */
+  enableOutlineFraming: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Disable the possibility to delete items
+   */
+  disableDelete: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Disable the possibility to edit items
+   */
+  disableEdit: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Disable the possibility to settings table
+   */
+  disableSettingsTable: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Caption for accessibility
+   */
+  caption: {
+    type: String,
+    required: false,
+    default: "Data table",
+  },
+
+  /**
+   * All available filters
+   */
+  filters: {
+    type: Array as PropType<Filter[]>,
+    required: false,
+    default: () => [],
+  },
+
+  /**
+   * Filters in use by the user
+   */
+  appliedFilters: {
+    type: Array as PropType<Filter[]>,
+    required: false,
+    default: () => [],
+  },
+
+  /**
+   * Displays how many results are found
+   */
+  numberOfResults: {
+    type: Number,
+    required: false,
+    default: undefined,
+  },
+
+  /**
+   * Additional context buttons to show in the context menu
+   */
+  additionalContextButtons: {
+    type: Array as PropType<
+      Array<{
+        type?: "default" | "active" | "critical";
+        label: string;
+        key: string;
+      }>
+    >,
+    required: false,
+    default: () => [],
   },
 });
+
+const emit = defineEmits([
+  "reload",
+  "pagination-limit-change",
+  "pagination-current-page-change",
+  "search-value-change",
+  "sort-change",
+  "open-details",
+  "selection-change",
+  "multiple-selection-change",
+  "bulk-edit",
+  "bulk-delete",
+  "change-show-outlines",
+  "change-show-stripes",
+  "change-outline-framing",
+  "change-enable-row-numbering",
+  "item-delete",
+  "update:appliedFilters",
+  "context-select",
+]);
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      itemsPerPage: "Items per page",
+      filter: {
+        numberOfResults: "No results found for | One result found for | {n} results found for",
+        addFilter: "Add filter",
+        fetchingFilteredResults: "Getting filtered results...",
+      },
+      columnSettings: {
+        sortAscending: "Sort ascending",
+        sortDescending: "Sort descending",
+        hideColumn: "Hide column",
+      },
+      addColumnIndicator: {
+        popoverTitle: "Add column content",
+        tooltipMessage: "Add column",
+      },
+      contextButtons: {
+        edit: "Edit",
+        delete: "Delete",
+      },
+      emptyState: {
+        headline: "Add your first item",
+        description: "Currently no items are available yet.",
+      },
+      bulkEdit: {
+        itemsSelected: "1 item selected | {n} items selected",
+        edit: "Edit",
+        delete: "Delete",
+        more: "...",
+      },
+      reload: {
+        tooltip: "Reload",
+      },
+    },
+    de: {
+      itemsPerPage: "Einträge pro Seite",
+      filter: {
+        numberOfResults: "Keine Einträge gefunden | Ein Eintrag gefunden | {n} Einträge gefunden",
+        addFilter: "Filter hinzufügen",
+        fetchingFilteredResults: "Filterergebnisse werden geladen...",
+      },
+      columnSettings: {
+        sortAscending: "Aufsteigend sortieren",
+        sortDescending: "Absteigend sortieren",
+        hideColumn: "Spalte ausblenden",
+      },
+      addColumnIndicator: {
+        popoverTitle: "Spalteninhalt hinzufügen",
+        tooltipMessage: "Spalte hinzufügen",
+      },
+      contextButtons: {
+        edit: "Bearbeiten",
+        delete: "Löschen",
+      },
+      emptyState: {
+        headline: "Füge dein erstes Element hinzu",
+        description: "Aktuell sind noch keine Elemente vorhanden.",
+      },
+      bulkEdit: {
+        itemsSelected: "1 Element ausgewählt | {n} Elemente ausgewählt",
+        edit: "Bearbeiten",
+        delete: "Löschen",
+        more: "...",
+      },
+      reload: {
+        tooltip: "Neu laden",
+      },
+    },
+  },
+});
+
+const filterChildViews = computed(() => {
+  return props.filters.map(({ id, label }) => ({ name: id, title: label }));
+});
+
+/**
+ * General
+ */
+const sortedColumns = computed(() => {
+  return columnsWithChanges.value.slice().sort((a, b) => a.position - b.position);
+});
+
+const currentHoveredColumn = ref<string | null>(null);
+const currentHoveredRow = ref<string | null>(null);
+
+const setCurrentHoveredCell = (columnProperty: string | null, rowId: string) => {
+  currentHoveredColumn.value = columnProperty;
+  currentHoveredRow.value = rowId;
+};
+
+const isPrimaryColumn = (column: ColumnDefinition) => {
+  return props.columns[0].property === column.property;
+};
+
+/***
+ * Add column indicator
+ */
+const addColumnOptionsSearch = ref("");
+const onAddColumnSearch = (value: string) => {
+  addColumnOptionsSearch.value = value;
+};
+const addColumnOptions = computed(() => {
+  return sortedColumns.value
+    .map((column) => {
+      return {
+        id: column.property,
+        label: column.label,
+        parentGroup: undefined,
+        position: column.position,
+        isVisible: column.visible ?? true,
+        isClickable: column.visible === false ? true : false,
+        isSortable: false,
+        isHidable: false,
+        disabled: column.visible === false ? false : true,
+      };
+    })
+    .filter((column) => {
+      return column.label.toLowerCase().includes(addColumnOptionsSearch.value.toLowerCase());
+    });
+});
+
+const onAddColumnOptionClick = (columnProperty: string, previousColumnProperty: string) => {
+  changeColumnPosition(columnProperty, previousColumnProperty, "after");
+  changeColumnVisibility(columnProperty, true);
+};
+
+/***
+ * Colum changes helper
+ */
+const resetAllChanges = () => {
+  Object.keys(props.columnChanges).forEach((key) => {
+    // eslint-disable-next-line vue/no-mutating-props
+    props.columnChanges[key] = {};
+  });
+};
+
+const addToColumnChanges = (columnProperty: string, columnChanges: ColumnChanges) => {
+  if (!props.columnChanges[columnProperty]) {
+    // eslint-disable-next-line vue/no-mutating-props
+    props.columnChanges[columnProperty] = {};
+  }
+
+  // save new width to columnChanges to make changes permanent
+
+  // eslint-disable-next-line vue/no-mutating-props
+  props.columnChanges[columnProperty] = {
+    ...props.columnChanges[columnProperty],
+    ...columnChanges,
+  };
+};
+
+const columnsWithChanges = computed(() => {
+  return props.columns.map((column) => {
+    const columnChanges = props.columnChanges[column.property];
+
+    if (!columnChanges) {
+      return column;
+    }
+
+    return {
+      ...column,
+      ...columnChanges,
+    };
+  });
+});
+
+/***
+ * Handle column resizing
+ */
+
+// save all column and table refs
+const dataTable = ref<HTMLElement | null>(null);
+const columnHeaderRefs = ref<Record<string, HTMLElement>>({});
+const columnDataCellRefs = ref<Record<string, HTMLElement[]>>({});
+const setColumnDataCellRefs = ({
+  el,
+  column,
+  index,
+}: {
+  el?: HTMLElement;
+  column: ColumnDefinition;
+  index: number;
+}) => {
+  if (el) {
+    if (!Array.isArray(columnDataCellRefs.value[column.property])) {
+      columnDataCellRefs.value[column.property] = [];
+    }
+
+    columnDataCellRefs.value[column.property][index] = el;
+  }
+};
+
+// reset all column refs before each update
+onBeforeUpdate(() => {
+  columnHeaderRefs.value = {};
+  columnDataCellRefs.value = {};
+});
+
+/***
+ * This method will be executed when the user press the mouse down on the hidden resize bar of the column
+ */
+const startColumnResizing = (column: ColumnDefinition | null) => {
+  if (!column) {
+    return;
+  }
+
+  makeAllColumnsFixedWidth();
+
+  // get the refs for the column header and all column data cells
+  const currentColumnHeaderCell = columnHeaderRefs.value[column.property];
+  const currentColumnDataCells = columnDataCellRefs.value[column.property];
+
+  // stop resizing when resizing for the column is not allowed
+  if (
+    !currentColumnHeaderCell ||
+    (typeof column.allowResize === "boolean" && !column.allowResize)
+  ) {
+    return;
+  }
+
+  // save the iniital position and width of the column header for later use
+  const columnHeaderBoundingClientRect = currentColumnHeaderCell.getBoundingClientRect();
+  const startColumnHeaderWidth = columnHeaderBoundingClientRect.width;
+
+  // remove transition on table
+  if (dataTable.value) {
+    dataTable.value.classList.add("--no-transition");
+    dataTable.value.classList.add("--resizing");
+  }
+
+  // set cursor globally to resize
+  document.body.style.cursor = "col-resize";
+
+  // this method gets executed when the mouse will be moved
+  const mouseMoveHandler = (e: MouseEvent) => {
+    // disable selection, etc. with mouse while dragging
+    e.stopPropagation();
+    e.preventDefault();
+
+    // calculate the new width based on mouse position and position of the table header
+    const newWidth = Math.ceil(e.pageX - columnHeaderBoundingClientRect.left);
+
+    // set width for column header and column cells
+    setColumnHeaderWidthInline(currentColumnHeaderCell, newWidth);
+    setColumnDataCellsWidthInline(currentColumnDataCells, newWidth);
+
+    // add additional padding to right so that the horizontal width don't change by reducing column size
+    if (dataTable.value) {
+      const paddingRight = startColumnHeaderWidth - newWidth;
+      dataTable.value.style.paddingRight = paddingRight > 0 ? `${paddingRight}px` : "";
+    }
+  };
+
+  // this method will be executed when the user stops pressing the mouse
+  const mouseUpHandler = () => {
+    // reset global cursor
+    document.body.style.cursor = "";
+
+    addToColumnChanges(column.property, {
+      width: parseInt(currentColumnHeaderCell.style.width, 10),
+    });
+
+    // reset additional paddingRight after finished the resizing
+    if (dataTable.value) {
+      dataTable.value.classList.remove("--no-transition");
+      dataTable.value.classList.remove("--resizing");
+      dataTable.value.style.removeProperty("padding-right");
+    }
+
+    // Remove all handlers
+    window.removeEventListener("mousemove", mouseMoveHandler);
+    window.removeEventListener("mouseup", mouseUpHandler);
+  };
+
+  // Watcher for mouse position to calculate width of the column
+  window.addEventListener("mousemove", mouseMoveHandler);
+  window.addEventListener("mouseup", mouseUpHandler);
+};
+
+const makeAllColumnsFixedWidth = () => {
+  const currentWidths: Record<string, number> = {};
+
+  Object.entries(columnHeaderRefs.value).forEach(([columnProperty, columnHeaderElement]) => {
+    const currentColumnDefinition = props.columns.find(
+      (column) => column.property === columnProperty,
+    );
+
+    // skip the columns which shouldn't be resized and have fixed with
+    if (
+      currentColumnDefinition &&
+      currentColumnDefinition.allowResize === false &&
+      typeof currentColumnDefinition.width === "number"
+    ) {
+      return;
+    }
+
+    // save the current width
+    const columnHeaderBoundingClientRect = columnHeaderElement.getBoundingClientRect();
+    currentWidths[columnProperty] = columnHeaderBoundingClientRect.width;
+
+    // set the current width
+    setColumnHeaderWidthInline(columnHeaderElement, currentWidths[columnProperty]);
+  });
+
+  Object.entries(columnDataCellRefs.value).forEach(([columnProperty, columnDataCells]) => {
+    if (currentWidths[columnProperty]) {
+      setColumnDataCellsWidthInline(columnDataCells, currentWidths[columnProperty]);
+    }
+  });
+};
+
+const setColumnHeaderWidthInline = (columnHeader: HTMLElement, width: number) => {
+  columnHeader.style.width = `${width}px`;
+  columnHeader.style.minWidth = `${width}px`;
+};
+
+const setColumnDataCellsWidthInline = (columnDataCells: HTMLElement[], width: number) => {
+  columnDataCells.forEach((columnDataCell) => {
+    columnDataCell.style.width = `${width}px`;
+    columnDataCell.style.minWidth = `${width}px`;
+    columnDataCell.style.maxWidth = `${width}px`;
+  });
+};
+
+const renderColumnDefaultStyle = (column: ColumnDefinition) => {
+  const customColumnWidth = props.columnChanges[column.property]?.width;
+  const defaultColumnWidth = "auto";
+  const minimumColumnWidth = "100px";
+
+  const width = (() => {
+    if (customColumnWidth && column.allowResize !== false) {
+      return `${customColumnWidth}px`;
+    }
+
+    return typeof column.width === "number" ? `${column.width}px` : defaultColumnWidth;
+  })();
+
+  const minWidth = (() => {
+    if (customColumnWidth && column.allowResize !== false) {
+      return `${customColumnWidth}px`;
+    }
+
+    return typeof column.width === "number" ? `${column.width}px` : minimumColumnWidth;
+  })();
+
+  const maxWidth = (() => {
+    if (customColumnWidth && column.allowResize !== false) {
+      return `${customColumnWidth}px`;
+    }
+
+    if (column.cellWrap === "normal") {
+      return "auto";
+    }
+
+    if (typeof column.width === "number") {
+      return `${column.width}px`;
+    }
+    // The maxWidth fallback is the minimum width. In table this behaves differently so it can be larger than the minWidth
+    return minimumColumnWidth;
+  })();
+  const whiteSpace = typeof column.cellWrap === "string" ? column.cellWrap : "nowrap";
+
+  return {
+    width: width,
+    "min-width": minWidth,
+    "max-width": maxWidth,
+    "white-space": whiteSpace,
+  };
+};
+
+const renderColumnHeaderStyle = (column: ColumnDefinition) => {
+  return {
+    ...renderColumnDefaultStyle(column),
+    "max-width": "fit-content",
+  };
+};
+
+const renderColumnDataCellStyle = (column: ColumnDefinition) => {
+  return {
+    ...renderColumnDefaultStyle(column),
+  };
+};
+
+const getColumnDataCellClasses = (column: ColumnDefinition) => {
+  const classes = [];
+
+  if (highlightedColumn.value === column.property) {
+    classes.push("--highlighted");
+  }
+
+  if (currentHoveredColumn.value === column.property) {
+    classes.push("--hovered");
+  }
+
+  return classes;
+};
+
+const getColumnHeaderClasses = (column: ColumnDefinition) => {
+  const classes = [];
+
+  if (highlightedColumn.value === column.property) {
+    classes.push("--highlighted");
+  }
+
+  if (currentHoveredColumn.value === column.property) {
+    classes.push("--hovered");
+  }
+
+  return classes;
+};
+
+const getColumnDataRowClasses = (rowId: string) => {
+  const classes = [];
+
+  if (currentHoveredRow.value === rowId) {
+    classes.push("--hovered");
+  }
+
+  return classes;
+};
+
+const isColumnVisible = (column: ColumnDefinition) => {
+  return column.visible ?? true;
+};
+
+const isMouseOver = ref<boolean>(false);
+const forceHighlightedColumn = ref<boolean>(false);
+const highlightedColumn = ref<string | null>(null);
+
+const setHighlightedColumn = (column: ColumnDefinition | null) => {
+  if (dataTable.value?.classList.contains("--resizing")) {
+    return;
+  }
+
+  if (!column) {
+    if (forceHighlightedColumn.value) {
+      return;
+    }
+
+    isMouseOver.value = false;
+
+    window.setTimeout(() => {
+      if (!isMouseOver.value) {
+        highlightedColumn.value = null;
+      }
+    }, 100);
+    return;
+  }
+
+  if (forceHighlightedColumn.value) {
+    return;
+  }
+
+  isMouseOver.value = true;
+  highlightedColumn.value = column.property;
+};
+
+/***
+ * Pagination
+ */
+const emitReload = () => emit("reload");
+
+const emitPaginationLimitChange = (limitValue: number) => {
+  emit("pagination-limit-change", limitValue);
+};
+
+const emitPaginationCurrentPageChange = (currentPage: number) => {
+  emit("pagination-current-page-change", currentPage);
+};
+
+/***
+ * Search
+ */
+const emitSearchValueChange = (searchValue: string) => {
+  emit("search-value-change", searchValue);
+};
+
+const debouncedEmitSearchValueChange = useDebounceFn((value: string) => {
+  emitSearchValueChange(value);
+}, 300); // 300ms debounce delay
+
+const handleSearchUpdate = (value: string) => {
+  debouncedEmitSearchValueChange(value);
+};
+
+const paginationOptionsConverted = computed(() => {
+  return props.paginationOptions.map((paginationNumber) => ({
+    id: paginationNumber,
+    label: paginationNumber.toString(),
+    value: paginationNumber,
+  }));
+});
+
+/***
+ * Column Reordering
+ */
+const changeColumnPosition = (
+  columnId: string,
+  targetColumnId: string,
+  insertPosition: "before" | "after" = "before",
+) => {
+  const column = columnsWithChanges.value.find((column) => column.property === columnId);
+  const targetColumn = columnsWithChanges.value.find(
+    (column) => column.property === targetColumnId,
+  );
+
+  if (!column || !targetColumn) {
+    return;
+  }
+
+  [...columnsWithChanges.value]
+    .sort((columnA, columnB) => {
+      return columnA.position - columnB.position;
+    })
+    .sort((columnA, columnB) => {
+      // The logic for inserting the column before or after the target column
+      if (columnB.property === column.property) {
+        if (insertPosition === "after") {
+          return columnA.position <= targetColumn.position ? -1 : 1;
+        } else {
+          return columnA.position < targetColumn.position ? -1 : 1;
+        }
+      }
+
+      if (columnA.property === column.property) {
+        if (insertPosition === "after") {
+          return columnB.position > targetColumn.position ? -1 : 1;
+        } else {
+          return columnB.position >= targetColumn.position ? -1 : 1;
+        }
+      }
+
+      return 0;
+    })
+    .forEach((column, index) => {
+      addToColumnChanges(column.property, { position: index * 100 });
+    });
+};
+
+const isDragging = ref<boolean>(false);
+const DRAG_GROUP_COLUMN = "drag-group-column";
+
+const dragConfig: Partial<DragConfig<ColumnDefinition & { dropZone?: "before" | "after" }>> = {
+  dragGroup: DRAG_GROUP_COLUMN,
+  preventEvent: false,
+  validateDragStart: (dragConfigData, el, event) => {
+    const allDragZones = document.querySelectorAll(".mt-data-table__table-head-dragzone");
+    // @ts-expect-error - TS doesn't know that target is a valid element
+    const isChild = [...allDragZones].some((dragZone) => dragZone.contains(event.target));
+
+    return isChild;
+  },
+  onDragStart: () => {
+    // add drag information to the table
+    if (dataTable.value) {
+      dataTable.value.classList.add("is--dragging-inside");
+    }
+
+    // set cursor globally to grabbing
+    document.body.style.cursor = "grabbing";
+    isDragging.value = true;
+  },
+  onDrop: (dragConfigData, dropConfigData) => {
+    // remove drag information to the table
+    if (dataTable.value) {
+      dataTable.value.classList.remove("is--dragging-inside");
+    }
+
+    // reset global cursor
+    document.body.style.cursor = "";
+    isDragging.value = false;
+
+    if (dragConfigData && dropConfigData) {
+      changeColumnPosition(
+        dragConfigData.property,
+        dropConfigData.property,
+        dropConfigData.dropZone,
+      );
+    }
+  },
+};
+
+const dropConfig: Partial<DropConfig & { dropZone?: "before" | "after" }> = {
+  dragGroup: DRAG_GROUP_COLUMN,
+};
+
+const changeColumnVisibility = (columnProperty: string, visibility: boolean) => {
+  const column = columnsWithChanges.value.find((column) => column.property === columnProperty);
+
+  if (!column) {
+    return;
+  }
+
+  addToColumnChanges(columnProperty, {
+    visible: visibility,
+  });
+};
+
+/**
+ * Methods for sorting and filtering the data
+ */
+const emitSortChange = (property: string, direction: "ASC" | "DESC") => {
+  emit("sort-change", property, direction);
+};
+
+const onColumnSettingsSortChange = (
+  property: string,
+  direction: "ASC" | "DESC",
+  chainMethod?: () => void,
+) => {
+  emitSortChange(property, direction);
+
+  if (chainMethod) {
+    chainMethod();
+  }
+};
+
+function removeFilter(id: string) {
+  const updatedFilters = props.appliedFilters.filter((filter) => filter.id !== id);
+
+  emit("update:appliedFilters", updatedFilters);
+}
+
+function addOption(filterId: string, optionId: string) {
+  const filter = props.filters.find((filter) => filter.id === filterId);
+  if (!filter)
+    throw new Error(`Failed to add filter option: Filter with the id "${filterId}" is not correct`);
+
+  const filterAlreadyInUse = !!props.appliedFilters.find((appliedFilter) => {
+    return appliedFilter.id === filter.id;
+  });
+
+  if (!filterAlreadyInUse) {
+    emit("update:appliedFilters", [
+      ...props.appliedFilters,
+      {
+        ...filter,
+        type: {
+          ...filter.type,
+          options: [filter.type.options.find((option) => option.id === optionId)],
+        },
+      },
+    ]);
+
+    return;
+  }
+
+  emit("update:appliedFilters", [
+    ...props.appliedFilters.map((appliedFilter) => {
+      if (appliedFilter.id === filter.id) {
+        return {
+          ...appliedFilter,
+          type: {
+            ...appliedFilter.type,
+            options: [
+              ...appliedFilter.type.options,
+              filter.type.options.find((option) => option.id === optionId),
+            ],
+          },
+        };
+      }
+
+      return appliedFilter;
+    }),
+  ]);
+}
+
+function removeOption(filterId: string, optionId: string) {
+  const removingLastOptionInFilter = props.appliedFilters.some((appliedFilter) => {
+    if (appliedFilter.id === filterId) {
+      if (appliedFilter.type.options.length === 1) {
+        return true;
+      }
+    }
+
+    return false;
+  });
+
+  if (removingLastOptionInFilter) {
+    const newFilters = props.appliedFilters.filter(
+      (appliedFilter) => appliedFilter.id !== filterId,
+    );
+
+    emit("update:appliedFilters", newFilters);
+
+    return;
+  }
+
+  const newFilters = props.appliedFilters.map((appliedFilter) => {
+    if (appliedFilter.id === filterId) {
+      return {
+        ...appliedFilter,
+        type: {
+          ...appliedFilter.type,
+          options: appliedFilter.type.options.filter((option) => option.id !== optionId),
+        },
+      };
+    }
+
+    return appliedFilter;
+  });
+
+  emit("update:appliedFilters", newFilters);
+}
+
+function isOptionSelected(filterId: string, optionId: string) {
+  const filterInUse = props.appliedFilters.find((appliedFilter) => {
+    return appliedFilter.id === filterId;
+  });
+
+  if (!filterInUse) return false;
+  return !!filterInUse.type.options.find((option) => option.id === optionId);
+}
+
+const showData = computed(() => {
+  return props.dataSource.length > 0 || props.isLoading;
+});
+
+/***
+ * Add scroll possibilities to tableWrapper
+ */
+const tableWrapper = ref();
+useScrollPossibilitiesClasses(tableWrapper, showData);
+
+/**
+ * General classes for whole data table
+ */
+const MtDataTableClasses = computed(() => {
+  return {
+    "mt-data-table__layout-default": props.layout === "default",
+    "mt-data-table__layout-full": props.layout === "full",
+    "mt-data-table__first-column-fixed": props.allowRowSelection,
+    // could be relevant in the feature when you can disable the context button
+    "mt-data-table__last-column-fixed": true,
+    "mt-data-table__stripes": props.showStripes,
+    "mt-data-table__outlines": props.showOutlines,
+    "mt-data-table__column-outline-framing-active": props.enableOutlineFraming,
+  };
+});
+
+const getColumnHeaderInnerWrapperClasses = (column: ColumnDefinition) => {
+  return [`mt-data-table__table-head-inner-wrapper-${column.renderer}-renderer`];
+};
+
+const leftFixedColumnWidth = ref<number>(0);
+
+const calculateLeftFixedColumnWith = () => {
+  if (dataTable.value) {
+    const stickyColumns = dataTable.value.querySelectorAll("thead th[data-sticky-column]");
+
+    const lastStickyColumn = stickyColumns[stickyColumns.length - 1] as HTMLElement;
+
+    if (!lastStickyColumn) {
+      return;
+    }
+
+    const lastStickyColumnRight = lastStickyColumn.dataset.stickyColumnRight;
+
+    leftFixedColumnWidth.value = Number(lastStickyColumnRight);
+  }
+};
+
+let tableMutationObserver: MutationObserver | undefined;
+
+const createTableMutationObserver = () => {
+  if (dataTable.value) {
+    tableMutationObserver = new MutationObserver(
+      throttle(() => {
+        calculateLeftFixedColumnWith();
+      }, 60),
+    );
+
+    tableMutationObserver.observe(dataTable.value as HTMLElement, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+    });
+  }
+};
+
+onMounted(() => {
+  createTableMutationObserver();
+  calculateLeftFixedColumnWith();
+});
+
+onBeforeUnmount(() => {
+  if (tableMutationObserver) {
+    tableMutationObserver.disconnect();
+  }
+});
+
+/**
+ * Adjust table variables
+ */
+const tableStylingVariables = computed(() => {
+  return {
+    "--fixed-left-column-width": `${leftFixedColumnWidth.value}px`,
+    "--fixed-right-column-width": "105px",
+  };
+});
+
+/**
+ * Row selection
+ */
+const getSelectionValue = (dataId: string) => {
+  if (props.allowRowSelection) {
+    return props.selectedRows.includes(dataId);
+  }
+
+  return false;
+};
+
+const onRowSelect = (dataId: string) => {
+  if (props.allowRowSelection && !props.disableRowSelect.includes(dataId)) {
+    const previousValue = getSelectionValue(dataId);
+
+    emit("selection-change", {
+      id: dataId,
+      value: !previousValue,
+    });
+  }
+};
+
+const somethingSelected = computed(() => {
+  return props.selectedRows.length > 0;
+});
+
+const bulkEditSegmentedControlActions = computed(() => {
+  const actions: SegmentedControlActionsProp = [
+    {
+      id: "item-selection-count",
+      label: t("bulkEdit.itemsSelected", { n: props.selectedRows.length }),
+      onClick: () => {
+        emit("multiple-selection-change", {
+          selections: props.selectedRows,
+          value: false,
+        });
+      },
+      isPressed: true,
+      checked: true,
+      hasCheckbox: true,
+    },
+  ];
+
+  if (props.allowBulkEdit && !props.disableEdit) {
+    actions.push({
+      id: "edit",
+      label: t("bulkEdit.edit"),
+      onClick: () => emit("bulk-edit"),
+    });
+  }
+
+  if (props.allowBulkDelete && !props.disableDelete) {
+    actions.push({
+      id: "delete",
+      label: t("bulkEdit.delete"),
+      onClick: () => emit("bulk-delete"),
+      isCritical: true,
+    });
+  }
+
+  if (props.bulkEditMoreActions.length > 0) {
+    actions.push({
+      id: "more",
+      label: t("bulkEdit.more"),
+      popover: {},
+    });
+  }
+
+  return actions;
+});
+
+const handleSelectAll = () => {
+  emit("multiple-selection-change", {
+    selections: props.dataSource
+      .filter((r) => !props.disableRowSelect.includes(r.id))
+      .map((r) => r.id),
+    value: true,
+  });
+};
+
+const getPreviousVisibleColumn = (column: ColumnDefinition): ColumnDefinition | null => {
+  const visibleColumns = sortedColumns.value.filter((c) => isColumnVisible(c));
+
+  const index = visibleColumns.findIndex((c) => c.property === column.property);
+
+  if (index <= 0) {
+    return null;
+  }
+
+  return visibleColumns[index - 1];
+};
+
+/**
+ * Add empty data to source when data is loading
+ */
+const emptyData = computed(() => {
+  return Array.from({ length: props.paginationLimit }, () => ({}));
+});
+
+/**
+ * Calculate the real index number based on page, limit and index
+ */
+const getRealIndex = (index: number) => {
+  return (props.currentPage - 1) * props.paginationLimit + index + 1;
+};
 </script>
 
 <style>

@@ -129,7 +129,7 @@ import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtTooltip from "../mt-tooltip/mt-tooltip.vue";
 import { useClipboard } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
-import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useFutureFlags } from "@/composables/_internal/useFutureFlags";
 
 const futureFlags = useFutureFlags();
 
@@ -179,8 +179,14 @@ const props = withDefaults(
     hint?: string | null;
   }>(),
   {
+    error: undefined,
+    label: undefined,
+    helpText: undefined,
+    placeholder: undefined,
+    name: undefined,
     size: "default",
     autocomplete: undefined,
+    hint: undefined,
   },
 );
 

@@ -77,7 +77,7 @@ import { hasSlotContent } from "../../../utils/slot";
 import MtValidationMixin from "../../../mixins/validation.mixin";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import { createId } from "../../../utils/id";
-import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useFutureFlags } from "@/composables/_internal/useFutureFlags";
 
 export default defineComponent({
   name: "MtBaseField",
@@ -198,14 +198,19 @@ export default defineComponent({
     },
   },
 
+  setup() {
+    const future = useFutureFlags();
+
+    return {
+      hasSlotContent,
+      future,
+    };
+  },
+
   data(): { id: string | undefined } {
     return {
       id: undefined,
     };
-  },
-
-  mounted() {
-    this.id = createId();
   },
 
   computed: {
@@ -237,13 +242,8 @@ export default defineComponent({
     },
   },
 
-  setup() {
-    const future = useFutureFlags();
-
-    return {
-      hasSlotContent,
-      future,
-    };
+  mounted() {
+    this.id = createId();
   },
 });
 </script>

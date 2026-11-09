@@ -7,27 +7,27 @@
   />
 
   <!-- Table modal -->
-  <mt-modal-root :isOpen="showTableModal" @change="($event) => (showTableModal = $event)">
+  <mt-modal-root :is-open="showTableModal" @change="($event) => (showTableModal = $event)">
     <mt-modal :title="t('mt-text-editor-toolbar-button-table.modalTitle')" width="s">
       <template #default>
         <div class="mt-text-editor__table-modal">
           <mt-number-field
-            :label="t('mt-text-editor-toolbar-button-table.columns')"
             v-model="tableColumns"
+            :label="t('mt-text-editor-toolbar-button-table.columns')"
             type="number"
             :min="1"
-            numberType="int"
+            number-type="int"
           />
           <mt-number-field
-            :label="t('mt-text-editor-toolbar-button-table.rows')"
             v-model="tableRows"
+            :label="t('mt-text-editor-toolbar-button-table.rows')"
             type="number"
             :min="1"
-            numberType="int"
+            number-type="int"
           />
           <mt-switch
-            :label="t('mt-text-editor-toolbar-button-table.showHeader')"
             v-model="tableShowHeader"
+            :label="t('mt-text-editor-toolbar-button-table.showHeader')"
           />
         </div>
       </template>
@@ -54,7 +54,7 @@ import mtModalRoot from "@/components/mt-modal/sub-components/mt-modal-root.vue"
 import mtModal from "@/components/mt-modal/mt-modal.vue";
 import mtButton from "@/components/mt-button/mt-button.vue";
 import mtSwitch from "@/components/mt-switch/mt-switch.vue";
-import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
+import mtTextEditorToolbarButton from "../mt-text-editor-toolbar-button.vue";
 import mtNumberField from "@/components/mt-number-field/mt-number-field.vue";
 import mtModalClose from "@/components/mt-modal/sub-components/mt-modal-close.vue";
 import { useI18n } from "vue-i18n";

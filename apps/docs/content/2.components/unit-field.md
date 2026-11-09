@@ -50,8 +50,11 @@ import { MtUnitField } from "@shopware-ag/meteor-component-library";
 ## Behavior
 
 - **Unit Field** combines [**Number Field**](/components/number-field) behavior with a unit selector.
-- Changing the selected unit can convert the current value to keep the measurement consistent.
-- `measurementType` controls which units are available, and `defaultUnit` controls the current selection.
+- Changing the selected unit converts the current value to the new unit and rounds it to `digits`.
+- `measurementType` controls which units are available, and `defaultUnit` controls the current selection:
+  - `length`: `mm`, `cm`, `m`, `in`, `ft`, `yd`
+  - `mass`: `g`, `kg`, `oz`, `lb`
+- The `Unit` type lists all units. Import it from the same path as `MtUnitField`.
 
 ## Accessibility
 

@@ -1,6 +1,6 @@
 import MtCard from "./mt-card.vue";
 import MtButton from "../mt-button/mt-button.vue";
-import MtContextMenuItem from "../mt-context-menu-item/mt-context-menu-item.vue";
+import MtContextMenuItem from "../_internal/mt-context-menu-item/mt-context-menu-item.vue";
 import MtTabs from "../mt-tabs/mt-tabs.vue";
 import MtAvatar from "../mt-avatar/mt-avatar.vue";
 import { fn } from "@storybook/test";

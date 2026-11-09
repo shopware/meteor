@@ -3,7 +3,7 @@ import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import iconMeta from "@shopware-ag/meteor-icon-kit/icons/meta.json";
 import MtSnackbar from "../mt-snackbar/mt-snackbar.vue";
-import { useSnackbar } from "../mt-snackbar/composables/use-snackbar";
+import { useSnackbar } from "@/composables/useSnackbar";
 import MtEmptyState from "../mt-empty-state/mt-empty-state.vue";
 import MtSearch from "../mt-search/mt-search.vue";
 import MtTabs from "../mt-tabs/mt-tabs.vue";

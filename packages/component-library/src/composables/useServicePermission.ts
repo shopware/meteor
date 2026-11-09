@@ -5,7 +5,7 @@ import {
   isGranted,
 } from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
 import { routerPush } from "@shopware-ag/meteor-admin-sdk/es/window";
-import { asyncComputed } from "@vueuse/core";
+import { computedAsync } from "@vueuse/core";
 import { computed, ref } from "vue";
 import type { ComputedRef, Ref } from "vue";
 
@@ -33,7 +33,7 @@ export function useServicePermission(): UseServicePermissionReturn {
   const isGranting = ref(false);
   const isLegacySWVersionEvaluating = ref(true);
 
-  const isLegacySWVersion = asyncComputed<boolean | null>(
+  const isLegacySWVersion = computedAsync<boolean | null>(
     async () => {
       try {
         return await compareIsShopwareVersion("<", "6.7.14.0");
@@ -45,7 +45,7 @@ export function useServicePermission(): UseServicePermissionReturn {
     { evaluating: isLegacySWVersionEvaluating },
   );
 
-  const isService = asyncComputed(async () => {
+  const isService = computedAsync(async () => {
     if (
       isLegacySWVersionEvaluating.value ||
       isLegacySWVersion.value === null ||
@@ -57,7 +57,7 @@ export function useServicePermission(): UseServicePermissionReturn {
     return await checkIsService();
   }, false);
 
-  const permissionGranted = asyncComputed<boolean | null>(async () => {
+  const permissionGranted = computedAsync<boolean | null>(async () => {
     if (isLegacySWVersionEvaluating.value || isLegacySWVersion.value === null) {
       return null;
     }

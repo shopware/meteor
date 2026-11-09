@@ -58,7 +58,7 @@
     <template #results-list>
       <!-- @vue-ignore -->
       <mt-select-result-list
-        ref="MtSelectResultList"
+        ref="resultList"
         :options="visibleResults"
         :is-loading="isLoading || isSearchResultsLoading"
         :empty-message="t('messageNoResults', { term: searchTerm })"
@@ -90,8 +90,8 @@
               :class="'mt-select-option--' + getKey(item, valueProperty)"
               :data-testid="'mt-select-option--' + getKey(item, valueProperty)"
               v-bind="{ item, index }"
-              @item-select="addItem"
               :disabled="item.disabled"
+              @item-select="addItem"
             >
               <slot
                 name="result-label-property"
@@ -130,10 +130,9 @@
   </mt-select-base>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import type { PropType } from "vue";
-
-import { defineComponent } from "vue";
+import { computed, ref, useAttrs, useSlots, watch } from "vue";
 import { debounce } from "@/utils/debounce";
 import { getPropertyValue } from "@/utils/object";
 import { isPromise } from "@/utils/promise";
@@ -145,575 +144,522 @@ import MtSelectSelectionList from "../_internal/mt-select-base/_internal/mt-sele
 import MtHighlightText from "../_internal/mt-highlight-text.vue";
 import { useI18n } from "vue-i18n";
 
-export default defineComponent({
-  name: "MtSelect",
+defineOptions({ name: "MtSelect", inheritAttrs: false });
 
-  components: {
-    "mt-field-hint": MtFieldHint,
-    "mt-select-base": MtSelectBase,
-    "mt-select-result-list": MtSelectResultList,
-    "mt-select-selection-list": MtSelectSelectionList,
-    "mt-highlight-text": MtHighlightText,
-    "mt-select-result": MtSelectResult,
+const props = defineProps({
+  /**
+   * An array of objects with the labelProperty and valueProperty.
+   *
+   * @example [{label: 'Option A', value: 'a'}, {label: 'Option B', value: 'b'}]
+   */
+  options: {
+    type: Array,
+    required: true,
   },
 
-  inheritAttrs: false,
+  /**
+   * Toggles if either one or more items can be selected.
+   */
+  enableMultiSelection: {
+    type: Boolean,
+    default: false,
+  },
 
-  props: {
-    /**
-     * An array of objects with the labelProperty and valueProperty.
-     *
-     * @example [{label: 'Option A', value: 'a'}, {label: 'Option B', value: 'b'}]
-     */
-    options: {
-      type: Array,
-      required: true,
-    },
+  /**
+   * Dependent on multiSelection, either a single value or an array of values.
+   */
+  modelValue: {
+    type: [String, Number, Boolean, Array, Object, null, undefined] as PropType<
+      string | number | boolean | unknown[] | null | object | undefined
+    >,
+    required: false,
+    default: null,
+  },
 
-    /**
-     * Toggles if either one or more items can be selected.
-     */
-    enableMultiSelection: {
-      type: Boolean,
-      default: false,
-    },
+  /**
+   * The object key of the label property. Can be a single string or an array of strings.
+   * If an array is provided, the first property that has a non-empty value will be used.
+   */
+  labelProperty: {
+    type: [String, Array] as PropType<string | string[]>,
+    required: false,
+    default: "label",
+  },
 
-    /**
-     * Dependent on multiSelection, either a single value or an array of values.
-     */
-    modelValue: {
-      type: [String, Number, Boolean, Array, Object, null, undefined] as PropType<
-        string | number | boolean | unknown[] | null | object | undefined
-      >,
-      required: false,
-      default: null,
-    },
+  /**
+   * The object key to use for the value.
+   */
+  valueProperty: {
+    type: String,
+    required: false,
+    default: "value",
+  },
 
-    /**
-     * The object key of the label property. Can be a single string or an array of strings.
-     * If an array is provided, the first property that has a non-empty value will be used.
-     */
-    labelProperty: {
-      type: [String, Array] as PropType<string | string[]>,
-      required: false,
-      default: "label",
-    },
+  /**
+   * The number of items that are expanded by default.
+   */
+  valueLimit: {
+    type: Number,
+    required: false,
+    default: 5,
+  },
 
-    /**
-     * The object key to use for the value.
-     */
-    valueProperty: {
-      type: String,
-      required: false,
-      default: "value",
-    },
+  /**
+   * The label for the select field itself.
+   */
+  label: {
+    type: String,
+    required: false,
+    default: "",
+  },
 
-    /**
-     * The number of items that are expanded by default.
-     */
-    valueLimit: {
-      type: Number,
-      required: false,
-      default: 5,
-    },
+  /**
+   * The placeholder for the select field.
+   */
+  placeholder: {
+    type: String,
+    required: false,
+    default: "",
+  },
 
-    /**
-     * The label for the select field itself.
-     */
-    label: {
-      type: String,
-      required: false,
-      default: "",
-    },
+  /**
+   * Determines if the placeholder should be shown even when there are no selections.
+   */
+  alwaysShowPlaceholder: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
 
-    /**
-     * The placeholder for the select field.
-     */
-    placeholder: {
-      type: String,
-      required: false,
-      default: "",
-    },
+  /**
+   * Toggles the loading state of the select field.
+   */
+  isLoading: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 
-    /**
-     * Determines if the placeholder should be shown even when there are no selections.
-     */
-    alwaysShowPlaceholder: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
+  /**
+   * Disables or enables the select field.
+   */
+  disabled: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 
-    /**
-     * Toggles the loading state of the select field.
-     */
-    isLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+  /**
+   * Toggles a button to clear all selections.
+   */
+  hideClearableButton: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 
-    /**
-     * Disables or enables the select field.
-     */
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+  /**
+   * Determines to highlight the searched term or not.
+   */
+  highlightSearchTerm: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
 
-    /**
-     * Toggles a button to clear all selections.
-     */
-    hideClearableButton: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Determines to highlight the searched term or not.
-     */
-    highlightSearchTerm: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-
-    /**
-     * Used to implement a custom search function.
-     * Parameters passed: { options, labelProperty, valueProperty, searchTerm }
-     */
-    searchFunction: {
-      type: Function,
-      required: false,
-      default: ({
-        options,
-        labelProperty,
-        searchTerm,
-      }: {
-        options: any;
-        labelProperty: string | string[];
-        searchTerm: string;
-      }) => {
-        return options.filter((option: any) => {
-          // If labelProperty is an array, check each property
-          if (Array.isArray(labelProperty)) {
-            for (const property of labelProperty) {
-              const label = getPropertyValue(option, property);
-              if (
-                label &&
-                typeof label === "string" &&
-                label.toLowerCase().includes(searchTerm.toLowerCase())
-              ) {
-                return true;
-              }
+  /**
+   * Used to implement a custom search function.
+   * Parameters passed: { options, labelProperty, valueProperty, searchTerm }
+   */
+  searchFunction: {
+    type: Function,
+    required: false,
+    default: ({
+      options,
+      labelProperty,
+      searchTerm,
+    }: {
+      options: any;
+      labelProperty: string | string[];
+      searchTerm: string;
+    }) => {
+      return options.filter((option: any) => {
+        // If labelProperty is an array, check each property
+        if (Array.isArray(labelProperty)) {
+          for (const property of labelProperty) {
+            const label = getPropertyValue(option, property);
+            if (
+              label &&
+              typeof label === "string" &&
+              label.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
+              return true;
             }
-            return false;
           }
+          return false;
+        }
 
-          // Original behavior for string labelProperty
-          const label = getPropertyValue(option, labelProperty);
-          if (!label) {
-            return false;
-          }
-          return label.toLowerCase().includes(searchTerm.toLowerCase());
-        });
-      },
-    },
-
-    /**
-     * An error in your business logic related to this field.
-     *
-     * For example: {"code": 500, "detail": "Error while saving"}
-     */
-    error: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Toggles the inheritance visualization.
-     */
-    isInherited: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Determines if the field is inheritable.
-     */
-    isInheritanceField: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Determines the active state of the inheritance toggle.
-     */
-    disableInheritanceToggle: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Render the select field in small
-     */
-    small: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Toggles the search input. When disabled, the input is rendered readonly,
-     * which also keeps browsers from treating it as an autofillable field.
-     */
-    enableSearch: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-
-    /**
-     * Optional caption below the field. The `#hint` slot takes precedence when provided.
-     */
-    hint: {
-      type: String as PropType<string | null>,
-      required: false,
-      default: null,
+        // Original behavior for string labelProperty
+        const label = getPropertyValue(option, labelProperty);
+        if (!label) {
+          return false;
+        }
+        return label.toLowerCase().includes(searchTerm.toLowerCase());
+      });
     },
   },
 
-  emits: [
-    "update:modelValue",
-    "change",
-    "item-add",
-    "item-remove",
-    "display-values-expand",
-    "paginate",
-    "search-term-change",
-    "inheritance-restore",
-    "inheritance-remove",
-  ],
+  /**
+   * An error in your business logic related to this field.
+   *
+   * For example: {"code": 500, "detail": "Error while saving"}
+   */
+  error: {
+    type: Object,
+    required: false,
+    default: null,
+  },
 
-  setup() {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          messageNoResults: 'No results found for "{term}".',
-        },
-        de: {
-          messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
-        },
-      },
+  /**
+   * Toggles the inheritance visualization.
+   */
+  isInherited: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Determines if the field is inheritable.
+   */
+  isInheritanceField: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Determines the active state of the inheritance toggle.
+   */
+  disableInheritanceToggle: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Render the select field in small
+   */
+  small: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Toggles the search input. When disabled, the input is rendered readonly,
+   * which also keeps browsers from treating it as an autofillable field.
+   */
+  enableSearch: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+
+  /**
+   * Optional caption below the field. The `#hint` slot takes precedence when provided.
+   */
+  hint: {
+    type: String as PropType<string | null>,
+    required: false,
+    default: null,
+  },
+});
+
+const emit = defineEmits([
+  "update:modelValue",
+  "change",
+  "item-add",
+  "item-remove",
+  "display-values-expand",
+  "paginate",
+  "search-term-change",
+  "inheritance-restore",
+  "inheritance-remove",
+]);
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      messageNoResults: 'No results found for "{term}".',
+    },
+    de: {
+      messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
+    },
+  },
+});
+
+const getKey = getPropertyValue;
+const attrs = useAttrs();
+const slots = useSlots();
+
+const selectBase = ref<InstanceType<typeof MtSelectBase> | null>(null);
+const selectionList = ref<InstanceType<typeof MtSelectSelectionList> | null>(null);
+const resultList = ref<InstanceType<typeof MtSelectResultList> | null>(null);
+
+const searchTerm = ref("");
+const limit = ref(props.valueLimit);
+const searchResults = ref<any[]>([]);
+const isSearchResultsLoading = ref(false);
+
+const currentValue = computed({
+  get(): string | number | boolean | unknown[] | object | null | undefined {
+    if (props.modelValue === null || props.modelValue === undefined) {
+      return [];
+    }
+
+    return props.modelValue;
+  },
+  set(newValue: string | number | boolean | unknown[] | object | null | undefined) {
+    emit("update:modelValue", newValue);
+
+    // @deprecated tag:4.0 - Will be removed. Use `update:modelValue` instead.
+    emit("change", newValue);
+  },
+});
+
+const isSelected = (item: any) => {
+  const value = currentValue.value;
+
+  if (props.enableMultiSelection && Array.isArray(value)) {
+    if (props.valueProperty) {
+      return value.includes(getKey(item, props.valueProperty));
+    }
+
+    return value.find(
+      (currentItem) =>
+        getKey(currentItem, props.labelProperty) === getKey(item, props.labelProperty),
+    );
+  }
+
+  if (props.valueProperty) {
+    return getKey(item, props.valueProperty) === value;
+  }
+
+  return getKey(item, props.labelProperty) === getKey(value, props.labelProperty);
+};
+
+const visibleValues = computed((): any[] => {
+  const value = currentValue.value;
+
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    return props.options.filter((item) => value === getKey(item, props.valueProperty));
+  }
+
+  if (Array.isArray(value)) {
+    if (value.length <= 0) {
+      return [];
+    }
+
+    return props.options
+      .filter((item) => {
+        return value.includes(getKey(item, props.valueProperty));
+      })
+      .slice(0, limit.value);
+  }
+
+  if (value && typeof value === "object") {
+    const property = props.valueProperty || ("id" in value ? "id" : undefined);
+    if (property) {
+      return props.options.filter((item) => getKey(item, property) === getKey(value, property));
+    }
+  }
+
+  return props.options.filter((item) => isSelected(item)).slice(0, limit.value);
+});
+
+const totalValuesCount = computed((): number => {
+  const value = currentValue.value;
+
+  if (props.enableMultiSelection && Array.isArray(value) && value.length) {
+    return value.length;
+  }
+
+  if (value !== undefined || value !== null) {
+    return 1;
+  }
+
+  return 0;
+});
+
+const invisibleValueCount = computed((): number => {
+  if (!currentValue.value) {
+    return 0;
+  }
+
+  return Math.max(0, totalValuesCount.value - limit.value);
+});
+
+const visibleResults = computed((): any[] => {
+  if (searchTerm.value) {
+    return searchResults.value;
+  }
+
+  return props.options;
+});
+
+/**
+ * `size="small"` passed as an attribute reaches mt-base-field through $attrs;
+ * treat it like the `small` prop so both render the same small select.
+ */
+const isSmall = computed((): boolean => {
+  return props.small || attrs.size === "small";
+});
+
+const componentClasses = computed((): Record<string, boolean> => {
+  return {
+    "mt-select--small": isSmall.value,
+  };
+});
+
+const showFieldHint = (): boolean => {
+  return !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
+};
+
+const remove = (item: any) => {
+  emit("item-remove", item);
+
+  const value = currentValue.value;
+
+  if (!Array.isArray(value)) {
+    currentValue.value = null;
+
+    return;
+  }
+
+  currentValue.value = value.filter((entry) => entry !== getKey(item, props.valueProperty));
+};
+
+const addItem = (item: any) => {
+  const identifier = getKey(item, props.valueProperty);
+
+  if (isSelected(item) && props.enableMultiSelection) {
+    remove(item);
+    return;
+  }
+
+  emit("item-add", item);
+
+  const value = currentValue.value;
+
+  if (props.enableMultiSelection) {
+    if (Array.isArray(value)) {
+      currentValue.value = [...value, identifier];
+    } else if (value === null || value === undefined) {
+      currentValue.value = [identifier];
+    } else {
+      currentValue.value = [value, identifier];
+    }
+  } else if (value !== identifier) {
+    currentValue.value = identifier;
+    selectBase.value?.collapse();
+    selectionList.value?.blur();
+  }
+
+  selectionList.value?.focus();
+  selectionList.value?.select();
+};
+
+const expandValueLimit = () => {
+  emit("display-values-expand");
+
+  limit.value += limit.value;
+};
+
+const removeLastItem = () => {
+  if (!visibleValues.value.length) {
+    return;
+  }
+
+  if (invisibleValueCount.value > 0) {
+    expandValueLimit();
+    return;
+  }
+
+  const lastSelection = visibleValues.value[visibleValues.value.length - 1];
+  remove(lastSelection);
+};
+
+const onSearchTermChange = (term: string) => {
+  searchTerm.value = term;
+};
+
+const resetActiveItem = () => {
+  if (!resultList.value) {
+    return;
+  }
+
+  resultList.value.setActiveItemIndex(0);
+};
+
+const searchTermDebounced = debounce((newSearchTerm: string) => {
+  emit("search-term-change", newSearchTerm);
+  resetActiveItem();
+
+  searchResults.value = [];
+
+  if (newSearchTerm !== undefined && newSearchTerm !== null) {
+    isSearchResultsLoading.value = true;
+    const result = props.searchFunction({
+      options: props.options,
+      labelProperty: props.labelProperty,
+      valueProperty: props.valueProperty,
+      searchTerm: searchTerm.value,
     });
 
-    return {
-      t,
-      getKey: getPropertyValue,
-    };
+    if (isPromise(result)) {
+      result.then((res: any) => {
+        if (res) {
+          searchResults.value = res;
+        }
+
+        isSearchResultsLoading.value = false;
+      });
+    } else {
+      if (result) {
+        searchResults.value = result;
+      }
+
+      isSearchResultsLoading.value = false;
+    }
+  }
+}, 100);
+
+const onSelectExpanded = () => {
+  selectionList.value?.focus();
+};
+
+const onSelectCollapsed = () => {
+  searchTerm.value = "";
+  selectionList.value?.blur();
+};
+
+const onClearSelection = () => {
+  currentValue.value = props.enableMultiSelection ? [] : null;
+};
+
+const getFocusElement = () => {
+  return selectionList.value?.getFocusEl() as HTMLElement;
+};
+
+watch(
+  () => props.valueLimit,
+  (value) => {
+    limit.value = value;
   },
+);
 
-  data() {
-    return {
-      searchTerm: "",
-      limit: this.valueLimit,
-      searchResults: [],
-      isSearchResultsLoading: false,
-    };
-  },
-
-  computed: {
-    visibleValues(): any[] {
-      if (
-        typeof this.currentValue === "string" ||
-        typeof this.currentValue === "number" ||
-        typeof this.currentValue === "boolean"
-      ) {
-        const value = this.currentValue;
-
-        return this.options.filter((item) => value === this.getKey(item, this.valueProperty));
-      }
-
-      if (Array.isArray(this.currentValue)) {
-        const value = this.currentValue;
-
-        if (this.currentValue.length <= 0) {
-          return [];
-        }
-
-        return this.options
-          .filter((item) => {
-            return value.includes(this.getKey(item, this.valueProperty));
-          })
-          .slice(0, this.limit);
-      }
-
-      if (this.currentValue && typeof this.currentValue === "object") {
-        const property = this.valueProperty || ("id" in this.currentValue ? "id" : undefined);
-        if (property) {
-          return this.options.filter(
-            (item) => this.getKey(item, property) === this.getKey(this.currentValue, property),
-          );
-        }
-      }
-
-      return this.options.filter((item) => this.isSelected(item)).slice(0, this.limit);
-    },
-
-    totalValuesCount(): number {
-      if (
-        this.enableMultiSelection &&
-        Array.isArray(this.currentValue) &&
-        this.currentValue.length
-      ) {
-        return this.currentValue.length;
-      }
-
-      if (Array.isArray(this.currentValue)) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        this.currentValue.length;
-      }
-
-      if (this.currentValue !== undefined || this.currentValue !== null) {
-        return 1;
-      }
-
-      return 0;
-    },
-
-    invisibleValueCount(): number {
-      if (!this.currentValue) {
-        return 0;
-      }
-
-      return Math.max(0, this.totalValuesCount - this.limit);
-    },
-
-    currentValue: {
-      get(): string | number | boolean | unknown[] | object | null | undefined {
-        if (this.modelValue === null || this.modelValue === undefined) {
-          return [];
-        }
-
-        return this.modelValue;
-      },
-      set(newValue: string | number | boolean | unknown[] | null | undefined) {
-        this.$emit("update:modelValue", newValue);
-
-        // @deprecated tag:4.0 - Will be removed. Use `update:modelValue` instead.
-        this.$emit("change", newValue);
-      },
-    },
-
-    visibleResults(): any[] {
-      if (this.searchTerm) {
-        return this.searchResults;
-      }
-
-      return this.options;
-    },
-
-    /**
-     * `size="small"` passed as an attribute reaches mt-base-field through $attrs;
-     * treat it like the `small` prop so both render the same small select.
-     */
-    isSmall(): boolean {
-      return this.small || this.$attrs.size === "small";
-    },
-
-    componentClasses(): Record<string, boolean> {
-      return {
-        "mt-select--small": this.isSmall,
-      };
-    },
-  },
-
-  watch: {
-    valueLimit(value) {
-      this.limit = value;
-    },
-
-    searchTerm(newSearchTerm) {
-      this.searchTermDebounced(newSearchTerm);
-    },
-  },
-
-  methods: {
-    showFieldHint(): boolean {
-      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
-    },
-
-    isSelected(item: any) {
-      if (this.enableMultiSelection && Array.isArray(this.currentValue)) {
-        if (this.valueProperty) {
-          return this.currentValue.includes(this.getKey(item, this.valueProperty));
-        }
-
-        return this.currentValue.find(
-          (currentItem) =>
-            this.getKey(currentItem, this.labelProperty) === this.getKey(item, this.labelProperty),
-        );
-      }
-
-      if (this.valueProperty) {
-        return this.getKey(item, this.valueProperty) === this.currentValue;
-      }
-
-      return (
-        this.getKey(item, this.labelProperty) === this.getKey(this.currentValue, this.labelProperty)
-      );
-    },
-
-    addItem(item: any) {
-      const identifier = this.getKey(item, this.valueProperty);
-
-      if (this.isSelected(item) && this.enableMultiSelection) {
-        this.remove(item);
-        return;
-      }
-
-      this.$emit("item-add", item);
-
-      if (this.enableMultiSelection) {
-        if (Array.isArray(this.currentValue)) {
-          this.currentValue = [...this.currentValue, identifier];
-        } else if (this.currentValue === null || this.currentValue === undefined) {
-          this.currentValue = [identifier];
-        } else {
-          this.currentValue = [this.currentValue, identifier];
-        }
-      } else if (this.currentValue !== identifier) {
-        this.currentValue = identifier;
-        // @ts-expect-error - ref exists
-        this.$refs.selectBase.collapse();
-        // @ts-expect-error - ref exists
-        this.$refs.selectionList.blur();
-      }
-
-      // @ts-expect-error - ref exists
-      this.$refs.selectionList.focus();
-      // @ts-expect-error - ref exists
-      this.$refs.selectionList.select();
-    },
-
-    remove(item: any) {
-      this.$emit("item-remove", item);
-
-      if (!Array.isArray(this.currentValue)) {
-        this.currentValue = null;
-
-        return;
-      }
-
-      this.currentValue = this.currentValue.filter(
-        (value) => value !== this.getKey(item, this.valueProperty),
-      );
-    },
-
-    removeLastItem() {
-      if (!this.visibleValues.length) {
-        return;
-      }
-
-      if (this.invisibleValueCount > 0) {
-        this.expandValueLimit();
-        return;
-      }
-
-      const lastSelection = this.visibleValues[this.visibleValues.length - 1];
-      this.remove(lastSelection);
-    },
-
-    expandValueLimit() {
-      this.$emit("display-values-expand");
-
-      this.limit += this.limit;
-    },
-
-    onSearchTermChange(term: string) {
-      this.searchTerm = term;
-    },
-
-    searchTermDebounced: debounce(function searchTermDebounced(newSearchTerm: string) {
-      // @ts-expect-error - this context will always be available
-      this.$emit("search-term-change", newSearchTerm);
-      // @ts-expect-error - this context will always be available
-      this.resetActiveItem();
-
-      // @ts-expect-error - this context will always be available
-      this.searchResults = [];
-
-      if (newSearchTerm !== undefined && newSearchTerm !== null) {
-        // @ts-expect-error - this context will always be available
-        this.isSearchResultsLoading = true;
-        // @ts-expect-error - this context will always be available
-        const result = this.searchFunction({
-          // @ts-expect-error - this context will always be available
-          options: this.options,
-          // @ts-expect-error - this context will always be available
-          labelProperty: this.labelProperty,
-          // @ts-expect-error - this context will always be available
-          valueProperty: this.valueProperty,
-          // @ts-expect-error - this context will always be available
-          searchTerm: this.searchTerm,
-        });
-
-        if (isPromise(result)) {
-          result.then((res: any) => {
-            if (res) {
-              // @ts-expect-error - this context will always be available
-              this.searchResults = res;
-            }
-
-            // @ts-expect-error - this context will always be available
-            this.isSearchResultsLoading = false;
-          });
-        } else {
-          if (result) {
-            // @ts-expect-error - this context will always be available
-            this.searchResults = result;
-          }
-
-          // @ts-expect-error - this context will always be available
-          this.isSearchResultsLoading = false;
-        }
-      }
-    }, 100),
-
-    resetActiveItem() {
-      if (!this.$refs.MtSelectResultList) {
-        return;
-      }
-
-      // @ts-expect-error - ref exists
-      this.$refs.MtSelectResultList.setActiveItemIndex(0);
-    },
-
-    onSelectExpanded() {
-      // @ts-expect-error - ref exists
-      this.$refs.selectionList.focus();
-    },
-
-    onSelectCollapsed() {
-      this.searchTerm = "";
-      // @ts-expect-error - ref exists
-      this.$refs.selectionList.blur();
-    },
-
-    onClearSelection() {
-      this.currentValue = this.enableMultiSelection ? [] : null;
-    },
-
-    getFocusElement() {
-      // @ts-expect-error - ref exists
-      return this.$refs.selectionList.getFocusEl() as HTMLElement;
-    },
-  },
+watch(searchTerm, (newSearchTerm) => {
+  searchTermDebounced(newSearchTerm);
 });
 </script>

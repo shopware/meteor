@@ -1,17 +1,16 @@
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
 
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 // @ts-expect-error - not typed
 import svg from "vite-plugin-svgstring";
-import dts from "vite-plugin-dts";
-import { emitInterFontAssets, getAllComponents, libInjectCss, toPascalCase } from "./build/helper";
+import dts from "unplugin-dts/vite";
+import { libInjectCss } from "vite-plugin-lib-inject-css";
 
-// Get all components and their paths
-const allComponents = getAllComponents();
-
-export const external = ["vue", "apexcharts", "vue-i18n"];
+// Every file in src/exports is one import path of the package: src/exports/MtButton.ts is "/MtButton".
+const exportFiles = fs.readdirSync(path.resolve(__dirname, "src/exports"));
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -22,53 +21,29 @@ export default defineConfig({
     vue({ template: { compilerOptions: { comments: false } } }),
     svg(),
     dts({
-      outDir: ["dist/esm", "dist/common"],
+      processor: "vue",
+      // ESM type files with explicit extensions on relative imports, which node16 and nodenext require
+      outDirs: { dir: "dist", moduleFormat: "esm" },
+      entryRoot: "src",
       cleanVueFileName: true,
-      copyDtsFiles: true,
       tsconfigPath: path.resolve(__dirname, "tsconfig.vitest.json"),
       compilerOptions: {
         composite: false,
       },
-      include: [
-        "env.d.ts",
-        "src/**/*",
-        "src/**/*.vue",
-        "src/**/*.ts",
-        "src/**/*.js",
-        "src/**/*.json",
+      include: ["src/**/*"],
+      exclude: [
+        "node_modules",
+        "**/*.stories.ts",
+        "**/*.spec.ts",
+        "**/*.spec.js",
+        "**/*story-helper.ts",
+        "**/*test-helper.ts",
+        // Only used by stories
+        "**/_mocks/**",
+        "**/example-radio-option.vue",
       ],
-      exclude: ["node_modules", "**/*.stories.ts", "**/*.spec.ts", "**/*.spec.js"],
-      beforeWriteFile: (filePath, content) => {
-        // Check if this is a component .d.ts file that needs to be flattened
-        // filePath is an absolute path, so we need to handle it accordingly
-        if (!filePath.endsWith(".d.ts")) return;
-
-        // Check if it's in esm or common directory
-        const esmMatch = filePath.match(/\/dist\/esm\/(.+)\.d\.ts$/);
-        const commonMatch = filePath.match(/\/dist\/common\/(.+)\.d\.ts$/);
-
-        if (!esmMatch && !commonMatch) return;
-
-        const match = esmMatch || commonMatch;
-        const format = esmMatch ? "esm" : "common";
-        const relativePath = match?.[1]; // e.g., "components/form/mt-button/mt-button"
-
-        // Extract the component file name (e.g., "mt-button" from "components/form/mt-button/mt-button")
-        const fileName = relativePath ? path.basename(relativePath) : "";
-        const pascalCaseName = toPascalCase(fileName);
-
-        // Check if this component is in our allComponents entries
-        if (allComponents[pascalCaseName]) {
-          // Transform to flat structure: /absolute/path/dist/esm/MtButton.d.ts
-          const distIndex = filePath.indexOf("/dist/");
-          const basePath = filePath.substring(0, distIndex);
-          const newFilePath = `${basePath}/dist/${format}/${pascalCaseName}.d.ts`;
-          return { filePath: newFilePath };
-        }
-      },
     }),
     libInjectCss(),
-    emitInterFontAssets(),
   ],
   resolve: {
     alias: [
@@ -93,21 +68,22 @@ export default defineConfig({
     cssTarget: ["chrome87", "firefox78", "safari14", "edge88"],
     minify: false,
     lib: {
-      entry: {
-        index: path.resolve(__dirname, "src/index.ts"),
-        fonts: path.resolve(__dirname, "src/fonts.ts"),
-        ...allComponents,
-      },
-      formats: ["es", "cjs"],
-      fileName: (format, entryName) => `${format === "es" ? "esm" : "common"}/${entryName}.js`,
+      entry: [
+        path.resolve(__dirname, "src/index.ts"),
+        ...exportFiles.map((file) => path.resolve(__dirname, "src/exports", file)),
+      ],
+      formats: ["es"],
+      fileName: (_format, name) => (name === "index" ? "index.js" : `exports/${name}.js`),
     },
     cssCodeSplit: true,
     rollupOptions: {
-      external: external,
+      // Packages stay imports, so apps install the dependencies once and share them with the library
+      external: (id) =>
+        !id.startsWith(".") && !id.startsWith("@/") && !id.startsWith("\0") && !path.isAbsolute(id),
       output: {
-        globals: {
-          vue: "Vue",
-        },
+        // Rollup otherwise adds an `import "<chunk or dependency>"` to each entry for everything the
+        // entries it imports depend on, so apps would load the dependencies of unused components.
+        hoistTransitiveImports: false,
       },
     },
   },

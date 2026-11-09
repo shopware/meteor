@@ -1,7 +1,7 @@
-import { defineComponent, h, nextTick, ref } from "vue";
+import { h, nextTick, ref } from "vue";
 import { render, screen } from "@testing-library/vue";
 import MtSnackbar from "./mt-snackbar.vue";
-import { useSnackbar } from "./composables/use-snackbar";
+import { useSnackbar } from "@/composables/useSnackbar";
 
 describe("mt-snackbar", () => {
   afterEach(() => {
@@ -10,7 +10,7 @@ describe("mt-snackbar", () => {
 
   it("shows a notification once even when several hosts are mounted", async () => {
     // ARRANGE
-    render(defineComponent({ render: () => [h(MtSnackbar), h(MtSnackbar)] }));
+    render(() => [h(MtSnackbar), h(MtSnackbar)]);
 
     // ACT
     useSnackbar().addSnackbar({ message: "Saved successfully" });
@@ -23,14 +23,10 @@ describe("mt-snackbar", () => {
   it("keeps showing notifications when the first host goes away", async () => {
     // ARRANGE
     const showFirst = ref(true);
-    render(
-      defineComponent({
-        render: () => [
-          showFirst.value ? h(MtSnackbar, { key: "first" }) : null,
-          h(MtSnackbar, { key: "second" }),
-        ],
-      }),
-    );
+    render(() => [
+      showFirst.value ? h(MtSnackbar, { key: "first" }) : null,
+      h(MtSnackbar, { key: "second" }),
+    ]);
     useSnackbar().addSnackbar({ message: "Saved successfully" });
     await nextTick();
 

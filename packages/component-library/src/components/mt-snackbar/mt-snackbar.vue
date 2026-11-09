@@ -16,7 +16,8 @@
 
 <script setup lang="ts">
 import MtSnackbarNotification from "./_internal/mt-snackbar-notification.vue";
-import { useSnackbar, useSnackbarHost, type Snackbar } from "./composables/use-snackbar";
+import { useSnackbar, type Snackbar } from "@/composables/useSnackbar";
+import { useSnackbarHost } from "./_internal/useSnackbarHost";
 import { ref } from "vue";
 
 export interface HeightT {

@@ -1,53 +1,108 @@
 import type { Locale } from "date-fns";
 
-type DateFnsLocaleModule = {
-  default?: unknown;
-  [key: string]: unknown;
-};
+// Bundlers can only split dynamic imports with a static path, so every date-fns locale has an entry
+const locales = new Map<string, () => Promise<Locale>>([
+  ["af", () => import("date-fns/locale/af").then((module) => module.af)],
+  ["ar", () => import("date-fns/locale/ar").then((module) => module.ar)],
+  ["ar-DZ", () => import("date-fns/locale/ar-DZ").then((module) => module.arDZ)],
+  ["ar-EG", () => import("date-fns/locale/ar-EG").then((module) => module.arEG)],
+  ["ar-MA", () => import("date-fns/locale/ar-MA").then((module) => module.arMA)],
+  ["ar-SA", () => import("date-fns/locale/ar-SA").then((module) => module.arSA)],
+  ["ar-TN", () => import("date-fns/locale/ar-TN").then((module) => module.arTN)],
+  ["az", () => import("date-fns/locale/az").then((module) => module.az)],
+  ["be", () => import("date-fns/locale/be").then((module) => module.be)],
+  ["be-tarask", () => import("date-fns/locale/be-tarask").then((module) => module.beTarask)],
+  ["bg", () => import("date-fns/locale/bg").then((module) => module.bg)],
+  ["bn", () => import("date-fns/locale/bn").then((module) => module.bn)],
+  ["bs", () => import("date-fns/locale/bs").then((module) => module.bs)],
+  ["ca", () => import("date-fns/locale/ca").then((module) => module.ca)],
+  ["ckb", () => import("date-fns/locale/ckb").then((module) => module.ckb)],
+  ["cs", () => import("date-fns/locale/cs").then((module) => module.cs)],
+  ["cy", () => import("date-fns/locale/cy").then((module) => module.cy)],
+  ["da", () => import("date-fns/locale/da").then((module) => module.da)],
+  ["de", () => import("date-fns/locale/de").then((module) => module.de)],
+  ["de-AT", () => import("date-fns/locale/de-AT").then((module) => module.deAT)],
+  ["el", () => import("date-fns/locale/el").then((module) => module.el)],
+  ["en-AU", () => import("date-fns/locale/en-AU").then((module) => module.enAU)],
+  ["en-CA", () => import("date-fns/locale/en-CA").then((module) => module.enCA)],
+  ["en-GB", () => import("date-fns/locale/en-GB").then((module) => module.enGB)],
+  ["en-IE", () => import("date-fns/locale/en-IE").then((module) => module.enIE)],
+  ["en-IN", () => import("date-fns/locale/en-IN").then((module) => module.enIN)],
+  ["en-NZ", () => import("date-fns/locale/en-NZ").then((module) => module.enNZ)],
+  ["en-US", () => import("date-fns/locale/en-US").then((module) => module.enUS)],
+  ["en-ZA", () => import("date-fns/locale/en-ZA").then((module) => module.enZA)],
+  ["eo", () => import("date-fns/locale/eo").then((module) => module.eo)],
+  ["es", () => import("date-fns/locale/es").then((module) => module.es)],
+  ["et", () => import("date-fns/locale/et").then((module) => module.et)],
+  ["eu", () => import("date-fns/locale/eu").then((module) => module.eu)],
+  ["fa-IR", () => import("date-fns/locale/fa-IR").then((module) => module.faIR)],
+  ["fi", () => import("date-fns/locale/fi").then((module) => module.fi)],
+  ["fr", () => import("date-fns/locale/fr").then((module) => module.fr)],
+  ["fr-CA", () => import("date-fns/locale/fr-CA").then((module) => module.frCA)],
+  ["fr-CH", () => import("date-fns/locale/fr-CH").then((module) => module.frCH)],
+  ["fy", () => import("date-fns/locale/fy").then((module) => module.fy)],
+  ["gd", () => import("date-fns/locale/gd").then((module) => module.gd)],
+  ["gl", () => import("date-fns/locale/gl").then((module) => module.gl)],
+  ["gu", () => import("date-fns/locale/gu").then((module) => module.gu)],
+  ["he", () => import("date-fns/locale/he").then((module) => module.he)],
+  ["hi", () => import("date-fns/locale/hi").then((module) => module.hi)],
+  ["hr", () => import("date-fns/locale/hr").then((module) => module.hr)],
+  ["ht", () => import("date-fns/locale/ht").then((module) => module.ht)],
+  ["hu", () => import("date-fns/locale/hu").then((module) => module.hu)],
+  ["hy", () => import("date-fns/locale/hy").then((module) => module.hy)],
+  ["id", () => import("date-fns/locale/id").then((module) => module.id)],
+  ["is", () => import("date-fns/locale/is").then((module) => module.is)],
+  ["it", () => import("date-fns/locale/it").then((module) => module.it)],
+  ["it-CH", () => import("date-fns/locale/it-CH").then((module) => module.itCH)],
+  ["ja", () => import("date-fns/locale/ja").then((module) => module.ja)],
+  ["ja-Hira", () => import("date-fns/locale/ja-Hira").then((module) => module.jaHira)],
+  ["ka", () => import("date-fns/locale/ka").then((module) => module.ka)],
+  ["kk", () => import("date-fns/locale/kk").then((module) => module.kk)],
+  ["km", () => import("date-fns/locale/km").then((module) => module.km)],
+  ["kn", () => import("date-fns/locale/kn").then((module) => module.kn)],
+  ["ko", () => import("date-fns/locale/ko").then((module) => module.ko)],
+  ["lb", () => import("date-fns/locale/lb").then((module) => module.lb)],
+  ["lt", () => import("date-fns/locale/lt").then((module) => module.lt)],
+  ["lv", () => import("date-fns/locale/lv").then((module) => module.lv)],
+  ["mk", () => import("date-fns/locale/mk").then((module) => module.mk)],
+  ["mn", () => import("date-fns/locale/mn").then((module) => module.mn)],
+  ["ms", () => import("date-fns/locale/ms").then((module) => module.ms)],
+  ["mt", () => import("date-fns/locale/mt").then((module) => module.mt)],
+  ["nb", () => import("date-fns/locale/nb").then((module) => module.nb)],
+  ["nl", () => import("date-fns/locale/nl").then((module) => module.nl)],
+  ["nl-BE", () => import("date-fns/locale/nl-BE").then((module) => module.nlBE)],
+  ["nn", () => import("date-fns/locale/nn").then((module) => module.nn)],
+  ["oc", () => import("date-fns/locale/oc").then((module) => module.oc)],
+  ["pl", () => import("date-fns/locale/pl").then((module) => module.pl)],
+  ["pt", () => import("date-fns/locale/pt").then((module) => module.pt)],
+  ["pt-BR", () => import("date-fns/locale/pt-BR").then((module) => module.ptBR)],
+  ["ro", () => import("date-fns/locale/ro").then((module) => module.ro)],
+  ["ru", () => import("date-fns/locale/ru").then((module) => module.ru)],
+  ["se", () => import("date-fns/locale/se").then((module) => module.se)],
+  ["sk", () => import("date-fns/locale/sk").then((module) => module.sk)],
+  ["sl", () => import("date-fns/locale/sl").then((module) => module.sl)],
+  ["sq", () => import("date-fns/locale/sq").then((module) => module.sq)],
+  ["sr", () => import("date-fns/locale/sr").then((module) => module.sr)],
+  ["sr-Latn", () => import("date-fns/locale/sr-Latn").then((module) => module.srLatn)],
+  ["sv", () => import("date-fns/locale/sv").then((module) => module.sv)],
+  ["ta", () => import("date-fns/locale/ta").then((module) => module.ta)],
+  ["te", () => import("date-fns/locale/te").then((module) => module.te)],
+  ["th", () => import("date-fns/locale/th").then((module) => module.th)],
+  ["tr", () => import("date-fns/locale/tr").then((module) => module.tr)],
+  ["ug", () => import("date-fns/locale/ug").then((module) => module.ug)],
+  ["uk", () => import("date-fns/locale/uk").then((module) => module.uk)],
+  ["uz", () => import("date-fns/locale/uz").then((module) => module.uz)],
+  ["uz-Cyrl", () => import("date-fns/locale/uz-Cyrl").then((module) => module.uzCyrl)],
+  ["vi", () => import("date-fns/locale/vi").then((module) => module.vi)],
+  ["zh-CN", () => import("date-fns/locale/zh-CN").then((module) => module.zhCN)],
+  ["zh-HK", () => import("date-fns/locale/zh-HK").then((module) => module.zhHK)],
+  ["zh-TW", () => import("date-fns/locale/zh-TW").then((module) => module.zhTW)],
+]);
 
-function isDateFnsLocale(value: unknown): value is Locale {
-  return typeof value === "object" && value !== null && "localize" in value;
-}
-
-function isSafeLocalePath(path: string): boolean {
-  return /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(path);
-}
-
-export function resolveDateFnsLocaleModule(
-  path: string,
-  localeModule: DateFnsLocaleModule,
-): Locale | null {
-  const localeName = path.replace(/-/g, "");
-  const defaultExport = localeModule.default;
-
-  const candidates = [
-    localeModule[localeName],
-    typeof defaultExport === "object" && defaultExport !== null
-      ? (defaultExport as DateFnsLocaleModule)[localeName]
-      : undefined,
-    typeof defaultExport === "object" && defaultExport !== null
-      ? (defaultExport as DateFnsLocaleModule).default
-      : undefined,
-    defaultExport,
-    localeModule,
-  ];
-
-  return candidates.find(isDateFnsLocale) ?? null;
-}
-
-export async function importDateFnsLocaleModule(path: string): Promise<Locale | null> {
-  if (!isSafeLocalePath(path)) {
-    return null;
-  }
-
-  try {
-    const localeModule = (await import(
-      /* @vite-ignore */
-      `date-fns/locale/${path}`
-    )) as DateFnsLocaleModule;
-
-    return resolveDateFnsLocaleModule(path, localeModule);
-  } catch {
-    return null;
-  }
+/**
+ * Loads a date-fns locale by its path in `date-fns/locale/`, for example "de" or "en-GB".
+ * Returns null for paths that aren't date-fns locales.
+ */
+export async function importDateFnsLocale(path: string): Promise<Locale | null> {
+  return (await locales.get(path)?.()) ?? null;
 }

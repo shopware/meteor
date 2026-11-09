@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import MtEntityDataTable from "@shopware-ag/meteor-component-library/MtEntityDataTable";
+import MtEntityDataTable, {
+  type AvailableFilter,
+} from "@shopware-ag/meteor-component-library/MtEntityDataTable";
+import type { ColumnDefinition } from "@shopware-ag/meteor-component-library/MtDataTable";
 
 // In-memory product records that stand in for an Admin SDK entity store.
 const products = [
@@ -91,7 +94,7 @@ const repository = () => ({
   async delete() {},
 });
 
-const columns = [
+const columns: ColumnDefinition[] = [
   {
     label: "Name",
     property: "name",
@@ -121,7 +124,7 @@ const columns = [
   },
 ];
 
-const availableFilters = [
+const availableFilters: AvailableFilter[] = [
   { filterType: "boolean", id: "active", label: "Active" },
 ];
 </script>

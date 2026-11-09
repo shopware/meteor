@@ -4,7 +4,7 @@ import { waitUntil } from "@/_internal/test-helper";
 
 import meta from "./mt-snackbar.stories";
 import type { MtSnackbarMeta, MtSnackbarStory } from "./mt-snackbar.stories";
-import { useSnackbar } from "./composables/use-snackbar";
+import { useSnackbar } from "@/composables/useSnackbar";
 
 export default {
   ...meta,

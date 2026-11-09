@@ -1,5 +1,5 @@
 import MtIcon from "../components/mt-icon/mt-icon.vue";
-import TooltipDirective from "./tooltip.directive";
+import { TooltipDirective } from "@/directives/TooltipDirective";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { defineComponent } from "vue";
 
@@ -21,6 +21,11 @@ const meta: SlottedMeta<
       directives: {
         tooltip: TooltipDirective,
       },
+      setup: () => {
+        return {
+          args,
+        };
+      },
       template: `<div>
       <mt-icon
         name="regular-question-circle"
@@ -29,11 +34,6 @@ const meta: SlottedMeta<
         }">
       </mt-icon>
     </div>`,
-      setup: () => {
-        return {
-          args,
-        };
-      },
     }),
   args: {
     message: "Help text",

@@ -24,8 +24,8 @@
     <template #element="{ identification }">
       <!-- @vue-ignore -->
       <mt-number-field
-        v-model="rangeLeftValue as any"
         v-if="isRange"
+        v-model="rangeLeftValue as any"
         :min="min"
         :max="max - minDistance"
         :step="step"
@@ -42,7 +42,7 @@
             </span>
           </div>
         </div>
-        <div class="mt-slider__bar" ref="sliderBar">
+        <div ref="sliderBar" class="mt-slider__bar">
           <div
             class="mt-slider__value"
             :style="{ left: styleStartPosition, right: styleEndPosition }"
@@ -50,6 +50,7 @@
         </div>
         <input
           v-if="isRange"
+          v-model.number="rangeLeftValue"
           type="range"
           class="mt-slider__input-slider mt-slider__input-slider__double"
           aria-label="Left range slider"
@@ -57,13 +58,13 @@
           :max="max"
           :step="step"
           :disabled="disabled"
-          v-model.number="rangeLeftValue"
+          data-testid="left-slider"
           @mouseenter="activeSlider = 'left'"
           @mouseleave="activeSlider = null"
-          data-testid="left-slider"
         />
         <input
           :id="identification"
+          v-model.number="rangeRightValue"
           type="range"
           class="mt-slider__input-slider"
           :class="{ 'mt-slider__input-slider__double': isRange }"
@@ -72,10 +73,9 @@
           :max="max"
           :step="step"
           :disabled="disabled"
-          v-model.number="rangeRightValue"
+          data-testid="right-slider"
           @mouseenter="activeSlider = 'right'"
           @mouseleave="activeSlider = null"
-          data-testid="right-slider"
         />
 
         <span
@@ -108,303 +108,411 @@
   </mt-base-field>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import type { PropType } from "vue";
-import { defineComponent } from "vue";
+import { computed, ref, useSlots, watch } from "vue";
 import MtBaseField from "@/components/_internal/mt-base-field/mt-base-field.vue";
 import MtNumberField from "@/components/mt-number-field/mt-number-field.vue";
 import MtFieldHint from "@/components/_internal/mt-field-hint/mt-field-hint.vue";
-import MtTooltipDirective from "@/directives/tooltip.directive";
 
-export default defineComponent({
-  name: "MtSlider",
+defineOptions({ name: "MtSlider" });
 
-  directives: {
-    tooltip: MtTooltipDirective,
+const props = defineProps({
+  /**
+   * Defines the label of the slider
+   */
+  label: {
+    type: String,
+    required: true,
   },
 
-  components: { MtNumberField, MtBaseField, MtFieldHint },
-
-  extends: MtBaseField,
-
-  props: {
-    /**
-     * Defines the label of the slider
-     */
-    label: {
-      type: String,
-      required: true,
-    },
-
-    /**
-     * Defines the minimum value of the number.
-     */
-    min: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-
-    /**
-     * Defines the maximum value of the number.
-     */
-    max: {
-      type: Number,
-      required: false,
-      default: 100,
-    },
-
-    /**
-     * Defines the amount of which the number is increased or decreased per step.
-     */
-    step: {
-      type: Number,
-      required: false,
-      default: 1,
-    },
-
-    /**
-     * The value of the slider.
-     * If isRange is true, this should be an array with two values.
-     * If isRange is false, this should be a single number.
-     */
-    modelValue: {
-      type: [Number, Array] as PropType<number | number[]>,
-      required: false,
-      default: 0,
-      validator(value) {
-        if (Array.isArray(value)) {
-          return value.length === 2;
-        }
-        return true;
-      },
-    },
-
-    /**
-     * Defines if it is a range slider.
-     */
-    isRange: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Defines the minimum distance between the two sliders.
-     * Should be a multiple of the step.
-     */
-    minDistance: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-
-    /**
-     * Defines the amount of marks on the slider.
-     */
-    markCount: {
-      type: Number,
-      required: false,
-      default: 5,
-    },
-
-    /**
-     * Optional caption below the field. The `#hint` slot takes precedence when provided.
-     */
-    hint: {
-      type: String as PropType<string | null>,
-      required: false,
-      default: null,
-    },
+  /**
+   * Defines the minimum value of the number.
+   */
+  min: {
+    type: Number,
+    required: false,
+    default: 0,
   },
 
-  data() {
-    return {
-      rangeRightValue: 0 as number,
-      rangeLeftValue: 0 as number,
-      activeSlider: null as null | "left" | "right",
-    };
+  /**
+   * Defines the maximum value of the number.
+   */
+  max: {
+    type: Number,
+    required: false,
+    default: 100,
   },
 
-  watch: {
-    modelValue: {
-      handler(value) {
-        if (this.isArray(value)) {
-          this.rangeLeftValue = value[0];
-          this.rangeRightValue = value[1];
-        } else {
-          this.rangeRightValue = value;
-        }
-      },
-      immediate: true,
-    },
-
-    rangeRightValue: {
-      handler(value) {
-        if (typeof value === "string") {
-          value = parseFloat(value);
-        }
-        if (value >= this.max) {
-          value = this.max;
-        }
-        if (this.isRange) {
-          if (value <= this.min) {
-            value = this.min + this.minDistance;
-          }
-          let newLeftValue = this.rangeLeftValue;
-          if (value <= this.rangeLeftValue) {
-            newLeftValue = value - this.minDistance;
-          }
-          this.$emit("update:modelValue", [newLeftValue, value]);
-        } else {
-          if (value <= this.min) {
-            value = this.min;
-          }
-          this.$emit("update:modelValue", value);
-        }
-      },
-      immediate: true,
-    },
-
-    rangeLeftValue: {
-      handler(value) {
-        if (typeof value === "string") {
-          value = parseFloat(value);
-        }
-        if (!this.isRange) {
-          return;
-        }
-        if (value >= this.max) {
-          value = this.max - this.minDistance;
-        }
-        let newRightValue = this.rangeRightValue;
-        if (value >= this.rangeRightValue) {
-          newRightValue = value + this.minDistance;
-        }
-        this.$emit("update:modelValue", [value, newRightValue]);
-      },
-      immediate: true,
-    },
-
-    // ensure that the range values are within the min and max range
-    min: {
-      handler(value) {
-        if (!this.isRange && this.rangeRightValue < value) {
-          this.rangeRightValue = value;
-        } else if (this.rangeLeftValue < value) {
-          this.rangeLeftValue = value;
-        }
-      },
-      immediate: true,
-    },
-
-    max: {
-      handler(value) {
-        if (this.rangeRightValue > value) {
-          this.rangeRightValue = value;
-        }
-      },
-      immediate: true,
-    },
-
-    step: {
-      handler(value) {
-        if (this.rangeLeftValue % value !== 0) {
-          this.rangeLeftValue = Math.floor(this.rangeLeftValue / value) * value;
-        }
-        if (this.rangeRightValue % value !== 0) {
-          this.rangeRightValue = Math.floor(this.rangeRightValue / value) * value;
-        }
-      },
-      immediate: true,
-    },
-
-    isRange: {
-      handler(value) {
-        if (!value) return;
-
-        if (this.rangeRightValue < this.min + this.minDistance) {
-          this.rangeRightValue = this.min + this.minDistance;
-        }
-        if (this.rangeLeftValue > this.rangeRightValue - this.minDistance) {
-          this.rangeLeftValue = this.rangeRightValue - this.minDistance;
-        }
-      },
-      immediate: true,
-    },
+  /**
+   * Defines the amount of which the number is increased or decreased per step.
+   */
+  step: {
+    type: Number,
+    required: false,
+    default: 1,
   },
 
-  computed: {
-    stringRepresentation(): string {
-      return this.modelValue.toString();
-    },
-
-    styleStartPosition(): string {
-      if (!this.isRange) {
-        return "0%";
+  /**
+   * The value of the slider.
+   * If isRange is true, this should be an array with two values.
+   * If isRange is false, this should be a single number.
+   */
+  modelValue: {
+    type: [Number, Array] as PropType<number | number[]>,
+    required: false,
+    default: 0,
+    validator(value) {
+      if (Array.isArray(value)) {
+        return value.length === 2;
       }
-
-      const SLIDER_PADDING = 10;
-
-      const totalLength = this.max - this.min;
-      const factor = (this.rangeLeftValue - this.min) / totalLength;
-
-      const percentage = factor * 100;
-      const left = (1 - factor * 2) * SLIDER_PADDING;
-
-      return `calc(${percentage}% + ${left}px)`;
-    },
-
-    styleEndPosition(): string {
-      const SLIDER_PADDING = 10;
-
-      const totalLength = this.max - this.min;
-      const factor = (this.max - this.rangeRightValue) / totalLength;
-
-      const percentage = factor * 100;
-      const right = (1 - factor * 2) * SLIDER_PADDING;
-
-      return `calc(${percentage}% + ${right}px)`;
-    },
-
-    markStep(): number {
-      return (this.max - this.min) / (this.markCount - 1);
-    },
-
-    toolTipText(): string {
-      if (!this.activeSlider) return "";
-      return this.activeSlider === "left"
-        ? this.rangeLeftValue.toString()
-        : this.rangeRightValue.toString();
-    },
-
-    toolTipStyle() {
-      if (!this.activeSlider)
-        return {
-          display: "none",
-        };
-      return this.activeSlider === "left"
-        ? {
-            left: this.styleStartPosition,
-            transform: "translateX(-50%)",
-          }
-        : {
-            right: this.styleEndPosition,
-            transform: "translateX(50%)",
-          };
+      return true;
     },
   },
 
-  methods: {
-    showFieldHint(): boolean {
-      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
-    },
+  /**
+   * Defines if it is a range slider.
+   */
+  isRange: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 
-    isArray(value: number | number[] | { target: number | number[] }): value is number[] {
-      return Array.isArray(value) || (typeof value !== "number" && Array.isArray(value.target));
+  /**
+   * Defines the minimum distance between the two sliders.
+   * Should be a multiple of the step.
+   */
+  minDistance: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
+
+  /**
+   * Defines the amount of marks on the slider.
+   */
+  markCount: {
+    type: Number,
+    required: false,
+    default: 5,
+  },
+
+  /**
+   * Optional caption below the field. The `#hint` slot takes precedence when provided.
+   */
+  hint: {
+    type: String as PropType<string | null>,
+    required: false,
+    default: null,
+  },
+
+  /**
+   * Determines if the field is disabled.
+   */
+  disabled: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Determines if the field is required.
+   */
+  required: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Toggles the inheritance visualization.
+   */
+  isInherited: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Determines if the field is inheritable.
+   */
+  isInheritanceField: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Determines the active state of the inheritance toggle.
+   */
+  disableInheritanceToggle: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * Toggles the copy function of the text field.
+   */
+  copyable: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  /**
+   * If set to true the tooltip will change on successful copy.
+   */
+  copyableTooltip: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+
+  hasFocus: {
+    type: Boolean,
+    required: true,
+  },
+
+  /**
+   * A text that helps the user to understand what this field does.
+   */
+  helpText: {
+    type: String,
+    required: false,
+    default: "",
+  },
+
+  copyableText: {
+    type: String,
+    required: false,
+    default: "",
+  },
+
+  /**
+   * The size of the text field.
+   *
+   * @values small, default
+   */
+  size: {
+    type: String as PropType<"small" | "default">,
+    required: false,
+    default: "default",
+    validator(value: string) {
+      return ["small", "default"].includes(value);
     },
+  },
+
+  /**
+   * @ignore
+   */
+  name: {
+    type: String,
+    required: false,
+    default: null,
+  },
+
+  mapInheritance: {
+    type: Object,
+    required: false,
+    default: null,
+  },
+
+  validation: {
+    type: [String, Array, Object, Boolean],
+    required: false,
+    default: null,
   },
 });
+
+const emit = defineEmits(["update:modelValue", "inheritance-restore", "inheritance-remove"]);
+
+const slots = useSlots();
+
+const rangeRightValue = ref<number>(0);
+const rangeLeftValue = ref<number>(0);
+const activeSlider = ref<null | "left" | "right">(null);
+
+const showFieldHint = (): boolean => {
+  return !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
+};
+
+const isArray = (value: number | number[] | { target: number | number[] }): value is number[] => {
+  return Array.isArray(value) || (typeof value !== "number" && Array.isArray(value.target));
+};
+
+const stringRepresentation = computed((): string => {
+  return props.modelValue.toString();
+});
+
+const styleStartPosition = computed((): string => {
+  if (!props.isRange) {
+    return "0%";
+  }
+
+  const SLIDER_PADDING = 10;
+
+  const totalLength = props.max - props.min;
+  const factor = (rangeLeftValue.value - props.min) / totalLength;
+
+  const percentage = factor * 100;
+  const left = (1 - factor * 2) * SLIDER_PADDING;
+
+  return `calc(${percentage}% + ${left}px)`;
+});
+
+const styleEndPosition = computed((): string => {
+  const SLIDER_PADDING = 10;
+
+  const totalLength = props.max - props.min;
+  const factor = (props.max - rangeRightValue.value) / totalLength;
+
+  const percentage = factor * 100;
+  const right = (1 - factor * 2) * SLIDER_PADDING;
+
+  return `calc(${percentage}% + ${right}px)`;
+});
+
+const markStep = computed((): number => {
+  return (props.max - props.min) / (props.markCount - 1);
+});
+
+const toolTipText = computed((): string => {
+  if (!activeSlider.value) return "";
+  return activeSlider.value === "left"
+    ? rangeLeftValue.value.toString()
+    : rangeRightValue.value.toString();
+});
+
+const toolTipStyle = computed(() => {
+  if (!activeSlider.value)
+    return {
+      display: "none",
+    };
+  return activeSlider.value === "left"
+    ? {
+        left: styleStartPosition.value,
+        transform: "translateX(-50%)",
+      }
+    : {
+        right: styleEndPosition.value,
+        transform: "translateX(50%)",
+      };
+});
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (isArray(value)) {
+      rangeLeftValue.value = value[0];
+      rangeRightValue.value = value[1];
+    } else {
+      rangeRightValue.value = value;
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  rangeRightValue,
+  (value: number | string) => {
+    if (typeof value === "string") {
+      value = parseFloat(value);
+    }
+    if (value >= props.max) {
+      value = props.max;
+    }
+    if (props.isRange) {
+      if (value <= props.min) {
+        value = props.min + props.minDistance;
+      }
+      let newLeftValue = rangeLeftValue.value;
+      if (value <= rangeLeftValue.value) {
+        newLeftValue = value - props.minDistance;
+      }
+      emit("update:modelValue", [newLeftValue, value]);
+    } else {
+      if (value <= props.min) {
+        value = props.min;
+      }
+      emit("update:modelValue", value);
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  rangeLeftValue,
+  (value: number | string) => {
+    if (typeof value === "string") {
+      value = parseFloat(value);
+    }
+    if (!props.isRange) {
+      return;
+    }
+    if (value >= props.max) {
+      value = props.max - props.minDistance;
+    }
+    let newRightValue = rangeRightValue.value;
+    if (value >= rangeRightValue.value) {
+      newRightValue = value + props.minDistance;
+    }
+    emit("update:modelValue", [value, newRightValue]);
+  },
+  { immediate: true },
+);
+
+// ensure that the range values are within the min and max range
+watch(
+  () => props.min,
+  (value) => {
+    if (!props.isRange && rangeRightValue.value < value) {
+      rangeRightValue.value = value;
+    } else if (rangeLeftValue.value < value) {
+      rangeLeftValue.value = value;
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.max,
+  (value) => {
+    if (rangeRightValue.value > value) {
+      rangeRightValue.value = value;
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.step,
+  (value) => {
+    if (rangeLeftValue.value % value !== 0) {
+      rangeLeftValue.value = Math.floor(rangeLeftValue.value / value) * value;
+    }
+    if (rangeRightValue.value % value !== 0) {
+      rangeRightValue.value = Math.floor(rangeRightValue.value / value) * value;
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.isRange,
+  (value) => {
+    if (!value) return;
+
+    if (rangeRightValue.value < props.min + props.minDistance) {
+      rangeRightValue.value = props.min + props.minDistance;
+    }
+    if (rangeLeftValue.value > rangeRightValue.value - props.minDistance) {
+      rangeLeftValue.value = rangeRightValue.value - props.minDistance;
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import MtDataTable from "@shopware-ag/meteor-component-library/MtDataTable";
+import MtDataTable, { type ColumnDefinition } from "@shopware-ag/meteor-component-library/MtDataTable";
 
 const dataSource = [
   {
@@ -205,7 +205,7 @@ const dataSource = [
   },
 ];
 
-const columns = [
+const columns: ColumnDefinition[] = [
   {
     label: "Name",
     property: "name",
@@ -237,7 +237,7 @@ const columns = [
     label: "Price",
     property: "price",
     renderer: "price",
-    rendererOptions: { currencyISOCode: "EUR", source: "gross" },
+    rendererOptions: { currencyId: "EUR", currencyISOCode: "EUR", source: "gross" },
     position: 300,
     width: 150,
   },

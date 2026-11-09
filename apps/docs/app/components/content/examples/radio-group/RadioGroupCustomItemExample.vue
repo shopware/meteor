@@ -3,7 +3,7 @@ import { ref } from "vue";
 import MtRadioGroupRoot from "@shopware-ag/meteor-component-library/MtRadioGroupRoot";
 import MtRadioGroupCustomItem from "@shopware-ag/meteor-component-library/MtRadioGroupCustomItem";
 import MtRadioGroupIndicator from "@shopware-ag/meteor-component-library/MtRadioGroupIndicator";
-import ExampleRadioOption from "@shopware-ag/meteor-component-library/ExampleRadioOption";
+import ExampleRadioOption from "./ExampleRadioOption.vue";
 
 const selectedPlan = ref("pro");
 </script>

@@ -1,15 +1,15 @@
 <template>
-  <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
+  <priority-plus ref="priorityPlus" v-slot="{ mainItems, moreItems }" :list="items">
     <div v-bind="$attrs" :class="tabClasses" role="tablist">
       <span class="mt-tabs__slider" :class="sliderClasses" :style="sliderStyle" />
 
       <template v-if="!vertical">
         <button
           v-for="item in mainItems"
-          type="button"
           :key="item.name"
-          :data-priority-plus="item.name"
           ref="items"
+          type="button"
+          :data-priority-plus="item.name"
           class="mt-tabs__item"
           :data-text="item.label"
           :class="getItemClasses(item)"
@@ -88,12 +88,12 @@
 import type { PropType } from "vue";
 
 import { defineComponent, computed } from "vue";
-import MtContextButton from "../mt-context-button/mt-context-button.vue";
-import MtContextMenuItem from "../mt-context-menu-item/mt-context-menu-item.vue";
+import MtContextButton from "../_internal/mt-context-button/mt-context-button.vue";
+import MtContextMenuItem from "../_internal/mt-context-menu-item/mt-context-menu-item.vue";
 import MtStatusDot from "../mt-status-dot/mt-status-dot.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import PriorityPlus from "../_internal/mt-priority-plus-navigation.vue";
-import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useFutureFlags } from "@/composables/_internal/useFutureFlags";
 
 export interface TabItem {
   label: string;
@@ -118,8 +118,6 @@ export default defineComponent({
   },
 
   inheritAttrs: false,
-
-  emits: ["new-item-active"],
 
   props: {
     items: {
@@ -147,6 +145,27 @@ export default defineComponent({
       required: false,
       default: "",
     },
+  },
+
+  emits: ["new-item-active"],
+
+  setup(props) {
+    const futureFlags = useFutureFlags();
+
+    const tabClasses = computed(() => {
+      return [
+        "mt-tabs",
+        {
+          "mt-tabs--vertical": props.vertical,
+          "mt-tabs--small": props.small,
+          "mt-tabs--future-remove-default-margin": futureFlags.removeDefaultMargin,
+        },
+      ];
+    });
+
+    return {
+      tabClasses,
+    };
   },
 
   data() {
@@ -259,25 +278,6 @@ export default defineComponent({
         width: ${this.sliderLength}px;
     `;
     },
-  },
-
-  setup(props) {
-    const futureFlags = useFutureFlags();
-
-    const tabClasses = computed(() => {
-      return [
-        "mt-tabs",
-        {
-          "mt-tabs--vertical": props.vertical,
-          "mt-tabs--small": props.small,
-          "mt-tabs--future-remove-default-margin": futureFlags.removeDefaultMargin,
-        },
-      ];
-    });
-
-    return {
-      tabClasses,
-    };
   },
 
   watch: {

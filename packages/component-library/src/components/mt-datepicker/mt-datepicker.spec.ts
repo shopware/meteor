@@ -435,10 +435,10 @@ describe("mt-datepicker", () => {
       document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLElement,
     );
     await waitUntil(() => document.querySelector(".dp__overlay") !== null);
-    await userEvent.click(document.querySelector('[data-test-id="Mär"]') as HTMLElement);
+    await userEvent.click(document.querySelector('[data-test-id="Mar"]') as HTMLElement);
     await waitUntil(() => !document.querySelector(".dp__overlay"));
     expect(document.querySelector('[data-test-id="month-toggle-overlay-0"]')).toHaveTextContent(
-      "Mär",
+      "Mar",
     );
 
     // Set the year

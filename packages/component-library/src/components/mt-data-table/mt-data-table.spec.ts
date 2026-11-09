@@ -1,5 +1,7 @@
-import { mount } from "@vue/test-utils";
-import MtDataTable, { type ColumnDefinition } from "./mt-data-table.vue";
+import { render, screen, waitFor, within, type RenderOptions } from "@testing-library/vue";
+import { userEvent } from "@testing-library/user-event";
+import { reactive } from "vue";
+import MtDataTable, { type ColumnChanges, type ColumnDefinition } from "./mt-data-table.vue";
 import MtDataTableFixtures from "./mt-data-table.fixtures.json";
 import flushPromises from "flush-promises";
 import { get } from "@/utils/object";
@@ -7,7 +9,8 @@ import { get } from "@/utils/object";
 import { useI18n } from "vue-i18n";
 
 // Mock "useDebounceFn" from "@vueuse/core"
-vi.mock("@vueuse/core", () => ({
+vi.mock("@vueuse/core", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@vueuse/core")>()),
   useDebounceFn: (method: () => void) => {
     return method;
   },
@@ -101,9 +104,12 @@ global.ResizeObserver = class ResizeObserver {
   }
 };
 
-function createWrapper(options?: { slots?: Record<string, string> }) {
-  return mount(MtDataTable, {
-    attachTo: document.body,
+type MtDataTableProps = NonNullable<RenderOptions<typeof MtDataTable>["props"]>;
+
+function renderDataTable(
+  options: { props?: Partial<MtDataTableProps>; slots?: Record<string, string> } = {},
+) {
+  return render(MtDataTable, {
     props: {
       dataSource: MtDataTableFixtures,
       columns: columnsFixture,
@@ -112,7 +118,9 @@ function createWrapper(options?: { slots?: Record<string, string> }) {
       currentPage: 1,
       paginationTotalItems: 182,
       paginationLimit: 25,
+      ...options.props,
     },
+    slots: options.slots,
     global: {
       mocks: {
         $t: (v: string) => v,
@@ -122,8 +130,26 @@ function createWrapper(options?: { slots?: Record<string, string> }) {
         teleport: true,
       },
     },
-    ...options,
   });
+}
+
+function getColumnHeader(property: string) {
+  return screen.getByTestId(`column-table-head__${property}`);
+}
+
+function getResizeHandle(property: string) {
+  return screen.getByTestId(`mt-data-table__table-head-resizable-after__${property}`);
+}
+
+function getColumnCells(property: string) {
+  const columnIndex = screen.getAllByRole("columnheader").indexOf(getColumnHeader(property));
+  const [, ...dataRows] = screen.getAllByRole("row");
+
+  return dataRows.map((row) => within(row).getAllByRole("cell")[columnIndex]);
+}
+
+async function openTableSettings() {
+  await userEvent.click(screen.getByRole("button", { name: "aria-toggle-table-settings" }));
 }
 
 describe("mt-data-table", () => {
@@ -149,9 +175,9 @@ describe("mt-data-table", () => {
   });
 
   it("should render the component", () => {
-    const wrapper = createWrapper();
+    renderDataTable();
 
-    expect(wrapper.vm).toBeTruthy();
+    expect(screen.getByRole("table")).toBeInTheDocument();
   });
 
   describe("should throw an console error if columns aren't correctly defined", () => {
@@ -159,19 +185,18 @@ describe("mt-data-table", () => {
       // spy for console.error calls
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          // @ts-expect-error - validator check
-          {
-            property: "name",
-            renderer: "text",
-            position: 0,
-            width: 200,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            // @ts-expect-error - validator check
+            {
+              property: "name",
+              renderer: "text",
+              position: 0,
+              width: 200,
+            },
+          ],
+        },
       });
 
       // @ts-expect-error - mock was set from jest
@@ -184,19 +209,18 @@ describe("mt-data-table", () => {
       // spy for console.error calls
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          // @ts-expect-error - validator check
-          {
-            label: "name",
-            renderer: "text",
-            position: 0,
-            width: 200,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            // @ts-expect-error - validator check
+            {
+              label: "name",
+              renderer: "text",
+              position: 0,
+              width: 200,
+            },
+          ],
+        },
       });
 
       // @ts-expect-error - mock was set from jest
@@ -209,19 +233,18 @@ describe("mt-data-table", () => {
       // spy for console.error calls
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          // @ts-expect-error - validator check
-          {
-            label: "name",
-            property: "name",
-            position: 0,
-            width: 200,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            // @ts-expect-error - validator check
+            {
+              label: "name",
+              property: "name",
+              position: 0,
+              width: 200,
+            },
+          ],
+        },
       });
 
       // @ts-expect-error - mock was set from jest
@@ -234,19 +257,18 @@ describe("mt-data-table", () => {
       // spy for console.error calls
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          // @ts-expect-error - validator check
-          {
-            label: "name",
-            property: "name",
-            renderer: "text",
-            width: 200,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            // @ts-expect-error - validator check
+            {
+              label: "name",
+              property: "name",
+              renderer: "text",
+              width: 200,
+            },
+          ],
+        },
       });
 
       // @ts-expect-error - mock was set from jest
@@ -259,20 +281,19 @@ describe("mt-data-table", () => {
       // spy for console.error calls
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            // @ts-expect-error - validator check
-            label: 1,
-            property: "name",
-            renderer: "text",
-            position: 0,
-            width: 200,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              // @ts-expect-error - validator check
+              label: 1,
+              property: "name",
+              renderer: "text",
+              position: 0,
+              width: 200,
+            },
+          ],
+        },
       });
 
       // @ts-expect-error - mock was set from jest
@@ -285,20 +306,19 @@ describe("mt-data-table", () => {
       // spy for console.error calls
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            // @ts-expect-error - validator check
-            property: 1,
-            renderer: "text",
-            position: 0,
-            width: 200,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              // @ts-expect-error - validator check
+              property: 1,
+              renderer: "text",
+              position: 0,
+              width: 200,
+            },
+          ],
+        },
       });
 
       // @ts-expect-error - mock was set from jest
@@ -311,20 +331,19 @@ describe("mt-data-table", () => {
       // spy for console.error calls
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "name",
-            property: "name",
-            // @ts-expect-error - validator check
-            renderer: 1,
-            position: 0,
-            width: 200,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "name",
+              property: "name",
+              // @ts-expect-error - validator check
+              renderer: 1,
+              position: 0,
+              width: 200,
+            },
+          ],
+        },
       });
 
       // @ts-expect-error - mock was set from jest
@@ -337,20 +356,19 @@ describe("mt-data-table", () => {
       // spy for console.error calls
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            // @ts-expect-error - validator check
-            position: "0",
-            width: 200,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              // @ts-expect-error - validator check
+              position: "0",
+              width: 200,
+            },
+          ],
+        },
       });
 
       // @ts-expect-error - mock was set from jest
@@ -362,490 +380,481 @@ describe("mt-data-table", () => {
 
   describe("should render the table header cells correctly", () => {
     it("should render table header cells everytime with 'fit-content' in the 'max-width' property", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            position: 0,
-            width: 200,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+              width: 200,
+            },
+          ],
+        },
       });
 
-      const firstColumnHeader = wrapper.findAll("th").at(0);
-      expect(firstColumnHeader?.attributes().style).toContain("max-width: fit-content");
+      const firstColumnHeader = screen.getAllByRole("columnheader")[0];
+      expect(firstColumnHeader).toHaveAttribute(
+        "style",
+        expect.stringContaining("max-width: fit-content"),
+      );
     });
     it("should render table header cells with default minimum column width and auto main width when given width is undefined", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            position: 0,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+            },
+          ],
+        },
       });
 
-      const firstColumnHeader = wrapper.findAll("th").at(0);
-      expect(firstColumnHeader?.attributes().style).toContain(`min-width: ${DEFAULT_MIN_WIDTH}`);
-      expect(firstColumnHeader?.attributes().style).toContain("width: auto");
+      const firstColumnHeader = screen.getAllByRole("columnheader")[0];
+      expect(firstColumnHeader).toHaveAttribute(
+        "style",
+        expect.stringContaining(`min-width: ${DEFAULT_MIN_WIDTH}`),
+      );
+      expect(firstColumnHeader).toHaveAttribute("style", expect.stringContaining("width: auto"));
     });
     it("should render table header cells with defined column width when width is defined", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            position: 0,
-            width: 789,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+              width: 789,
+            },
+          ],
+        },
       });
 
-      const firstColumnHeader = wrapper.findAll("th").at(0);
-      expect(firstColumnHeader?.attributes().style).toContain("min-width: 789px");
-      expect(firstColumnHeader?.attributes().style).toContain("width: 789px");
+      const firstColumnHeader = screen.getAllByRole("columnheader")[0];
+      expect(firstColumnHeader).toHaveAttribute(
+        "style",
+        expect.stringContaining("min-width: 789px"),
+      );
+      expect(firstColumnHeader).toHaveAttribute("style", expect.stringContaining("width: 789px"));
     });
   });
 
   describe("should render the table data cells correctly", () => {
     it("should render table data cells with 'max-width' to 'auto' when 'cellWrap' is 'normal'", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            position: 0,
-            width: 789,
-            cellWrap: "normal",
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+              width: 789,
+              cellWrap: "normal",
+            },
+          ],
+        },
       });
 
-      const firstColumnData = wrapper.findAll("td").at(0);
-      expect(firstColumnData?.attributes().style).toContain("max-width: auto");
+      const firstColumnData = screen.getAllByRole("cell")[0];
+      expect(firstColumnData).toHaveAttribute("style", expect.stringContaining("max-width: auto"));
     });
     it("should render table data cells with 'max-width' to 'XXXpx' when 'cellWrap' is 'nowrap' and 'width' is defined", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            position: 0,
-            width: 789,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+              width: 789,
+            },
+          ],
+        },
       });
 
-      const firstColumnData = wrapper.findAll("td").at(0);
-      expect(firstColumnData?.attributes().style).toContain("max-width: 789px");
+      const firstColumnData = screen.getAllByRole("cell")[0];
+      expect(firstColumnData).toHaveAttribute("style", expect.stringContaining("max-width: 789px"));
     });
     it("should render table data cells with 'max-width' to fallback width when 'cellWrap' is 'nowrap' and 'width' is undefined", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            position: 0,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+            },
+          ],
+        },
       });
 
-      const firstColumnData = wrapper.findAll("td").at(0);
-      expect(firstColumnData?.attributes().style).toContain(`max-width: ${DEFAULT_MIN_WIDTH}`);
+      const firstColumnData = screen.getAllByRole("cell")[0];
+      expect(firstColumnData).toHaveAttribute(
+        "style",
+        expect.stringContaining(`max-width: ${DEFAULT_MIN_WIDTH}`),
+      );
     });
     it("should render table data cells with nowrap white-space when cellWrap is undefined", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            position: 0,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+            },
+          ],
+        },
       });
 
-      const firstColumnData = wrapper.findAll("td").at(0);
-      expect(firstColumnData?.attributes().style).toContain("white-space: nowrap");
+      const firstColumnData = screen.getAllByRole("cell")[0];
+      expect(firstColumnData).toHaveAttribute(
+        "style",
+        expect.stringContaining("white-space: nowrap"),
+      );
     });
     it("should render table data cells with 'normal' white-space when cellWrap is 'normal'", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            position: 0,
-            cellWrap: "normal",
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+              cellWrap: "normal",
+            },
+          ],
+        },
       });
 
-      const firstColumnData = wrapper.findAll("td").at(0);
-      expect(firstColumnData?.attributes().style).toContain("white-space: normal");
+      const firstColumnData = screen.getAllByRole("cell")[0];
+      expect(firstColumnData).toHaveAttribute(
+        "style",
+        expect.stringContaining("white-space: normal"),
+      );
     });
     it("should render table data cells with default minimum column width when width is undefined", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            position: 0,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+            },
+          ],
+        },
       });
 
-      const firstColumnData = wrapper.findAll("td").at(0);
-      expect(firstColumnData?.attributes().style).toContain(`min-width: ${DEFAULT_MIN_WIDTH}`);
+      const firstColumnData = screen.getAllByRole("cell")[0];
+      expect(firstColumnData).toHaveAttribute(
+        "style",
+        expect.stringContaining(`min-width: ${DEFAULT_MIN_WIDTH}`),
+      );
     });
     it("should render table data cells with defined column width when width is defined", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columns: [
-          {
-            label: "Name",
-            property: "name",
-            renderer: "text",
-            position: 0,
-            width: 789,
-          },
-        ],
+      renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+              width: 789,
+            },
+          ],
+        },
       });
 
-      const firstColumnData = wrapper.findAll("td").at(0);
-      expect(firstColumnData?.attributes().style).toContain("min-width: 789px");
+      const firstColumnData = screen.getAllByRole("cell")[0];
+      expect(firstColumnData).toHaveAttribute("style", expect.stringContaining("min-width: 789px"));
     });
 
     it("should not render table cell when disable context menu action and settings table action", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        disableEdit: true,
-        disableDelete: true,
-        disableSettingsTable: true,
+      renderDataTable({
+        props: {
+          disableEdit: true,
+          disableDelete: true,
+          disableSettingsTable: true,
+        },
       });
 
-      expect(wrapper.find(".mt-data-table__table-context-button").exists()).toBeFalsy();
-      expect(wrapper.find(".mt-data-table__table-settings-button").exists()).toBeFalsy();
+      expect(screen.getAllByRole("columnheader")).toHaveLength(columnsFixture.length);
+      expect(screen.getAllByRole("cell")).toHaveLength(
+        columnsFixture.length * MtDataTableFixtures.length,
+      );
     });
 
     it("should render table cell when using slot column", async () => {
-      const wrapper = createWrapper({
+      renderDataTable({
         slots: {
           "column-name": "My custom name",
         },
       });
 
-      await wrapper.setProps({
-        ...wrapper.props(),
-      });
+      const firstDataRow = screen.getAllByRole("row")[1];
+      const dataCellName = within(firstDataRow).getAllByRole("cell")[0];
 
-      const dataCellName = wrapper.findAll('[data-cell-column-property="name"]');
-
-      expect(dataCellName[0].html()).toContain(`My custom name`);
+      expect(dataCellName).toHaveTextContent("My custom name");
     });
 
     it("should render table data with disabled row selection", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        allowRowSelection: true,
-        disableRowSelect: ["4f683593-13f1-4767-91c6-8e154d68a22d"], // product id of "Awesome Concrete Chair"
+      renderDataTable({
+        props: {
+          allowRowSelection: true,
+          disableRowSelect: ["4f683593-13f1-4767-91c6-8e154d68a22d"], // product id of "Awesome Concrete Chair"
+        },
       });
-      const rows = wrapper.findAll("tr");
-      const disabledRowIndex = rows.findIndex((row) =>
-        row.text().includes("Awesome Concrete Chair"),
-      );
-      const allowRowIndex = rows.findIndex((row) => !row.text().includes("Awesome Concrete Chair"));
 
-      expect(
-        rows[disabledRowIndex]
-          .find(".mt-data-table__table-select-row .mt-field--checkbox .is--disabled")
-          .exists(),
-      ).toBeTruthy();
-      expect(
-        rows[allowRowIndex]
-          .find(".mt-data-table__table-select-row .mt-field--checkbox .is--disabled")
-          .exists(),
-      ).toBeFalsy();
+      const disabledRow = screen.getByRole("row", { name: /Awesome Concrete Chair/ });
+      const allowedRow = screen.getByRole("row", { name: /Fantastic Cotton Sausages/ });
+
+      expect(within(disabledRow).getByRole("checkbox")).toBeDisabled();
+      expect(within(allowedRow).getByRole("checkbox")).toBeEnabled();
     });
   });
 
   it("should render table data cells with an image inside", async () => {
-    const wrapper = createWrapper();
-
-    await wrapper.setProps({
-      ...wrapper.props(),
-      columns: [
-        {
-          label: "Name",
-          property: "name",
-          previewImage: "imageURL",
-          renderer: "text",
-          position: 0,
-        },
-      ],
+    renderDataTable({
+      props: {
+        columns: [
+          {
+            label: "Name",
+            property: "name",
+            previewImage: "imageURL",
+            renderer: "text",
+            position: 0,
+          },
+        ],
+      },
     });
 
-    const image = wrapper.find("img");
-    expect(image.exists()).toBeTruthy();
+    expect(screen.getByRole("img", { name: MtDataTableFixtures[0].name })).toBeInTheDocument();
   });
 
   describe("should render the card props correctly", () => {
     it("should render the title", () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
-      const title = wrapper.find(".mt-card__title");
-
-      expect(title.exists()).toBeTruthy();
-      expect(title.text()).toBe("Data table");
+      expect(screen.getByRole("heading", { name: "Data table" })).toBeInTheDocument();
     });
 
     it("should render the subtitle", () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
-      const subtitle = wrapper.find(".mt-card__subtitle");
-
-      expect(subtitle.exists()).toBeTruthy();
-      expect(subtitle.text()).toBe("This is the subline");
+      expect(screen.getByText("This is the subline")).toBeInTheDocument();
     });
 
     it("should not render the title", async () => {
-      const wrapper = createWrapper();
-      await wrapper.setProps({
-        ...wrapper.props(),
-        title: undefined,
-      });
+      renderDataTable({ props: { title: undefined } });
 
-      const title = wrapper.find(".mt-card__title");
-
-      expect(title.exists()).toBeFalsy();
+      expect(screen.queryByRole("heading", { name: "Data table" })).not.toBeInTheDocument();
     });
 
     it("should not render the subtitle", async () => {
-      const wrapper = createWrapper();
-      await wrapper.setProps({
-        ...wrapper.props(),
-        subtitle: undefined,
-      });
+      renderDataTable({ props: { subtitle: undefined } });
 
-      const subtitle = wrapper.find(".mt-card__subtitle");
-
-      expect(subtitle.exists()).toBeFalsy();
+      expect(screen.queryByText("This is the subline")).not.toBeInTheDocument();
     });
   });
 
   describe("should render the general props correctly", () => {
     it("should not render the reload button", async () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
-      const reloadButton = wrapper.find('.mt-button[aria-label="reload-data"]');
-
-      expect(reloadButton.exists()).toBeFalsy();
+      expect(screen.queryByRole("button", { name: "reload-data" })).not.toBeInTheDocument();
     });
 
     it("should render the reload button", async () => {
-      const wrapper = createWrapper();
-      await wrapper.setProps({
-        ...wrapper.props(),
-        enableReload: true,
-      });
+      renderDataTable({ props: { enableReload: true } });
 
-      const reloadButton = wrapper.find('.mt-button[aria-label="reload-data"]');
-
-      expect(reloadButton.exists()).toBeTruthy();
+      expect(screen.getByRole("button", { name: "reload-data" })).toBeInTheDocument();
     });
   });
 
   describe("should execute the functionalities correctly", () => {
     it("should emit the reload on event on clicking the reload button", async () => {
-      const wrapper = createWrapper();
-      await wrapper.setProps({
-        ...wrapper.props(),
-        enableReload: true,
+      const { emitted } = renderDataTable({ props: { enableReload: true } });
+
+      expect(emitted()).not.toHaveProperty("reload");
+
+      await userEvent.click(screen.getByRole("button", { name: "reload-data" }));
+
+      expect(emitted("reload")).toHaveLength(1);
+    });
+
+    it("should emit open-details once for a clickable text cell and not for a plain text cell", async () => {
+      const [firstRowData] = MtDataTableFixtures;
+      const { emitted } = renderDataTable({
+        props: {
+          columns: [
+            {
+              label: "Name",
+              property: "name",
+              renderer: "text",
+              position: 0,
+              clickable: true,
+            },
+            {
+              label: "Manufacturer",
+              property: "manufacturer.name",
+              renderer: "text",
+              position: 100,
+            },
+          ],
+        },
       });
 
-      const reloadButton = wrapper.find('.mt-button[aria-label="reload-data"]');
+      const firstDataRow = screen.getAllByRole("row")[1];
 
-      expect(wrapper.emitted().reload).toBeFalsy();
+      await userEvent.click(within(firstDataRow).getByText(firstRowData.manufacturer.name));
 
-      await reloadButton.trigger("click");
+      expect(emitted()).not.toHaveProperty("open-details");
 
-      expect(wrapper.emitted().reload).toBeTruthy();
+      await userEvent.click(within(firstDataRow).getByRole("link", { name: firstRowData.name }));
+
+      expect(emitted("open-details")).toEqual([[firstRowData]]);
     });
   });
 
   describe("should have a correct column resizing behaviour", () => {
     it("should render the resizable div", async () => {
-      const wrapper = createWrapper();
-
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const tableHeadCellManufacturer = wrapper.find(
-        '[data-header-column-property="manufacturer.name"]',
-      );
-      const tableHeadCellPrice = wrapper.find('[data-header-column-property="price"]');
+      renderDataTable();
 
       expect(
-        tableHeadCellName.find(".mt-data-table__table-head-resizable-after").exists(),
-      ).toBeTruthy();
+        within(getColumnHeader("name")).getByTestId(
+          "mt-data-table__table-head-resizable-after__name",
+        ),
+      ).toBeInTheDocument();
       expect(
-        tableHeadCellManufacturer.find(".mt-data-table__table-head-resizable-after").exists(),
-      ).toBeTruthy();
+        within(getColumnHeader("manufacturer.name")).getByTestId(
+          "mt-data-table__table-head-resizable-after__manufacturer.name",
+        ),
+      ).toBeInTheDocument();
       expect(
-        tableHeadCellPrice.find(".mt-data-table__table-head-resizable-after").exists(),
-      ).toBeTruthy();
+        within(getColumnHeader("price")).getByTestId(
+          "mt-data-table__table-head-resizable-after__price",
+        ),
+      ).toBeInTheDocument();
     });
 
     it("should not render the resizable div when allowedResize is set to false", async () => {
-      const wrapper = createWrapper();
-
-      const tableHeadCellActive = wrapper.find('[data-header-column-property="active"]');
+      renderDataTable();
 
       expect(
-        tableHeadCellActive.find(".mt-data-table__table-head-resizable-after").exists(),
-      ).toBeFalsy();
+        within(getColumnHeader("active")).queryByTestId(
+          "mt-data-table__table-head-resizable-after__active",
+        ),
+      ).not.toBeInTheDocument();
     });
 
     it("should make all columns fixed width when start resizing", async () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
       // these columns should have fixed width later
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const tableHeadCellManufacturer = wrapper.find(
-        '[data-header-column-property="manufacturer.name"]',
-      );
+      const tableHeadCellName = getColumnHeader("name");
+      const tableHeadCellManufacturer = getColumnHeader("manufacturer.name");
 
       // this column should not change their width
-      const tableHeadCellActive = wrapper.find('[data-header-column-property="active"]');
+      const tableHeadCellActive = getColumnHeader("active");
 
       // check header columns before resizing
-      expect(tableHeadCellName.attributes().style).toContain(
-        "width: 200px; min-width: 200px; max-width: fit-content;",
+      expect(tableHeadCellName).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 200px; min-width: 200px; max-width: fit-content;"),
       );
-      expect(tableHeadCellManufacturer.attributes().style).toContain(
-        `width: auto; min-width: ${DEFAULT_MIN_WIDTH}; max-width: fit-content;`,
+      expect(tableHeadCellManufacturer).toHaveAttribute(
+        "style",
+        expect.stringContaining(
+          `width: auto; min-width: ${DEFAULT_MIN_WIDTH}; max-width: fit-content;`,
+        ),
       );
-      expect(tableHeadCellActive.attributes().style).toContain(
-        "width: 123px; min-width: 123px; max-width: fit-content;",
+      expect(tableHeadCellActive).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 123px; min-width: 123px; max-width: fit-content;"),
       );
 
       // check data cell columns before resizing
-      const dataCellName = wrapper.findAllComponents('[data-cell-column-property="name"]');
-      const dataCellManufacturer = wrapper.findAll(
-        '[data-cell-column-property="manufacturer.name"]',
-      );
-      const dataCellActive = wrapper.findAll('[data-cell-column-property="active"]');
-
-      dataCellName.forEach((dataCell) => {
-        expect(dataCell.attributes().style).toContain(
-          "width: 200px; min-width: 200px; max-width: 200px;",
+      getColumnCells("name").forEach((dataCell) => {
+        expect(dataCell).toHaveAttribute(
+          "style",
+          expect.stringContaining("width: 200px; min-width: 200px; max-width: 200px;"),
         );
       });
 
-      dataCellManufacturer.forEach((dataCell) => {
-        expect(dataCell.attributes().style).toContain(
-          "width: auto; min-width: 100px; max-width: 100px;",
+      getColumnCells("manufacturer.name").forEach((dataCell) => {
+        expect(dataCell).toHaveAttribute(
+          "style",
+          expect.stringContaining("width: auto; min-width: 100px; max-width: 100px;"),
         );
       });
 
-      dataCellActive.forEach((dataCell) => {
-        expect(dataCell.attributes().style).toContain(
-          "width: 123px; min-width: 123px; max-width: 123px;",
+      getColumnCells("active").forEach((dataCell) => {
+        expect(dataCell).toHaveAttribute(
+          "style",
+          expect.stringContaining("width: 123px; min-width: 123px; max-width: 123px;"),
         );
       });
 
       // TRIGGER RESIZING
 
       // @ts-expect-error - only needed values are set
-      tableHeadCellName.element.getBoundingClientRect = () => ({ width: 200 });
+      tableHeadCellName.getBoundingClientRect = () => ({ width: 200 });
       // @ts-expect-error - only needed values are set
-      tableHeadCellManufacturer.element.getBoundingClientRect = () => ({ width: 100 });
+      tableHeadCellManufacturer.getBoundingClientRect = () => ({ width: 100 });
       // @ts-expect-error - only needed values are set
-      tableHeadCellActive.element.getBoundingClientRect = () => ({ width: 123 });
+      tableHeadCellActive.getBoundingClientRect = () => ({ width: 123 });
 
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
-      resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // check header columns after resizing
-      expect(tableHeadCellName.attributes().style).toContain(
-        "width: 200px; min-width: 200px; max-width: fit-content;",
+      expect(tableHeadCellName).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 200px; min-width: 200px; max-width: fit-content;"),
       );
 
       // should now be fixed width and not auto
-      expect(tableHeadCellManufacturer.attributes().style).toContain(
-        "width: 100px; min-width: 100px; max-width: fit-content;",
+      expect(tableHeadCellManufacturer).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 100px; min-width: 100px; max-width: fit-content;"),
       );
-      expect(tableHeadCellActive.attributes().style).toContain(
-        "width: 123px; min-width: 123px; max-width: fit-content;",
+      expect(tableHeadCellActive).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 123px; min-width: 123px; max-width: fit-content;"),
       );
     });
 
     it("should set the cursor globally to col-resize when start resizing", async () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
       // check cursor before resizing
       expect(document.body.style.cursor).toBe("");
 
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
-
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // check cursor after resizing
       expect(document.body.style.cursor).toBe("col-resize");
     });
 
     it("should remove the global col-resize cursor when stopping resizing", async () => {
-      const wrapper = createWrapper();
-
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
+      renderDataTable();
 
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // check cursor after resizing
       expect(document.body.style.cursor).toBe("col-resize");
@@ -858,54 +867,42 @@ describe("mt-data-table", () => {
     });
 
     it('should add class "--no-transition" to table when resizing', async () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
       // check if class not exists before resizing
-      expect(wrapper.find("table").classes()).not.toContain("--no-transition");
-
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
+      expect(screen.getByRole("table")).not.toHaveClass("--no-transition");
 
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // check class after resizing
-      expect(wrapper.find("table").classes()).toContain("--no-transition");
+      expect(screen.getByRole("table")).toHaveClass("--no-transition");
     });
 
     it('should remove class "--no-transition" to table when finishing resizing', async () => {
-      const wrapper = createWrapper();
-
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
+      renderDataTable();
 
       // check if class not exists before resizing
-      expect(wrapper.find("table").classes()).not.toContain("--no-transition");
+      expect(screen.getByRole("table")).not.toHaveClass("--no-transition");
 
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // check class after resizing
-      expect(wrapper.find("table").classes()).toContain("--no-transition");
+      expect(screen.getByRole("table")).toHaveClass("--no-transition");
 
       // TRIGGER STOP RESIZING
       await window.dispatchEvent(new Event("mouseup"));
 
       // check class after resizing
-      expect(wrapper.find("table").classes()).not.toContain("--no-transition");
+      expect(screen.getByRole("table")).not.toHaveClass("--no-transition");
     });
 
     it("should stop and prevent default event behaviour like propagation and preventDefault in mouseMove handler", async () => {
-      const wrapper = createWrapper();
-
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
+      renderDataTable();
 
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // TRIGGER MOUSE MOVE EVENT
       const mouseMoveEvent = new Event("mousemove");
@@ -919,22 +916,21 @@ describe("mt-data-table", () => {
     });
 
     it("should set the correct widths for the current column cells when the mouse is moving", async () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
+      const tableHeadCellName = getColumnHeader("name");
 
       // @ts-expect-error - only needed values are set
-      tableHeadCellName.element.getBoundingClientRect = () => ({ left: 75 });
+      tableHeadCellName.getBoundingClientRect = () => ({ left: 75 });
 
       // check if width and height are set before resizing
-      expect(tableHeadCellName.attributes().style).toContain(
-        "width: 200px; min-width: 200px; max-width: fit-content;",
+      expect(tableHeadCellName).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 200px; min-width: 200px; max-width: fit-content;"),
       );
 
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // TRIGGER MOUSE MOVE EVENT
       const mouseMoveEvent = new Event("mousemove");
@@ -943,34 +939,34 @@ describe("mt-data-table", () => {
       await window.dispatchEvent(mouseMoveEvent);
 
       // check if width and height are set correctly
-      expect(tableHeadCellName.attributes().style).toContain(
-        "width: 155px; min-width: 155px; max-width: fit-content;",
+      expect(tableHeadCellName).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 155px; min-width: 155px; max-width: fit-content;"),
       );
-      const dataCellName = wrapper.findAllComponents('[data-cell-column-property="name"]');
-      dataCellName.forEach((dataCell) => {
-        expect(dataCell.attributes().style).toContain(
-          "width: 155px; min-width: 155px; max-width: 155px;",
+      getColumnCells("name").forEach((dataCell) => {
+        expect(dataCell).toHaveAttribute(
+          "style",
+          expect.stringContaining("width: 155px; min-width: 155px; max-width: 155px;"),
         );
       });
     });
 
     it("should add the correct padding for the current column cells when shrinking the column more than at the beginning", async () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
+      const tableHeadCellName = getColumnHeader("name");
 
       // @ts-expect-error - only needed values are set
-      tableHeadCellName.element.getBoundingClientRect = () => ({ width: 200, left: 75 });
+      tableHeadCellName.getBoundingClientRect = () => ({ width: 200, left: 75 });
 
       // check if width and height are set before resizing
-      expect(tableHeadCellName.attributes().style).toContain(
-        "width: 200px; min-width: 200px; max-width: fit-content;",
+      expect(tableHeadCellName).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 200px; min-width: 200px; max-width: fit-content;"),
       );
 
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // TRIGGER MOUSE MOVE EVENT
       const mouseMoveEvent = new Event("mousemove");
@@ -979,26 +975,28 @@ describe("mt-data-table", () => {
       await window.dispatchEvent(mouseMoveEvent);
 
       // check if padding is set correctly to dataTable
-      expect(wrapper.find("table").attributes().style).toContain("padding-right: 45px;");
+      expect(screen.getByRole("table")).toHaveAttribute(
+        "style",
+        expect.stringContaining("padding-right: 45px;"),
+      );
     });
 
     it("should add no padding for the current column cells when enlarging the column more than at the beginning", async () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
+      const tableHeadCellName = getColumnHeader("name");
 
       // @ts-expect-error - only needed values are set
-      tableHeadCellName.element.getBoundingClientRect = () => ({ width: 200, left: 75 });
+      tableHeadCellName.getBoundingClientRect = () => ({ width: 200, left: 75 });
 
       // check if width and height are set before resizing
-      expect(tableHeadCellName.attributes().style).toContain(
-        "width: 200px; min-width: 200px; max-width: fit-content;",
+      expect(tableHeadCellName).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 200px; min-width: 200px; max-width: fit-content;"),
       );
 
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // TRIGGER MOUSE MOVE EVENT
       const mouseMoveEvent = new Event("mousemove");
@@ -1007,26 +1005,25 @@ describe("mt-data-table", () => {
       await window.dispatchEvent(mouseMoveEvent);
 
       // check if no padding was set because the column gets enlarged
-      expect(wrapper.find("table").attributes().style).toBeUndefined();
+      expect(screen.getByRole("table")).not.toHaveAttribute("style");
     });
 
     it("should remove the padding when stopping resizing", async () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
+      const tableHeadCellName = getColumnHeader("name");
 
       // @ts-expect-error - only needed values are set
-      tableHeadCellName.element.getBoundingClientRect = () => ({ width: 200, left: 75 });
+      tableHeadCellName.getBoundingClientRect = () => ({ width: 200, left: 75 });
 
       // check if width and height are set before resizing
-      expect(tableHeadCellName.attributes().style).toContain(
-        "width: 200px; min-width: 200px; max-width: fit-content;",
+      expect(tableHeadCellName).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 200px; min-width: 200px; max-width: fit-content;"),
       );
 
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // TRIGGER MOUSE MOVE EVENT
       const mouseMoveEvent = new Event("mousemove");
@@ -1035,32 +1032,35 @@ describe("mt-data-table", () => {
       await window.dispatchEvent(mouseMoveEvent);
 
       // check if padding is set correctly to dataTable
-      expect(wrapper.find("table").attributes().style).toContain("padding-right: 45px;");
+      expect(screen.getByRole("table")).toHaveAttribute(
+        "style",
+        expect.stringContaining("padding-right: 45px;"),
+      );
 
       // TRIGGER STOP RESIZING
       await window.dispatchEvent(new Event("mouseup"));
 
       // check if padding was removed correctly
-      expect(wrapper.find("table").attributes().style).toBe("");
+      expect(screen.getByRole("table")).toHaveAttribute("style", "");
     });
 
     it("should save the new width to the property columnChanges", async () => {
-      const wrapper = createWrapper();
+      const columnChanges = reactive<Record<string, ColumnChanges>>({});
+      renderDataTable({ props: { columnChanges } });
 
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
+      const tableHeadCellName = getColumnHeader("name");
 
       // @ts-expect-error - only needed values are set
-      tableHeadCellName.element.getBoundingClientRect = () => ({ left: 75 });
+      tableHeadCellName.getBoundingClientRect = () => ({ left: 75 });
 
       // check if width and height are set before resizing
-      expect(tableHeadCellName.attributes().style).toContain(
-        "width: 200px; min-width: 200px; max-width: fit-content;",
+      expect(tableHeadCellName).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 200px; min-width: 200px; max-width: fit-content;"),
       );
 
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // TRIGGER MOUSE MOVE EVENT
       const mouseMoveEvent = new Event("mousemove");
@@ -1072,46 +1072,42 @@ describe("mt-data-table", () => {
       await window.dispatchEvent(new Event("mouseup"));
 
       // check if columnChanges prop was updated correctly
-      expect(wrapper.props().columnChanges).toStrictEqual({ name: { width: 155 } });
+      expect(columnChanges).toStrictEqual({ name: { width: 155 } });
     });
 
     it("should load the new widths from the property columnChanges when they were defined beforehand", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columnChanges: {
-          name: { width: 179 },
+      renderDataTable({
+        props: {
+          columnChanges: {
+            name: { width: 179 },
+          },
         },
       });
 
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-
       // check if width and height are set before resizing
-      expect(tableHeadCellName.attributes().style).toContain(
-        "width: 179px; min-width: 179px; max-width: fit-content;",
+      expect(getColumnHeader("name")).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 179px; min-width: 179px; max-width: fit-content;"),
       );
     });
 
     it("should remove all handlers when stopping resizing", async () => {
       const removeEventListenerSpy = vi.spyOn(window, "removeEventListener");
-      const wrapper = createWrapper();
+      renderDataTable();
 
-      // get the resizable div
-      const tableHeadCellName = wrapper.find('[data-header-column-property="name"]');
-      const resizableDiv = tableHeadCellName.find(".mt-data-table__table-head-resizable-after");
+      const tableHeadCellName = getColumnHeader("name");
 
       // @ts-expect-error - only needed values are set
-      tableHeadCellName.element.getBoundingClientRect = () => ({ left: 75 });
+      tableHeadCellName.getBoundingClientRect = () => ({ left: 75 });
 
       // check if width and height are set before resizing
-      expect(tableHeadCellName.attributes().style).toContain(
-        "width: 200px; min-width: 200px; max-width: fit-content;",
+      expect(tableHeadCellName).toHaveAttribute(
+        "style",
+        expect.stringContaining("width: 200px; min-width: 200px; max-width: fit-content;"),
       );
 
       // TRIGGER RESIZING
-      await resizableDiv.trigger("mousedown");
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: getResizeHandle("name") });
 
       // TRIGGER MOUSE MOVE EVENT
       const mouseMoveEvent = new Event("mousemove");
@@ -1131,96 +1127,80 @@ describe("mt-data-table", () => {
 
   describe("should have correct search funcitonalitities", () => {
     it("should have a search input field", () => {
-      const wrapper = createWrapper();
+      renderDataTable();
 
-      expect(wrapper.find(".mt-search").exists()).toBeTruthy();
+      expect(screen.getByRole("searchbox")).toBeInTheDocument();
     });
 
     it("should not render the search input field", async () => {
-      const wrapper = createWrapper();
+      renderDataTable({ props: { disableSearch: true } });
 
-      await wrapper.setProps({
-        ...wrapper.props(),
-        disableSearch: true,
-      });
-
-      expect(wrapper.find(".mt-search").exists()).toBeFalsy();
+      expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
     });
 
     it("should use the search value from prop", async () => {
-      const wrapper = createWrapper();
+      renderDataTable({ props: { searchValue: "My initital search value" } });
 
-      await wrapper.setProps({
-        ...wrapper.props(),
-        searchValue: "My initital search value",
-      });
-
-      const searchInput = wrapper.find(".mt-search input");
-
-      // @ts-expect-error - inputElement has value
-      expect(searchInput.element.value).toBe("My initital search value");
+      expect(screen.getByRole("searchbox")).toHaveValue("My initital search value");
     });
 
     it("should emit the search value", async () => {
-      const wrapper = createWrapper();
+      const { emitted } = renderDataTable();
 
-      const searchInput = wrapper.find(".mt-search input");
+      await userEvent.type(screen.getByRole("searchbox"), "My new search value");
 
-      await searchInput.setValue("My new search value");
-      await searchInput.trigger("change");
-
-      expect(wrapper.emitted()["search-value-change"]).toBeTruthy();
-      // @ts-expect-error - only needed values are set
-      expect(wrapper.emitted()["search-value-change"][0][0]).toBe("My new search value");
+      expect(emitted("search-value-change").at(-1)).toEqual(["My new search value"]);
     });
   });
 
   describe("should handle the mt-data-table-settings events correctly", () => {
     it("should reset all changes", async () => {
-      const wrapper = createWrapper();
-
       // simulate some column changes
-      await wrapper.setProps({
-        ...wrapper.props(),
-        columnChanges: {
-          active: { visible: false },
-          available: { width: 987 },
-        },
-      });
-
-      expect(wrapper.props().columnChanges).toStrictEqual({
+      const columnChanges = reactive<Record<string, ColumnChanges>>({
         active: { visible: false },
         available: { width: 987 },
       });
+      renderDataTable({ props: { columnChanges } });
 
-      const MtDataTableSettings = wrapper.findComponent({ name: "MtDataTableSettings" });
-      await MtDataTableSettings.vm.$emit("reset-all-changes");
-      await wrapper.vm.$nextTick();
+      expect(screen.queryByTestId("column-table-head__active")).not.toBeInTheDocument();
+
+      await openTableSettings();
+      await userEvent.click(screen.getByRole("menuitem", { name: "resetAllChanges" }));
 
       // check if all changes were resetted
-      expect(wrapper.props().columnChanges).toStrictEqual({
+      expect(columnChanges).toStrictEqual({
         active: {},
         available: {},
       });
+      expect(getColumnHeader("active")).toBeInTheDocument();
     });
 
     it("should change the column order", async () => {
-      const wrapper = createWrapper();
+      const columnChanges = reactive<Record<string, ColumnChanges>>({});
+      renderDataTable({ props: { columnChanges } });
+      const user = userEvent.setup();
 
-      expect(wrapper.props().columnChanges).toStrictEqual({});
+      await openTableSettings();
+      await user.click(screen.getByRole("menuitem", { name: "columnOrder.title" }));
 
-      const MtDataTableSettings = wrapper.findComponent({ name: "MtDataTableSettings" });
-      await MtDataTableSettings.vm.$emit("change-column-order", {
-        itemId: "price",
-        dropId: "name",
-        dropZone: "after",
+      const dropBeforeManufacturer = screen
+        .getByLabelText("columnOrder.columnGroups.labelShown: Manufacturer")
+        .querySelector(".mt-popover-item-result__option_drop_before");
+
+      await user.pointer({
+        keys: "[MouseLeft>]",
+        target: screen.getByRole("menuitem", { name: "Price" }),
       });
-      await wrapper.vm.$nextTick();
+      await waitFor(() => {
+        expect(document.body).toHaveClass("is-popover-item-result-dragging");
+      });
+      await user.pointer({ target: dropBeforeManufacturer! });
+      await user.pointer({ keys: "[/MouseLeft]" });
 
       // check if order was updated correctly
-      expect(wrapper.props().columnChanges).toStrictEqual({
+      expect(columnChanges).toStrictEqual({
         name: { position: 0 },
-        price: { position: 100 },
+        price: { position: 100, visible: true },
         "manufacturer.name": { position: 200 },
         active: { position: 300 },
         stock: { position: 400 },
@@ -1229,54 +1209,54 @@ describe("mt-data-table", () => {
     });
 
     it("should change the column visibility", async () => {
-      const wrapper = createWrapper();
+      const columnChanges = reactive<Record<string, ColumnChanges>>({});
+      renderDataTable({ props: { columnChanges } });
 
-      expect(wrapper.props().columnChanges).toStrictEqual({});
+      await openTableSettings();
+      await userEvent.click(screen.getByRole("menuitem", { name: "columnOrder.title" }));
 
-      const MtDataTableSettings = wrapper.findComponent({ name: "MtDataTableSettings" });
-      await MtDataTableSettings.vm.$emit("change-column-visibility", "active", false);
-      await wrapper.vm.$nextTick();
+      const visibilityToggleActive = screen
+        .getByLabelText("columnOrder.columnGroups.labelShown: Active")
+        .querySelector(".mt-popover-item__visibility");
+
+      await userEvent.click(visibilityToggleActive!);
 
       // check if order was updated correctly
-      expect(wrapper.props().columnChanges).toStrictEqual({
+      expect(columnChanges).toStrictEqual({
         active: { visible: false },
       });
     });
 
     it("should disable settings table", async () => {
-      const wrapper = createWrapper();
+      renderDataTable({ props: { disableSettingsTable: true } });
 
-      await wrapper.setProps({
-        ...wrapper.props(),
-        disableSettingsTable: true,
-      });
-
-      expect(wrapper.find(".mt-data-table-settings").exists()).toBeFalsy();
+      expect(
+        screen.queryByRole("button", { name: "aria-toggle-table-settings" }),
+      ).not.toBeInTheDocument();
     });
 
     it("should not disable settings table when there is an additonal context menu", async () => {
-      const wrapper = createWrapper();
-
-      await wrapper.setProps({
-        ...wrapper.props(),
-        disableSettingsTable: true,
-        disableDelete: true,
-        disableEdit: true,
-        additionalContextButtons: [
-          {
-            label: "Set Price",
-            key: "set-price",
-          },
-        ],
+      const { emitted } = renderDataTable({
+        props: {
+          disableSettingsTable: true,
+          disableDelete: true,
+          disableEdit: true,
+          additionalContextButtons: [
+            {
+              label: "Set Price",
+              key: "set-price",
+            },
+          ],
+        },
       });
-      const contextButton = wrapper.find(
-        ".mt-data-table__table-context-button .mt-context-button button",
-      );
-      expect(contextButton.exists()).toBeTruthy();
-      await contextButton.trigger("click");
-      const menuItem: any = document.querySelector(".mt-context-menu-item");
-      menuItem?.click();
-      expect((wrapper.emitted("context-select")?.[0]?.[0] as any)?.key).toEqual("set-price");
+
+      const contextButton = screen.getAllByRole("button", { name: "Context menu" })[0];
+      expect(contextButton).toBeInTheDocument();
+      await userEvent.click(contextButton);
+      await userEvent.click(screen.getByRole("menuitem", { name: "Set Price" }));
+      expect(emitted("context-select")).toEqual([
+        [{ key: "set-price", data: MtDataTableFixtures[0] }],
+      ]);
     });
   });
 });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MtDataTable from "@shopware-ag/meteor-component-library/MtDataTable";
+import MtDataTable, { type ColumnDefinition } from "@shopware-ag/meteor-component-library/MtDataTable";
 
 const dataSource = [
   {
@@ -32,7 +32,7 @@ const dataSource = [
   },
 ];
 
-const columns = [
+const columns: ColumnDefinition[] = [
   { label: "Name", property: "name", renderer: "text", position: 0, sortable: true },
   {
     label: "Manufacturer",

@@ -50,7 +50,7 @@ import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
-import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useFutureFlags } from "@/composables/_internal/useFutureFlags";
 
 const props = withDefaults(
   defineProps<{

@@ -56,7 +56,7 @@ import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFormFieldMixin from "../../mixins/form-field.mixin";
 import { createId } from "../../utils/id";
-import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useFutureFlags } from "@/composables/_internal/useFutureFlags";
 
 export default defineComponent({
   name: "MtCheckbox",

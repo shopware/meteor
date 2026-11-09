@@ -1,6 +1,6 @@
 <template>
   <div class="mt-popover-item-result">
-    <mt-search v-if="!hideSearch" size="small" @update:modelValue="$emit('search', $event)" />
+    <mt-search v-if="!hideSearch" size="small" @update:model-value="$emit('search', $event)" />
 
     <template
       v-for="group in [undefined, ...groups]"
@@ -85,8 +85,8 @@ import { defineComponent } from "vue";
 import MtSearch from "../mt-search/mt-search.vue";
 import MtPopoverItem from "../mt-popover-item/mt-popover-item.vue";
 import MtSmoothReflow from "../_internal/mt-smooth-reflow.vue";
-import type { DropConfig, DragConfig } from "../../directives/dragdrop.directive";
-import { draggable, droppable } from "../../directives/dragdrop.directive";
+import type { DropConfig, DragConfig } from "@/directives/_internal/dragdrop.directive";
+import { draggable, droppable } from "@/directives/_internal/dragdrop.directive";
 import MtText from "@/components/mt-text/mt-text.vue";
 
 export interface Option {

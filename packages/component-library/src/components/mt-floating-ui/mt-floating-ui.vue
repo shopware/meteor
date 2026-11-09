@@ -7,7 +7,6 @@
       <div
         v-if="isOpened"
         ref="floatingUiContent"
-        v-on-click-outside="onClickOutside"
         class="mt-floating-ui__content"
         :data-show="isOpened"
         tabindex="0"
@@ -45,7 +44,7 @@ import {
   size,
   hide,
 } from "@floating-ui/dom";
-import { vOnClickOutside } from "@vueuse/components";
+import { onClickOutside as onClickOutsideOfElement } from "@vueuse/core";
 
 export type MtFloatingUiProps = {
   isOpened: boolean;
@@ -249,6 +248,8 @@ const onClickOutside = (event: Event) => {
 
   emit("close");
 };
+
+onClickOutsideOfElement(floatingUiContent, onClickOutside);
 
 onBeforeUnmount(() => {
   removeFloatingUi();

@@ -1,14 +1,15 @@
-'use strict';
+"use strict";
 
 // Vendored from svgo-autocrop@1.1.1 (MIT, © Glennos). Only the renderer was swapped from
 // puppeteer to @resvg/resvg-js — see ./README.md for details.
 
-const AutocropUtils = require('./lib/AutocropUtils.cjs');
+const AutocropUtils = require("./lib/AutocropUtils.cjs");
 
-exports.type = 'visitor';
-exports.name = 'autocrop';
+exports.type = "visitor";
+exports.name = "autocrop";
 exports.active = true;
-exports.description = 'reduce viewBox to minimum possible size so no wasted transparent space around svg';
+exports.description =
+  "reduce viewBox to minimum possible size so no wasted transparent space around svg";
 
 /**
  * Reduce viewBox to minimum possible size so no wasted transparent space around svg.
@@ -25,6 +26,6 @@ exports.description = 'reduce viewBox to minimum possible size so no wasted tran
  * @author Glennos
  */
 exports.fn = (ast, params, info) => {
-	AutocropUtils.plugin(ast, params, info);
-	return null;
+  AutocropUtils.plugin(ast, params, info);
+  return null;
 };

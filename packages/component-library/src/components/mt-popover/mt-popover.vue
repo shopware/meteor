@@ -43,172 +43,140 @@
   </component>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import type { PropType } from "vue";
-import { defineComponent, computed, ref, watch } from "vue";
-import MtCheckbox from "../mt-checkbox/mt-checkbox.vue";
-import MtSwitch from "../mt-switch/mt-switch.vue";
+import { computed, ref, watch } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
-import MtPopoverItem from "../mt-popover-item/mt-popover-item.vue";
 import MtButton from "../mt-button/mt-button.vue";
-import MtSmoothReflow from "../_internal/mt-smooth-reflow.vue";
 import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
 import type { TranslateResult } from "vue-i18n";
 import type { View } from "./mt-popover.interfaces";
 import MtText from "@/components/mt-text/mt-text.vue";
 
-export default defineComponent({
-  components: {
-    "mt-text": MtText,
-    "mt-checkbox": MtCheckbox,
-    "mt-switch": MtSwitch,
-    "mt-icon": MtIcon,
-    "mt-popover-item": MtPopoverItem,
-    "mt-button": MtButton,
-    "mt-smooth-reflow": MtSmoothReflow,
-    "mt-floating-ui": MtFloatingUi,
+const props = defineProps({
+  title: {
+    type: String as PropType<string | TranslateResult>,
+    required: false,
+    default: "",
   },
-  props: {
-    title: {
-      type: String as PropType<string | TranslateResult>,
-      required: false,
-      default: "",
-    },
-    childViews: {
-      type: Array as PropType<View[]>,
-      required: false,
-      default: () => [],
-    },
-    disableFloat: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    width: {
-      type: String as PropType<"dynamic" | "large" | "medium" | "small">,
-      required: false,
-      default: "dynamic",
-      validator: (value: string) => {
-        return ["dynamic", "large", "medium", "small"].includes(value);
-      },
+  childViews: {
+    type: Array as PropType<View[]>,
+    required: false,
+    default: () => [],
+  },
+  disableFloat: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  width: {
+    type: String as PropType<"dynamic" | "large" | "medium" | "small">,
+    required: false,
+    default: "dynamic",
+    validator: (value: string) => {
+      return ["dynamic", "large", "medium", "small"].includes(value);
     },
   },
-  emits: ["update:isOpened"],
-  setup(props, { emit }) {
-    const MtPopover = ref<HTMLElement | null>(null);
-    const activeView = ref("base");
-    const viewTransition = ref<"slideIn" | "slideOut">("slideIn");
-    const isOpened = ref(false);
+});
 
-    watch(isOpened, (value) => {
-      emit("update:isOpened", value);
-    });
+const emit = defineEmits(["update:isOpened"]);
 
-    const mainComponentTag = computed(() => {
-      return props.disableFloat ? "div" : "mt-floating-ui";
-    });
+const MtPopover = ref<HTMLElement | null>(null);
+const activeView = ref("base");
+const viewTransition = ref<"slideIn" | "slideOut">("slideIn");
+const isOpened = ref(false);
 
-    const goViewBack = () => {
-      viewTransition.value = "slideOut";
+watch(isOpened, (value) => {
+  emit("update:isOpened", value);
+});
 
-      const previousView = allViews.value.find((view) =>
-        view.childViews?.some((v) => v.name === activeView.value),
-      );
+const mainComponentTag = computed(() => {
+  return props.disableFloat ? "div" : MtFloatingUi;
+});
 
-      if (previousView) {
-        activeView.value = previousView.name as string;
-      } else {
-        activeView.value = "base";
-      }
+const goViewBack = () => {
+  viewTransition.value = "slideOut";
 
-      if (MtPopover.value) {
-        MtPopover.value.scrollTop = 0;
-      }
-    };
+  const previousView = allViews.value.find((view) =>
+    view.childViews?.some((v) => v.name === activeView.value),
+  );
 
-    const changeView = (view: string) => {
-      viewTransition.value = "slideIn";
-      activeView.value = view;
+  if (previousView) {
+    activeView.value = previousView.name as string;
+  } else {
+    activeView.value = "base";
+  }
 
-      if (MtPopover.value) {
-        MtPopover.value.scrollTop = 0;
-      }
-    };
+  if (MtPopover.value) {
+    MtPopover.value.scrollTop = 0;
+  }
+};
 
-    const getAllViews = (views?: View[]): View[] => {
-      if (!views) {
-        return [];
-      }
+const changeView = (view: string) => {
+  viewTransition.value = "slideIn";
+  activeView.value = view;
 
-      return views.reduce<View[]>((acc, view) => {
-        return [...acc, view, ...getAllViews(view.childViews)];
-      }, []);
-    };
+  if (MtPopover.value) {
+    MtPopover.value.scrollTop = 0;
+  }
+};
 
-    const allViews = computed<View[]>(() => {
-      return [
-        {
-          name: "base",
-          title: props.title,
-        },
-        ...getAllViews(props.childViews),
-      ];
-    });
+const getAllViews = (views?: View[]): View[] => {
+  if (!views) {
+    return [];
+  }
 
-    const currentView = computed<View>(() => {
-      const currentView = allViews.value.find((view) => {
-        return view.name === activeView.value;
-      });
+  return views.reduce<View[]>((acc, view) => {
+    return [...acc, view, ...getAllViews(view.childViews)];
+  }, []);
+};
 
-      if (currentView) {
-        return {
-          ...currentView,
-          title: currentView.title ?? props.title,
-        };
-      }
+const allViews = computed<View[]>(() => {
+  return [
+    {
+      name: "base",
+      title: props.title,
+    },
+    ...getAllViews(props.childViews),
+  ];
+});
 
-      return { name: "base", title: props.title };
-    });
+const currentView = computed<View>(() => {
+  const currentView = allViews.value.find((view) => {
+    return view.name === activeView.value;
+  });
 
-    const closeFloatingUi = () => {
-      isOpened.value = false;
-    };
-
-    const toggleFloatingUi = () => {
-      isOpened.value = !isOpened.value;
-    };
-
-    const showHeader = computed(() => {
-      return !!currentView.value.title || currentView.value.name !== "base";
-    });
-
-    const componentClasses = computed(() => {
-      const classes = {
-        "mt-popover--float": !props.disableFloat,
-        "is--open": isOpened.value,
-        "has--header": showHeader.value,
-        [`mt-popover--width-${props.width}`]: true,
-      };
-
-      return classes;
-    });
-
+  if (currentView) {
     return {
-      goViewBack,
-      currentView,
-      activeView,
-      changeView,
-      allViews,
-      viewTransition,
-      MtPopover,
-      closeFloatingUi,
-      toggleFloatingUi,
-      isOpened,
-      mainComponentTag,
-      componentClasses,
-      showHeader,
+      ...currentView,
+      title: currentView.title ?? props.title,
     };
-  },
+  }
+
+  return { name: "base", title: props.title };
+});
+
+const closeFloatingUi = () => {
+  isOpened.value = false;
+};
+
+const toggleFloatingUi = () => {
+  isOpened.value = !isOpened.value;
+};
+
+const showHeader = computed(() => {
+  return !!currentView.value.title || currentView.value.name !== "base";
+});
+
+const componentClasses = computed(() => {
+  const classes = {
+    "mt-popover--float": !props.disableFloat,
+    "is--open": isOpened.value,
+    "has--header": showHeader.value,
+    [`mt-popover--width-${props.width}`]: true,
+  };
+
+  return classes;
 });
 </script>
 

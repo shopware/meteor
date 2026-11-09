@@ -20,7 +20,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import MtIcon from "../../mt-icon/mt-icon.vue";
-import MtTooltipDirective from "../../../directives/tooltip.directive";
+import { TooltipDirective as MtTooltipDirective } from "@/directives/TooltipDirective";
 import MtNotificationMixin from "../../../mixins/notification.mixin";
 import { copyToClipboard as copyToClipboardUtil } from "../../../utils/dom";
 import { useI18n } from "vue-i18n";

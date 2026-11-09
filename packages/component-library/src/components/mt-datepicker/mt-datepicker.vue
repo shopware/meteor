@@ -116,7 +116,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import { useId } from "vue";
 import { enUS } from "date-fns/locale/en-US";
 import type { Locale } from "date-fns";
-import { importDateFnsLocaleModule } from "./date-fns-locale";
+import { importDateFnsLocale } from "./date-fns-locale";
 
 // @deprecated tag:v5 remove the `wrapper` class of the root element. Keep `mt-datepicker__wrapper`,
 // which the styles build on.
@@ -241,7 +241,7 @@ const props = withDefaults(
   {
     label: null,
     dateType: "datetime",
-    locale: "de",
+    locale: "en-US",
     format: undefined,
     timeZone: "UTC",
     modelValue: null,
@@ -300,7 +300,7 @@ async function loadDateFnsLocale(tag: string): Promise<Locale> {
   const paths = lang && lang !== normalized ? [normalized, lang] : [normalized];
 
   for (const path of paths) {
-    const locale = await importDateFnsLocaleModule(path);
+    const locale = await importDateFnsLocale(path);
     if (locale) {
       return locale;
     }

@@ -96,11 +96,11 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import MtContextButton from "../mt-context-button/mt-context-button.vue";
+import MtContextButton from "../_internal/mt-context-button/mt-context-button.vue";
 import MtLoader from "../mt-loader/mt-loader.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "../mt-text/mt-text.vue";
-import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useFutureFlags } from "@/composables/_internal/useFutureFlags";
 import { useI18n } from "vue-i18n";
 
 const props = withDefaults(
@@ -113,6 +113,8 @@ const props = withDefaults(
     inheritance?: boolean;
   }>(),
   {
+    title: undefined,
+    subtitle: undefined,
     inheritance: undefined,
   },
 );

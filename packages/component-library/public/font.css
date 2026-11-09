@@ -1,0 +1,16 @@
+/* Inter 3.19, published as "@shopware-ag/meteor-component-library/font.css" */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/Inter-roman.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/Inter-italic.woff2") format("woff2");
+}

@@ -80,10 +80,10 @@ const id = useId();
 
 defineEmits<{
   change: [typeof model.value];
-  "inheritance-remove": void;
-  "inheritance-restore": void;
-  focus: void;
-  blur: void;
+  "inheritance-remove": [];
+  "inheritance-restore": [];
+  focus: [];
+  blur: [];
 }>();
 
 const props = defineProps<{

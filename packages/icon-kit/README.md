@@ -58,10 +58,7 @@ Start by importing the provided stylesheet:
 Or classic via a `<link>`:
 
 ```html
-<link
-  rel="stylesheet"
-  href="your-asset-folder/meteor-icon-kit.css"
-/>
+<link rel="stylesheet" href="your-asset-folder/meteor-icon-kit.css" />
 ```
 
 > [!NOTE]

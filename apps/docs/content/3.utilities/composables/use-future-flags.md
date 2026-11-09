@@ -13,7 +13,7 @@ description: Reads the active future flags inside a component so it can adapt to
 
 ```ts
 import { computed } from "vue";
-import { useFutureFlags } from "../../composables/useFutureFlags";
+import { useFutureFlags } from "@/composables/_internal/useFutureFlags";
 
 const futureFlags = useFutureFlags();
 

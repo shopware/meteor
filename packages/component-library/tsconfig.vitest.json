@@ -12,6 +12,6 @@
   ],
   "compilerOptions": {
     "composite": true,
-    "types": ["node", "jsdom", "vitest/globals"]
+    "types": ["node", "jsdom", "vitest/globals", "vite/client"]
   }
 }

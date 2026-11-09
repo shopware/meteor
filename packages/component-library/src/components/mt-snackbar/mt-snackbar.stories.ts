@@ -4,7 +4,7 @@ import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtCheckbox from "@/components/mt-checkbox/mt-checkbox.vue";
 import MtTextField from "@/components/mt-text-field/mt-text-field.vue";
-import { useSnackbar, type Snackbar } from "./composables/use-snackbar";
+import { useSnackbar, type Snackbar } from "@/composables/useSnackbar";
 import { computed, ref } from "vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 

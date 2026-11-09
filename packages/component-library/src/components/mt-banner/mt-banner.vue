@@ -26,8 +26,8 @@
       variant="tertiary"
       class="mt-banner__close"
       :aria-label="t('close')"
-      @click.prevent="$emit('close', bannerIndex)"
       square
+      @click.prevent="$emit('close', bannerIndex)"
     >
       <mt-icon name="regular-times-s" size="var(--scale-size-10)" />
     </mt-button>
@@ -39,7 +39,7 @@ import { computed } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
-import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useFutureFlags } from "@/composables/_internal/useFutureFlags";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n({
@@ -64,8 +64,11 @@ const props = withDefaults(
   }>(),
   {
     variant: "neutral",
+    title: undefined,
     hideIcon: false,
     closable: false,
+    bannerIndex: undefined,
+    icon: undefined,
   },
 );
 

@@ -65,6 +65,9 @@ jobs:
       - name: Build packages
         run: pnpm turbo run build
 
+      - name: Check component library package
+        run: pnpm --filter @shopware-ag/meteor-component-library lint:package
+
       - name: Lint all
         run: pnpm turbo run lint:all
 

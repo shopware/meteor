@@ -183,6 +183,7 @@ import {
   FigcaptionElement,
 } from "./_internal/mt-text-editor-html-preserving-extensions";
 import mtTextEditorToolbar, { type CustomButton } from "./_internal/mt-text-editor-toolbar.vue";
+export type { CustomButton };
 import mtTextEditorToolbarButtonColor, {
   colorButton,
 } from "./_internal/mt-text-editor-toolbar-button-color.vue";
@@ -192,7 +193,7 @@ import mtTextEditorToolbarButtonLink, {
 import mtTextEditorToolbarButtonTable, {
   tableButton,
 } from "./_internal/mt-text-editor-toolbar-button-table.vue";
-import mtTextEditorToolbarButton from "./_internal/mt-text-editor-toolbar-button.vue";
+import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
 import mtPopoverItem from "@/components/mt-popover-item/mt-popover-item.vue";
 import mtPopover from "@/components/mt-popover/mt-popover.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";

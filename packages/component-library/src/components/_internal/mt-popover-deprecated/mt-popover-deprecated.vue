@@ -14,7 +14,7 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import { defineComponent } from "vue";
-import MtPopoverDirective from "../../../directives/popover.directive";
+import MtPopoverDirective from "@/directives/_internal/popover.directive";
 
 /**
  * @deprecated - Use `mt-floating-ui` instead

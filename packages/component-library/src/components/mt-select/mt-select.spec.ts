@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/vue";
-import { defineComponent } from "vue";
-import { flushPromises, mount } from "@vue/test-utils";
+import userEvent from "@testing-library/user-event";
+import { h, nextTick, type FunctionalComponent } from "vue";
 import MtSelect from "./mt-select.vue";
 
-async function createWrapper({ props = {}, slots = {}, attrs = {} } = {}) {
-  const wrapper = mount(MtSelect, {
+async function renderSelect({ props = {}, slots = {}, attrs = {} } = {}) {
+  const result = render(MtSelect, {
     props: {
       modelValue: "becky",
       options: [
@@ -30,9 +30,9 @@ async function createWrapper({ props = {}, slots = {}, attrs = {} } = {}) {
     attrs,
   });
 
-  await wrapper.vm.$nextTick();
+  await nextTick();
 
-  return wrapper;
+  return result;
 }
 
 // mock debounce from '@/utils/debounce'
@@ -44,48 +44,42 @@ describe("mt-select", () => {
   it("moves the focus to the previous element on Shift+Tab without clicking it", async () => {
     // ARRANGE
     const onClick = vi.fn();
-    const wrapper = mount(
-      defineComponent({
-        components: { MtSelect },
-        setup: () => ({ onClick, options: [{ id: 1, label: "Option Alfred", value: "alfred" }] }),
-        template: `
-          <div>
-            <button id="before" @click="onClick">Before</button>
-            <div inert><button @click="onClick">Inert</button></div>
-            <mt-select label="Select" :options="options" />
-          </div>
-        `,
-      }),
-      { attachTo: document.body },
+    render(() =>
+      h("div", [
+        h("button", { onClick }, "Before"),
+        h("div", { inert: true }, [h("button", { onClick }, "Inert")]),
+        h(MtSelect, {
+          label: "Select",
+          options: [{ id: 1, label: "Option Alfred", value: "alfred" }],
+        }),
+      ]),
     );
+    await userEvent.click(screen.getByRole("textbox"));
 
     // ACT
-    await wrapper.find(".mt-select__selection").trigger("keydown", { key: "Tab", shiftKey: true });
+    await userEvent.tab({ shift: true });
 
     // ASSERT
-    expect(document.activeElement).toBe(wrapper.find("#before").element);
+    expect(screen.getByRole("button", { name: "Before" })).toHaveFocus();
     expect(onClick).not.toHaveBeenCalled();
-    wrapper.unmount();
   });
 
   it("should render the select component", async () => {
-    const wrapper = await createWrapper();
+    await renderSelect();
 
-    expect(wrapper.vm).toBeDefined();
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
   });
 
   it("should render only one single select result with type string", async () => {
-    const wrapper = await createWrapper();
+    await renderSelect();
 
-    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
-
-    expect(itemHolder).toHaveLength(1);
-    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Option Becky");
+    expect(screen.getAllByRole("textbox")).toHaveLength(1);
+    expect(screen.getByRole("textbox")).toHaveValue("Option Becky");
   });
 
   it("should render only one single select result with type number", async () => {
-    const wrapper = await createWrapper();
-    await wrapper.setProps({
+    const { rerender } = await renderSelect();
+    await rerender({
       modelValue: 25,
       options: [
         { id: 5, label: "5", value: 5 },
@@ -95,15 +89,13 @@ describe("mt-select", () => {
       ],
     });
 
-    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
-
-    expect(itemHolder).toHaveLength(1);
-    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("25");
+    expect(screen.getAllByRole("textbox")).toHaveLength(1);
+    expect(screen.getByRole("textbox")).toHaveValue("25");
   });
 
   it("should render a label for option with id 0", async () => {
-    const wrapper = await createWrapper();
-    await wrapper.setProps({
+    const { rerender } = await renderSelect();
+    await rerender({
       modelValue: 0,
       options: [
         { id: 0, label: "Id 0", value: 0 },
@@ -111,15 +103,13 @@ describe("mt-select", () => {
       ],
     });
 
-    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
-
-    expect(itemHolder).toHaveLength(1);
-    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Id 0");
+    expect(screen.getAllByRole("textbox")).toHaveLength(1);
+    expect(screen.getByRole("textbox")).toHaveValue("Id 0");
   });
 
   it("should select an object value by id", async () => {
-    const wrapper = await createWrapper();
-    await wrapper.setProps({
+    const { rerender } = await renderSelect();
+    await rerender({
       modelValue: { id: 2, label: "Option Becky", value: "becky" },
       options: [
         { id: 1, label: "Option Alfred", value: "alfred" },
@@ -128,15 +118,13 @@ describe("mt-select", () => {
       ],
     });
 
-    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
-
-    expect(itemHolder).toHaveLength(1);
-    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Option Becky");
+    expect(screen.getAllByRole("textbox")).toHaveLength(1);
+    expect(screen.getByRole("textbox")).toHaveValue("Option Becky");
   });
 
   it("should select an object value by value property prop", async () => {
-    const wrapper = await createWrapper();
-    await wrapper.setProps({
+    const { rerender } = await renderSelect();
+    await rerender({
       modelValue: { id: 2, label: "Option Becky", value: "becky" },
       valueProperty: "label",
       options: [
@@ -146,15 +134,13 @@ describe("mt-select", () => {
       ],
     });
 
-    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
-
-    expect(itemHolder).toHaveLength(1);
-    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Option Becky");
+    expect(screen.getAllByRole("textbox")).toHaveLength(1);
+    expect(screen.getByRole("textbox")).toHaveValue("Option Becky");
   });
 
   it("should use fallback property from an array of label properties", async () => {
-    const wrapper = await createWrapper();
-    await wrapper.setProps({
+    const { rerender } = await renderSelect();
+    await rerender({
       modelValue: "user1",
       labelProperty: ["name", "username", "email"],
       options: [
@@ -163,16 +149,14 @@ describe("mt-select", () => {
         { id: 3, name: "", username: "", email: "user3@example.com", value: "user3" },
       ],
     });
-    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
 
-    expect(itemHolder).toHaveLength(1);
-    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("User 1");
+    expect(screen.getAllByRole("textbox")).toHaveLength(1);
+    expect(screen.getByRole("textbox")).toHaveValue("User 1");
   });
 
   it("should search in all properties of the labelProperty array", async () => {
-    vi.useFakeTimers();
-    const wrapper = await createWrapper();
-    await wrapper.setProps({
+    const { rerender } = await renderSelect();
+    await rerender({
       labelProperty: ["name", "username", "email"],
       options: [
         { id: 1, username: "user1", email: "user1@example.com", value: "user1" },
@@ -182,37 +166,36 @@ describe("mt-select", () => {
     });
 
     // Simulate a search
-    wrapper.vm.onSearchTermChange("test");
-    await flushPromises();
+    await userEvent.type(screen.getByRole("textbox"), "test");
 
     // Check that the search found the item with 'test' in the email field
-    expect(wrapper.vm.visibleResults.length).toBe(1);
-    expect(wrapper.vm.visibleResults[0].value).toBe("user3");
+    expect(screen.getAllByTestId(/^mt-select-option--/)).toHaveLength(1);
+    expect(screen.getByTestId("mt-select-option--user3")).toBeVisible();
   });
 
   it("displays a hint passed via the hint prop", async () => {
-    const wrapper = await createWrapper({ props: { hint: "Hint from prop" } });
+    await renderSelect({ props: { hint: "Hint from prop" } });
 
-    expect(wrapper.find(".mt-field-hint").text()).toContain("Hint from prop");
+    expect(screen.getByText("Hint from prop")).toBeVisible();
   });
 
   it("renders markup passed via the hint slot", async () => {
-    const wrapper = await createWrapper({
+    await renderSelect({
       slots: { hint: '<span data-testid="custom-hint">Hint from slot</span>' },
     });
 
-    expect(wrapper.find('[data-testid="custom-hint"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="custom-hint"]').text()).toBe("Hint from slot");
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+    expect(screen.getByTestId("custom-hint")).toHaveTextContent("Hint from slot");
   });
 
   it("does not render a hint when neither prop nor slot is provided", async () => {
-    const wrapper = await createWrapper();
+    const { container } = await renderSelect();
 
-    expect(wrapper.find(".mt-field-hint").exists()).toBe(false);
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
   });
 
   it("should select the active item with the enter key", async () => {
-    const wrapper = mount(MtSelect, {
+    const { emitted } = render(MtSelect, {
       props: {
         modelValue: null,
         options: [
@@ -220,113 +203,88 @@ describe("mt-select", () => {
           { id: 2, label: "Option Becky", value: "becky" },
         ],
       },
-      attachTo: document.body,
     });
-    await flushPromises();
 
-    await wrapper.find(".mt-select__selection").trigger("click");
-    await flushPromises();
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.keyboard("{ArrowDown}{Enter}");
 
-    const input = wrapper.find(".mt-select-selection-list__input");
-    await input.trigger("keydown", { key: "ArrowDown" });
-    await input.trigger("keydown", { key: "Enter" });
-    await flushPromises();
-
-    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual(["becky"]);
-    expect(document.querySelector(".mt-select-result-list__content")).toBeNull();
-
-    wrapper.unmount();
+    expect(emitted("update:modelValue")[0]).toEqual(["becky"]);
+    expect(screen.queryAllByTestId(/^mt-select-option--/)).toHaveLength(0);
   });
 
   it("should show the selected value as input value on focus and only filter after the user edits it", async () => {
-    const wrapper = await createWrapper();
-    const input = wrapper.find(".mt-select-selection-list__input");
+    await renderSelect();
+    const input = screen.getByRole("textbox");
 
-    await input.trigger("focus");
+    await userEvent.click(input);
 
-    expect((input.element as HTMLInputElement).value).toBe("Option Becky");
-    expect((input.element as HTMLInputElement).placeholder).not.toBe("Option Becky");
-    expect(wrapper.vm.visibleResults).toHaveLength(3);
+    expect(input).toHaveValue("Option Becky");
+    expect(input).not.toHaveAttribute("placeholder", "Option Becky");
+    expect(screen.getAllByTestId(/^mt-select-option--/)).toHaveLength(3);
 
-    await input.setValue("Option Beck");
-    await flushPromises();
+    await userEvent.keyboard("{Backspace}");
 
-    expect((input.element as HTMLInputElement).value).toBe("Option Beck");
-    expect(wrapper.vm.visibleResults).toHaveLength(1);
-    expect(wrapper.vm.visibleResults[0].value).toBe("becky");
+    expect(input).toHaveValue("Option Beck");
+    expect(screen.getAllByTestId(/^mt-select-option--/)).toHaveLength(1);
+    expect(screen.getByTestId("mt-select-option--becky")).toBeVisible();
 
-    wrapper.vm.onSelectCollapsed();
-    await flushPromises();
-    await input.trigger("focus");
+    await userEvent.keyboard("{Escape}");
+    await userEvent.click(input);
 
-    expect((input.element as HTMLInputElement).value).toBe("Option Becky");
-    expect(wrapper.vm.visibleResults).toHaveLength(3);
+    expect(input).toHaveValue("Option Becky");
+    expect(screen.getAllByTestId(/^mt-select-option--/)).toHaveLength(3);
   });
 
   it("should render a searchable input that opts out of autofill", async () => {
-    const wrapper = await createWrapper();
+    await renderSelect();
 
-    const input = wrapper.find(".mt-select-selection-list__input");
+    const input = screen.getByRole("textbox");
 
-    expect(input.attributes("autocomplete")).toBe("off");
-    expect(input.attributes("data-1p-ignore")).toBeDefined();
-    expect(input.attributes("data-lpignore")).toBe("true");
-    expect(input.attributes("data-bwignore")).toBeDefined();
-    expect(input.attributes("readonly")).toBeUndefined();
+    expect(input).toHaveAttribute("autocomplete", "off");
+    expect(input).toHaveAttribute("data-1p-ignore");
+    expect(input).toHaveAttribute("data-lpignore", "true");
+    expect(input).toHaveAttribute("data-bwignore");
+    expect(input).not.toHaveAttribute("readonly");
   });
 
   it("should render a readonly input when search is disabled", async () => {
-    const wrapper = await createWrapper({
+    await renderSelect({
       props: {
         enableSearch: false,
       },
     });
 
-    const input = wrapper.find(".mt-select-selection-list__input");
-
-    expect(input.attributes("readonly")).toBeDefined();
+    expect(screen.getByRole("textbox")).toHaveAttribute("readonly");
   });
 
   it("associates the label with the input via the name attribute", async () => {
-    const wrapper = await createWrapper({
+    await renderSelect({
       props: { label: "Date range" },
       attrs: { name: "date-range" },
     });
 
-    const label = wrapper.find(".mt-field__label label");
-    const input = wrapper.find(".mt-select-selection-list__input");
-
-    expect(label.attributes("for")).toBe("date-range");
-    expect(input.attributes("id")).toBe("date-range");
+    expect(screen.getByRole("textbox", { name: "Date range" })).toHaveAttribute("id", "date-range");
   });
 
   it("associates the label with the input via a generated id when no name is given", async () => {
-    const wrapper = await createWrapper({ props: { label: "Date range" } });
+    await renderSelect({ props: { label: "Date range" } });
 
-    const label = wrapper.find(".mt-field__label label");
-    const input = wrapper.find(".mt-select-selection-list__input");
-
-    expect(label.attributes("for")).toMatch(/^mt-field--/);
-    expect(input.attributes("id")).toBe(label.attributes("for"));
+    expect(screen.getByRole("textbox", { name: "Date range" })).toHaveAttribute(
+      "id",
+      expect.stringMatching(/^mt-field--/),
+    );
   });
 });
 
 describe("mt-select conditional hint", () => {
-  const Host = defineComponent({
-    components: { Field: MtSelect },
-    props: {
-      showHint: { type: Boolean, default: false },
-      hint: { type: String, default: null },
-    },
-    setup: () => ({ fieldProps: { options: [] } }),
-    template: `
-      <Field v-bind="fieldProps" :hint="hint">
-        <template v-if="showHint" #hint>
-          <span data-testid="custom-hint">Original value</span>
-        </template>
-      </Field>
-    `,
-  });
+  const Host: FunctionalComponent<{ showHint?: boolean; hint?: string }> = (props) =>
+    h(
+      MtSelect,
+      { options: [], hint: props.hint },
+      props.showHint
+        ? { hint: () => h("span", { "data-testid": "custom-hint" }, "Original value") }
+        : undefined,
+    );
 
   it("renders a hint slot added after mounting and removes it again", async () => {
     const { container, rerender } = render(Host);

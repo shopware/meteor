@@ -20,6 +20,8 @@ const config: StorybookConfig = {
     name: "@storybook/vue3-vite",
     options: {},
   },
+  // Storybook files, and the package files from public/ such as font.css
+  staticDirs: ["./public", "../public"],
   docs: {},
   async viteFinal(config) {
     return mergeConfig(config, {

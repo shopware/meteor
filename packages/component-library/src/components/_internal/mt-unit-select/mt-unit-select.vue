@@ -49,7 +49,7 @@ import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
 import MtUnitSelectResult from "./_internal/mt-unit-select-result.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
-import type { Unit } from "convert-units";
+import type { Unit } from "../../mt-unit-field/units";
 import { useFloating, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
 import { onClickOutside } from "@vueuse/core";
 

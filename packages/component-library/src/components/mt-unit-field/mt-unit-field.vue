@@ -54,8 +54,7 @@ import { computed, useSlots, watch } from "vue";
 import MtNumberField from "../mt-number-field/mt-number-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtUnitSelect from "../_internal/mt-unit-select/mt-unit-select.vue";
-import convert from "convert-units";
-import type { Unit } from "convert-units";
+import { convertUnit, unitsOf, type Unit } from "./units";
 
 const slots = useSlots();
 
@@ -94,7 +93,17 @@ const props = withDefaults(
   {
     modelValue: undefined,
     measurementType: "length",
+    placeholder: undefined,
+    numberType: undefined,
     step: 1,
+    min: undefined,
+    max: undefined,
+    digits: undefined,
+    label: undefined,
+    error: undefined,
+    name: undefined,
+    size: undefined,
+    helpText: undefined,
     defaultUnit: "mm",
     zIndex: null,
     hint: null,
@@ -109,17 +118,15 @@ const emit = defineEmits<{
   (e: "inheritance-remove"): void;
 }>();
 
-const availableUnits = computed(() => {
-  if (props.measurementType === "mass") {
-    return ["g", "kg", "oz", "lb"] as Unit[];
-  } else {
-    return ["mm", "cm", "m", "in", "ft", "yd"] as Unit[];
-  }
-});
+const availableUnits = computed(() => unitsOf(props.measurementType));
 
 const onUnitChange = (value: Unit) => {
-  if (props.modelValue !== undefined) {
-    const convertedValue = convert(props.modelValue).from(props.defaultUnit).to(value);
+  const convertedValue =
+    props.modelValue === undefined
+      ? undefined
+      : convertUnit(props.modelValue, props.defaultUnit, value);
+
+  if (convertedValue !== undefined) {
     const formattedValue =
       props.digits !== undefined ? Number(convertedValue.toFixed(props.digits)) : convertedValue;
     emit("update:modelValue", formattedValue);

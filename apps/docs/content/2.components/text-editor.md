@@ -119,7 +119,7 @@ The editor includes these built-in buttons by default. Use the `excludedButtons`
 
 ## Custom buttons
 
-Add custom buttons to the toolbar by passing an array of `CustomButton` objects to the `customButtons` prop. Each button supports these properties:
+Add custom buttons to the toolbar by passing an array of `CustomButton` objects to the `customButtons` prop. Import the `CustomButton` type from the same path as `MtTextEditor`. Each button supports these properties:
 
 - **`name`** (required): A unique identifier for the button.
 - **`label`** (required): The visible label, as direct text or a translation key.

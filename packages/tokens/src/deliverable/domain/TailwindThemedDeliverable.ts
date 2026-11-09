@@ -10,7 +10,7 @@ export class TailwindThemedDeliverable implements Deliverable {
     private readonly lightDictionary: Dictionary,
     private readonly darkDictionary: Dictionary,
     private readonly options: Options = {},
-  ) { }
+  ) {}
 
   public static fromDictionaries(
     lightDictionary: Dictionary,

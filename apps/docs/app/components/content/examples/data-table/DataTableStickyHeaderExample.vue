@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MtDataTable from "@shopware-ag/meteor-component-library/MtDataTable";
+import MtDataTable, { type ColumnDefinition } from "@shopware-ag/meteor-component-library/MtDataTable";
 
 const dataSource = [
   { id: "1", name: "Fantastic Cotton Sausages", available: 2067 },
@@ -14,7 +14,7 @@ const dataSource = [
   { id: "10", name: "Incredible Wooden Bike", available: 305 },
 ];
 
-const columns = [
+const columns: ColumnDefinition[] = [
   { label: "Name", property: "name", renderer: "text", position: 0, sortable: true },
   { label: "Available", property: "available", renderer: "number", position: 100, sortable: true },
 ];
