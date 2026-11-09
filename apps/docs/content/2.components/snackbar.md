@@ -75,7 +75,7 @@ See [**useSnackbar**](/utilities/composables/use-snackbar) for the full publishi
 - If more than one `MtSnackbar` is mounted, only the first one renders the stack; when it unmounts, the next one takes over.
 - Standard snackbars close automatically after `5000ms` by default.
 - Setting `duration` to `0` disables the auto-dismiss timer, which means you should remove that snackbar through `removeSnackbar` or `clearSnackbars`.
-- Hovering the snackbar stack pauses dismissal timers until the pointer leaves.
+- Hovering or focusing the snackbar stack pauses dismissal timers until the pointer or focus leaves.
 - `progress` snackbars stay visible until `uploadState` changes to `success` or `error`, then they close shortly after showing the final message.
 - The optional `link` supports one non-critical follow-up action, not a full decision flow.
 - A `link` with a `url` navigates, and a `link` with an `onClick` runs a callback such as `Undo`. Clicking the link always closes the snackbar.

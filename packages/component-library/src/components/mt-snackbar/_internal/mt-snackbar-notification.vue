@@ -325,8 +325,12 @@ function resumeSuccessTimer() {
   }
 }
 
+// Tracked apart from `removed`, so a click during a timer's exit animation still runs the action
+const actionTriggered = ref(false);
+
 function onLinkClick() {
-  if (removed.value) return;
+  if (actionTriggered.value) return;
+  actionTriggered.value = true;
 
   onRemoveSnackbar();
   snackbar.value.link?.onClick?.();
