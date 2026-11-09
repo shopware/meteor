@@ -63,6 +63,7 @@ const current = computed(() =>
           <span class="visually-hidden">{{ label }}:</span>
           <mt-avatar
             v-if="current"
+            class="context-switcher-prototype__avatar"
             size="2xs"
             variant="square"
             :first-name="current.name"
@@ -105,7 +106,8 @@ const current = computed(() =>
               @select="model = option.id"
             >
               <mt-avatar
-                size="2xs"
+                class="context-switcher-prototype__avatar"
+                size="xs"
                 variant="square"
                 :first-name="option.name"
               />
@@ -211,7 +213,27 @@ const current = computed(() =>
   min-width: var(--scale-size-256);
 }
 
+/* Taller than the default 32px of mt-action-menu-item, to give the avatars room. */
+:global(.context-switcher-prototype__menu.mt-action-menu .mt-action-menu-item) {
+  min-height: var(--scale-size-36);
+}
+
 /* Lines up with the menu items below it. */
+/* mt-avatar sets its initials at 40% of its size and takes the line height of its surroundings,
+   so a small one shows a tiny letter below its center. The bar uses 20px, the menu 24px. */
+.context-switcher-prototype__avatar.mt-avatar {
+  font-size: calc(var(--mt-avatar-size) * 0.5);
+  line-height: 1;
+  border-radius: 24%;
+  /* A hairline in the avatar's own color, so its pale background holds up on a white menu. */
+  box-shadow: inset 0 0 0 var(--scale-size-1)
+    color-mix(in srgb, var(--mt-avatar--color-primary) 16%, transparent);
+}
+
+.context-switcher-prototype__avatar.mt-avatar--size-2xs {
+  --mt-avatar-size: var(--scale-size-20);
+}
+
 .context-switcher-prototype__heading {
   padding: var(--scale-size-4) var(--scale-size-10);
 }
