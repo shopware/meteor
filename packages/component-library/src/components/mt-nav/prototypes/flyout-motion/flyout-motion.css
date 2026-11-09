@@ -26,13 +26,13 @@
 
 /* The baseline keeps the component's own animation, sideways slide included */
 
-[data-mt-nav-flyout-motion="current"] .mt-nav__flyout {
+[data-mt-nav-flyout-motion="horizontal-slide"] .mt-nav__flyout {
   animation-duration: calc(300ms * var(--proto-motion-scale, 1));
 }
 
 /* The new variants replace the component's keyframes */
 
-[data-mt-nav-flyout-motion]:not([data-mt-nav-flyout-motion="current"])
+[data-mt-nav-flyout-motion]:not([data-mt-nav-flyout-motion="horizontal-slide"])
   .mt-nav__flyout {
   animation: none;
 }
@@ -67,25 +67,6 @@
   [data-mt-nav-flyout-motion="grow"] .mt-nav__flyout {
     opacity: 0;
     transform: scale(0.97);
-  }
-}
-
-/* Unroll: revealed from the edge at its row, without fading.
-   The resting inset is negative so the shadow isn't cut off. */
-
-[data-mt-nav-flyout-motion="unroll"] .mt-nav__flyout {
-  clip-path: inset(calc(-1 * var(--scale-size-40)));
-  transition: clip-path calc(220ms * var(--proto-motion-scale, 1))
-    var(--proto-ease-out);
-}
-
-@starting-style {
-  [data-mt-nav-flyout-motion="unroll"] .mt-nav__flyout {
-    clip-path: inset(0 0 100% 0);
-  }
-
-  [data-mt-nav-flyout-motion="unroll"] .mt-floating-ui--bottom .mt-nav__flyout {
-    clip-path: inset(100% 0 0 0);
   }
 }
 
@@ -152,7 +133,7 @@
    own reduced-motion rule, which turns the animation off. */
 
 @media (prefers-reduced-motion: reduce) {
-  [data-mt-nav-flyout-motion="current"] .mt-nav__flyout {
+  [data-mt-nav-flyout-motion="horizontal-slide"] .mt-nav__flyout {
     animation: none;
   }
 
@@ -160,7 +141,9 @@
     transition: none;
   }
 
-  [data-mt-nav-flyout-motion]:not([data-mt-nav-flyout-motion="current"])
+  [data-mt-nav-flyout-motion]:not(
+      [data-mt-nav-flyout-motion="horizontal-slide"]
+    )
     .mt-nav__flyout {
     transition: opacity calc(150ms * var(--proto-motion-scale, 1)) ease;
   }
@@ -173,11 +156,12 @@
   }
 
   @starting-style {
-    [data-mt-nav-flyout-motion]:not([data-mt-nav-flyout-motion="current"])
+    [data-mt-nav-flyout-motion]:not(
+        [data-mt-nav-flyout-motion="horizontal-slide"]
+      )
       .mt-nav__flyout {
       opacity: 0;
       transform: none;
-      clip-path: inset(calc(-1 * var(--scale-size-40)));
     }
   }
 }
@@ -186,10 +170,10 @@
    appears at once: keyboard use is too frequent to wait on, and moving the mouse along the bar
    shouldn't either. These come last so they also win over reduced motion. */
 
-[data-mt-nav-flyout-motion]:not([data-mt-nav-flyout-motion="current"])
+[data-mt-nav-flyout-motion]:not([data-mt-nav-flyout-motion="horizontal-slide"])
   .mt-nav__flyout--switched,
 [data-mt-nav-flyout-motion]:not(
-    [data-mt-nav-flyout-motion="current"]
+    [data-mt-nav-flyout-motion="horizontal-slide"]
   )[data-proto-input="keyboard"]
   .mt-nav__flyout,
 [data-mt-nav-flyout-motion="cascade"]

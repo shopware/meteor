@@ -3,6 +3,7 @@ import { markRaw, onBeforeUnmount, ref, watchEffect } from "vue";
 import MtNav from "../../mt-nav.vue";
 import type { NavItem } from "../../mt-nav.vue";
 import { StoryLink } from "../../mt-nav.story-helper";
+import { items, routeName } from "../prototype-nav";
 import "./flyout-motion.css";
 
 /**
@@ -11,7 +12,7 @@ import "./flyout-motion.css";
  * panel takes over from an open one. Nothing here is used by the component itself.
  */
 
-type Variant = "current" | "fade" | "grow" | "unroll" | "cascade";
+type Variant = "horizontal-slide" | "fade" | "grow" | "cascade";
 
 type FlyoutMotionArgs = {
   variant: Variant;
@@ -19,54 +20,8 @@ type FlyoutMotionArgs = {
   slowMotion: boolean;
 };
 
-const items: NavItem[] = [
-  { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" } },
-  {
-    label: "Products",
-    icon: "regular-products",
-    children: [
-      { label: "Overview", to: { name: "product.index" } },
-      { label: "Reviews", to: { name: "review.index" } },
-      { label: "Categories", to: { name: "category.index" } },
-      { label: "Manufacturers", to: { name: "manufacturer.index" } },
-      { label: "Properties", to: { name: "property.index" } },
-    ],
-  },
-  { label: "Orders", icon: "regular-shopping-bag", to: { name: "order.index" } },
-  {
-    label: "Customers",
-    icon: "regular-users",
-    children: [
-      { label: "Overview", to: { name: "customer.index" } },
-      { label: "Customer groups", to: { name: "customer-group.index" } },
-    ],
-  },
-  {
-    label: "Content",
-    icon: "regular-content",
-    children: [
-      { label: "Shopping Experiences", to: { name: "cms.index" } },
-      { label: "Media", to: { name: "media.index" } },
-      { label: "Themes", to: { name: "theme.index" } },
-    ],
-  },
-  {
-    label: "Marketing",
-    icon: "regular-megaphone",
-    children: [
-      { label: "Promotions", to: { name: "promotion.index" } },
-      { label: "Newsletter recipients", to: { name: "newsletter.index" } },
-    ],
-  },
-];
-
-function routeName(item: NavItem) {
-  // Reads the route name of a row, if it links to a route
-  return (item.to as { name?: string } | undefined)?.name;
-}
-
 const meta: Meta<FlyoutMotionArgs> = {
-  title: "Components/Nav/Animation tests",
+  title: "Components/Nav/Animation tests/Popover animation",
   args: {
     slowMotion: false,
   },
@@ -156,8 +111,8 @@ type FlyoutMotionStory = StoryObj<FlyoutMotionArgs>;
  * What ships today: a 300ms fade with a 4px drop on the iOS drawer curve, also when opened from
  * the keyboard. A panel taking over from an open one slides in sideways instead.
  */
-export const Current: FlyoutMotionStory = {
-  args: { variant: "current" },
+export const HorizontalSlide: FlyoutMotionStory = {
+  args: { variant: "horizontal-slide" },
 };
 
 /**
@@ -175,14 +130,6 @@ export const Fade: FlyoutMotionStory = {
  */
 export const Grow: FlyoutMotionStory = {
   args: { variant: "grow" },
-};
-
-/**
- * Revealed from the edge at its row in 220ms, like a blind being lowered, without fading.
- * Appears at once from the keyboard or when taking over from an open panel.
- */
-export const Unroll: FlyoutMotionStory = {
-  args: { variant: "unroll" },
 };
 
 /**
