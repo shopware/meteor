@@ -14,6 +14,15 @@ description: Temporary overlay feedback shown near the bottom-right corner of th
 import { MtSnackbar } from "@shopware-ag/meteor-component-library";
 ```
 
+## Examples
+
+### Actions
+
+Give `link` a `url` to navigate, or an `onClick` to offer a follow-up such as `Undo`. Clicking the link closes the snackbar and runs the handler if present.
+
+::component-example{name="snackbar-action-example"}
+::
+
 ## Anatomy
 
 **Snackbar** is used together with the [**useSnackbar**](/utilities/composables/use-snackbar) composable. Mount `mt-snackbar` once near your app shell to render the stack, then call `addSnackbar` from `useSnackbar` wherever an action happens.
@@ -66,15 +75,17 @@ See [**useSnackbar**](/utilities/composables/use-snackbar) for the full publishi
 - If more than one `MtSnackbar` is mounted, only the first one renders the stack; when it unmounts, the next one takes over.
 - Standard snackbars close automatically after `5000ms` by default.
 - Setting `duration` to `0` disables the auto-dismiss timer, which means you should remove that snackbar through `removeSnackbar` or `clearSnackbars`.
-- Hovering the snackbar stack pauses dismissal timers until the pointer leaves.
+- Hovering or focusing the snackbar stack pauses dismissal timers until the pointer or focus leaves.
 - `progress` snackbars stay visible until `uploadState` changes to `success` or `error`, then they close shortly after showing the final message.
 - The optional `link` supports one non-critical follow-up action, not a full decision flow.
+- A `link` with a `url` navigates, and a `link` with an `onClick` runs a callback such as `Undo`. Clicking the link always closes the snackbar.
 
 ## Accessibility
 
 - Error and warning snackbars use assertive live announcements, while default, success, and progress snackbars use polite announcements.
 - Snackbar notifications do not take focus when they appear. The live region announces them, so the user keeps their current focus position. Keep messages concise and understandable out of context.
 - Do not use **Snackbar** for blocking confirmations, legal notices, or other information that must remain available until explicitly dismissed.
+- A `link` without a `url` renders as a button, so keyboard and screen reader users reach it as a button instead of a link.
 - If you provide an action like `Undo`, make sure that recovery path also exists elsewhere in the interface and not only in the temporary snackbar.
 
 ## Related

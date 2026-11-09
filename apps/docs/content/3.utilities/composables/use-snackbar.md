@@ -16,6 +16,11 @@ import { useSnackbar } from "@shopware-ag/meteor-component-library";
 const { addSnackbar } = useSnackbar();
 
 addSnackbar({ message: "Changes saved", variant: "success" });
+
+addSnackbar({
+  message: "Product deleted",
+  link: { text: "Undo", onClick: () => restoreProduct() },
+});
 ```
 
 ## API
@@ -38,7 +43,7 @@ The shape passed to `addSnackbar` (without `id`):
 | `message` | `string` | The text shown in the snackbar. Required. |
 | `variant` | `"success" \| "error" \| "warning" \| "progress"` | Visual style and semantics. |
 | `icon` | `string` | Optional leading icon name. |
-| `link` | `{ text: string; url: string }` | Optional single follow-up link. |
+| `link` | `{ text: string; url: string; onClick?: () => void } \| { text: string; url?: string; onClick: () => void }` | Optional single follow-up action, exported as `SnackbarLink`. Clicking it closes the snackbar and runs `onClick` if present. Without `url`, it renders as a button. |
 | `duration` | `number` | Auto-dismiss delay in milliseconds. Defaults to `5000`. Set it to `0` to disable auto-dismiss and remove the snackbar yourself with `removeSnackbar`. |
 | `progressPercentage` | `number` | Current progress from `0` to `100`, for `progress` snackbars. |
 | `uploadState` | `"success" \| "error"` | Terminal state that resolves a `progress` snackbar. |

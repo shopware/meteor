@@ -1,11 +1,18 @@
 <template>
   <Teleport v-if="isActiveHost" to="body">
-    <div class="mt-snackbar" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+    <div
+      ref="snackbarContainer"
+      class="mt-snackbar"
+      @mouseenter="isHovered = true"
+      @mouseleave="isHovered = false"
+      @focusin="isFocused = true"
+      @focusout="onFocusOut"
+    >
       <mt-snackbar-notification
         v-for="snackbar in snackbars"
         :key="snackbar.id"
         :snackbar="snackbar"
-        :is-hovered="isHovered"
+        :is-hovered="isHovered || isFocused"
         :heights="heights"
         @remove-snackbar="removeSnackbarWithHeightCleanup"
         @update:height="updateHeight"
@@ -17,7 +24,7 @@
 <script setup lang="ts">
 import MtSnackbarNotification from "./_internal/mt-snackbar-notification.vue";
 import { useSnackbar, useSnackbarHost, type Snackbar } from "./composables/use-snackbar";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 export interface HeightT {
   height: number;
@@ -29,6 +36,22 @@ const isActiveHost = useSnackbarHost();
 
 const heights = ref<HeightT[]>([]);
 const isHovered = ref(false);
+const isFocused = ref(false);
+const snackbarContainer = ref<HTMLElement>();
+
+function onFocusOut(event: FocusEvent) {
+  // Moving focus from one snackbar to another keeps the timers paused
+  isFocused.value = !!snackbarContainer.value?.contains(event.relatedTarget as Node | null);
+}
+
+// Not every browser sends focusout when the focused snackbar is removed
+watch(
+  () => snackbars.value.length,
+  () => {
+    isFocused.value = !!snackbarContainer.value?.contains(document.activeElement);
+  },
+  { flush: "post" },
+);
 
 function updateHeight(h: HeightT) {
   // Find the index of the snackbar in the heights array
