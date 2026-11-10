@@ -11,7 +11,16 @@ import { emitInterFontAssets, getAllComponents, libInjectCss, toPascalCase } fro
 // Get all components and their paths
 const allComponents = getAllComponents();
 
-export const external = ["vue", "apexcharts", "vue-i18n"];
+// Dependencies that stay as imports in dist/ instead of being copied into it.
+// A string only matches the bare package name; use a RegExp to include sub-paths.
+// The admin SDK must stay external: the host app has to share one copy of it, because
+// the SDK keeps shared state on window._swsdk.
+export const external: (string | RegExp)[] = [
+  "vue",
+  "apexcharts",
+  "vue-i18n",
+  /^@shopware-ag\/meteor-admin-sdk(\/|$)/,
+];
 
 // https://vitejs.dev/config/
 export default defineConfig({
