@@ -29,12 +29,11 @@ export const en = {
     placeholder: "This is a placeholder page.",
   },
   context: {
-    store: "Store",
-    stores: "Stores",
-    createStore: "Create store",
-    salesChannel: "Sales channel",
-    salesChannels: "Sales channels",
-    createSalesChannel: "Create sales channel",
+    switch: "Switch team",
+    plan: "{plan} plan",
+    create: "Create a team",
+    manage: "Manage team",
+    invite: "Invite members",
   },
   help: {
     label: "Help",

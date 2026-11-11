@@ -31,12 +31,11 @@ export const de: Messages = {
     placeholder: "Das ist eine Platzhalterseite.",
   },
   context: {
-    store: "Shop",
-    stores: "Shops",
-    createStore: "Shop erstellen",
-    salesChannel: "Verkaufskanal",
-    salesChannels: "Verkaufskanäle",
-    createSalesChannel: "Verkaufskanal erstellen",
+    switch: "Team wechseln",
+    plan: "{plan}-Tarif",
+    create: "Team erstellen",
+    manage: "Team verwalten",
+    invite: "Mitglieder einladen",
   },
   help: {
     label: "Hilfe",

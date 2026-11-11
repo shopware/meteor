@@ -1,110 +1,89 @@
 <script setup lang="ts">
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  useTemplateRef,
-  watch,
-} from "vue";
+import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import {
   MtButton,
   MtIcon,
   MtSidebar,
-  useApp,
 } from "@shopware-ag/meteor-component-library";
 
 /**
- * PROTOTYPE of a future `mt-app-header` for the header slot of `mt-app`: the brand and the context
- * at the start, the navigation after them and the actions at the end. When they don't fit side by
- * side, the navigation moves into a drawer behind a menu button at the start, and when the context
- * then still doesn't fit next to the brand, it follows the navigation into the drawer.
+ * PROTOTYPE of a future `mt-app-header` for the header slot of `mt-app`: the brand at the start,
+ * the navigation after it and the actions and the user menu at the end. When they don't fit side
+ * by side, the context switcher, the navigation and the user menu move together into a drawer
+ * behind a menu button, so the drawer always has the same content, and the bar keeps the logo and
+ * the actions. Whether they fit follows the width the header has and the width its parts need, not
+ * a breakpoint.
  */
 const slots = defineSlots<{
-  /** The brand, such as `mt-brand`. It keeps its title in every layout. */
-  brand?(): unknown;
   /**
-   * What the app works in, such as a store switcher. Rendered `horizontal` after the brand in the
-   * bar and `vertical` above the navigation in the drawer, so pass `orientation` on.
+   * The brand, such as `mt-brand` or a context switcher around it. Rendered `horizontal` in the bar
+   * and `vertical` in the header of the drawer. `compact` is `true` while the drawer is in use,
+   * where a context switcher belongs in the drawer and the bar shows only the logo.
    */
-  context?(props: { orientation: "horizontal" | "vertical" }): unknown;
+  brand?(props: {
+    orientation: "horizontal" | "vertical";
+    compact: boolean;
+  }): unknown;
   /**
    * The main navigation, such as `mt-nav`. Rendered `horizontal` in the bar and `vertical` in the
    * drawer, so pass `orientation` on.
    */
   navigation?(props: { orientation: "horizontal" | "vertical" }): unknown;
-  /** Actions and the user menu at the end. `compact` is `true` in the mobile layout of the shell. */
+  /** Actions at the end. `compact` is `true` while the drawer is in use. */
   actions?(props: { compact: boolean }): unknown;
+  /**
+   * The user menu. Rendered `horizontal` after the actions in the bar, and `vertical` at the bottom
+   * of the drawer once the navigation is there too.
+   */
+  user?(props: { orientation: "horizontal" | "vertical" }): unknown;
 }>();
 
 const { t } = useI18n();
 const route = useRoute();
-const app = useApp();
 
 const header = useTemplateRef("header");
-const start = useTemplateRef("start");
 const brand = useTemplateRef("brand");
-const context = useTemplateRef("context");
 const navigation = useTemplateRef("navigation");
-const end = useTemplateRef("end");
+const actions = useTemplateRef("actions");
+const user = useTemplateRef("user");
 const drawer = useTemplateRef("drawer");
 
-/** Whether the navigation doesn't fit next to the brand and the actions, so it moves to the drawer. */
+/** Whether the parts don't fit side by side, so they move into the drawer. */
 const isCollapsed = ref(false);
-/** Whether the context doesn't fit next to the brand either, so it moves to the drawer as well. */
-const isContextInDrawer = ref(false);
 const isDrawerOpen = ref(false);
 
-/** The brand may truncate its title once nothing else can give up room at the start. */
-const isStartShrinking = computed(
-  () => isCollapsed.value && (!slots.context || isContextInDrawer.value),
-);
+const width = (element: Element | null | undefined) =>
+  element instanceof HTMLElement ? element.offsetWidth : 0;
+const style = (element: Element) => getComputedStyle(element);
 
 /**
- * Compares the width the header has with the width its parts need side by side. The navigation
- * and the context stay measurable while they are in the drawer, so they come back once they fit.
- * The brand keeps its full width until the context has moved out, so it is measured at it.
+ * Compares the width the header has with the width its parts need side by side. Every part that
+ * moves into the drawer stays rendered and measurable at its full size in the bar, so they come
+ * back as soon as there is room again.
  */
 function updateLayout() {
-  if (
-    !header.value ||
-    !start.value ||
-    !brand.value ||
-    !navigation.value ||
-    !end.value
-  ) {
-    return;
-  }
+  if (!header.value || !navigation.value || !actions.value) return;
 
   const available = header.value.clientWidth;
-  const gap = parseFloat(getComputedStyle(header.value).columnGap) || 0;
-  const startGap = parseFloat(getComputedStyle(start.value).columnGap) || 0;
+  const gap = parseFloat(style(header.value).columnGap) || 0;
+  // The gap between the actions and the user menu, not the one between the actions.
+  const endGap = actions.value.parentElement
+    ? parseFloat(style(actions.value.parentElement).columnGap) || 0
+    : 0;
   const navigationMargin =
-    parseFloat(getComputedStyle(navigation.value).marginInlineStart) || 0;
-  const contextWidth = context.value ? startGap + context.value.offsetWidth : 0;
-  const startWidth = brand.value.offsetWidth + contextWidth;
+    parseFloat(style(navigation.value).marginInlineStart) || 0;
 
   isCollapsed.value =
-    startWidth +
+    width(brand.value) +
       navigationMargin +
-      navigation.value.offsetWidth +
+      width(navigation.value) +
       gap +
-      end.value.offsetWidth +
+      width(actions.value) +
+      (user.value ? endGap + width(user.value) : 0) +
       gap >
     available;
-
-  // The menu button exists while collapsed and sits before the brand.
-  const menuButton = start.value.querySelector<HTMLElement>(
-    ".app-header-prototype__menu-button",
-  );
-  const menuWidth = menuButton ? menuButton.offsetWidth + startGap : 0;
-
-  isContextInDrawer.value =
-    isCollapsed.value &&
-    !!context.value &&
-    menuWidth + startWidth + gap + end.value.offsetWidth > available;
 }
 
 let observer: ResizeObserver | undefined;
@@ -113,11 +92,10 @@ onMounted(() => {
   observer = new ResizeObserver(updateLayout);
   const elements = [
     header.value,
-    start.value,
     brand.value,
-    context.value,
     navigation.value,
-    end.value,
+    actions.value,
+    user.value,
   ];
   for (const element of elements) {
     if (element) observer.observe(element);
@@ -142,6 +120,19 @@ watch(
   () => (isDrawerOpen.value = false),
 );
 
+/**
+ * Escape in a menu inside the drawer, such as the user menu, closes only that menu. The menu is
+ * already gone when the dialog's cancel event follows, so it is noted on the way down.
+ */
+let isMenuOpen = false;
+function noteOpenMenu() {
+  isMenuOpen = !!drawer.value?.querySelector('[role="menu"]');
+}
+function keepOpenForMenu(event: Event) {
+  if (isMenuOpen) event.preventDefault();
+  isMenuOpen = false;
+}
+
 function closeOnBackdrop(event: MouseEvent) {
   // Clicks on the backdrop target the dialog itself, clicks inside it target its content.
   if (event.target === drawer.value) isDrawerOpen.value = false;
@@ -152,16 +143,14 @@ function closeOnBackdrop(event: MouseEvent) {
   <div
     ref="header"
     class="app-header-prototype"
-    :class="{
-      'app-header-prototype--collapsed': isCollapsed,
-      'app-header-prototype--start-shrinking': isStartShrinking,
-    }"
+    :class="{ 'app-header-prototype--collapsed': isCollapsed }"
   >
-    <div ref="start" class="app-header-prototype__start">
+    <div class="app-header-prototype__start">
       <mt-button
         v-if="isCollapsed"
         class="app-header-prototype__menu-button"
         variant="tertiary"
+        size="default"
         square
         :aria-label="t('menu.open')"
         aria-haspopup="dialog"
@@ -171,33 +160,43 @@ function closeOnBackdrop(event: MouseEvent) {
         <mt-icon name="regular-bars" size="var(--scale-size-16)" decorative />
       </mt-button>
 
-      <div ref="brand" class="app-header-prototype__brand">
-        <slot name="brand" />
+      <div
+        ref="brand"
+        class="app-header-prototype__brand"
+        :class="{ 'app-header-prototype__hidden': isCollapsed }"
+        :inert="isCollapsed || undefined"
+      >
+        <slot name="brand" orientation="horizontal" :compact="false" />
       </div>
 
-      <div
-        v-if="slots.context"
-        ref="context"
-        class="app-header-prototype__context"
-        :class="{
-          'app-header-prototype__context--in-drawer': isContextInDrawer,
-        }"
-        :inert="isContextInDrawer || undefined"
-      >
-        <slot name="context" orientation="horizontal" />
+      <div v-if="isCollapsed" class="app-header-prototype__brand">
+        <slot name="brand" orientation="horizontal" :compact="true" />
       </div>
     </div>
 
     <div
       ref="navigation"
       class="app-header-prototype__navigation"
+      :class="{ 'app-header-prototype__hidden': isCollapsed }"
       :inert="isCollapsed || undefined"
     >
       <slot name="navigation" orientation="horizontal" />
     </div>
 
-    <div ref="end" class="app-header-prototype__end">
-      <slot name="actions" :compact="app.isMobile.value" />
+    <div class="app-header-prototype__end">
+      <div ref="actions" class="app-header-prototype__actions">
+        <slot name="actions" :compact="isCollapsed" />
+      </div>
+
+      <div
+        v-if="slots.user"
+        ref="user"
+        class="app-header-prototype__user"
+        :class="{ 'app-header-prototype__hidden': isCollapsed }"
+        :inert="isCollapsed || undefined"
+      >
+        <slot name="user" orientation="horizontal" />
+      </div>
     </div>
 
     <dialog
@@ -205,11 +204,16 @@ function closeOnBackdrop(event: MouseEvent) {
       class="app-header-prototype__drawer"
       :aria-label="t('menu.label')"
       @close="isDrawerOpen = false"
+      @keydown.esc.capture="noteOpenMenu"
+      @cancel="keepOpenForMenu"
       @click="closeOnBackdrop"
     >
-      <mt-sidebar class="app-header-prototype__sidebar">
+      <mt-sidebar
+        class="app-header-prototype__sidebar"
+        :class="{ 'app-header-prototype__sidebar--collapsed': isCollapsed }"
+      >
         <template #header>
-          <slot name="brand" />
+          <slot name="brand" orientation="vertical" :compact="isCollapsed" />
         </template>
 
         <template #actions>
@@ -228,15 +232,10 @@ function closeOnBackdrop(event: MouseEvent) {
           </mt-button>
         </template>
 
-        <template v-if="isDrawerOpen">
-          <div
-            v-if="isContextInDrawer"
-            class="app-header-prototype__drawer-context"
-          >
-            <slot name="context" orientation="vertical" />
-          </div>
+        <slot v-if="isDrawerOpen" name="navigation" orientation="vertical" />
 
-          <slot name="navigation" orientation="vertical" />
+        <template v-if="isCollapsed && slots.user" #footer>
+          <slot name="user" orientation="vertical" />
         </template>
       </mt-sidebar>
     </dialog>
@@ -257,41 +256,42 @@ function closeOnBackdrop(event: MouseEvent) {
 }
 
 .app-header-prototype__start,
-.app-header-prototype__end {
+.app-header-prototype__end,
+.app-header-prototype__actions {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   gap: var(--scale-size-8);
 }
 
-/* More room after the brand than between the other parts. */
+/* The icon buttons sit closer together, as one group before the user menu. */
+.app-header-prototype__end .app-header-prototype__actions {
+  gap: var(--scale-size-4);
+}
+
+/* The switcher's padding already adds room after the brand, so the gap alone is enough. */
 .app-header-prototype__navigation {
   flex-shrink: 0;
-  margin-inline-start: var(--scale-size-16);
+  margin-inline-start: calc(-1 * var(--scale-size-8));
 }
 
-.app-header-prototype__context {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: var(--scale-size-8);
-}
-
-/* Out of the flow and invisible, but still measured to know when they fit again. */
-.app-header-prototype--collapsed .app-header-prototype__navigation,
-.app-header-prototype__context--in-drawer {
+/* Out of the flow and invisible, but still measured to know when it fits again. `inert` keeps it
+   from focus and assistive technology. Not `visibility: hidden`: icons such as the Shopware logo
+   clip with a fixed id, so every copy uses the clip path of the first one, which must stay
+   visible. */
+.app-header-prototype__hidden {
   position: absolute;
-  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .app-header-prototype__end {
   margin-inline-start: auto;
 }
 
-/* On narrow screens the brand truncates its title rather than pushing the actions out. Only once
-   the navigation and the context are in the drawer, so it is measured at its full width before. */
-.app-header-prototype--start-shrinking .app-header-prototype__start,
-.app-header-prototype--start-shrinking .app-header-prototype__brand {
+/* While collapsed the start gives up room before the actions do. */
+.app-header-prototype--collapsed .app-header-prototype__start,
+.app-header-prototype--collapsed .app-header-prototype__brand {
   flex-shrink: 1;
   min-width: 0;
 }
@@ -382,14 +382,14 @@ function closeOnBackdrop(event: MouseEvent) {
   }
 }
 
-.app-header-prototype__sidebar {
+.app-header-prototype__drawer .app-header-prototype__sidebar {
   flex: 1;
+  padding: var(--scale-size-8);
 }
 
-.app-header-prototype__drawer-context {
-  display: flex;
-  flex-direction: column;
-  gap: var(--scale-size-4);
-  margin-block-end: var(--scale-size-12);
+/* While collapsed the header holds the context switcher, whose button lines up with the rows of the
+   navigation instead of indenting the logo. */
+.app-header-prototype__sidebar--collapsed :deep(.mt-sidebar__header) {
+  padding-inline-start: 0;
 }
 </style>

@@ -17,7 +17,9 @@ import {
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
 import AppHeaderPrototype from "../prototypes/AppHeaderPrototype.vue";
-import ContextSwitcherPrototype from "../prototypes/ContextSwitcherPrototype.vue";
+import ContextSwitcherPrototype, {
+  type ContextSwitcherTeam,
+} from "../prototypes/ContextSwitcherPrototype.vue";
 import UserMenuPrototype from "../prototypes/UserMenuPrototype.vue";
 
 const { t } = useI18n();
@@ -60,19 +62,34 @@ const sections = computed<NavSection[]>(() => [
   },
 ]);
 
-// Placeholders: the playground has no stores or sales channels to switch between.
-const stores = [
-  { id: "demo", name: "Demo Store", badge: "Pro" },
-  { id: "outdoor", name: "Outdoor Gear", badge: "Pro" },
-  { id: "coffee", name: "Coffee Roasters", badge: "Free" },
-];
-const salesChannels = [
-  { id: "storefront", name: "Storefront" },
-  { id: "headless", name: "Headless" },
-  { id: "b2b", name: "B2B Portal" },
-];
-const store = ref("demo");
-const salesChannel = ref("storefront");
+// Placeholders: the playground has no teams to switch between.
+const teams = computed<ContextSwitcherTeam[]>(() => [
+  {
+    id: "design",
+    name: "Design",
+    description: t("context.plan", { plan: "Pro" }),
+    icon: "regular-sparkles",
+    color: "--color-purple-600",
+  },
+  {
+    id: "marketing",
+    name: "Marketing",
+    description: t("context.plan", { plan: "Pro" }),
+    icon: "regular-megaphone",
+    color: "--color-pumpkin-500",
+  },
+  {
+    id: "development",
+    name: "Development",
+    description: t("context.plan", { plan: "Free" }),
+    icon: "regular-code",
+    color: "--color-brand-500",
+  },
+]);
+const team = ref("marketing");
+const currentTeam = computed(() =>
+  teams.value.find((option) => option.id === team.value),
+);
 
 /** A row is active on its own page and on the pages below it, such as a section of the settings. */
 function isActive(item: NavItem) {
@@ -83,26 +100,31 @@ function isActive(item: NavItem) {
 
 <template>
   <AppHeaderPrototype>
-    <template #brand>
-      <mt-brand title="Playground" />
-    </template>
-
-    <template #context="{ orientation }">
+    <!-- The switcher opens from the bar. In the compact layout it moves into the drawer and the bar
+         shows only the logo; otherwise the drawer shows the plain brand. -->
+    <template #brand="{ orientation, compact }">
       <ContextSwitcherPrototype
-        v-model="store"
-        :label="t('context.store')"
-        :heading="t('context.stores')"
-        :create-label="t('context.createStore')"
-        :options="stores"
+        v-if="(orientation === 'vertical') === compact"
+        v-model="team"
+        :label="t('context.switch')"
+        :teams="teams"
+        :create-label="t('context.create')"
+        :actions="[
+          { id: 'manage', label: t('context.manage'), icon: 'regular-cog' },
+          {
+            id: 'invite',
+            label: t('context.invite'),
+            icon: 'regular-user-plus',
+          },
+        ]"
         :orientation="orientation"
+        @action="router.push('/settings/general')"
       />
-      <ContextSwitcherPrototype
-        v-model="salesChannel"
-        :label="t('context.salesChannel')"
-        :heading="t('context.salesChannels')"
-        :create-label="t('context.createSalesChannel')"
-        :options="salesChannels"
-        :orientation="orientation"
+      <mt-brand
+        v-else
+        :title="currentTeam?.name ?? ''"
+        :subtitle="currentTeam?.description"
+        :compact="orientation === 'horizontal'"
       />
     </template>
 
@@ -183,8 +205,14 @@ function isActive(item: NavItem) {
           </mt-action-menu>
         </mt-dropdown-menu-portal>
       </mt-dropdown-menu-root>
+    </template>
 
-      <UserMenuPrototype name="Jane Doe" subtitle="jane.doe@example.com">
+    <template #user="{ orientation }">
+      <UserMenuPrototype
+        name="Jane Doe"
+        subtitle="jane.doe@example.com"
+        :orientation="orientation"
+      >
         <mt-action-menu-group>
           <mt-action-menu-item
             icon="regular-cog"
