@@ -1,12 +1,13 @@
 <template>
   <input
     :id="id"
+    ref="inputElement"
     :name="name"
     class="mt-radio-group-indicator__input"
     type="radio"
     :value="value"
     :checked="checked"
-    :disabled="disabled"
+    :disabled="isDisabled"
     :required="required"
     :aria-invalid="error || undefined"
     :aria-describedby="ariaDescribedBy"
@@ -15,12 +16,19 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(
+import { computed, inject, onBeforeUnmount, onMounted, ref } from "vue";
+import { radioGroupCustomItemKey } from "./_internal/mt-radio-group-context";
+
+const props = withDefaults(
   defineProps<{
     id: string;
     name: string;
     value: string | number | boolean;
     checked: boolean;
+    /**
+     * Disables the radio input. Inside a disabled `MtRadioGroupCustomItem`, the input is disabled
+     * even without this prop.
+     */
     disabled?: boolean;
     required?: boolean;
     ariaDescribedBy?: string;
@@ -33,6 +41,15 @@ withDefaults(
     error: false,
   },
 );
+
+const customItem = inject(radioGroupCustomItemKey, null);
+
+const inputElement = ref<HTMLInputElement | null>(null);
+
+const isDisabled = computed(() => props.disabled || (customItem?.disabled.value ?? false));
+
+onMounted(() => customItem?.registerInput(inputElement.value));
+onBeforeUnmount(() => customItem?.registerInput(null));
 </script>
 
 <style scoped>

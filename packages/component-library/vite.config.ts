@@ -16,7 +16,10 @@ export const external = ["vue", "apexcharts", "vue-i18n"];
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    vue({}),
+    // Drops template comments in development too, as the production build does, so a comment can't
+    // turn a single-root template into a fragment in Storybook and the tests. Consumer templates keep
+    // their comments in development, so test how components handle them with runtime template strings.
+    vue({ template: { compilerOptions: { comments: false } } }),
     svg(),
     dts({
       outDir: ["dist/esm", "dist/common"],
@@ -82,7 +85,12 @@ export default defineConfig({
   },
   build: {
     sourcemap: false,
-    cssMinify: false,
+    // CSS must go through esbuild so the native CSS nesting in our styles is
+    // flattened for browsers without nesting support; Vite only applies
+    // cssTarget inside the minify step. JS stays unminified on purpose —
+    // consumers' bundlers minify it, and readable output helps debugging.
+    cssMinify: true,
+    cssTarget: ["chrome87", "firefox78", "safari14", "edge88"],
     minify: false,
     lib: {
       entry: {
@@ -100,16 +108,6 @@ export default defineConfig({
         globals: {
           vue: "Vue",
         },
-      },
-    },
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `
-          @use "sass:math";
-          @import "${path.resolve(__dirname, "src/assets/scss/variables.scss")}";
-        `,
       },
     },
   },

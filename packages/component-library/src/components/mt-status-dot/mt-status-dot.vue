@@ -4,7 +4,7 @@
     :class="[
       `mt-status-dot--variant-${variant}`,
       `mt-status-dot--size-${size}`,
-      { 'mt-status-dot--pulse': pulse },
+      { 'mt-status-dot--pulse': pulse && !disabled, 'mt-status-dot--disabled': disabled },
     ]"
     v-bind="$attrs"
     :role="label ? 'img' : undefined"
@@ -39,12 +39,18 @@ withDefaults(
      * as decorative and hidden from assistive technology.
      */
     label?: string;
+    /**
+     * Renders the dot in the disabled color of its variant, for statuses that
+     * belong to a disabled element. Turns off `pulse`.
+     */
+    disabled?: boolean;
   }>(),
   {
     variant: "neutral",
     size: "m",
     pulse: false,
     label: undefined,
+    disabled: false,
   },
 );
 </script>
@@ -91,6 +97,26 @@ withDefaults(
 
 .mt-status-dot--variant-positive {
   --mt-status-dot-color: var(--color-icon-positive-default);
+}
+
+.mt-status-dot--disabled.mt-status-dot--variant-neutral {
+  --mt-status-dot-color: var(--color-icon-primary-disabled);
+}
+
+.mt-status-dot--disabled.mt-status-dot--variant-info {
+  --mt-status-dot-color: var(--color-icon-brand-disabled);
+}
+
+.mt-status-dot--disabled.mt-status-dot--variant-attention {
+  --mt-status-dot-color: var(--color-icon-attention-disabled);
+}
+
+.mt-status-dot--disabled.mt-status-dot--variant-critical {
+  --mt-status-dot-color: var(--color-icon-critical-disabled);
+}
+
+.mt-status-dot--disabled.mt-status-dot--variant-positive {
+  --mt-status-dot-color: var(--color-icon-positive-disabled);
 }
 
 .mt-status-dot--pulse::after {

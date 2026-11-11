@@ -4,7 +4,7 @@
     :class="{
       'mt-radio-group-item--disabled': isDisabled,
     }"
-    @click="onClick"
+    @change="onChange"
   >
     <MtRadioGroupIndicator
       :id="id"
@@ -32,11 +32,16 @@ const props = withDefaults(
     id: string;
     value: string | number | boolean;
     label: string;
+    /**
+     * Disables this option. The option is also disabled when the whole group is disabled.
+     */
+    disabled?: boolean;
     required?: boolean;
     ariaDescribedBy?: string;
     error?: boolean;
   }>(),
   {
+    disabled: false,
     required: false,
     ariaDescribedBy: undefined,
     error: false,
@@ -55,9 +60,9 @@ const name = computed(() => radioGroupContext.name.value);
 
 const checked = computed(() => radioGroupContext.selectedValue.value === props.value);
 
-const isDisabled = computed(() => radioGroupContext.disabled.value);
+const isDisabled = computed(() => radioGroupContext.disabled.value || props.disabled);
 
-function onClick() {
+function onChange() {
   if (isDisabled.value) {
     return;
   }
@@ -68,6 +73,7 @@ function onClick() {
 
 <style scoped>
 .mt-radio-group-item {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -83,6 +89,12 @@ function onClick() {
   line-height: var(--font-line-height-xs);
   cursor: inherit;
   user-select: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
 }
 
 .mt-radio-group-item--disabled {

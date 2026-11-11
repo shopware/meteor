@@ -48,7 +48,7 @@
 <script setup lang="ts">
 import { DropdownMenuItem, DropdownMenuSubTrigger } from "reka-ui";
 import MtIcon from "../mt-icon/mt-icon.vue";
-import { computed, inject, onMounted } from "vue";
+import { computed, inject, onMounted, type Component } from "vue";
 import { useI18n } from "vue-i18n";
 
 type ModifierKey = "mod" | "ctrl" | "alt" | "shift" | "meta";
@@ -168,7 +168,7 @@ const props = withDefaults(
     disabled?: boolean;
     shortcut?: ShortcutDefinition;
     isSubTrigger?: boolean;
-    as?: string;
+    as?: string | Component;
     link?: string;
   }>(),
   {

@@ -12,11 +12,12 @@ export default {
   async preRender(page, context) {
     await page.setViewportSize({ width: 850, height: 650 });
 
-    // use bigger viewport for data-table and toasts
+    // use bigger viewport for data-table, toasts and the navigation
     if (
       context.id.startsWith("components-data-table-interaction-tests") ||
       context.id.startsWith("components-entity-data-table-interaction-tests") ||
-      context.id.startsWith("components-toast-interaction-tests")
+      context.id.startsWith("components-toast-interaction-tests") ||
+      context.id.startsWith("components-nav-interaction-tests")
     ) {
       await page.setViewportSize({ width: 1600, height: 900 });
     }
@@ -24,7 +25,8 @@ export default {
     // use smaller viewport to test wrapping of multi select
     if (
       context.id ===
-      "components-select-interaction-tests--visual-test-ensure-correct-multi-selection-wrapping"
+        "components-select-interaction-tests--visual-test-ensure-correct-multi-selection-wrapping" ||
+      context.id === "components-select-interaction-tests--visual-test-multi-select-small-wrapping"
     ) {
       await page.setViewportSize({ width: 500, height: 650 });
     }
@@ -35,12 +37,49 @@ export default {
       return;
     }
 
+    const pressedCard =
+      context.id === "components-radio-group-interaction-tests--visual-test-pressed-card-item";
+    const hoveredCard =
+      context.id === "components-radio-group-interaction-tests--visual-test-hovered-card-item";
+    const focusedCard =
+      context.id ===
+        "components-radio-group-interaction-tests--visual-test-focused-selected-card-item" ||
+      context.id ===
+        "components-radio-group-interaction-tests--visual-test-focused-unselected-card-item";
+
+    // Native pointer input activates CSS states that userEvent cannot simulate.
+    if (pressedCard || hoveredCard) {
+      await page.getByText("Express delivery", { exact: true }).hover();
+    }
+
+    if (pressedCard) {
+      await page.mouse.down();
+    }
+
+    if (focusedCard) {
+      // Restore keyboard modality after native pointer tests so :focus-visible applies.
+      await page.keyboard.press("Tab");
+      await page.getByRole("radio", { name: "Standard delivery", exact: true }).focus();
+    }
+
     // wait 300ms before screenshot to make sure any pending animation is finished
     await (() => new Promise((resolve) => setTimeout(resolve, 300)))();
 
     const image = await page.screenshot({
       animations: "disabled",
     });
+
+    if (pressedCard) {
+      await page.mouse.up();
+    }
+
+    if (pressedCard || hoveredCard) {
+      await page.mouse.move(0, 0);
+    }
+
+    if (focusedCard) {
+      await page.mouse.click(0, 0);
+    }
 
     expect(image).toMatchImageSnapshot({
       comparisonMethod: "ssim",

@@ -62,4 +62,34 @@ describe("mt-status-dot", () => {
     // ACT & ASSERT
     expect(screen.getByRole("img", { name: "Online" })).toBeInTheDocument();
   });
+
+  it("is not disabled by default", () => {
+    // ARRANGE
+    const { container } = render(MtStatusDot);
+
+    // ACT & ASSERT
+    expect(container.firstElementChild).not.toHaveClass("mt-status-dot--disabled");
+  });
+
+  it("applies the disabled modifier when the disabled prop is set", () => {
+    // ARRANGE
+    const { container } = render(MtStatusDot, {
+      props: { variant: "info", disabled: true },
+    });
+
+    // ACT & ASSERT
+    const dot = container.firstElementChild;
+    expect(dot).toHaveClass("mt-status-dot--disabled");
+    expect(dot).toHaveClass("mt-status-dot--variant-info");
+  });
+
+  it("does not pulsate when disabled", () => {
+    // ARRANGE
+    const { container } = render(MtStatusDot, {
+      props: { variant: "positive", pulse: true, disabled: true },
+    });
+
+    // ACT & ASSERT
+    expect(container.firstElementChild).not.toHaveClass("mt-status-dot--pulse");
+  });
 });

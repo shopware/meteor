@@ -1,5 +1,4 @@
 <template>
-  <!-- @deprecated tag:v5 remove leftAligned class -->
   <div class="mt-empty-state" :class="{ 'mt-empty-state--left-aligned': !centered }">
     <div class="mt-empty-state__icon">
       <mt-icon :name="icon" color="var(--color-icon-primary-default)" aria-hidden="true" />

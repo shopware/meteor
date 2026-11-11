@@ -48,7 +48,6 @@
             :style="{ left: styleStartPosition, right: styleEndPosition }"
           />
         </div>
-        <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
           v-if="isRange"
           type="range"
@@ -63,7 +62,6 @@
           @mouseleave="activeSlider = null"
           data-testid="left-slider"
         />
-        <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
           :id="identification"
           type="range"
@@ -101,7 +99,7 @@
     </template>
 
     <template #field-hint>
-      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
+      <mt-field-hint v-if="showFieldHint()" :hide-icon="!!$slots.hint">
         <slot name="hint">
           {{ hint }}
         </slot>
@@ -337,10 +335,6 @@ export default defineComponent({
   },
 
   computed: {
-    showFieldHint(): boolean {
-      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
-    },
-
     stringRepresentation(): string {
       return this.modelValue.toString();
     },
@@ -402,6 +396,10 @@ export default defineComponent({
   },
 
   methods: {
+    showFieldHint(): boolean {
+      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
+    },
+
     isArray(value: number | number[] | { target: number | number[] }): value is number[] {
       return Array.isArray(value) || (typeof value !== "number" && Array.isArray(value.target));
     },

@@ -63,7 +63,7 @@ const badgeIcon = computed(() =>
     ? "solid-code"
     : props.variant === "shopware-ai"
       ? "solid-sparkles"
-      : "solid-party-horn",
+      : undefined,
 );
 
 const iconColor = computed(() =>

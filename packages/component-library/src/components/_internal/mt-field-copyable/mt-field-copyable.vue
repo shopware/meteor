@@ -1,5 +1,4 @@
 <template>
-  <!-- eslint-disable-next-line vuejs-accessibility/mouse-events-have-key-events -->
   <button type="button">
     <mt-icon
       v-tooltip="{

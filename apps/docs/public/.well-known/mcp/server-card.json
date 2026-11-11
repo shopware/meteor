@@ -1,0 +1,21 @@
+{
+  "url": "https://meteor.shopware.com/mcp",
+  "protocolVersion": "2025-06-18",
+  "serverInfo": {
+    "name": "Shopware Meteor",
+    "title": "Shopware Meteor",
+    "version": "1.0.0"
+  },
+  "description": "Documentation, components, examples, icons, and design tokens of the Shopware Meteor design system.",
+  "iconUrl": "https://meteor.shopware.com/shopware-signet.svg",
+  "documentationUrl": "https://meteor.shopware.com/documentation/getting-started/agents",
+  "transport": {
+    "type": "streamable-http",
+    "endpoint": "https://meteor.shopware.com/mcp"
+  },
+  "authentication": {
+    "required": false
+  },
+  "tools": "dynamic",
+  "resources": "dynamic"
+}

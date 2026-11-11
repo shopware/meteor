@@ -442,7 +442,7 @@ export default defineComponent({
           border-color: var(--color-border-primary-default);
 
           & .mt-icon {
-            color: var(--color-border-primary-default);
+            color: var(--color-icon-primary-disabled);
           }
         }
       }

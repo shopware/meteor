@@ -1,5 +1,33 @@
 # Changelog
 
+## 6.17.0
+
+### Minor Changes
+
+- [#1471](https://github.com/shopware/meteor/pull/1471) [`7d6249d`](https://github.com/shopware/meteor/commit/7d6249da788bbcd6f0259e97166f99a960b6d436) Thanks [@feliopterix](https://github.com/feliopterix)! - Add optional `tabs` to `ui.mediaModal.open` to show additional tabs that render locations of the app opening the modal, and `ui.mediaModal.select` for such a tab to pass its selection to the modal's callback and close the modal.
+
+## 6.16.0
+
+### Minor Changes
+
+- [#1455](https://github.com/shopware/meteor/pull/1455) [`18bfb4d`](https://github.com/shopware/meteor/commit/18bfb4d9d31d6884b6d3c739e17bf0e0f0d7caf1) Thanks [@quando1910](https://github.com/quando1910)! - Add an internal service-to-service request/response bridge for Shopware services through `publishServiceEvent` and `subscribeServiceEvent`, imported from `@shopware-ag/meteor-admin-sdk/es/_private/bridge`.
+
+  The bridge handles origin validation, event contracts, response correlation, configurable timeouts, request deduplication, and per-subscription concurrency, which defaults to `single`. It includes service origin constants and the `copilot.chat.prompt.v1` contract.
+
+  Add Zod as a runtime dependency for message and event schema validation. SDK failures use a separate response discriminator and structured `ServiceEventError` codes, including `INVALID_PARAMS` for invalid origins or timeouts.
+
+  The bridge is available only through its subpath export so importing the SDK root does not include bridge validation and Zod.
+
+### Patch Changes
+
+- [#1390](https://github.com/shopware/meteor/pull/1390) [`17f05b1`](https://github.com/shopware/meteor/commit/17f05b15ee5884498f11fc3211dad1be8216c900) Thanks [@BrocksiNet](https://github.com/BrocksiNet)! - Stop requiring read privileges for empty entity collections in dataset messages. Write privileges are still checked.
+
+## 6.15.0
+
+### Minor Changes
+
+- [#1321](https://github.com/shopware/meteor/pull/1321) [`1f4d523`](https://github.com/shopware/meteor/commit/1f4d5230e015c22e048d109601a465e4fb92d46c) Thanks [@magdakok](https://github.com/magdakok)! - Add additional configuration options to the Admin SDK modal API (size variant and z-index).
+
 ## 6.14.1
 
 ### Patch Changes

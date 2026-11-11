@@ -5,7 +5,6 @@
     :class="classes"
     :role="role"
     :aria-live="ariaLive"
-    tabindex="0"
     :data-mounted="mounted"
     :data-removed="removed"
     :style="{
@@ -42,9 +41,10 @@
       <mt-link
         v-if="snackbar.link"
         class="mt-snackbar-notification__link"
-        as="a"
+        :as="snackbar.link.url ? 'a' : 'button'"
         variant="primary"
         :to="snackbar.link.url"
+        @click="onLinkClick"
       >
         {{ snackbar.link.text }}
       </mt-link>
@@ -325,7 +325,21 @@ function resumeSuccessTimer() {
   }
 }
 
+// Tracked apart from `removed`, so a click during a timer's exit animation still runs the action
+const actionTriggered = ref(false);
+
+function onLinkClick() {
+  if (actionTriggered.value) return;
+  actionTriggered.value = true;
+
+  onRemoveSnackbar();
+  snackbar.value.link?.onClick?.();
+}
+
 function onRemoveSnackbar() {
+  // A timer can still fire after the snackbar was removed through its action
+  if (removed.value) return;
+
   removed.value = true;
   // Set the offset before the snackbar is removed
   offsetBeforeRemove.value = offset.value;
@@ -338,11 +352,6 @@ function onRemoveSnackbar() {
 
 onMounted(() => {
   mounted.value = true;
-
-  // If the snackbar element is found then focus it
-  if (snackbarEl.value) {
-    snackbarEl.value.focus();
-  }
 });
 
 onBeforeUnmount(() => {
@@ -387,6 +396,9 @@ onBeforeUnmount(() => {
 }
 
 .mt-snackbar-notification__link {
+  padding: 0;
+  border: 0;
+  background: none;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
 }

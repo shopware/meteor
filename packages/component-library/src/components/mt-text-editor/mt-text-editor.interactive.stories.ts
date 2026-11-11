@@ -1,6 +1,7 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 import { waitUntil } from "../../_internal/test-helper";
+import type { Editor } from "@tiptap/vue-3";
 
 import meta, { type MtTextEditorMeta, type MtTextEditorStory } from "./mt-text-editor.stories";
 import { defineStory } from "@/_internal/story-helper";
@@ -1666,5 +1667,68 @@ export const VisualTestTableCellSelectionShowsContent: MtTextEditorStory = defin
     const cellStyles = window.getComputedStyle(cells[0], "::after");
     const bg = cellStyles.getPropertyValue("background-color");
     expect(bg).toMatch(/rgba?\(.+,|color\(.+\//);
+  },
+});
+
+export const SearchableCustomButtonChildren: MtTextEditorStory = defineStory({
+  name: "Should filter the children of a searchable custom button",
+  args: {
+    modelValue: "<p>Hello World</p>",
+    customButtons: [
+      {
+        name: "variables",
+        label: "Insert variable",
+        icon: "regular-variables-xs",
+        searchable: true,
+        children: [
+          "product.name",
+          "product.customFields.color",
+          ...Array.from({ length: 48 }, (_, index) => `product.customFields.field_${index + 1}`),
+        ].map((variable) => ({
+          name: variable,
+          label: variable,
+          action: (editor: Editor) =>
+            editor.chain().focus().insertContent(`{{ ${variable} }}`).run(),
+        })),
+      },
+    ],
+  },
+  play: async ({ canvasElement, args, screen }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByLabelText("Insert variable"));
+    const searchInput = screen.getByLabelText("Search entries");
+
+    await waitUntil(() => document.activeElement === searchInput);
+    expect(searchInput).toHaveFocus();
+
+    // At this scroll position an entry lies behind the sticky search field
+    const popoverContent = searchInput.closest(".mt-popover__content") as HTMLElement;
+    popoverContent.scrollTop = 160;
+    await waitUntil(() => popoverContent.scrollTop === 160);
+
+    const { x, y, width, height } = searchInput.getBoundingClientRect();
+    const elementAtSearchField = document.elementFromPoint(x + width / 2, y + height / 2);
+    expect(elementAtSearchField).toBe(searchInput);
+
+    await userEvent.click(elementAtSearchField as HTMLElement);
+    expect(args.updateModelValue).not.toHaveBeenCalled();
+    expect(searchInput).toHaveFocus();
+
+    await userEvent.type(searchInput, "unknown");
+    expect(screen.getByText("No results found.")).toBeDefined();
+
+    await userEvent.clear(searchInput);
+    await userEvent.type(searchInput, "COLOR");
+    expect(screen.queryByText("product.name")).toBeNull();
+
+    await userEvent.click(screen.getByText("product.customFields.color"));
+
+    await waitUntil(() => args.updateModelValue.mock.calls.length > 0);
+    expect(args.updateModelValue).toHaveBeenLastCalledWith(
+      expect.stringContaining("{{ product.customFields.color }}"),
+    );
   },
 });

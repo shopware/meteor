@@ -1,5 +1,6 @@
 import MtDatepicker from "./components/mt-datepicker/mt-datepicker.vue";
 import MtBanner from "./components/mt-banner/mt-banner.vue";
+import MtBreadcrumb, { type BreadcrumbItem } from "./components/mt-breadcrumb/mt-breadcrumb.vue";
 import MtBadge from "./components/mt-badge/mt-badge.vue";
 import MtLoader from "./components/mt-loader/mt-loader.vue";
 import MtProgressBar from "./components/mt-progress-bar/mt-progress-bar.vue";
@@ -10,8 +11,10 @@ import MtRadioGroupRoot from "./components/mt-radio-group/mt-radio-group-root.vu
 import MtRadioGroupIndicator from "./components/mt-radio-group/mt-radio-group-indicator.vue";
 import MtRadioGroupList from "./components/mt-radio-group/mt-radio-group-list.vue";
 import MtRadioGroupItem from "./components/mt-radio-group/mt-radio-group-item.vue";
+import MtRadioGroupCardItem from "./components/mt-radio-group/mt-radio-group-card-item.vue";
 import MtRadioGroupCustomItem from "./components/mt-radio-group/mt-radio-group-custom-item.vue";
 import MtColorpicker from "./components/mt-colorpicker/mt-colorpicker.vue";
+import MtDivider from "./components/mt-divider/mt-divider.vue";
 import MtEmailField from "./components/mt-email-field/mt-email-field.vue";
 import MtHelpText from "./components/mt-help-text/mt-help-text.vue";
 import MtLink from "./components/mt-link/mt-link.vue";
@@ -33,7 +36,20 @@ import MtSkeletonBar from "./components/mt-skeleton-bar/mt-skeleton-bar.vue";
 import MtToast, { type Toast } from "./components/mt-toast/mt-toast.vue";
 import MtSnackbar from "./components/mt-snackbar/mt-snackbar.vue";
 import MtAvatar from "./components/mt-avatar/mt-avatar.vue";
-import { useSnackbar, type Snackbar } from "./components/mt-snackbar/composables/use-snackbar";
+import MtExtensionIcon from "./components/mt-extension-icon/mt-extension-icon.vue";
+import MtNav from "./components/mt-nav/mt-nav.vue";
+import type {
+  NavActiveMatcher,
+  NavItem,
+  NavLinkComponent,
+  NavLinkTarget,
+  NavSection,
+} from "./components/mt-nav/mt-nav.vue";
+import {
+  useSnackbar,
+  type Snackbar,
+  type SnackbarLink,
+} from "./components/mt-snackbar/composables/use-snackbar";
 import MtPromoBadge from "./components/mt-promo-badge/mt-promo-badge.vue";
 import MtStatusDot from "./components/mt-status-dot/mt-status-dot.vue";
 import MtPopover from "./components/mt-popover/mt-popover.vue";
@@ -83,13 +99,14 @@ import {
   DropdownMenuSub,
 } from "reka-ui";
 // Import global styling
-import "./assets/scss/all.scss";
+import "./assets/css/all.css";
 
 // Importing types
 import type { Filter, Option } from "./components/mt-data-table/mt-data-table.interfaces";
 
 export {
   MtBanner,
+  MtBreadcrumb,
   MtBadge,
   MtLoader,
   MtProgressBar,
@@ -99,9 +116,11 @@ export {
   MtRadioGroupIndicator,
   MtRadioGroupList,
   MtRadioGroupItem,
+  MtRadioGroupCardItem,
   MtRadioGroupCustomItem,
   MtColorpicker,
   MtDatepicker,
+  MtDivider,
   MtEmailField,
   MtChart,
   MtLink,
@@ -148,6 +167,13 @@ export {
   MtEntitySelect,
   TooltipDirective,
   MtAvatar,
+  MtExtensionIcon,
+  MtNav,
+  type NavActiveMatcher,
+  type NavItem,
+  type NavLinkComponent,
+  type NavLinkTarget,
+  type NavSection,
   MtActionMenu,
   MtActionMenuItem,
   MtActionMenuGroup,
@@ -206,7 +232,7 @@ export {
 };
 
 // Exporting types
-export type { Filter, Option, Toast, Snackbar, ChartOptions };
+export type { Filter, Option, Toast, Snackbar, SnackbarLink, ChartOptions, BreadcrumbItem };
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";

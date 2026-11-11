@@ -35,15 +35,16 @@ ui.mediaModal.open({
 
 All parameters are similar to the `sw-media-modal-v2` component's props.
 
-| Name               | Required | Default                   | Description                                                                          |
-| :----------------- | :------- | :------------------------ | :----------------------------------------------------------------------------------- |
-| `initialFolderId`  | false    | null                      | Initial folder id where the media modal will open                                    |
-| `entityContext`    | false    | null                      | The entity name that upload image will be stored in that entity folder in Upload tab |
-| `allowMultiSelect` | false    | true                      | Define single or multiple selection                                                  |
-| `defaultTab`       | false    | library                   | Defines which tab should be opened by default                                        |
-| `fileAccept`       | false    | image/\*                  | Define the file types which are allowed to be uploaded in Upload tab                 |
-| `selectors`        | false    | ['fileName', 'id', 'url'] | Selected properties which should be returned for each item in the callback array     |
-| `callback`         | true     |                           | Callback function which receives an array of selected media items once a selection is made. |
+| Name               | Required | Default                   | Description                                                                                                                                                                             | Available at Shopware |
+| :----------------- | :------- | :------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------- |
+| `initialFolderId`  | false    | null                      | Initial folder id where the media modal will open                                                                                                                                       |                       |
+| `entityContext`    | false    | null                      | The entity name that upload image will be stored in that entity folder in Upload tab                                                                                                    |                       |
+| `allowMultiSelect` | false    | true                      | Define single or multiple selection                                                                                                                                                     |                       |
+| `defaultTab`       | false    | library                   | Defines which tab should be opened by default                                                                                                                                           |                       |
+| `fileAccept`       | false    | image/\*                  | Define the file types which are allowed to be uploaded in Upload tab                                                                                                                    |                       |
+| `selectors`        | false    | ['fileName', 'id', 'url'] | Selected properties which should be returned for each item in the callback array                                                                                                        |                       |
+| `tabs`             | false    | []                        | Additional tabs (`{ label, locationId }`) after the built-in ones; each renders a location of your app for this opening of the modal only. See [mediaModal.select()](#mediamodalselect) | v6.7.17.0             |
+| `callback`         | true     |                           | Callback function which receives an array of selected media items once a selection is made, or the selection of an additional tab.                                                      |                       |
 
 #### Example
 
@@ -57,6 +58,29 @@ ui.mediaModal.open({
   callback: ([{ fileName, id, url }]) => {},
 });
 ```
+
+## mediaModal.select()
+
+Pass a selection from an additional tab of the open media modal (`tabs` of `mediaModal.open()`) to the modal's `callback` and close the modal. Call it from the location the tab renders. Only the app that opened the modal can select.
+
+#### Usage
+
+```ts
+// Where the modal is opened
+ui.mediaModal.open({
+  tabs: [{ label: "Primitives", locationId: "my-app-primitives-tab" }],
+  callback: (selection) => {},
+});
+
+// In the location "my-app-primitives-tab"
+ui.mediaModal.select({ selection: [{ id: "cube" }] });
+```
+
+#### Parameters
+
+| Name        | Required | Default | Description                                         | Available at Shopware |
+| :---------- | :------- | :------ | :-------------------------------------------------- | :-------------------- |
+| `selection` | true     |         | The selected items, passed unchanged to `callback`. | v6.7.17.0             |
 
 ## mediaModal.openSaveMedia()
 

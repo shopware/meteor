@@ -1,7 +1,9 @@
+import { render, screen } from "@testing-library/vue";
+import { defineComponent } from "vue";
 import { flushPromises, mount } from "@vue/test-utils";
 import MtSelect from "./mt-select.vue";
 
-async function createWrapper({ props = {}, slots = {} } = {}) {
+async function createWrapper({ props = {}, slots = {}, attrs = {} } = {}) {
   const wrapper = mount(MtSelect, {
     props: {
       modelValue: "becky",
@@ -25,6 +27,7 @@ async function createWrapper({ props = {}, slots = {} } = {}) {
       ...props,
     },
     slots,
+    attrs,
   });
 
   await wrapper.vm.$nextTick();
@@ -38,6 +41,33 @@ vi.mock("@/utils/debounce", () => ({
 }));
 
 describe("mt-select", () => {
+  it("moves the focus to the previous element on Shift+Tab without clicking it", async () => {
+    // ARRANGE
+    const onClick = vi.fn();
+    const wrapper = mount(
+      defineComponent({
+        components: { MtSelect },
+        setup: () => ({ onClick, options: [{ id: 1, label: "Option Alfred", value: "alfred" }] }),
+        template: `
+          <div>
+            <button id="before" @click="onClick">Before</button>
+            <div inert><button @click="onClick">Inert</button></div>
+            <mt-select label="Select" :options="options" />
+          </div>
+        `,
+      }),
+      { attachTo: document.body },
+    );
+
+    // ACT
+    await wrapper.find(".mt-select__selection").trigger("keydown", { key: "Tab", shiftKey: true });
+
+    // ASSERT
+    expect(document.activeElement).toBe(wrapper.find("#before").element);
+    expect(onClick).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+
   it("should render the select component", async () => {
     const wrapper = await createWrapper();
 
@@ -231,5 +261,104 @@ describe("mt-select", () => {
 
     expect((input.element as HTMLInputElement).value).toBe("Option Becky");
     expect(wrapper.vm.visibleResults).toHaveLength(3);
+  });
+
+  it("should render a searchable input that opts out of autofill", async () => {
+    const wrapper = await createWrapper();
+
+    const input = wrapper.find(".mt-select-selection-list__input");
+
+    expect(input.attributes("autocomplete")).toBe("off");
+    expect(input.attributes("data-1p-ignore")).toBeDefined();
+    expect(input.attributes("data-lpignore")).toBe("true");
+    expect(input.attributes("data-bwignore")).toBeDefined();
+    expect(input.attributes("readonly")).toBeUndefined();
+  });
+
+  it("should render a readonly input when search is disabled", async () => {
+    const wrapper = await createWrapper({
+      props: {
+        enableSearch: false,
+      },
+    });
+
+    const input = wrapper.find(".mt-select-selection-list__input");
+
+    expect(input.attributes("readonly")).toBeDefined();
+  });
+
+  it("associates the label with the input via the name attribute", async () => {
+    const wrapper = await createWrapper({
+      props: { label: "Date range" },
+      attrs: { name: "date-range" },
+    });
+
+    const label = wrapper.find(".mt-field__label label");
+    const input = wrapper.find(".mt-select-selection-list__input");
+
+    expect(label.attributes("for")).toBe("date-range");
+    expect(input.attributes("id")).toBe("date-range");
+  });
+
+  it("associates the label with the input via a generated id when no name is given", async () => {
+    const wrapper = await createWrapper({ props: { label: "Date range" } });
+
+    const label = wrapper.find(".mt-field__label label");
+    const input = wrapper.find(".mt-select-selection-list__input");
+
+    expect(label.attributes("for")).toMatch(/^mt-field--/);
+    expect(input.attributes("id")).toBe(label.attributes("for"));
+  });
+});
+
+describe("mt-select conditional hint", () => {
+  const Host = defineComponent({
+    components: { Field: MtSelect },
+    props: {
+      showHint: { type: Boolean, default: false },
+      hint: { type: String, default: null },
+    },
+    setup: () => ({ fieldProps: { options: [] } }),
+    template: `
+      <Field v-bind="fieldProps" :hint="hint">
+        <template v-if="showHint" #hint>
+          <span data-testid="custom-hint">Original value</span>
+        </template>
+      </Field>
+    `,
+  });
+
+  it("renders a hint slot added after mounting and removes it again", async () => {
+    const { container, rerender } = render(Host);
+
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+
+    await rerender({ showHint: true });
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+
+    await rerender({ showHint: false });
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+  });
+
+  it("removes a hint slot that was present when mounting", async () => {
+    const { container, rerender } = render(Host, { props: { showHint: true } });
+
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+
+    await rerender({ showHint: false });
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+  });
+
+  it("falls back to the hint prop when the slot is removed", async () => {
+    const { rerender } = render(Host, { props: { hint: "Hint from prop" } });
+
+    expect(screen.getByText("Hint from prop")).toBeVisible();
+
+    await rerender({ showHint: true });
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+    expect(screen.queryByText("Hint from prop")).not.toBeInTheDocument();
+
+    await rerender({ showHint: false });
+    expect(screen.getByText("Hint from prop")).toBeVisible();
   });
 });

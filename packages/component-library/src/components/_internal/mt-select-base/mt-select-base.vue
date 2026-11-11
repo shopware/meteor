@@ -19,7 +19,7 @@
     </template>
 
     <!-- eslint-disable-next-line vue/no-template-shadow -->
-    <template #element="{ identification, error, size }">
+    <template #element="{ identification }">
       <div
         ref="selectWrapper"
         class="mt-select__selection"
@@ -29,10 +29,7 @@
         @keydown.tab="collapse"
         @keydown.esc="collapse"
       >
-        <slot
-          name="mt-select-selection"
-          v-bind="{ identification, error, disabled, size, expand, collapse }"
-        />
+        <slot name="mt-select-selection" v-bind="{ identification, disabled, expand, collapse }" />
       </div>
 
       <div class="mt-select__selection-indicators" :style="{ right: selectionIndicatorsRight }">
@@ -183,7 +180,7 @@ export default defineComponent({
     },
 
     /**
-     * Render the select field in small without a search input
+     * Render the select field in small
      */
     small: {
       type: Boolean,
@@ -285,22 +282,20 @@ export default defineComponent({
 
     focusPreviousFormElement() {
       const focusableSelector =
-        'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
-      const myFocusable = this.$el.querySelector(focusableSelector);
-      const keyboardFocusable = [
-        ...document.querySelectorAll(focusableSelector),
-        // @ts-expect-error - target is set and contains dataset
-      ].filter((el) => !el.hasAttribute("disabled") && el.dataset.clearableButton === undefined);
+        'a[href], button, input, textarea, select, summary, [tabindex]:not([tabindex="-1"])';
+      const wrapper = this.$refs.selectWrapper as HTMLElement;
+      const keyboardFocusable = Array.from(
+        document.querySelectorAll<HTMLElement>(focusableSelector),
+      ).filter(
+        (element) =>
+          !element.hasAttribute("disabled") &&
+          element.tabIndex >= 0 &&
+          !element.closest("[inert]") &&
+          (typeof element.checkVisibility !== "function" || element.checkVisibility()),
+      );
 
-      keyboardFocusable.forEach((element, index) => {
-        if (index > 0 && element === myFocusable) {
-          const kbFocusable = keyboardFocusable[index - 1];
-          // @ts-expect-error - click exists on element
-          kbFocusable.click();
-          // @ts-expect-error - focus exists on element
-          kbFocusable.focus();
-        }
-      });
+      const index = keyboardFocusable.indexOf(wrapper);
+      if (index > 0) keyboardFocusable[index - 1].focus();
     },
 
     listenToClickOutside(event: Event) {
@@ -371,6 +366,8 @@ export default defineComponent({
 }
 
 .mt-select .mt-select__selection {
+  display: flex;
+  align-items: center;
   width: 100%;
   position: relative;
   padding: 0 var(--scale-size-8);
@@ -459,12 +456,8 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.mt-select.mt-field--medium .mt-select__selection {
-  padding: var(--scale-size-4) var(--scale-size-6) 0;
-}
-
-.mt-select.mt-field--small .mt-select__selection {
-  padding: var(--scale-size-4) var(--scale-size-6) 0;
+.mt-select.mt-select--small .mt-select__selection {
+  padding: 0 var(--scale-size-6);
 }
 
 .mt-select.is--disabled .mt-block-field__block,
@@ -477,14 +470,8 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.mt-select--small .mt-select-selection-list--single .mt-label {
-  cursor: pointer;
-  height: var(--scale-size-18);
-  padding-top: 1px;
-}
-
-.mt-select--small .mt-block-field__block {
-  min-height: unset;
+.mt-select.mt-select--small .mt-block-field__block {
+  min-height: var(--scale-size-32);
 }
 
 /* Vue.js transitions */
@@ -494,7 +481,7 @@ export default defineComponent({
   transform: translateY(0);
 }
 
-.mt-select-result-list-fade-down-enter,
+.mt-select-result-list-fade-down-enter-from,
 .mt-select-result-list-fade-down-leave-to {
   transform: translateY(-10px);
   opacity: 0;

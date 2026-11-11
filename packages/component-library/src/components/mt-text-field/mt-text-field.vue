@@ -29,6 +29,7 @@
         :id="createInputId(identification)"
         type="text"
         :name="identification"
+        :autocomplete="autocomplete"
         :disabled="hasDisabledInput"
         :value="currentValue"
         :placeholder="placeholder"
@@ -50,7 +51,7 @@
     </template>
 
     <template #field-hint>
-      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
+      <mt-field-hint v-if="showFieldHint()" :hide-icon="!!$slots.hint">
         <slot name="hint">{{ hint }}</slot>
       </mt-field-hint>
     </template>
@@ -93,6 +94,16 @@ export default defineComponent({
       type: String,
       required: false,
       default: "",
+    },
+
+    /**
+     * Forwarded to the native input's `autocomplete` attribute, e.g. to opt out
+     * of browser autofill with `off` or to request a specific autofill type.
+     */
+    autocomplete: {
+      type: String,
+      required: false,
+      default: undefined,
     },
 
     /**
@@ -255,10 +266,6 @@ export default defineComponent({
   },
 
   computed: {
-    showFieldHint(): boolean {
-      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
-    },
-
     hasError(): boolean {
       // @ts-expect-error - isValid gets called in the mixin
       return !this.isValid || !!this.error;
@@ -276,6 +283,10 @@ export default defineComponent({
   },
 
   methods: {
+    showFieldHint(): boolean {
+      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
+    },
+
     onChange(event: Event): void {
       // @ts-expect-error - target is defined
       this.$emit("change", event.target.value || "");

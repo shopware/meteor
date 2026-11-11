@@ -26,6 +26,7 @@
         :id="createInputId(identification)"
         :type="showPassword ? 'text' : 'password'"
         :name="identification"
+        :autocomplete="autocomplete"
         :placeholder="placeholder"
         :disabled="disabled || isInherited"
         :value="model ?? ''"
@@ -63,7 +64,7 @@
     </template>
 
     <template #field-hint>
-      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
+      <mt-field-hint v-if="showFieldHint()" :hide-icon="!!$slots.hint">
         <slot name="hint">
           {{ hint }}
         </slot>
@@ -73,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, useSlots } from "vue";
+import { ref, useSlots } from "vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
@@ -91,6 +92,7 @@ const props = withDefaults(
     hint?: string | null;
     toggable?: boolean;
     name?: string | undefined;
+    autocomplete?: string;
     // additions to align with base-field
     required?: boolean;
     helpText?: string;
@@ -103,6 +105,7 @@ const props = withDefaults(
   {
     label: null,
     placeholder: "",
+    autocomplete: undefined,
     toggable: true,
     error: null,
     hint: null,
@@ -119,9 +122,8 @@ const props = withDefaults(
 
 const slots = useSlots();
 
-const showFieldHint = computed(
-  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
-);
+const showFieldHint = () =>
+  !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
 
 const emit = defineEmits<{
   (e: "change", value: string | undefined): void;

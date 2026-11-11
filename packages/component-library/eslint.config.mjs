@@ -54,6 +54,13 @@ export default tseslint.config([
       ],
     },
   },
+  {
+    // mt-icon renders the SVG markup of the bundled icon kit, not user content.
+    files: ["src/components/mt-icon/mt-icon.vue"],
+    rules: {
+      "vue/no-v-html": "off",
+    },
+  },
   ...storybook.configs["flat/recommended"],
   {
     files: ["**/*.spec.{ts,js}"],

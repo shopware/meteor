@@ -911,23 +911,23 @@ label {
   padding: var(--scale-size-16);
 
   /* List styles */
-  ul,
-  ol {
+  & ul,
+  & ol {
     padding: 0 var(--scale-size-16);
     margin: var(--scale-size-20) var(--scale-size-16) var(--scale-size-20) 0.4rem;
 
-    li p {
+    & li p {
       margin-top: 0.25em;
       margin-bottom: 0.25em;
     }
   }
 
-  ol {
+  & ol {
     list-style: decimal;
     list-style-position: outside;
   }
 
-  ul {
+  & ul {
     list-style: disc;
     list-style-position: outside;
   }
@@ -935,56 +935,56 @@ label {
   /* WYSIWYG styles */
   outline: 0 solid transparent;
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  & h1,
+  & h2,
+  & h3,
+  & h4,
+  & h5,
+  & h6 {
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-primary-default);
     letter-spacing: 0;
     margin-bottom: 0;
   }
 
-  h1 {
+  & h1 {
     font-size: 36px;
     line-height: var(--font-line-height-3xl);
     margin-top: var(--scale-size-36);
   }
 
-  h2 {
+  & h2 {
     font-size: var(--font-size-3xl);
     line-height: var(--font-line-height-2xl);
     margin-top: var(--scale-size-30);
   }
 
-  h3 {
+  & h3 {
     font-size: var(--font-size-xl);
     line-height: var(--font-line-height-xl);
     margin-top: var(--scale-size-28);
   }
 
-  h4 {
+  & h4 {
     font-size: var(--font-size-l);
     line-height: var(--font-line-height-l);
     margin-top: var(--scale-size-24);
   }
 
-  h5 {
+  & h5 {
     font-size: var(--font-size-s);
     line-height: var(--font-line-height-m);
     margin-top: var(--scale-size-22);
   }
 
-  h6 {
+  & h6 {
     font-size: var(--font-size-xs);
     line-height: var(--font-line-height-s);
     margin-top: var(--scale-size-22);
   }
 
-  p,
-  div {
+  & p,
+  & div {
     font-weight: normal;
     font-size: var(--font-size-s);
     line-height: var(--font-line-height-m);
@@ -993,14 +993,14 @@ label {
     margin-top: var(--scale-size-16);
   }
 
-  a[href] {
+  & a[href] {
     color: var(--color-text-brand-default);
     text-decoration: underline;
     cursor: pointer;
     word-break: break-word;
   }
 
-  blockquote {
+  & blockquote {
     font-size: var(--font-size-s);
     font-style: italic;
     line-height: var(--font-line-height-m);
@@ -1010,7 +1010,7 @@ label {
     margin-top: var(--scale-size-16);
   }
 
-  blockquote::before {
+  & blockquote::before {
     content: '"';
     font-size: 40px;
     line-height: 16px;
@@ -1020,12 +1020,12 @@ label {
     left: -24px;
   }
 
-  ul,
-  ol {
+  & ul,
+  & ol {
     margin-left: var(--scale-size-20);
     margin-top: var(--scale-size-16);
 
-    li {
+    & li {
       font-weight: normal;
       font-size: var(--font-size-s);
       line-height: var(--font-line-height-m);
@@ -1033,12 +1033,12 @@ label {
       margin-bottom: var(--scale-size-4);
     }
 
-    li:last-child {
+    & li:last-child {
       margin-bottom: 0;
     }
   }
 
-  hr {
+  & hr {
     max-width: 160px;
     margin-left: auto;
     margin-right: auto;
@@ -1051,7 +1051,7 @@ label {
   }
 
   /* Table-specific styling */
-  table {
+  & table {
     border-collapse: collapse;
     margin: 0;
     overflow: hidden;
@@ -1059,8 +1059,8 @@ label {
     width: 100%;
   }
 
-  table td,
-  table th {
+  & table td,
+  & table th {
     border: 1px solid var(--color-border-primary-default);
     box-sizing: border-box;
     min-width: 1em;
@@ -1073,17 +1073,17 @@ label {
     }
   }
 
-  table th {
+  & table th {
     background-color: var(--color-background-tertiary-default);
     font-weight: bold;
     text-align: left;
   }
 
-  table p {
+  & table p {
     margin: 0;
   }
 
-  table .selectedCell::after {
+  & table .selectedCell::after {
     background: color-mix(in srgb, var(--color-interaction-primary-default) 12%, transparent);
     content: "";
     left: 0;
@@ -1095,7 +1095,7 @@ label {
     z-index: 2;
   }
 
-  table .column-resize-handle {
+  & table .column-resize-handle {
     background-color: var(--color-interaction-primary-default);
     pointer-events: none;
     position: absolute;

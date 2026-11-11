@@ -48,8 +48,11 @@
   --color-icon-critical-hover: #c20017;
   --color-icon-critical-disabled: #5e0006;
   --color-icon-attention-default: #ffbc51;
+  --color-icon-attention-disabled: #533600;
   --color-icon-positive-default: #4dde58;
+  --color-icon-positive-disabled: #00470a;
   --color-icon-accent-default: #b5a8ff;
+  --color-icon-accent-disabled: #3e0091;
   --color-icon-static-default: #ffffff;
   --color-icon-static-dark: #0e0e11;
   --color-icon-inverse-default: #1e1e24;

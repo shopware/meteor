@@ -289,7 +289,9 @@ export default defineComponent({
 }
 
 .mt-field input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 1000px #fff inset;
+  -webkit-box-shadow: 0 0 0 1000px var(--color-background-primary-default) inset;
+  -webkit-text-fill-color: var(--color-text-primary-default);
+  caret-color: var(--color-text-primary-default);
 }
 
 .mt-field .mt-block-field__block {
@@ -358,6 +360,10 @@ export default defineComponent({
 
 .mt-field.has--error.mt-field input {
   background-color: var(--color-background-critical-default);
+}
+
+.mt-field.has--error input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-background-critical-default) inset;
 }
 
 .mt-field.has--error .mt-field__addition {

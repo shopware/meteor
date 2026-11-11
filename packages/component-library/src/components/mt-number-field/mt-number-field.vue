@@ -31,6 +31,7 @@
         :id="createInputId(identification)"
         type="text"
         :name="identification"
+        :autocomplete="autocomplete"
         :disabled="disabled || isInherited"
         :value="stringRepresentation"
         :placeholder="placeholder"
@@ -78,7 +79,7 @@
     </template>
 
     <template #field-hint>
-      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
+      <mt-field-hint v-if="showFieldHint()" :hide-icon="!!$slots.hint">
         <slot name="hint">
           {{ hint }}
         </slot>

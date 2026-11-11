@@ -137,6 +137,14 @@ export default defineNuxtConfig({
   colorMode: {
     dataValue: "theme",
   },
+  // serverInfo of the MCP server Docus ships via @nuxtjs/mcp-toolkit. The name
+  // defaults to an empty string. Keep in sync with
+  // public/.well-known/mcp/server-card.json.
+  mcp: {
+    name: "Shopware Meteor",
+    description:
+      "Documentation, components, examples, icons, and design tokens of the Shopware Meteor design system.",
+  },
   llms: {
     domain: "https://meteor.shopware.com",
     // Disable @nuxt/content's built-in /raw/*.md route so our own route in

@@ -237,7 +237,7 @@
     </template>
 
     <template #field-hint>
-      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
+      <mt-field-hint v-if="showFieldHint()" :hide-icon="!!$slots.hint">
         <slot name="hint">
           {{ hint }}
         </slot>
@@ -511,10 +511,6 @@ export default defineComponent({
         this.localValue = newColor;
         this.debounceEmitColorValue();
       },
-    },
-
-    showFieldHint(): boolean {
-      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
     },
 
     integerAlpha: {
@@ -841,6 +837,10 @@ export default defineComponent({
   },
 
   methods: {
+    showFieldHint(): boolean {
+      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
+    },
+
     debounceEmitColorValue: debounce(function emitValue() {
       // @ts-expect-error - this context is wrong detected
       // Don't emit the value if applyMode is active

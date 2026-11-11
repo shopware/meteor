@@ -28,6 +28,7 @@
     />
 
     <textarea
+      :id="id"
       v-model="model"
       :class="[
         'mt-textarea__textarea',
@@ -35,15 +36,15 @@
           'mt-textarea__textarea--error': !!error && !!error.detail,
         },
       ]"
-      @change="$emit('change', model)"
-      @focus="$emit('focus')"
-      @blur="$emit('blur')"
-      :id="id"
       :required="required"
       :disabled="disabled || isInherited"
       :name="name"
+      :autocomplete="autocomplete"
       :placeholder="placeholder"
       :maxlength="maxLength"
+      @change="$emit('change', model)"
+      @focus="$emit('focus')"
+      @blur="$emit('blur')"
     />
 
     <mt-field-error
@@ -52,7 +53,7 @@
       :style="{ gridArea: 'error' }"
     />
 
-    <div v-if="showFieldHint" class="mt-textarea__hint">
+    <div v-if="showFieldHint()" class="mt-textarea__hint">
       <mt-field-hint :hide-icon="!!$slots.hint">
         <slot name="hint">{{ hint }}</slot>
       </mt-field-hint>
@@ -65,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useSlots, useId } from "vue";
+import { useSlots, useId } from "vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
@@ -89,6 +90,7 @@ const props = defineProps<{
   required?: boolean;
   disabled?: boolean;
   name?: string;
+  autocomplete?: string;
   label?: string;
   placeholder?: string;
   error?: {
@@ -103,9 +105,8 @@ const props = defineProps<{
 
 const slots = useSlots();
 
-const showFieldHint = computed(
-  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
-);
+const showFieldHint = () =>
+  !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
 </script>
 
 <style scoped>

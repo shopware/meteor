@@ -450,8 +450,10 @@ export default defineComponent({
     user-select: none;
     pointer-events: none;
     font-weight: var(--font-weight-medium);
+  }
 
-    @media speech {
+  @media speech {
+    &::after {
       display: none;
     }
   }

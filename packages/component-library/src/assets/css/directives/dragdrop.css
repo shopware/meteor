@@ -1,0 +1,49 @@
+.is--drag-element {
+  position: absolute;
+  pointer-events: none;
+  touch-action: none;
+  user-select: none;
+  z-index: 1400; /* above modals and notifications, below toasts */
+  box-shadow: 0 0 4px 0 var(--color-border-brand-selected);
+  overflow: hidden;
+  cursor: grab;
+
+  & > * {
+    user-select: none;
+    pointer-events: none;
+    touch-action: none;
+    -webkit-user-drag: none;
+  }
+
+  &.is--valid-drag {
+    box-shadow: 0 0 4px 0 var(--color-border-positive-default);
+  }
+
+  &.is--invalid-drag {
+    box-shadow: 0 0 4px 0 var(--color-border-critical-default);
+  }
+}
+
+.is--draggable {
+  user-select: none;
+  cursor: grab;
+
+  & img {
+    user-select: none;
+    pointer-events: none;
+    touch-action: none;
+    -webkit-user-drag: none;
+  }
+}
+
+.is--dragging {
+  background: var(--color-background-secondary-default);
+  border: 1px dashed var(--color-border-primary-default);
+  box-shadow: none;
+  color: var(--color-background-secondary-default);
+  cursor: grab;
+
+  & > * {
+    opacity: 0;
+  }
+}

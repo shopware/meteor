@@ -145,3 +145,41 @@ export const Range: MtDatepickerStory = {
     },
   },
 };
+
+export const CustomHint: MtDatepickerStory = {
+  name: "Custom hint",
+  args: {
+    label: "Datepicker",
+    hint: "This is a datepicker hint",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-datepicker label="Datepicker" hint="This is a datepicker hint" />`,
+      },
+    },
+  },
+};
+
+export const MultiLineHint: MtDatepickerStory = {
+  name: "Multi-line hint",
+  args: {
+    label: "Datepicker",
+    hint: "This is a datepicker hint that is long enough to wrap onto a second line so you can see how the icon stays aligned with the first line.",
+  },
+  render: (args) => ({
+    components: { MtDatepicker },
+    setup: () => ({ args }),
+    template: `<div style="max-width: 320px"><mt-datepicker v-bind="args" /></div>`,
+  }),
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-datepicker
+  label="Datepicker"
+  hint="This is a datepicker hint that is long enough to wrap onto a second line so you can see how the icon stays aligned with the first line."
+/>`,
+      },
+    },
+  },
+};

@@ -65,6 +65,7 @@
         type="url"
         :placeholder="placeholder"
         :name="name"
+        :autocomplete="autocomplete"
         :required="required"
         :disabled="disabled || isInherited"
         class="mt-url-field__input"
@@ -110,7 +111,7 @@
 
     <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
 
-    <div v-if="showFieldHint" class="mt-url-field__hint">
+    <div v-if="showFieldHint()" class="mt-url-field__hint">
       <mt-field-hint :hide-icon="!!$slots.hint">
         <slot name="hint">{{ hint }}</slot>
       </mt-field-hint>
@@ -170,6 +171,7 @@ const props = withDefaults(
     disabled?: boolean;
     placeholder?: string;
     name?: string;
+    autocomplete?: string;
     size?: "small" | "default";
     /**
      * Optional caption below the field. The `#hint` slot takes precedence when provided.
@@ -178,6 +180,7 @@ const props = withDefaults(
   }>(),
   {
     size: "default",
+    autocomplete: undefined,
   },
 );
 
@@ -185,9 +188,8 @@ const id = useId();
 
 const slots = useSlots();
 
-const showFieldHint = computed(
-  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
-);
+const showFieldHint = () =>
+  !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
 
 const currentValue = ref(modelValue.value);
 const sslActive = ref(true);
