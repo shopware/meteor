@@ -57,13 +57,29 @@ Disable a single option when it is not available, and use the group's hint to ex
 
 ## API reference
 
-### Root
+### MtRadioGroupRoot
 
 :component-api{name="MtRadioGroupRoot"}
 
-### Card item
+### MtRadioGroupList
+
+:component-api{name="MtRadioGroupList"}
+
+### MtRadioGroupItem
+
+:component-api{name="MtRadioGroupItem"}
+
+### MtRadioGroupCardItem
 
 :component-api{name="MtRadioGroupCardItem"}
+
+### MtRadioGroupCustomItem
+
+:component-api{name="MtRadioGroupCustomItem"}
+
+### MtRadioGroupIndicator
+
+:component-api{name="MtRadioGroupIndicator"}
 
 ## Best practices
 
