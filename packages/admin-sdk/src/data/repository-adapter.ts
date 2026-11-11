@@ -8,10 +8,18 @@ export type SDKRepository<EntityName extends keyof EntitySchema.Entities> = Retu
   typeof RepositoryFactory<EntityName>
 >;
 
-export type RepositorySource<EntityName extends keyof EntitySchema.Entities> = Pick<
-  SDKRepository<EntityName>,
-  'search' | 'get' | 'save' | 'clone' | 'saveAll' | 'delete'
-> & {
+/**
+ * Spelled out instead of picked from SDKRepository: the Administration's native repository reads the
+ * slots after `context` as cache options, so the SDK request options must never reach a source.
+ */
+export type RepositorySource<EntityName extends keyof EntitySchema.Entities> = {
+  search: (criteria: Criteria, context?: ApiContext) => Promise<EntityCollection<EntityName> | null>,
+  get: (id: string, context?: ApiContext, criteria?: Criteria) => Promise<Entity<EntityName> | null>,
+  save: (entity: Entity<EntityName>, context?: ApiContext) => Promise<void | null>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  clone: (entityId: string, contextOrBehavior?: any, behaviorOrContext?: any) => Promise<unknown | null>,
+  saveAll: (entities: EntityCollection<EntityName>, context?: ApiContext) => Promise<unknown | null>,
+  delete: (entityId: string, context?: ApiContext) => Promise<void | null>,
   hasChanges: (entity: Entity<EntityName>) => Promise<boolean | null> | boolean,
   create: (
     context?: ApiContext,

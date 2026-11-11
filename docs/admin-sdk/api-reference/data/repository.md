@@ -98,6 +98,7 @@ const yourEntities = await exampleRepository.search(yourCriteria);
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `criteria` | true     |         | Your criteria object                           |
 | `context`  | false    | {}      | Change the [request context](#request-context) |
+| `options`  | false    |         | Change the [request options](#request-options) |
 
 #### Return value
 The return value is a EntityCollection which contains all entities matching the criteria.
@@ -118,6 +119,7 @@ const yourEntity = await exampleRepository.get('theEntityId');
 | `id`       | true     |         | The id of the entity                           |
 | `context`  | false    | {}      | Change the [request context](#request-context) |
 | `criteria` | true     |         | Your criteria object                           |
+| `options`  | false    |         | Change the [request options](#request-options) |
 
 #### Return value
 The return value is the entity result when a matching entity was found.
@@ -139,6 +141,7 @@ await exampleRepository.save(yourEntityObject);
 | :-------- | :------- | :------ | :--------------------------------------------- |
 | `entity`  | true     |         | The entity object                              |
 | `context` | false    | {}      | Change the [request context](#request-context) |
+| `options`  | false    |         | Change the [request options](#request-options) |
 
 #### Return value
 This method does not have a return value. It just returns a Promise which is resolved when it was saved successfully.
@@ -162,6 +165,7 @@ const clonedEntityId = await exampleRepository.clone(
 | `entityId` | true     |         | The entity id which should be cloned           |
 | `context`  | true     |         | Change the [request context](#request-context) |
 | `behavior` | false    |         | Configure the [clone behavior](#clone-behavior) |
+| `options`  | false    |         | Change the [request options](#request-options) |
 
 #### Return value
 This method returns the id of the cloned entity.
@@ -199,6 +203,7 @@ await exampleRepository.saveAll(yourEntityCollection);
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `entities` | true     |         | Your entity collection which should be saved   |
 | `context`  | false    | {}      | Change the [request context](#request-context) |
+| `options`  | false    |         | Change the [request options](#request-options) |
 
 #### Return value
 This method does not have a return value. It just returns a Promise which is resolved when it was saved successfully.
@@ -218,6 +223,7 @@ await exampleRepository.delete('yourEntityId');
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `entityId` | true     |         | The id of the entity which should be deleted   |
 | `context`  | false    | {}      | Change the [request context](#request-context) |
+| `options`  | false    |         | Change the [request options](#request-options) |
 
 #### Return value
 This method does not have a return value. It just returns a Promise which is resolved when it was deleted successfully.
@@ -254,6 +260,23 @@ const exampleContext = {
     liveVersionId: 'yourLiveVersionId'
 }
 ```
+
+### Request Options
+You can optionally change how long your app waits for the Administration to answer a request. This is available for `search`, `get`, `save`, `clone`, `saveAll` and `delete`.
+
+```ts
+// Wait up to 30 seconds instead of the default 7 seconds
+const yourEntities = await exampleRepository.search(yourCriteria, undefined, { timeout: 30000 });
+```
+
+| Name      | Required | Default | Description                                                         |
+| :-------- | :------- | :------ | :------------------------------------------------------------------ |
+| `timeout` | false    | 7000    | Milliseconds to wait for the answer, greater than 0 and at most 60000 |
+
+Leave `timeout` out to keep the default. Any other value that isn't a number in that range, including `null`, rejects the promise with a `RangeError`, and nothing is sent.
+When the time runs out, the promise rejects with the same `Send timeout expired` message as before.
+A timeout only stops your app from waiting: the request in the Administration is not cancelled and can still complete, which matters for `save`, `saveAll` and `delete`.
+The Administration's HTTP client has its own limit (30 seconds in current versions), so a longer `timeout` does not give a request more time there.
 
 ### Clone Behavior
 You can optionally change the clone behavior of the request. The clone behavior controls how the entity is duplicated on the server.

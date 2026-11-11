@@ -6,31 +6,39 @@ import type { Entity } from '../_internals/data/Entity';
 
 type Entities = EntitySchema.Entities;
 
+/**
+ * Only changes how long the extension waits: a timed out request is not cancelled in the Administration.
+ */
+export type RepositoryRequestOptions = {
+  /** Milliseconds to wait for the answer, greater than 0 and at most 60000. Defaults to 7000. */
+  timeout?: number,
+};
+
 export type Repository<EntityName extends keyof Entities> = {
-  search: (criteria: Criteria, context?: ApiContext) => Promise<EntityCollection<EntityName> | null>,
-  get: (id: string, context?: ApiContext, criteria?: Criteria) => Promise<Entity<EntityName> | null>,
-  save: (entity: Entity<EntityName>, context?: ApiContext) => Promise<void | null>,
-  clone: (entityId: string, context?: ApiContext, behavior?: any) => Promise<unknown | null>,
+  search: (criteria: Criteria, context?: ApiContext, options?: RepositoryRequestOptions) => Promise<EntityCollection<EntityName> | null>,
+  get: (id: string, context?: ApiContext, criteria?: Criteria, options?: RepositoryRequestOptions) => Promise<Entity<EntityName> | null>,
+  save: (entity: Entity<EntityName>, context?: ApiContext, options?: RepositoryRequestOptions) => Promise<void | null>,
+  clone: (entityId: string, context?: ApiContext, behavior?: any, options?: RepositoryRequestOptions) => Promise<unknown | null>,
   hasChanges: (entity: Entity<EntityName>) => Promise<boolean | null>,
-  saveAll: (entities: EntityCollection<EntityName>, context?: ApiContext) => Promise<unknown | null>,
-  delete: (entityId: string, context?: ApiContext) => Promise<void | null>,
+  saveAll: (entities: EntityCollection<EntityName>, context?: ApiContext, options?: RepositoryRequestOptions) => Promise<unknown | null>,
+  delete: (entityId: string, context?: ApiContext, options?: RepositoryRequestOptions) => Promise<void | null>,
   create: (context?: ApiContext, entityId?: string) => Promise<Entity<EntityName> | null>,
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default <EntityName extends keyof Entities>(entityName: EntityName) => ({
-  search: (criteria: Criteria, context?: ApiContext): Promise<EntityCollection<EntityName> | null> => {
-    return send('repositorySearch', { entityName, context, criteria });
+  search: (criteria: Criteria, context?: ApiContext, options?: RepositoryRequestOptions): Promise<EntityCollection<EntityName> | null> => {
+    return send('repositorySearch', { entityName, context, criteria }, undefined, undefined, options);
   },
-  get: (id: string, context?: ApiContext, criteria?: Criteria): Promise<Entity<EntityName> | null> => {
+  get: (id: string, context?: ApiContext, criteria?: Criteria, options?: RepositoryRequestOptions): Promise<Entity<EntityName> | null> => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return send('repositoryGet', { entityName, id, context, criteria });
+    return send('repositoryGet', { entityName, id, context, criteria }, undefined, undefined, options);
   },
-  save: (entity: Entity<EntityName>, context?: ApiContext): Promise<void | null> => {
-    return send('repositorySave', { entityName, entity, context });
+  save: (entity: Entity<EntityName>, context?: ApiContext, options?: RepositoryRequestOptions): Promise<void | null> => {
+    return send('repositorySave', { entityName, entity, context }, undefined, undefined, options);
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  clone: (entityId: string, contextOrBehavior?: any, behaviorOrContext?: any): Promise<unknown | null> => {
+  clone: (entityId: string, contextOrBehavior?: any, behaviorOrContext?: any, options?: RepositoryRequestOptions): Promise<unknown | null> => {
     let context: ApiContext;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let behavior: any;
@@ -46,16 +54,16 @@ export default <EntityName extends keyof Entities>(entityName: EntityName) => ({
       throw new Error('Invalid arguments for clone method');
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return send('repositoryClone', { entityName, entityId, context, behavior });
+    return send('repositoryClone', { entityName, entityId, context, behavior }, undefined, undefined, options);
   },
   hasChanges: (entity: Entity<EntityName>): Promise<boolean | null> => {
     return send('repositoryHasChanges', { entityName, entity });
   },
-  saveAll: (entities: EntityCollection<EntityName>, context?: ApiContext): Promise<unknown | null> => {
-    return send('repositorySaveAll', { entityName, entities, context });
+  saveAll: (entities: EntityCollection<EntityName>, context?: ApiContext, options?: RepositoryRequestOptions): Promise<unknown | null> => {
+    return send('repositorySaveAll', { entityName, entities, context }, undefined, undefined, options);
   },
-  delete: (entityId: string, context?: ApiContext): Promise<void | null> => {
-    return send('repositoryDelete', { entityName, entityId, context });
+  delete: (entityId: string, context?: ApiContext, options?: RepositoryRequestOptions): Promise<void | null> => {
+    return send('repositoryDelete', { entityName, entityId, context }, undefined, undefined, options);
   },
   create: (context?: ApiContext, entityId?: string): Promise<Entity<EntityName> | null> => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return

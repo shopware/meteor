@@ -43,3 +43,5 @@ const products = await repository.value.search(criteria);
 ## Return value
 
 A computed ref containing a repository that updates when its dependencies change. Access the repository methods through the `.value` property of the computed ref.
+
+The repository methods accept the same [request options](../data/repository.md#request-options) as `data.repository()`. They only apply when no `repositoryFactory` is given or injected: a repository from a factory, like the Administration's own, never receives them.

@@ -271,6 +271,96 @@ describe('Test the channel bridge from iFrame to admin', () => {
     expect(callback).toHaveBeenCalledTimes(0)
   });
 
+  describe('send timeout', () => {
+    afterEach(() => {
+      jest.useRealTimers();
+      jest.restoreAllMocks();
+    });
+
+    it('rejects after 7 seconds by default', async () => {
+      jest.useFakeTimers();
+
+      let settled = false;
+      const request = send('getPageTitle', {});
+      request.catch(() => undefined).finally(() => { settled = true; });
+
+      jest.advanceTimersByTime(6999);
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(settled).toBe(false);
+
+      jest.advanceTimersByTime(1);
+      await expect(request).rejects.toMatch('Send timeout expired');
+    });
+
+    it('waits as long as the given timeout', async () => {
+      const removeListener = handle('getPageTitle', () => new Promise((resolve) => {
+        setTimeout(() => resolve('Slow page title'), 100);
+      }));
+
+      await expect(send('getPageTitle', {}, undefined, undefined, { timeout: 50 })).rejects.toMatch('Send timeout expired');
+      await expect(send('getPageTitle', {}, undefined, undefined, { timeout: 1000 })).resolves.toBe('Slow page title');
+
+      removeListener();
+    });
+
+    it('accepts the maximum timeout', async () => {
+      const removeListener = handle('getPageTitle', () => 'Page title');
+
+      await expect(send('getPageTitle', {}, undefined, undefined, { timeout: 60000 })).resolves.toBe('Page title');
+
+      removeListener();
+    });
+
+    it.each([
+      0,
+      -1,
+      NaN,
+      Infinity,
+      60001,
+      '30000' as unknown as number,
+    ])('rejects the timeout %p without sending anything', async (timeout) => {
+      const postMessage = jest.spyOn(window, 'postMessage');
+
+      await expect(send('getPageTitle', {}, undefined, undefined, { timeout })).rejects.toThrow(RangeError);
+      expect(postMessage).not.toHaveBeenCalled();
+    });
+
+    it('clears its timer once answered', async () => {
+      jest.useFakeTimers();
+      const removeListener = handle('getPageTitle', () => 'Page title');
+
+      let answered = false;
+      const request = send('getPageTitle', {}).then(() => { answered = true; });
+
+      // jsdom delivers postMessage through a timer: request, response, re-dispatch with origin
+      for (let step = 0; step < 10 && !answered; step++) {
+        jest.advanceTimersByTime(0);
+        await Promise.resolve();
+      }
+
+      await request;
+      expect(jest.getTimerCount()).toBe(0);
+      removeListener();
+    });
+
+    it('removes its own listener once timed out', async () => {
+      const addEventListener = jest.spyOn(window, 'addEventListener');
+      const removeEventListener = jest.spyOn(window, 'removeEventListener');
+
+      const request = send('getPageTitle', {}, undefined, undefined, { timeout: 10 });
+      const [, callbackHandler] = addEventListener.mock.calls.filter(([type]) => type === 'message').at(-1) ?? [];
+
+      await expect(request).rejects.toMatch('Send timeout expired');
+      expect(callbackHandler).toBeInstanceOf(Function);
+      expect(removeEventListener).toHaveBeenCalledWith('message', callbackHandler);
+    });
+
+    it('rejects a null timeout instead of falling back to the default', async () => {
+      await expect(send('getPageTitle', {}, undefined, undefined, { timeout: null as unknown as number })).rejects.toThrow(RangeError);
+    });
+  });
+
   describe('embedded context', () => {
     it('should mark the document as embedded and unset the body background', () => {
       applyEmbeddedContext();

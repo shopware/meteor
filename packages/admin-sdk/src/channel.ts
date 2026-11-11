@@ -98,6 +98,19 @@ const subscriberRegistry: Set<{
  */
 
 /**
+ * Options that only affect how the sender waits; they are never part of the message.
+ * @internal
+ */
+export type SendOptions = {
+  /** Milliseconds to wait for the response, greater than 0 and at most 60000. Defaults to 7000. */
+  timeout?: number,
+};
+
+const DEFAULT_SEND_TIMEOUT = 7000;
+// Duplicated from the service bridge, which imports this module
+const MAX_SEND_TIMEOUT = 60_000;
+
+/**
  * With this method you can send actions or you can request data:
  *
  * @param type Choose a type of action from the send-types
@@ -108,8 +121,15 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
   _targetWindow?: Window,
-  _origin?: string
+  _origin?: string,
+  _options?: SendOptions
 ): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
+  const timeoutMs = _options?.timeout === undefined ? DEFAULT_SEND_TIMEOUT : _options.timeout;
+
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > MAX_SEND_TIMEOUT) {
+    return Promise.reject(new RangeError(`timeout must be greater than 0 and at most ${MAX_SEND_TIMEOUT} milliseconds.`));
+  }
+
   // Generate a unique callback ID used to match the response for this request
   const callbackId = generateUniqueId();
 
@@ -171,7 +191,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 
   // Set value if send was resolved
   let isResolved = false;
-  const timeoutMs = 7000;
+  let timer: ReturnType<typeof setTimeout> | undefined;
 
   // Return a promise which resolves when the response is received
   return new Promise((resolve, reject) => {
@@ -213,6 +233,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       // Only return the data if the request is not timed out
       if (!isResolved) {
         isResolved = true;
+        clearTimeout(timer);
 
         const response = deserializedResponseData._response;
 
@@ -249,11 +270,14 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     _targetWindow ? _targetWindow.postMessage(message, targetOrigin) : window.parent.postMessage(message, targetOrigin);
 
     // Send timeout when no one sends data back or handler freezes
-    setTimeout(() => {
+    timer = setTimeout(() => {
       // Only runs when is not resolved
       if (isResolved) {
         return;
       }
+
+      isResolved = true;
+      window.removeEventListener('message', callbackHandler);
 
       reject('Send timeout expired. It could be possible that no handler for the postMessage request exists or that the handler freezed.');
     }, timeoutMs);
