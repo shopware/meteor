@@ -1,6 +1,6 @@
 ---
 title: App
-description: The root shell of a standalone Meteor application, with a header, a navigation, the content and a sidebar.
+description: The root shell of a standalone Meteor application, with a banner, a header, a navigation, the content and a sidebar.
 ---
 
 ::warning
@@ -12,7 +12,7 @@ description: The root shell of a standalone Meteor application, with a header, a
 
 ## Usage
 
-**App** is the root of a standalone application. It arranges the header, the navigation, the content and the sidebar, turns the navigation and the sidebar into drawers on small screens, and provides the theme, the future flags and the [**Snackbar**](/components/snackbar) host to everything inside. Use one shell per application, with a [**Page**](/components/page) for each route in its content.
+**App** is the root of a standalone application. It arranges the banner, the header, the navigation, the content and the sidebar, turns the navigation and the sidebar into drawers on small screens, and provides the theme, the future flags and the [**Snackbar**](/components/snackbar) host to everything inside. Use one shell per application, with a [**Page**](/components/page) for each route in its content.
 
 ```ts
 import { MtApp } from "@shopware-ag/meteor-component-library";
@@ -54,6 +54,29 @@ router.isReady().then(() => app.mount("#app"));
 
 A [**Panel**](/components/panel) in the `navigation` or `sidebar` slot sets the panel's label, the icon of its trigger, whether it can be hidden on desktop, and its width.
 
+### Status banner
+
+The `banner` slot shows a message about the whole application above the header, such as planned downtime or an upcoming event. Put an [**Announcement**](/components/announcement) into it. Alerts don't belong here: a [**Banner**](/components/banner) goes into the content of the page it is about.
+
+```vue [App.vue]
+<script setup lang="ts">
+import { RouterView } from "vue-router";
+import { MtAnnouncement, MtApp } from "@shopware-ag/meteor-component-library";
+</script>
+
+<template>
+  <mt-app>
+    <template #banner>
+      <mt-announcement variant="attention" icon="regular-tools">
+        Planned maintenance on Sunday, November 16, from 2:00 to 4:00 AM CET.
+      </mt-announcement>
+    </template>
+
+    <RouterView />
+  </mt-app>
+</template>
+```
+
 ### Triggers in a custom page
 
 The header of a [**Page**](/components/page) shows the triggers of the navigation and the sidebar on its own. A page with its own header shows them with **App Panel Trigger**: the navigation trigger at the very start and the sidebar trigger at the very end. Each brings the divider that separates it from the rest of the header.
@@ -74,9 +97,10 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 
 ## Anatomy
 
+- `banner`: a full-width strip above the header for messages about the whole application, such as planned downtime or an upcoming event, usually an [**Announcement**](/components/announcement). It isn't meant for alerts, such as a [**Banner**](/components/banner), which belong in the content of their page.
 - `header`: the application's own bar above the other regions. The triggers of the navigation and the sidebar sit in the header of the page. Only while no page shows them, the shell's header shows them at its start and end, also when the slot is empty.
 - `navigation`: the main navigation, such as [**Nav**](/components/nav), next to the content, usually in a [**Panel**](/components/panel).
-- default slot: the scrollable main content in a frame, usually a [**Page**](/components/page). It fills the shell without the frame when no other slot is filled, or when no other region is visible and a view sets `contentFrame: false`.
+- default slot: the scrollable main content in a frame, usually a [**Page**](/components/page). It fills the shell without the frame when no slot other than `banner` is filled, or when no header, navigation or sidebar is visible and a view sets `contentFrame: false`.
 - `sidebar`: a panel next to the content, for example an assistant, usually in a [**Panel**](/components/panel). It is framed like the content unless its `appearance` is `plain`.
 
 ## API reference
@@ -91,9 +115,11 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 - Use a single **App** as the root of a standalone application.
 - Put a [**Panel**](/components/panel) directly into the `navigation` and `sidebar` slots to set their labels and widths.
 - Set the `label` of each panel in languages other than English and German.
+- Use an [**Announcement**](/components/announcement) in the `banner` slot for short messages about the whole application.
 
 #dont
 
+- Do not put alerts, such as a [**Banner**](/components/banner), into the `banner` slot. Show them in the content of the page they belong to.
 - Do not use **App** in an Administration extension or inside an existing page layout; the Administration already provides the header and the navigation.
 - Do not nest one **App** in another.
 
@@ -106,6 +132,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 - In the desktop layout, `v-model:navigation-open` and `v-model:sidebar-open` show and hide the panels. A [**Panel**](/components/panel) with `closable` also shows its trigger in the desktop layout.
 - A panel that a view hides has no trigger in either layout.
 - In the desktop layout, a panel slides in and out over its outer edge when it opens or closes, also when a view hides or shows it, while the content grows into its place. Switching between the desktop and the mobile layout doesn't slide. With reduced motion, the panels show and hide at once.
+- Views can hide the banner, the header, the navigation and the sidebar with [**useAppRegions**](/utilities/composables/use-app-regions). The banner and the header are not printed.
 - **App** applies the stored theme preference, enables all future flags for the components inside, and mounts the [**Snackbar**](/components/snackbar) host.
 - With Vue Router installed, a navigation closes the open drawer and shows the new page from its top, or from the element of its URL hash.
 - With `loading-bar`, a thin bar runs along the top edge while a navigation is pending or while a view reports loading with [**useAppLoading**](/utilities/composables/use-app-loading). It appears after 200ms, so quick navigations don't show it, and stays for at least 500ms once shown. A navigation counts from the shell's own guard on, so global guards that the app registers before the shell mounts run before the bar.
@@ -113,6 +140,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 
 ## Accessibility
 
+- The banner comes before the header in the reading order and adds no landmark of its own.
 - The header is a `<header>` landmark and the content a `<main>` landmark. The navigation and the sidebar add no landmark of their own, so their content brings one, such as the `<nav>` of [**Nav**](/components/nav) or an `<aside>` named after its content.
 - The first focusable element of the shell is a "Skip to content" button. It becomes visible when it receives the focus and moves the focus to the content.
 - When a region hides or unmounts while it holds the focus, the focus moves to the content.
@@ -122,6 +150,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 
 ## Related components
 
+- [**Announcement**](/components/announcement): for a message about the whole application in the `banner` slot.
 - [**Page**](/components/page): for the frame of each page in the content.
 - [**Panel**](/components/panel): for the label, the trigger icon and the width of the navigation and the sidebar.
 - [**Nav**](/components/nav): for the main navigation in the `navigation` slot.
