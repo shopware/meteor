@@ -16,6 +16,7 @@ import userEvent from "@testing-library/user-event";
 import MtApp from "./mt-app.vue";
 import MtAppPanelTrigger from "./mt-app-panel-trigger.vue";
 import MtPanel from "../mt-panel/mt-panel.vue";
+import MtAnnouncement from "../mt-announcement/mt-announcement.vue";
 import { useApp } from "./composables/useApp";
 import { useAppRegions, type MtAppRegions } from "./composables/useAppRegions";
 import { useAppLoading } from "./composables/useAppLoading";
@@ -33,7 +34,7 @@ const allSlots = {
   sidebar: '<aside aria-label="Details"><button>End action</button></aside>',
 };
 
-type Slots = Partial<Record<keyof typeof allSlots, unknown>>;
+type Slots = Partial<Record<keyof typeof allSlots | "banner", unknown>>;
 
 async function renderApp(
   options: {
@@ -178,6 +179,38 @@ describe("mt-app", () => {
       expect(screen.getByRole("complementary", { name: "Details" })).toHaveTextContent(
         "End action",
       );
+    });
+
+    it("renders the banner above the header, outside of its landmark", async () => {
+      // ACT
+      await renderApp({ slots: { ...allSlots, banner: "<p>Planned maintenance</p>" } });
+
+      // ASSERT
+      const banner = screen.getByText("Planned maintenance");
+      const header = screen.getByRole("banner");
+      expect(banner).toBeVisible();
+      expect(header).not.toContainElement(banner);
+      expect(banner.compareDocumentPosition(header)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+
+    it("moves the focus to the content when an announcement that holds it closes", async () => {
+      // ARRANGE
+      const Announcement = defineComponent({
+        components: { MtAnnouncement },
+        setup: () => ({ isOpen: ref(true) }),
+        template: `
+          <mt-announcement v-if="isOpen" closable @close="isOpen = false">
+            Planned maintenance
+          </mt-announcement>
+        `,
+      });
+      await renderApp({ slots: { ...allSlots, banner: () => h(Announcement) } });
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Close announcement" }));
+
+      // ASSERT
+      await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
     });
 
     it("adds no landmark around the sidebar content", async () => {
@@ -884,13 +917,18 @@ describe("mt-app", () => {
       });
     }
 
-    it("hides the header while a view hides it and shows it again when the view goes away", async () => {
+    it("hides the banner and the header while a view hides them and shows them again when the view goes away", async () => {
       // ARRANGE
-      const View = createView({ header: false });
+      const View = createView({ banner: false, header: false });
       const showView = ref(true);
       await renderApp({
-        slots: { ...allSlots, default: () => [showView.value ? h(View) : h("p", "Page")] },
+        slots: {
+          ...allSlots,
+          banner: "<p>Planned maintenance</p>",
+          default: () => [showView.value ? h(View) : h("p", "Page")],
+        },
       });
+      expect(screen.getByText("Planned maintenance")).not.toBeVisible();
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
 
       // ACT
@@ -898,6 +936,7 @@ describe("mt-app", () => {
       await nextTick();
 
       // ASSERT
+      expect(screen.getByText("Planned maintenance")).toBeVisible();
       expect(screen.getByRole("banner")).toHaveTextContent("Header content");
     });
 

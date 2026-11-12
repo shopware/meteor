@@ -9,7 +9,7 @@ description: A composable that hides regions of the surrounding App shell while 
 
 ## Usage
 
-`useAppRegions` lets a view inside [**App**](/components/app) hide the header, the navigation or the sidebar, for example an editor with a focus mode. Call it in the view, with a ref or a getter to toggle the regions while the view stays shown. The regions come back as soon as the view unmounts.
+`useAppRegions` lets a view inside [**App**](/components/app) hide the banner, the header, the navigation or the sidebar, for example an editor with a focus mode. Call it in the view, with a ref or a getter to toggle the regions while the view stays shown. The regions come back as soon as the view unmounts.
 
 ```ts
 import { ref } from "vue";
@@ -48,10 +48,11 @@ The parts of the shell that a view can hide: its regions and the frame around th
 
 | Property | Type | Description |
 | --- | --- | --- |
+| `banner` | `boolean` | The banner above the header. |
 | `header` | `boolean` | The header bar. |
 | `navigation` | `boolean` | The navigation, and its drawer in the mobile layout. |
 | `sidebar` | `boolean` | The sidebar, and its drawer in the mobile layout. |
-| `contentFrame` | `boolean` | `false` removes the frame around the content while no other region is visible. |
+| `contentFrame` | `boolean` | `false` removes the frame around the content while no header, navigation or sidebar is visible. |
 
 ## Behavior
 

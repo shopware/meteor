@@ -98,6 +98,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSub,
 } from "reka-ui";
+import MtAnnouncement from "./components/mt-announcement/mt-announcement.vue";
 import MtApp from "./components/mt-app/mt-app.vue";
 import MtAppPanelTrigger from "./components/mt-app/mt-app-panel-trigger.vue";
 import MtPanel from "./components/mt-panel/mt-panel.vue";
@@ -142,6 +143,7 @@ export {
   MtSidebar,
   MtUserMenu,
   MtUser,
+  MtAnnouncement,
   MtApp,
   MtAppPanelTrigger,
   MtPanel,
