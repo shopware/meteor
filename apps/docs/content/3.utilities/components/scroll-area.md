@@ -79,9 +79,9 @@ Set `scrollbar` to show the native scrollbar of the operating system.
 
 ## Accessibility
 
-- Focusable content inside the area, such as links or buttons, scrolls into view when it receives focus, clear of the fade. Such an area adds no tab stop of its own.
-- While content without focusable elements overflows, the scrolling element is focusable, so keyboard users can scroll it with the arrow keys, Page Up, Page Down, Home, and End. When the content fits, it is not focusable.
-- Give an area with content that has no focusable elements a `role` and an `aria-label`, so screen readers announce what receives focus. Both are applied to the scrolling element, as is a `tabindex`, which overrides the automatic one:
+- Focusable content inside the area, such as links or buttons, scrolls into view when it receives focus, clear of the fade.
+- While the content overflows, the scrolling element is focusable, so keyboard users can scroll it with the arrow keys, Page Up, Page Down, Home, and End. When the content fits, it is not focusable.
+- Give the area a `role` and an `aria-label`, so screen readers announce what receives focus. Both are applied to the scrolling element, as is a `tabindex`, which overrides the automatic one:
 
   ```vue
   <mt-scroll-area role="region" aria-label="Order history">

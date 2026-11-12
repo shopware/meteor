@@ -95,7 +95,7 @@ describe("mt-scroll-area", () => {
     expect(container.firstElementChild).toHaveAttribute("data-overflowing", "x y");
   });
 
-  it("makes the viewport focusable only while content without focusable elements overflows", async () => {
+  it("makes the viewport focusable only while the content overflows", async () => {
     // ARRANGE
     const { container } = render(MtScrollArea, {
       slots: { default: "Scrollable content" },
@@ -116,22 +116,6 @@ describe("mt-scroll-area", () => {
 
     // ASSERT
     expect(viewport).toHaveAttribute("tabindex", "0");
-  });
-
-  it("adds no tab stop when the content has focusable elements", async () => {
-    // ARRANGE
-    const { container } = render(MtScrollArea, {
-      slots: { default: () => h("a", { href: "#" }, "Order #10001") },
-    });
-    await flushPromises();
-    const viewport = getViewport(container);
-
-    // ACT
-    mockOverflow(viewport, { scrollHeight: 300 });
-    await flushPromises();
-
-    // ASSERT
-    expect(viewport).not.toHaveAttribute("tabindex");
   });
 
   it("keeps a tabindex that is set on the component", async () => {

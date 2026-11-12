@@ -14,7 +14,7 @@
   >
     <div
       ref="viewport"
-      :tabindex="overflowingAxes && !hasFocusableContent ? 0 : undefined"
+      :tabindex="overflowingAxes ? 0 : undefined"
       v-bind="pickAttrs('viewport')"
       class="mt-scroll-area__viewport"
     >
@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { computed, ref, useAttrs, useTemplateRef, watch } from "vue";
-import { useMutationObserver, useResizeObserver } from "@vueuse/core";
+import { useResizeObserver } from "@vueuse/core";
 
 defineOptions({ inheritAttrs: false });
 
@@ -74,8 +74,7 @@ defineSlots<{
 const viewport = useTemplateRef("viewport");
 const content = useTemplateRef("content");
 
-// Role, label and tabindex describe the scrolling element, and its scroll and focus events do
-// not bubble up to the root. Everything else goes to the root.
+// These describe the scrolling element, and its scroll and focus events do not bubble to the root
 const VIEWPORT_ATTRS =
   /^(role|tabindex|aria(-|[A-Z]).*|on(Scroll|Scrollend|Focus|Blur)(Passive|Capture|Once)*)$/;
 
@@ -112,12 +111,8 @@ const fadeStyle = computed(() => {
   return style;
 });
 
-const FOCUSABLE =
-  ":is(a[href], button, input, select, textarea, summary, [tabindex], [contenteditable]):not([tabindex^='-'], :disabled)";
-
-// The axes that overflow and scroll: "x", "y" or "x y"
+// "x", "y" or "x y"
 const overflowingAxes = ref<string>();
-const hasFocusableContent = ref(false);
 
 function update() {
   const element = viewport.value;
@@ -131,13 +126,9 @@ function update() {
   if (props.orientation !== "vertical" && overflowsX) axes.push("x");
   if (props.orientation !== "horizontal" && overflowsY) axes.push("y");
   overflowingAxes.value = axes.join(" ") || undefined;
-
-  // Focusable content already takes keyboard users through the area, so it needs no tab stop
-  hasFocusableContent.value = content.value?.querySelector(FOCUSABLE) != null;
 }
 
 useResizeObserver([viewport, content], update);
-useMutationObserver(content, update, { childList: true, subtree: true });
 watch(() => props.orientation, update, { flush: "post" });
 
 defineExpose({
@@ -200,8 +191,6 @@ defineExpose({
   min-height: 0;
   width: 100%;
   outline: none;
-
-  /* Keeps content that scrolls into view, for example on focus, out of the fade */
   scroll-padding-block: var(--mt-scroll-area-fade-size-top) var(--mt-scroll-area-fade-size-bottom);
   scroll-padding-inline: var(--mt-scroll-area-fade-size-start) var(--mt-scroll-area-fade-size-end);
 }
@@ -226,13 +215,13 @@ defineExpose({
   display: none;
 }
 
-/* Lets the content grow wider than the viewport, so its size reflects horizontal overflow */
+/* So the observed content size reflects horizontal overflow */
 .mt-scroll-area--horizontal > .mt-scroll-area__viewport > .mt-scroll-area__content,
 .mt-scroll-area--both > .mt-scroll-area__viewport > .mt-scroll-area__content {
   min-width: fit-content;
 }
 
-/* A mask clips everything inside the viewport, even popups, so it is only set while it can fade */
+/* A mask also clips popups inside the viewport, so it is only set while overflowing */
 .mt-scroll-area--fade[data-overflowing] > .mt-scroll-area__viewport {
   mask-image: linear-gradient(
       to bottom,
@@ -251,11 +240,6 @@ defineExpose({
   mask-composite: intersect;
 }
 
-/*
- * Each edge fades in over the first part of the scroll range and out over the last, driven by
- * the viewport's own scroll position. Without overflow the timeline is inactive, so the edges
- * keep their initial value of 0 and nothing fades.
- */
 @supports (animation-timeline: scroll()) {
   .mt-scroll-area--fade > .mt-scroll-area__viewport {
     animation-name: mt-scroll-area-fade-top, mt-scroll-area-fade-bottom, mt-scroll-area-fade-start,
@@ -274,7 +258,6 @@ defineExpose({
   }
 }
 
-/* Without scroll-driven animations, the edges of an axis fade statically while it overflows */
 @supports not (animation-timeline: scroll()) {
   .mt-scroll-area--fade[data-overflowing~="y"] > .mt-scroll-area__viewport {
     --mt-scroll-area-fade-top: var(--mt-scroll-area-fade-size-top);
