@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import {
+  useTheme,
   MtActionMenu,
   MtActionMenuGroup,
   MtActionMenuItem,
@@ -21,6 +22,14 @@ import ContextSwitcherPrototype, {
   type ContextSwitcherTeam,
 } from "../prototypes/ContextSwitcherPrototype.vue";
 import UserMenuPrototype from "../prototypes/UserMenuPrototype.vue";
+import CommandPalettePrototype, {
+  type CommandPaletteGroup,
+} from "../prototypes/CommandPalettePrototype.vue";
+import InboxPrototype from "../prototypes/InboxPrototype.vue";
+import { automations } from "../data/automations";
+import { integrations } from "../data/integrations";
+import { members } from "../data/members";
+import { notifications, type Notification } from "../data/notifications";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -30,6 +39,24 @@ const sections = computed<NavSection[]>(() => [
   {
     items: [
       { id: "home", label: t("nav.home"), icon: "regular-home", to: "/" },
+      {
+        id: "automations",
+        label: t("nav.automations"),
+        icon: "regular-flow",
+        to: "/automations",
+      },
+      {
+        id: "integrations",
+        label: t("nav.integrations"),
+        icon: "regular-plug",
+        to: "/integrations",
+      },
+      {
+        id: "members",
+        label: t("nav.members"),
+        icon: "regular-users",
+        to: "/members",
+      },
       {
         id: "editor",
         label: t("nav.editor"),
@@ -41,12 +68,6 @@ const sections = computed<NavSection[]>(() => [
         label: t("nav.docs"),
         icon: "regular-books",
         to: "/pages/getting-started",
-      },
-      {
-        id: "release-notes",
-        label: t("nav.releaseNotes"),
-        icon: "regular-megaphone",
-        to: "/pages/release-notes",
       },
       {
         id: "settings",
@@ -67,21 +88,18 @@ const teams = computed<ContextSwitcherTeam[]>(() => [
   {
     id: "design",
     name: "Design",
-    description: t("context.plan", { plan: "Pro" }),
     icon: "regular-sparkles",
     color: "--color-purple-600",
   },
   {
     id: "marketing",
     name: "Marketing",
-    description: t("context.plan", { plan: "Pro" }),
     icon: "regular-megaphone",
     color: "--color-pumpkin-500",
   },
   {
     id: "development",
     name: "Development",
-    description: t("context.plan", { plan: "Free" }),
     icon: "regular-code",
     color: "--color-brand-500",
   },
@@ -90,6 +108,104 @@ const team = ref("marketing");
 const currentTeam = computed(() =>
   teams.value.find((option) => option.id === team.value),
 );
+
+// Placeholder: the notifications live only as long as the page.
+const inbox = ref<Notification[]>(structuredClone(notifications));
+
+/** The actions of the inbox lead to the automations that need attention. */
+function openNotification() {
+  router.push({ name: "automations", query: { attention: "1" } });
+}
+
+const { resolvedTheme, setTheme } = useTheme();
+
+/** Pages come from the navigation; the other results open their page with a search for them. */
+const paletteGroups = computed<CommandPaletteGroup[]>(() => {
+  const pages = sections.value.flatMap((section) =>
+    section.items.flatMap((item: NavItem): NavItem[] =>
+      "children" in item && item.children
+        ? item.children.map((child: NavItem) => ({
+            ...child,
+            label: `${item.label} › ${child.label}`,
+            icon: item.icon,
+          }))
+        : [item],
+    ),
+  );
+
+  const search = (name: string, q: string) => () =>
+    router.push({ name, query: { q } });
+
+  return [
+    {
+      id: "pages",
+      label: t("palette.groups.pages"),
+      showWithoutQuery: true,
+      items: pages.map((page) => ({
+        id: `page-${page.id}`,
+        label: page.label,
+        icon: page.icon ?? "regular-file-text",
+        run: () => router.push(String("to" in page ? page.to : "/")),
+      })),
+    },
+    {
+      id: "actions",
+      label: t("palette.groups.actions"),
+      showWithoutQuery: true,
+      items: [
+        {
+          id: "create-automation",
+          label: t("palette.actions.createAutomation"),
+          icon: "regular-plus-circle",
+          run: () => router.push({ name: "automations" }),
+        },
+        {
+          id: "invite-member",
+          label: t("palette.actions.inviteMember"),
+          icon: "regular-user-plus",
+          run: () => router.push({ name: "members", query: { invite: "1" } }),
+        },
+        {
+          id: "toggle-theme",
+          label: t("palette.actions.toggleTheme"),
+          icon: resolvedTheme.value === "dark" ? "regular-sun" : "regular-moon",
+          run: () =>
+            setTheme(resolvedTheme.value === "dark" ? "light" : "dark"),
+        },
+      ],
+    },
+    {
+      id: "automations",
+      label: t("palette.groups.automations"),
+      items: automations.map((automation) => ({
+        id: automation.id,
+        label: automation.name,
+        icon: "regular-flow",
+        run: search("automations", automation.name),
+      })),
+    },
+    {
+      id: "integrations",
+      label: t("palette.groups.integrations"),
+      items: integrations.map((integration) => ({
+        id: integration.id,
+        label: integration.name,
+        icon: integration.icon,
+        run: search("integrations", integration.name),
+      })),
+    },
+    {
+      id: "members",
+      label: t("palette.groups.members"),
+      items: members.map((member) => ({
+        id: member.id,
+        label: member.name,
+        icon: "regular-user",
+        run: search("members", member.name),
+      })),
+    },
+  ];
+});
 
 /** A row is active on its own page and on the pages below it, such as a section of the settings. */
 function isActive(item: NavItem) {
@@ -118,12 +234,16 @@ function isActive(item: NavItem) {
           },
         ]"
         :orientation="orientation"
-        @action="router.push('/settings/general')"
+        @action="
+          router.push({
+            name: 'members',
+            query: $event === 'invite' ? { invite: '1' } : {},
+          })
+        "
       />
       <mt-brand
         v-else
         :title="currentTeam?.name ?? ''"
-        :subtitle="currentTeam?.description"
         :compact="orientation === 'horizontal'"
       />
     </template>
@@ -137,24 +257,9 @@ function isActive(item: NavItem) {
     </template>
 
     <template #actions>
-      <!-- Placeholders: there is no search and there are no notifications yet. -->
-      <mt-button
-        variant="tertiary"
-        size="default"
-        square
-        :aria-label="t('nav.search')"
-      >
-        <mt-icon name="regular-search" size="var(--scale-size-16)" decorative />
-      </mt-button>
+      <CommandPalettePrototype :groups="paletteGroups" />
 
-      <mt-button
-        variant="tertiary"
-        size="default"
-        square
-        :aria-label="t('nav.notifications')"
-      >
-        <mt-icon name="regular-bell" size="var(--scale-size-16)" decorative />
-      </mt-button>
+      <InboxPrototype v-model="inbox" @open="openNotification" />
 
       <mt-dropdown-menu-root>
         <mt-dropdown-menu-trigger as-child>

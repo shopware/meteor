@@ -16,12 +16,11 @@ import {
   MtFloatingUi,
   MtIcon,
 } from "@shopware-ag/meteor-component-library";
+import { usePresence } from "../composables/usePresence";
 
 export type ContextSwitcherTeam = {
   id: string;
   name: string;
-  /** A second line below the name in the brand, such as the plan. */
-  description?: string;
   /** The mark on the team's logo. */
   icon: string;
   /**
@@ -66,6 +65,9 @@ const emit = defineEmits<{
 }>();
 
 const isOpen = ref(false);
+const { isRendered: isPanelRendered, onTransitionEnd: onPanelTransitionEnd } =
+  usePresence(isOpen);
+
 const trigger = useTemplateRef("trigger");
 const panel = useTemplateRef("panel");
 const panelId = useId();
@@ -231,7 +233,7 @@ function run(callback: () => void) {
   >
     <mt-floating-ui
       v-if="orientation === 'horizontal'"
-      :is-opened="isOpen"
+      :is-opened="isPanelRendered"
       :floating-ui-options="{ placement: 'bottom-start' }"
       :offset="4"
       @close="close()"
@@ -248,14 +250,13 @@ function run(callback: () => void) {
           @click="toggle"
           @keydown.down.prevent="open"
         >
-          <mt-brand
-            :title="current?.name ?? ''"
-            :subtitle="current?.description"
+          <mt-brand :title="current?.name ?? ''" />
+          <mt-icon
+            class="context-switcher-prototype__chevron"
+            name="solid-chevron-down"
+            size="10"
+            decorative
           />
-          <span class="context-switcher-prototype__chevrons" aria-hidden="true">
-            <mt-icon name="solid-chevron-up" size="10" decorative />
-            <mt-icon name="solid-chevron-down" size="10" decorative />
-          </span>
         </button>
       </template>
 
@@ -264,7 +265,10 @@ function run(callback: () => void) {
         role="dialog"
         :aria-label="label"
         class="context-switcher-prototype__panel"
+        :class="{ 'context-switcher-prototype__panel--open': isOpen }"
+        :inert="!isOpen || undefined"
         @keydown="onKeydown"
+        @transitionend="onPanelTransitionEnd"
       >
         <ReusePanel />
       </div>
@@ -281,24 +285,26 @@ function run(callback: () => void) {
         :aria-label="`${label}: ${current?.name ?? ''}`"
         @click="toggle"
       >
-        <mt-brand
-          :title="current?.name ?? ''"
-          :subtitle="current?.description"
+        <mt-brand :title="current?.name ?? ''" />
+        <mt-icon
+          class="context-switcher-prototype__chevron"
+          name="solid-chevron-down"
+          size="10"
+          decorative
         />
-        <span class="context-switcher-prototype__chevrons" aria-hidden="true">
-          <mt-icon name="solid-chevron-up" size="10" decorative />
-          <mt-icon name="solid-chevron-down" size="10" decorative />
-        </span>
       </button>
 
       <div
-        v-if="isOpen"
+        v-if="isPanelRendered"
         :id="panelId"
         ref="panel"
         role="group"
         :aria-label="label"
         class="context-switcher-prototype__panel"
+        :class="{ 'context-switcher-prototype__panel--open': isOpen }"
+        :inert="!isOpen || undefined"
         @keydown="onKeydown"
+        @transitionend="onPanelTransitionEnd"
       >
         <ReusePanel />
       </div>
@@ -318,7 +324,7 @@ function run(callback: () => void) {
 .context-switcher-prototype__trigger {
   display: flex;
   align-items: center;
-  gap: var(--scale-size-12);
+  gap: var(--scale-size-8);
   min-width: 0;
   /* Long names truncate instead of pushing the navigation away. */
   max-width: var(--scale-size-256);
@@ -353,16 +359,6 @@ function run(callback: () => void) {
   outline-offset: calc(-1 * var(--scale-size-2));
 }
 
-/* Tighter lines than mt-brand's, so the team and its plan read as one block. */
-:deep(.mt-brand__title),
-:deep(.mt-brand__subtitle) {
-  line-height: 1.25;
-}
-
-:deep(.mt-brand__subtitle) {
-  color: var(--color-text-secondary-default);
-}
-
 /* A team's logo: a white mark on its color, rounded like the brand logo. */
 .context-switcher-prototype__logo {
   display: grid;
@@ -376,46 +372,10 @@ function run(callback: () => void) {
   box-shadow: inset 0 0 0 var(--scale-size-1) rgb(0 0 0 / 0.06);
 }
 
-/* An up and a down chevron: the button opens a list to choose from. They part a little on hover
-   and while the panel is open. */
-.context-switcher-prototype__chevrons {
-  display: flex;
-  flex-direction: column;
+/* A chevron: the button opens a list to choose from. */
+.context-switcher-prototype__chevron {
   flex-shrink: 0;
-  /* The chevrons fill only half of their square icon box. */
-  gap: calc(-1 * var(--scale-size-2));
-  margin-inline-start: var(--scale-size-12);
   color: var(--color-icon-secondary-default);
-}
-
-.context-switcher-prototype__chevrons > * {
-  transition: transform 150ms ease-out;
-}
-
-.context-switcher-prototype__trigger--open
-  .context-switcher-prototype__chevrons
-  > :first-child {
-  transform: translateY(calc(-1 * var(--scale-size-1)));
-}
-
-.context-switcher-prototype__trigger--open
-  .context-switcher-prototype__chevrons
-  > :last-child {
-  transform: translateY(var(--scale-size-1));
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .context-switcher-prototype__trigger:hover
-    .context-switcher-prototype__chevrons
-    > :first-child {
-    transform: translateY(calc(-1 * var(--scale-size-1)));
-  }
-
-  .context-switcher-prototype__trigger:hover
-    .context-switcher-prototype__chevrons
-    > :last-child {
-    transform: translateY(var(--scale-size-1));
-  }
 }
 
 /* The surface of mt-action-menu, so it reads as one family with the help and user menus. */
@@ -431,22 +391,35 @@ function run(callback: () => void) {
   box-shadow: 0 6px 24px -8px var(--color-elevation-shadow-default);
 }
 
-/* mt-floating-ui fades its content in with a vertical squash. A short drop reads calmer. */
-.context-switcher-prototype__panel.popoverTransition-enter-active {
+/* Opens with a short drop and scale from the trigger above it, and closes the same way back,
+   faster and quieter. Transitions rather than keyframes, so reopening while it closes turns
+   around smoothly. The panel stays rendered until the exit has played. */
+.context-switcher-prototype__panel {
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--scale-size-4))) scale(0.97);
+  transform-origin: top left;
   transition:
-    opacity 150ms ease-out,
-    transform 150ms ease-out;
+    opacity 150ms ease-in,
+    transform 150ms ease-in;
 }
 
-.context-switcher-prototype__panel.popoverTransition-enter-from {
-  opacity: 0;
-  transform: translateY(calc(-1 * var(--scale-size-4)));
+.context-switcher-prototype__panel--open {
+  opacity: 1;
+  transform: none;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@starting-style {
+  .context-switcher-prototype__panel--open {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--scale-size-4))) scale(0.97);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .context-switcher-prototype__trigger,
-  .context-switcher-prototype__chevrons > *,
-  .context-switcher-prototype__panel.popoverTransition-enter-active {
+  .context-switcher-prototype__panel {
     transition: none;
   }
 }
@@ -541,7 +514,7 @@ function run(callback: () => void) {
   color: var(--color-icon-primary-default);
 }
 
-/* In the drawer the brand fills the row, with the chevrons at its end, and the panel opens over
+/* In the drawer the brand fills the row, with the chevron at its end, and the panel opens over
    the navigation below it. */
 .context-switcher-prototype--vertical {
   position: relative;
@@ -553,7 +526,7 @@ function run(callback: () => void) {
   max-width: none;
 }
 
-.context-switcher-prototype--vertical .context-switcher-prototype__chevrons {
+.context-switcher-prototype--vertical .context-switcher-prototype__chevron {
   margin-inline-start: auto;
 }
 
@@ -564,19 +537,7 @@ function run(callback: () => void) {
   inset-inline: 0;
   width: auto;
   max-height: calc(100vh - var(--scale-size-128));
-  animation: context-switcher-prototype-drop 150ms ease-out;
-}
-
-@keyframes context-switcher-prototype-drop {
-  from {
-    opacity: 0;
-    transform: translateY(calc(-1 * var(--scale-size-4)));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .context-switcher-prototype--vertical .context-switcher-prototype__panel {
-    animation: none;
-  }
+  /* As wide as the trigger above it, so it grows from the middle of its top edge. */
+  transform-origin: top;
 }
 </style>

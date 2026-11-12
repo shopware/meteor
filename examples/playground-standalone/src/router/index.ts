@@ -19,6 +19,24 @@ export const router = createRouter({
       meta: { title: "home.title" },
     },
     {
+      path: "/automations",
+      name: "automations",
+      component: () => import("../views/AutomationsView.vue"),
+      meta: { title: "automations.title" },
+    },
+    {
+      path: "/integrations",
+      name: "integrations",
+      component: () => import("../views/IntegrationsView.vue"),
+      meta: { title: "integrations.title" },
+    },
+    {
+      path: "/members",
+      name: "members",
+      component: () => import("../views/MembersView.vue"),
+      meta: { title: "members.title" },
+    },
+    {
       path: "/settings/:section?",
       name: "settings",
       component: () => import("../views/SettingsView.vue"),

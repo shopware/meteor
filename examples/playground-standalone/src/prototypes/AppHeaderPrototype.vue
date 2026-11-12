@@ -246,6 +246,9 @@ function closeOnBackdrop(event: MouseEvent) {
 .app-header-prototype {
   position: relative;
   display: flex;
+  /* The parts hidden for measuring can be wider than the screen. Menus and panels render outside
+     the header, so clipping it cuts nothing off. */
+  overflow-x: clip;
   align-items: center;
   gap: var(--scale-size-24);
   box-sizing: border-box;
@@ -299,8 +302,8 @@ function closeOnBackdrop(event: MouseEvent) {
 /* PROTOTYPE: a smaller, less rounded logo and a smaller title than mt-brand has by default. The
    logo's icon is sized relative to its box. */
 .app-header-prototype :deep(.mt-brand__image) {
-  width: var(--scale-size-36);
-  height: var(--scale-size-36);
+  width: var(--scale-size-28);
+  height: var(--scale-size-28);
   border-radius: 24%;
 }
 
