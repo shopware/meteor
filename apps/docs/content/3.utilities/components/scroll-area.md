@@ -64,8 +64,9 @@ Set `scrollbar` to show the native scrollbar of the operating system.
 
 - The fade follows the scroll position. At rest the start edge is crisp and the end edge fades. Once scrolled, both edges fade. At the end, the end edge is crisp again.
 - `fade` is on by default and fades both edges of each scrolling direction: top and bottom for `vertical`, start and end for `horizontal`, all four for `both`. Start and end follow the reading direction, so they mirror in right-to-left layouts.
-- By default the fade takes 12% of the area, up to `--scale-size-40`, so tall areas stay subtle. Set `fade-size` to a token step from 4 to 64 for a fixed fade on all edges, or to an object such as `{ top: 16, bottom: 48 }` per edge.
-- The fade is driven by CSS scroll-driven animations, without scroll listeners. In browsers without them, the edges fade statically while the content overflows.
+- By default the fade takes 12% of the area, up to `--scale-size-40`, so tall areas stay subtle. Set `fade-size` to a token step from 4 to 128 for a fixed fade on all edges, or to an object such as `{ top: 16, bottom: 48 }` per edge.
+- The fade is driven by CSS scroll-driven animations, without scroll listeners. In browsers without them, the edges of a direction fade statically while the content overflows in that direction.
+- While the content overflows, the fade clips everything rendered inside the area, including popups that open inside it. Move such popups out of the area, for example with `<Teleport>`, or turn the fade off.
 - The scrollbar is hidden by default. With `scrollbar`, the area shows the native scrollbar of the operating system while the content overflows. On systems with classic scrollbars, such as Windows, it takes up space inside the area.
 - The scrolling element is exposed as `viewport`, for example to scroll to the newest message:
 
@@ -74,10 +75,21 @@ Set `scrollbar` to show the native scrollbar of the operating system.
   viewport?.scrollTo({ top: viewport.scrollHeight });
   ```
 
+- Listeners for `scroll`, `scrollend`, `focus`, and `blur` on the component are attached to the scrolling element. All other listeners and attributes go to the root element.
+
 ## Accessibility
 
-- While the content overflows, the scrolling element is focusable, so keyboard users can scroll it with the arrow keys, Page Up, Page Down, Home, and End. When the content fits, it is not focusable and adds no tab stop.
-- The focused area shows a focus ring around its edge.
+- Focusable content inside the area, such as links or buttons, scrolls into view when it receives focus, clear of the fade. Such an area adds no tab stop of its own.
+- While content without focusable elements overflows, the scrolling element is focusable, so keyboard users can scroll it with the arrow keys, Page Up, Page Down, Home, and End. When the content fits, it is not focusable.
+- Give an area with content that has no focusable elements a `role` and an `aria-label`, so screen readers announce what receives focus. Both are applied to the scrolling element, as is a `tabindex`, which overrides the automatic one:
+
+  ```vue
+  <mt-scroll-area role="region" aria-label="Order history">
+    <!-- long content -->
+  </mt-scroll-area>
+  ```
+
+- An area that has keyboard focus shows a focus ring around its edge.
 - With the scrollbar hidden, mouse users cannot drag a scrollbar. The mouse wheel, touch, and keyboard still scroll the area.
 - The fade only hides content visually at the edges. Assistive technology reads all content, and scrolling reveals the faded parts.
 - Do not rely on the fade alone to show that a list continues, for example by also showing a count or a "Show all" link for long lists.

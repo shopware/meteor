@@ -6,18 +6,18 @@ import MtText from "@shopware-ag/meteor-component-library/MtText";
 <template>
   <mt-scroll-area class="example-scroll-area">
     <div class="example-scroll-area__content">
-      <mt-text>Order #10001</mt-text>
-      <mt-text>Order #10002</mt-text>
-      <mt-text>Order #10003</mt-text>
-      <mt-text>Order #10004</mt-text>
-      <mt-text>Order #10005</mt-text>
-      <mt-text>Order #10006</mt-text>
-      <mt-text>Order #10007</mt-text>
-      <mt-text>Order #10008</mt-text>
-      <mt-text>Order #10009</mt-text>
-      <mt-text>Order #10010</mt-text>
-      <mt-text>Order #10011</mt-text>
-      <mt-text>Order #10012</mt-text>
+      <mt-text>Order #243</mt-text>
+      <mt-text>Order #244</mt-text>
+      <mt-text>Order #245</mt-text>
+      <mt-text>Order #246</mt-text>
+      <mt-text>Order #247</mt-text>
+      <mt-text>Order #248</mt-text>
+      <mt-text>Order #249</mt-text>
+      <mt-text>Order #250</mt-text>
+      <mt-text>Order #251</mt-text>
+      <mt-text>Order #252</mt-text>
+      <mt-text>Order #253</mt-text>
+      <mt-text>Order #254</mt-text>
     </div>
   </mt-scroll-area>
 </template>

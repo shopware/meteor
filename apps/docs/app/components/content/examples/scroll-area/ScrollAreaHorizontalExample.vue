@@ -5,17 +5,17 @@ import MtBadge from "@shopware-ag/meteor-component-library/MtBadge";
 
 <template>
   <mt-scroll-area orientation="horizontal" class="example-scroll-area">
-    <div class="example-scroll-area__tags">
-      <mt-badge>Clothing</mt-badge>
-      <mt-badge>Shoes</mt-badge>
-      <mt-badge>Accessories</mt-badge>
-      <mt-badge>Sale</mt-badge>
-      <mt-badge>New arrivals</mt-badge>
-      <mt-badge>Outdoor</mt-badge>
-      <mt-badge>Sports</mt-badge>
-      <mt-badge>Kids</mt-badge>
-      <mt-badge>Home</mt-badge>
-      <mt-badge>Garden</mt-badge>
+    <div class="example-scroll-area__content">
+      <mt-badge>Order #243</mt-badge>
+      <mt-badge>Order #244</mt-badge>
+      <mt-badge>Order #245</mt-badge>
+      <mt-badge>Order #246</mt-badge>
+      <mt-badge>Order #247</mt-badge>
+      <mt-badge>Order #248</mt-badge>
+      <mt-badge>Order #249</mt-badge>
+      <mt-badge>Order #250</mt-badge>
+      <mt-badge>Order #251</mt-badge>
+      <mt-badge>Order #252</mt-badge>
     </div>
   </mt-scroll-area>
 </template>
@@ -25,7 +25,7 @@ import MtBadge from "@shopware-ag/meteor-component-library/MtBadge";
   width: 320px;
 }
 
-.example-scroll-area__tags {
+.example-scroll-area__content {
   display: flex;
   gap: var(--scale-size-8);
   padding-block: var(--scale-size-4) var(--scale-size-12);

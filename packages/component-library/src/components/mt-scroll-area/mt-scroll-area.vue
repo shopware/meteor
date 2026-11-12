@@ -1,5 +1,6 @@
 <template>
   <div
+    v-bind="pickAttrs('root')"
     :class="[
       'mt-scroll-area',
       `mt-scroll-area--${orientation}`,
@@ -9,9 +10,14 @@
       },
     ]"
     :style="fadeStyle"
-    :data-overflowing="isOverflowing ? '' : undefined"
+    :data-overflowing="overflowingAxes"
   >
-    <div ref="viewport" class="mt-scroll-area__viewport" :tabindex="isOverflowing ? 0 : undefined">
+    <div
+      ref="viewport"
+      :tabindex="overflowingAxes && !hasFocusableContent ? 0 : undefined"
+      v-bind="pickAttrs('viewport')"
+      class="mt-scroll-area__viewport"
+    >
       <div ref="content" class="mt-scroll-area__content">
         <slot />
       </div>
@@ -20,11 +26,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useTemplateRef } from "vue";
-import { useResizeObserver } from "@vueuse/core";
+import { computed, ref, useAttrs, useTemplateRef, watch } from "vue";
+import { useMutationObserver, useResizeObserver } from "@vueuse/core";
+
+defineOptions({ inheritAttrs: false });
 
 type FadeEdge = "top" | "bottom" | "start" | "end";
-type FadeSize = 4 | 8 | 12 | 16 | 20 | 24 | 32 | 40 | 48 | 56 | 64;
+type FadeSize = 4 | 8 | 12 | 16 | 20 | 24 | 32 | 40 | 48 | 56 | 64 | 72 | 80 | 96 | 128;
 
 const props = withDefaults(
   defineProps<{
@@ -47,7 +55,7 @@ const props = withDefaults(
      * The size of the fade, as a step of the `--scale-size-*` token scale, either for all
      * edges or per edge. By default the fade takes 12% of the area, up to `--scale-size-40`.
      *
-     * @values 4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64
+     * @values 4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64, 72, 80, 96, 128
      */
     fadeSize?: FadeSize | Partial<Record<FadeEdge, FadeSize>>;
   }>(),
@@ -65,6 +73,21 @@ defineSlots<{
 
 const viewport = useTemplateRef("viewport");
 const content = useTemplateRef("content");
+
+// Role, label and tabindex describe the scrolling element, and its scroll and focus events do
+// not bubble up to the root. Everything else goes to the root.
+const VIEWPORT_ATTRS =
+  /^(role|tabindex|aria(-|[A-Z]).*|on(Scroll|Scrollend|Focus|Blur)(Passive|Capture|Once)*)$/;
+
+const attrs = useAttrs();
+
+function pickAttrs(target: "root" | "viewport") {
+  return Object.fromEntries(
+    Object.entries(attrs)
+      .map(([name, value]) => [name === "tabIndex" ? "tabindex" : name, value] as const)
+      .filter(([name]) => VIEWPORT_ATTRS.test(name) === (target === "viewport")),
+  );
+}
 
 const fadeEdges = computed<FadeEdge[]>(() => {
   if (props.fade === false) return [];
@@ -89,21 +112,33 @@ const fadeStyle = computed(() => {
   return style;
 });
 
-const isOverflowing = ref(false);
+const FOCUSABLE =
+  ":is(a[href], button, input, select, textarea, summary, [tabindex], [contenteditable]):not([tabindex^='-'], :disabled)";
 
-function updateOverflow() {
+// The axes that overflow and scroll: "x", "y" or "x y"
+const overflowingAxes = ref<string>();
+const hasFocusableContent = ref(false);
+
+function update() {
   const element = viewport.value;
   if (!element) return;
 
-  const overflowsY = element.scrollHeight > element.clientHeight;
-  const overflowsX = element.scrollWidth > element.clientWidth;
+  // Scroll and client sizes are rounded, so content that fits can still differ by a pixel
+  const overflowsX = element.scrollWidth - element.clientWidth > 1;
+  const overflowsY = element.scrollHeight - element.clientHeight > 1;
 
-  isOverflowing.value =
-    (props.orientation !== "horizontal" && overflowsY) ||
-    (props.orientation !== "vertical" && overflowsX);
+  const axes: string[] = [];
+  if (props.orientation !== "vertical" && overflowsX) axes.push("x");
+  if (props.orientation !== "horizontal" && overflowsY) axes.push("y");
+  overflowingAxes.value = axes.join(" ") || undefined;
+
+  // Focusable content already takes keyboard users through the area, so it needs no tab stop
+  hasFocusableContent.value = content.value?.querySelector(FOCUSABLE) != null;
 }
 
-useResizeObserver([viewport, content], updateOverflow);
+useResizeObserver([viewport, content], update);
+useMutationObserver(content, update, { childList: true, subtree: true });
+watch(() => props.orientation, update, { flush: "post" });
 
 defineExpose({
   /**
@@ -165,6 +200,10 @@ defineExpose({
   min-height: 0;
   width: 100%;
   outline: none;
+
+  /* Keeps content that scrolls into view, for example on focus, out of the fade */
+  scroll-padding-block: var(--mt-scroll-area-fade-size-top) var(--mt-scroll-area-fade-size-bottom);
+  scroll-padding-inline: var(--mt-scroll-area-fade-size-start) var(--mt-scroll-area-fade-size-end);
 }
 
 .mt-scroll-area--vertical > .mt-scroll-area__viewport {
@@ -188,12 +227,13 @@ defineExpose({
 }
 
 /* Lets the content grow wider than the viewport, so its size reflects horizontal overflow */
-.mt-scroll-area--horizontal .mt-scroll-area__content,
-.mt-scroll-area--both .mt-scroll-area__content {
+.mt-scroll-area--horizontal > .mt-scroll-area__viewport > .mt-scroll-area__content,
+.mt-scroll-area--both > .mt-scroll-area__viewport > .mt-scroll-area__content {
   min-width: fit-content;
 }
 
-.mt-scroll-area--fade > .mt-scroll-area__viewport {
+/* A mask clips everything inside the viewport, even popups, so it is only set while it can fade */
+.mt-scroll-area--fade[data-overflowing] > .mt-scroll-area__viewport {
   mask-image: linear-gradient(
       to bottom,
       transparent,
@@ -225,19 +265,23 @@ defineExpose({
     animation-fill-mode: both;
     animation-timeline: scroll(self block), scroll(self block), scroll(self inline),
       scroll(self inline);
+    /* Capped to the scroll range, so a short range still starts with the full end fade */
     animation-range:
-      0 var(--scale-size-96),
-      calc(100% - var(--scale-size-96)) 100%,
-      0 var(--scale-size-96),
-      calc(100% - var(--scale-size-96)) 100%;
+      0 min(var(--scale-size-96), 100%),
+      max(0%, calc(100% - var(--scale-size-96))) 100%,
+      0 min(var(--scale-size-96), 100%),
+      max(0%, calc(100% - var(--scale-size-96))) 100%;
   }
 }
 
-/* Without scroll-driven animations, the edges fade statically while the content overflows */
+/* Without scroll-driven animations, the edges of an axis fade statically while it overflows */
 @supports not (animation-timeline: scroll()) {
-  .mt-scroll-area--fade[data-overflowing] > .mt-scroll-area__viewport {
+  .mt-scroll-area--fade[data-overflowing~="y"] > .mt-scroll-area__viewport {
     --mt-scroll-area-fade-top: var(--mt-scroll-area-fade-size-top);
     --mt-scroll-area-fade-bottom: var(--mt-scroll-area-fade-size-bottom);
+  }
+
+  .mt-scroll-area--fade[data-overflowing~="x"] > .mt-scroll-area__viewport {
     --mt-scroll-area-fade-start: var(--mt-scroll-area-fade-size-start);
     --mt-scroll-area-fade-end: var(--mt-scroll-area-fade-size-end);
   }
