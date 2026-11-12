@@ -1,5 +1,22 @@
 # Changelog
 
+## 5.11.0
+
+### Minor Changes
+
+- [#1473](https://github.com/shopware/meteor/pull/1473) [`621cc43`](https://github.com/shopware/meteor/commit/621cc430e6b04c924476d56cd12d2cea7c59c9ed) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Add an `onClick` handler to the `mt-snackbar` link, so a snackbar can offer follow-up actions such as `Undo` or `Retry` that do not navigate. `link.url` is now optional, and a link without `url` renders as a button. Clicking the link now closes the snackbar and runs `onClick` if present. Code that reads `Snackbar["link"]["url"]` as a `string` needs to handle `undefined`.
+
+- [#1486](https://github.com/shopware/meteor/pull/1486) [`630bc61`](https://github.com/shopware/meteor/commit/630bc61f5d36ba1e8ea431cb472acc30e8ca8896) Thanks [@MartinKrzykawski](https://github.com/MartinKrzykawski)! - Add the `searchable` option to custom buttons with `children` in `mt-text-editor`. The dropdown then shows a search field that filters the children by name and translated label, and an empty state when nothing matches.
+
+### Patch Changes
+
+- [#1477](https://github.com/shopware/meteor/pull/1477) [`8b14c5d`](https://github.com/shopware/meteor/commit/8b14c5d10be43780d2af641c2f6617aa38bbf24b) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Make the check mark of a checked or indeterminate, disabled `mt-checkbox` visible in dark mode. It used a border token as its color and now uses `--color-icon-primary-disabled`, like the dot of a checked, disabled radio.
+
+- [#1474](https://github.com/shopware/meteor/pull/1474) [`7c465bf`](https://github.com/shopware/meteor/commit/7c465bf0536291cb544eda1cccb147687f42cbb6) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Remove the party horn icon from the `new` variant of `mt-promo-badge`.
+
+- Updated dependencies [[`ef4edcf`](https://github.com/shopware/meteor/commit/ef4edcf73728fbd50ee15a759ff8aa4571eec6ca)]:
+  - @shopware-ag/meteor-admin-sdk@6.18.0
+
 ## 5.10.0
 
 ### Minor Changes
