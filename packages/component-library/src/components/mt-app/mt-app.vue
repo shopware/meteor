@@ -17,6 +17,15 @@
       </mt-button>
     </div>
 
+    <div
+      v-if="hasSlot('banner')"
+      ref="banner"
+      class="mt-app__banner"
+      :hidden="hiddenRegions.banner || undefined"
+    >
+      <slot name="banner" />
+    </div>
+
     <header
       v-if="hasSlot('header')"
       ref="header"
@@ -143,8 +152,8 @@ import type { MtAppContext, MtAppPanel } from "./composables/useApp";
 import type { MtAppRegions } from "./composables/useAppRegions";
 
 /**
- * The root shell of a standalone application: a header, the navigation, the content and a sidebar,
- * whose panels become drawers on small screens. Use one shell per application.
+ * The root shell of a standalone application: a banner, a header, the navigation, the content and a
+ * sidebar, whose panels become drawers on small screens. Use one shell per application.
  *
  * @experimental The API may still change in a future release.
  */
@@ -189,6 +198,11 @@ type HeaderSlotProps = Omit<MtAppContext, "isMobile"> & { isMobile: boolean };
 
 const slots = defineSlots<{
   /**
+   * A full-width strip above the header for messages about the whole application, such as planned
+   * downtime or an upcoming event. Not for alerts, which belong in the content of their page.
+   */
+  banner?(): unknown;
+  /**
    * The header bar of the application. A component in it that shows the triggers of the navigation
    * and the sidebar, such as `mt-app-header`, shows them instead of the pages. The shell shows no
    * triggers of its own.
@@ -229,6 +243,7 @@ const { t } = useI18n({
 
 const PANELS = ["navigation", "sidebar"] as const;
 
+const bannerElement = useTemplateRef<HTMLElement>("banner");
 const headerElement = useTemplateRef<HTMLElement>("header");
 const mainElement = useTemplateRef<HTMLElement>("main");
 const panelIds: Record<MtAppPanel, string> = { navigation: useId(), sidebar: useId() };
@@ -277,6 +292,7 @@ const api: MtAppContext = {
 const headerSlotProps = computed<HeaderSlotProps>(() => ({ ...api, isMobile: isMobile.value }));
 
 const renderedSlots = useRenderCache(() => ({
+  banner: hasSlotContent(slots.banner),
   header: hasSlotContent(slots.header, headerSlotProps.value),
   default: hasSlotContent(slots.default),
 }));
@@ -285,8 +301,10 @@ const isLoadingBarShown = computed(() => props.loadingBar && isLoading.value);
 // The content is busy for as long as the loading lasts, while the bar may stay a bit longer.
 const isBusy = computed(() => props.loadingBar && isPending.value);
 
-function hasSlot(name: "header" | "default" | MtAppPanel) {
-  return name === "header" || name === "default" ? renderedSlots()[name] : panelSlot(name).isFilled;
+function hasSlot(name: "banner" | "header" | "default" | MtAppPanel) {
+  return name === "navigation" || name === "sidebar"
+    ? panelSlot(name).isFilled
+    : renderedSlots()[name];
 }
 
 /** Whether the panel can be shown: its slot is filled and no view hides it. */
@@ -365,11 +383,13 @@ watch(hiddenRegions, (hidden) => {
 });
 
 watch(
-  () => hiddenRegions.value.header,
-  (hidden) => {
-    if (hidden && headerElement.value?.contains(document.activeElement)) {
-      nextTick(focusContent);
-    }
+  () => [hiddenRegions.value.banner, hiddenRegions.value.header],
+  ([bannerHidden, headerHidden]) => {
+    const isFocusHidden =
+      (bannerHidden && bannerElement.value?.contains(document.activeElement)) ||
+      (headerHidden && headerElement.value?.contains(document.activeElement));
+
+    if (isFocusHidden) nextTick(focusContent);
   },
 );
 
@@ -446,6 +466,7 @@ provide(appContextKey, {
     return triggerOf(panel);
   },
   isResizing,
+  focusContent,
 });
 
 useTheme();
@@ -473,6 +494,11 @@ defineExpose(api);
   }
 }
 
+.mt-app__banner {
+  flex: none;
+  min-width: 0;
+}
+
 .mt-app__header {
   display: flex;
   flex: none;
@@ -488,6 +514,7 @@ defineExpose(api);
   overflow-x: clip;
 }
 
+.mt-app__banner[hidden],
 .mt-app__header[hidden] {
   display: none;
 }
@@ -613,6 +640,7 @@ defineExpose(api);
   }
 
   .mt-app__skip,
+  .mt-app__banner,
   .mt-app__header,
   .mt-app__loading-bar {
     display: none;

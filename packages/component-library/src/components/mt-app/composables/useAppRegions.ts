@@ -11,10 +11,15 @@ import type {} from "vue-router";
  * @experimental The API may still change in a future release.
  */
 export interface MtAppRegions {
+  /** The banner above the header. */
+  banner?: boolean;
   header?: boolean;
   navigation?: boolean;
   sidebar?: boolean;
-  /** `false` removes the frame around the content while no other region is visible. */
+  /**
+   * `false` removes the frame around the content while no header, navigation or sidebar is
+   * visible.
+   */
   contentFrame?: boolean;
 }
 
