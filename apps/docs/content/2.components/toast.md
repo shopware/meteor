@@ -18,6 +18,21 @@ description: Short-lived, action-bound feedback that appears briefly to confirm 
 import { MtToast } from "@shopware-ag/meteor-component-library";
 ```
 
+## Migration
+
+**Toast** is removed in the next major version. Replace it with [**Snackbar**](/components/snackbar). Instead of keeping your own list and passing it through `toasts`, mount `mt-snackbar` once and call `addSnackbar` from [**useSnackbar**](/utilities/composables/use-snackbar) where the action happens. The store removes snackbars for you, so `remove-toast` handling goes away.
+
+| Toast              | Snackbar                                                                                                                                                                                 |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`               | Assigned by `addSnackbar`, which returns the created snackbar.                                                                                                                           |
+| `msg`              | `message`                                                                                                                                                                                |
+| `type: "positive"` | `variant: "success"`                                                                                                                                                                     |
+| `type: "critical"` | `variant: "error"`. Critical toasts with an action never auto-close. To keep that, pass `duration: 0`. The snackbar then stays until its `link` is clicked or you call `removeSnackbar`. |
+| `type: "informal"` | Leave `variant` unset.                                                                                                                                                                   |
+| `icon`             | `icon`                                                                                                                                                                                   |
+| `action`           | `link`, with `label` as `text` and `callback` as `onClick`. Clicking it closes the snackbar, as it did the toast.                                                                        |
+| `dismissible`      | No close control. Snackbars close on their own after `duration`. Pass `duration: 0` to keep one until you call `removeSnackbar`.                                                         |
+
 ## Anatomy
 
 **Toast** renders a host that you mount once, usually near the app shell. It does not own the toast state. You pass the current toasts through the `toasts` prop and remove a toast from your own list when the component emits `remove-toast`.
@@ -30,7 +45,10 @@ import { MtToast, type Toast } from "@shopware-ag/meteor-component-library";
 const toasts = ref<Toast[]>([]);
 
 function addToast() {
-  toasts.value = [{ id: crypto.randomUUID(), type: "positive", msg: "Changes saved" }, ...toasts.value];
+  toasts.value = [
+    { id: crypto.randomUUID(), type: "positive", msg: "Changes saved" },
+    ...toasts.value,
+  ];
 }
 
 function removeToast(id: Toast["id"]) {
@@ -48,14 +66,14 @@ function removeToast(id: Toast["id"]) {
 
 The exported **Toast** type describes a single notification in the `toasts` list. Prepend new toasts so the most recent one appears first.
 
-| Field | Value | Default | Description |
-| --- | --- | --- | --- |
-| `id` | `number \| string` | Required | Unique identifier you assign when adding the toast. Used to remove it on `remove-toast`. |
-| `msg` | `string` | Required | Main toast text shown to the user. Keep it to a few words. |
-| `type` | `"positive" \| "informal" \| "critical"` | Required | Controls semantic styling, placement, and live-region behavior. |
-| `icon` | `string` | None | Optional icon name shown before the message. |
-| `action` | `{ label: string; callback: () => void }` | None | Optional single follow-up action rendered as a button. |
-| `dismissible` | `boolean` | `false` | When `true`, the toast shows a manual close control. |
+| Field         | Value                                     | Default  | Description                                                                              |
+| ------------- | ----------------------------------------- | -------- | ---------------------------------------------------------------------------------------- |
+| `id`          | `number \| string`                        | Required | Unique identifier you assign when adding the toast. Used to remove it on `remove-toast`. |
+| `msg`         | `string`                                  | Required | Main toast text shown to the user. Keep it to a few words.                               |
+| `type`        | `"positive" \| "informal" \| "critical"`  | Required | Controls semantic styling, placement, and live-region behavior.                          |
+| `icon`        | `string`                                  | None     | Optional icon name shown before the message.                                             |
+| `action`      | `{ label: string; callback: () => void }` | None     | Optional single follow-up action rendered as a button.                                   |
+| `dismissible` | `boolean`                                 | `false`  | When `true`, the toast shows a manual close control.                                     |
 
 ## API reference
 
