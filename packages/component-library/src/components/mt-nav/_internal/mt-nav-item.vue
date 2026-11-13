@@ -507,9 +507,15 @@ function onFlyoutFocusOut(event: FocusEvent) {
   transition: transform 0.15s ease-out;
 }
 
-/* The chevron turns to point up while the row's nested rows are open */
+/* The chevron turns to point up while the row's nested rows fold open */
 .mt-nav__list-item.is--open > .mt-nav__item-row .mt-nav__link-expand-icon {
   transform: rotate(180deg);
+}
+
+/* Rows of a horizontal bar keep their chevron pointing down: the floating panel already shows the
+   row is open. Rows inside the panel are teleported to the body, so they still turn theirs. */
+.mt-nav--horizontal .mt-nav__list-item.is--open > .mt-nav__item-row .mt-nav__link-expand-icon {
+  transform: none;
 }
 
 .mt-nav__link-external-icon-box {
