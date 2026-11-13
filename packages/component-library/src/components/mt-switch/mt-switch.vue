@@ -97,7 +97,7 @@ defineEmits<{
 }>();
 </script>
 
-<style>
+<style scoped>
 .mt-switch__block {
   display: flex;
   align-items: center;
