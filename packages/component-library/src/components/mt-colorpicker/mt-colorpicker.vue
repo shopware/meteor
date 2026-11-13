@@ -8,8 +8,6 @@
         'is--disabled': disabled,
         'is--inherited': isInherited,
         'has--focus': hasFocus,
-        'mt-field--future-remove-default-margin': future.removeDefaultMargin,
-        'mt-field--future-consistent-label-line-height': future.consistentLabelLineHeight,
       },
     ]"
   >
@@ -285,7 +283,6 @@ import type { FocusTrap } from "focus-trap";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import { useI18n } from "vue-i18n";
-import { useFutureFlags } from "@/composables/useFutureFlags";
 import MtValidationMixin from "../../mixins/validation.mixin";
 
 export default defineComponent({
@@ -492,7 +489,6 @@ export default defineComponent({
     });
     return {
       t,
-      future: useFutureFlags(),
     };
   },
   data(): {
@@ -816,7 +812,7 @@ export default defineComponent({
       return {
         gridArea: "label",
         marginBottom: "var(--scale-size-8)",
-        lineHeight: this.future.consistentLabelLineHeight ? "var(--font-line-height-xs)" : "16px",
+        lineHeight: "var(--font-line-height-xs)",
       };
     },
   },
@@ -1547,17 +1543,6 @@ export default defineComponent({
     "error error"
     "hint hint";
   width: 100%;
-  margin-bottom: var(--scale-size-32);
-}
-
-/* Ordered before .has--error so the error-state margin wins over the future flag,
-   like it did against mt-base-field's global styles. */
-.mt-colorpicker.mt-field--future-remove-default-margin {
-  margin-bottom: 0;
-}
-
-.mt-colorpicker.has--error {
-  margin-bottom: var(--scale-size-12);
 }
 
 .mt-colorpicker.is--disabled {

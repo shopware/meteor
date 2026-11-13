@@ -8,8 +8,6 @@
         'is--disabled': disabled || isInherited,
         'is--inherited': isInherited,
         'has--focus': hasFocus,
-        'mt-field--future-remove-default-margin': future.removeDefaultMargin,
-        'mt-field--future-consistent-label-line-height': future.consistentLabelLineHeight,
       },
     ]"
   >
@@ -115,7 +113,6 @@ import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import { useI18n } from "vue-i18n";
-import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtNumberField",
@@ -270,7 +267,7 @@ export default defineComponent({
 
     // `setup` is not merged through `extends`, so the values MtTextField's setup provides
     // have to be re-created here.
-    return { t, future: useFutureFlags() };
+    return { t };
   },
 
   data() {
@@ -569,21 +566,6 @@ export default defineComponent({
     "error error"
     "hint hint";
   width: 100%;
-  margin-bottom: var(--scale-size-32);
-}
-
-/* Ordered before .has--error so the error-state margin wins over the future flag,
-   like it did against mt-base-field's global styles. */
-.mt-number-field.mt-field--future-remove-default-margin {
-  margin-bottom: 0;
-}
-
-.mt-number-field.has--error {
-  margin-bottom: var(--scale-size-12);
-}
-
-.mt-number-field.mt-field--small {
-  margin-bottom: 0;
 }
 
 .mt-number-field.is--disabled {

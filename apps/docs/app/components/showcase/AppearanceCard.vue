@@ -116,13 +116,6 @@ const muted = "color-text-secondary-default";
   background: var(--color-background-secondary-default);
   flex-shrink: 0;
 }
-/* The radio-group root (this component's root element) carries a default bottom
-   margin that ignores the removeDefaultMargin flag; zero it so the option
-   spacing is the only gap. Targeted without :deep() so it matches the scoped
-   root itself (a descendant :deep() selector would never match it). */
-.mt-radio-group-root {
-  margin-bottom: 0;
-}
 /* Keep the label for assistive tech but hide it visually (position: absolute
    also drops its grid row, so the options sit flush at the top). */
 :deep(.mt-radio-group-root__label) {

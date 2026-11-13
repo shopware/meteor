@@ -1,12 +1,5 @@
 <template>
-  <div
-    :class="[
-      'mt-email-field',
-      {
-        'mt-email-field--future-no-default-margin': futureFlags.removeDefaultMargin,
-      },
-    ]"
-  >
+  <div class="mt-email-field">
     <mt-field-label
       v-if="label"
       :for="id ?? ''"
@@ -120,9 +113,6 @@ import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
 import { useI18n } from "vue-i18n";
 import { useClipboard } from "@vueuse/core";
-import { useFutureFlags } from "@/composables/useFutureFlags";
-
-const futureFlags = useFutureFlags();
 
 const model = defineModel({
   type: String,
@@ -210,11 +200,6 @@ const { t } = useI18n({
     "error error"
     "hint hint";
   grid-template-columns: 1fr auto;
-  margin-bottom: var(--scale-size-32);
-}
-
-.mt-email-field--future-no-default-margin {
-  margin-bottom: 0;
 }
 
 .mt-email-field__block {

@@ -4,7 +4,6 @@
       class="mt-field--checkbox"
       :class="{
         ...MtCheckboxFieldClasses,
-        ...checkboxClasses,
         'mt-field--checkbox--has-label': hasLabel,
       }"
     >
@@ -57,14 +56,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { defineComponent } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtInheritanceSwitch from "../_internal/mt-inheritance-switch/mt-inheritance-switch.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFormFieldMixin from "../../mixins/form-field.mixin";
 import { createId } from "../../utils/id";
-import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtCheckbox",
@@ -197,19 +195,6 @@ export default defineComponent({
     "inheritance-restore",
   ],
 
-  setup() {
-    const futureFlags = useFutureFlags();
-
-    const checkboxClasses = computed(() => ({
-      "mt-checkbox--future-remove-default-margin": futureFlags.removeDefaultMargin,
-      "mt-checkbox--future-consistent-label-line-height": futureFlags.consistentLabelLineHeight,
-    }));
-
-    return {
-      checkboxClasses,
-    };
-  },
-
   data(): { currentValue: boolean | undefined; id: string | undefined } {
     return {
       currentValue: this.checked,
@@ -337,12 +322,6 @@ export default defineComponent({
 <style>
 .mt-field--checkbox__container {
   & .mt-field--checkbox {
-    margin-bottom: var(--scale-size-22);
-
-    &.mt-checkbox--future-remove-default-margin {
-      margin-bottom: 0;
-    }
-
     & .mt-inheritance-switch {
       &.mt-field__inheritance-icon {
         display: flex;
@@ -354,15 +333,10 @@ export default defineComponent({
     & .mt-field--checkbox__content {
       display: grid;
       grid-template-columns: 16px 1fr;
-      align-items: center;
-    }
-
-    &.mt-checkbox--future-consistent-label-line-height .mt-field--checkbox__content {
       align-items: start;
     }
 
-    &.mt-checkbox--future-consistent-label-line-height.mt-field--checkbox--has-label
-      .mt-field__checkbox {
+    &.mt-field--checkbox--has-label .mt-field__checkbox {
       margin-top: 3px;
     }
 
@@ -371,7 +345,7 @@ export default defineComponent({
       align-items: center;
       column-gap: var(--scale-size-6);
       font-size: var(--font-size-xs);
-      line-height: 16px;
+      line-height: var(--font-line-height-xs);
       color: var(--color-text-primary-default);
       margin-bottom: 0;
       margin-left: var(--scale-size-8);
@@ -395,10 +369,6 @@ export default defineComponent({
     /* Hide the label row entirely when there is nothing to show in it. */
     & .mt-field__label:has(label:only-child:empty) {
       display: none;
-    }
-
-    &.mt-checkbox--future-consistent-label-line-height .mt-field__label {
-      line-height: var(--font-line-height-xs);
     }
 
     & .mt-field__label.is--inherited {

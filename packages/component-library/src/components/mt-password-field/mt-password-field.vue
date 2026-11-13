@@ -8,8 +8,6 @@
         'is--disabled': disabled,
         'is--inherited': isInherited,
         'has--focus': hasFocus,
-        'mt-field--future-remove-default-margin': future.removeDefaultMargin,
-        'mt-field--future-consistent-label-line-height': future.consistentLabelLineHeight,
       },
     ]"
   >
@@ -100,7 +98,6 @@ import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import { useI18n } from "vue-i18n";
-import { useFutureFlags } from "@/composables/useFutureFlags";
 
 const model = defineModel<string | undefined>();
 
@@ -144,7 +141,6 @@ const props = withDefaults(
   },
 );
 
-const future = useFutureFlags();
 const slots = useSlots();
 
 const id = ref<string | undefined>(undefined);
@@ -172,7 +168,7 @@ const inheritanceState = computed<"linked" | "unlinked" | "none">(() => {
 const labelStyle = computed<CSSProperties>(() => ({
   gridArea: "label",
   marginBottom: "var(--scale-size-8)",
-  lineHeight: future.consistentLabelLineHeight ? "var(--font-line-height-xs)" : "16px",
+  lineHeight: "var(--font-line-height-xs)",
 }));
 
 const showFieldHint = computed(
@@ -246,21 +242,6 @@ const { t } = useI18n({
     "error error"
     "hint hint";
   width: 100%;
-  margin-bottom: var(--scale-size-32);
-}
-
-/* Ordered before .has--error so the error-state margin wins over the future flag,
-   like it did against mt-base-field's global styles. */
-.mt-password-field.mt-field--future-remove-default-margin {
-  margin-bottom: 0;
-}
-
-.mt-password-field.has--error {
-  margin-bottom: var(--scale-size-12);
-}
-
-.mt-password-field.mt-field--small {
-  margin-bottom: 0;
 }
 
 .mt-password-field.is--disabled {

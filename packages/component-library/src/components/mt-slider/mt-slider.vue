@@ -6,8 +6,6 @@
       {
         'is--disabled': disabled,
         'is--inherited': isInherited,
-        'mt-field--future-remove-default-margin': future.removeDefaultMargin,
-        'mt-field--future-consistent-label-line-height': future.consistentLabelLineHeight,
       },
     ]"
   >
@@ -137,7 +135,6 @@ import MtFieldAddition from "@/components/_internal/mt-field-addition/mt-field-a
 import MtFieldCopyable from "@/components/_internal/mt-field-copyable/mt-field-copyable.vue";
 import MtHelpText from "@/components/mt-help-text/mt-help-text.vue";
 import MtTooltipDirective from "@/directives/tooltip.directive";
-import { useFutureFlags } from "@/composables/useFutureFlags";
 import MtValidationMixin from "../../mixins/validation.mixin";
 
 export default defineComponent({
@@ -356,12 +353,6 @@ export default defineComponent({
 
   emits: ["update:modelValue", "inheritance-restore", "inheritance-remove"],
 
-  setup() {
-    return {
-      future: useFutureFlags(),
-    };
-  },
-
   data() {
     return {
       rangeRightValue: 0 as number,
@@ -502,7 +493,7 @@ export default defineComponent({
       return {
         gridArea: "label",
         marginBottom: "var(--scale-size-8)",
-        lineHeight: this.future.consistentLabelLineHeight ? "var(--font-line-height-xs)" : "16px",
+        lineHeight: "var(--font-line-height-xs)",
       };
     },
 
@@ -591,12 +582,6 @@ export default defineComponent({
     "input input"
     "hint hint";
   width: 100%;
-  margin-bottom: var(--scale-size-32);
-}
-
-.mt-slider.mt-field--small,
-.mt-slider.mt-field--future-remove-default-margin {
-  margin-bottom: 0;
 }
 
 .mt-slider > .mt-slider__block {

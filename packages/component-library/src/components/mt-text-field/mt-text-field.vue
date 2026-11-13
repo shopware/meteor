@@ -8,8 +8,6 @@
         'is--disabled': disabled,
         'is--inherited': isInherited,
         'has--focus': hasFocus,
-        'mt-field--future-remove-default-margin': future.removeDefaultMargin,
-        'mt-field--future-consistent-label-line-height': future.consistentLabelLineHeight,
       },
     ]"
   >
@@ -90,7 +88,6 @@ import MtFieldCopyable from "../_internal/mt-field-copyable/mt-field-copyable.vu
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
-import { useFutureFlags } from "@/composables/useFutureFlags";
 import MtValidationMixin from "../../mixins/validation.mixin";
 
 export default defineComponent({
@@ -278,12 +275,6 @@ export default defineComponent({
     "inheritance-remove",
   ],
 
-  setup() {
-    return {
-      future: useFutureFlags(),
-    };
-  },
-
   data() {
     return {
       currentValue: this.modelValue,
@@ -325,7 +316,7 @@ export default defineComponent({
       return {
         gridArea: "label",
         marginBottom: "var(--scale-size-8)",
-        lineHeight: this.future.consistentLabelLineHeight ? "var(--font-line-height-xs)" : "16px",
+        lineHeight: "var(--font-line-height-xs)",
       };
     },
 
@@ -400,21 +391,6 @@ export default defineComponent({
     "error error"
     "hint hint";
   width: 100%;
-  margin-bottom: var(--scale-size-32);
-}
-
-/* Ordered before .has--error so the error-state margin wins over the future flag,
-   like it did against mt-base-field's global styles. */
-.mt-text-field.mt-field--future-remove-default-margin {
-  margin-bottom: 0;
-}
-
-.mt-text-field.has--error {
-  margin-bottom: var(--scale-size-12);
-}
-
-.mt-text-field.mt-field--small {
-  margin-bottom: 0;
 }
 
 .mt-text-field.is--disabled {

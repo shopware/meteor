@@ -3,9 +3,6 @@
     :class="[
       'mt-switch',
       {
-        'mt-switch--no-top-margin': removeTopMargin,
-        'mt-switch--future-no-default-margin': !!futureFlags.removeDefaultMargin,
-        'mt-switch--future-no-min-height': !!futureFlags.removeSwitchMinHeight,
         'mt-switch--not-bordered': !bordered,
         'mt-switch--disabled': disabled,
       },
@@ -69,7 +66,6 @@ import { useId } from "vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
-import { useFutureFlags } from "@/composables/useFutureFlags";
 
 defineProps<{
   modelValue?: boolean;
@@ -83,13 +79,15 @@ defineProps<{
   bordered?: boolean;
   helpText?: string;
   error?: { detail: string };
+  /**
+   * @deprecated The switch no longer has an outer margin, so this has no effect.
+   */
   removeTopMargin?: boolean;
   name?: string;
 }>();
 
 const id = useId();
 const errorId = useId();
-const futureFlags = useFutureFlags();
 
 defineEmits<{
   change: [value: boolean];
@@ -100,27 +98,6 @@ defineEmits<{
 </script>
 
 <style>
-.mt-switch {
-  margin-top: var(--scale-size-24);
-  margin-bottom: var(--scale-size-22);
-}
-
-.mt-switch--not-bordered {
-  min-height: var(--scale-size-48);
-}
-
-.mt-switch--no-top-margin {
-  margin-top: 0;
-}
-
-.mt-switch--future-no-default-margin {
-  margin: 0;
-}
-
-.mt-switch.mt-switch--future-no-min-height {
-  min-height: 0;
-}
-
 .mt-switch__block {
   display: flex;
   align-items: center;
