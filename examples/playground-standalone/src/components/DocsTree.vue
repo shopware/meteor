@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
 import {
   MtNav,
   type NavItem,
@@ -9,7 +8,6 @@ import {
 import { pageTree, type PageNode } from "../data/pages";
 
 const { t } = useI18n();
-const route = useRoute();
 
 function toNavItem(node: PageNode): NavItem {
   if (node.children) {
@@ -30,19 +28,10 @@ function toNavItem(node: PageNode): NavItem {
 }
 
 const sections: NavSection[] = [{ items: pageTree.map(toNavItem) }];
-
-function isActive(item: NavItem) {
-  return item.to === route.path;
-}
 </script>
 
 <template>
-  <mt-nav
-    class="docs-tree"
-    :sections="sections"
-    :is-active="isActive"
-    :label="t('nav.docs')"
-  />
+  <mt-nav class="docs-tree" :sections="sections" :label="t('nav.docs')" />
 </template>
 
 <style scoped>

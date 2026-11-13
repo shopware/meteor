@@ -1,8 +1,9 @@
 import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
-import { defineComponent, h, ref, type FunctionalComponent } from "vue";
+import { defineComponent, h, ref, shallowRef, type FunctionalComponent } from "vue";
 import MtNav from "./mt-nav.vue";
 import type { NavItem, NavSection } from "./mt-nav.vue";
+import { routerPlugin } from "../mt-app/__tests__/shell-test-utils";
 
 // Stands in for `router-link`: the library does not depend on vue-router
 const RouterLinkStub: FunctionalComponent<{ to: { name: string } }> = (props, { slots }) =>
@@ -354,6 +355,46 @@ describe("mt-nav", () => {
         "page",
       );
       expect(getRowLabel("Overview").closest(".mt-nav__link")).not.toHaveAttribute("aria-current");
+    });
+  });
+
+  describe("current page", () => {
+    function renderWithRoute(fullPath: string, items: NavItem[]) {
+      const router = {
+        currentRoute: shallowRef({ path: fullPath, hash: "", fullPath }),
+        resolve: (to: unknown) => ({ fullPath: to as string }),
+      };
+
+      render(MtNav, {
+        props: { linkComponent: "a", sections: [{ items }] },
+        global: { plugins: [routerPlugin(router)] },
+      });
+    }
+
+    function link(label: string) {
+      return getRowLabel(label).closest(".mt-nav__link");
+    }
+
+    it("marks the row linking most closely to the current route as the current page", () => {
+      renderWithRoute("/products/1/edit", [
+        { label: "Dashboard", to: "/" },
+        { label: "Products", to: "/products" },
+        { label: "Product", to: "/products/1" },
+      ]);
+
+      expect(link("Product")).toHaveAttribute("aria-current", "page");
+      expect(link("Products")).not.toHaveAttribute("aria-current");
+      expect(link("Dashboard")).not.toHaveAttribute("aria-current");
+    });
+
+    it("keeps a row marked active as the current page", () => {
+      renderWithRoute("/products/1", [
+        { label: "Dashboard", to: "/", active: true },
+        { label: "Products", to: "/products" },
+      ]);
+
+      expect(link("Dashboard")).toHaveAttribute("aria-current", "page");
+      expect(link("Products")).not.toHaveAttribute("aria-current");
     });
   });
 
