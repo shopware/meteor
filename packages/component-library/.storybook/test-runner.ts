@@ -65,8 +65,11 @@ export default {
     // wait 300ms before screenshot to make sure any pending animation is finished
     await (() => new Promise((resolve) => setTimeout(resolve, 300)))();
 
+    // Disabling animations would cancel the scroll-driven fade of the scroll area
+    const keepAnimations = context.id.startsWith("components-scroll-area-interaction-tests");
+
     const image = await page.screenshot({
-      animations: "disabled",
+      animations: keepAnimations ? "allow" : "disabled",
     });
 
     if (pressedCard) {
