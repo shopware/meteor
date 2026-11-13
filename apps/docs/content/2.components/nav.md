@@ -23,7 +23,7 @@ Pass the navigation as `sections`, each with an optional `header` and its `items
 - An item with a `to` renders through `link-component`, which is `router-link` by default. An item with an `href` renders as a plain anchor.
 - An item with `children` is a button that opens and closes its nested items.
 
-Mark the current page with `is-active`, a function that compares an item with the current route, or with `active` on the item itself.
+**Nav** highlights the item of the current page on its own. With Vue Router, it compares the items with the current route; without it, with the address in the browser. Set `active` on an item to choose the current page yourself, or pass `is-active` when your app has its own rule, for example for a detail page whose address isn't below the address of its list.
 
 ## Examples
 
@@ -58,7 +58,7 @@ With `orientation="horizontal"`, the top-level items run in a line, for example 
 #do
 
 - Give every top-level item an icon, and keep the labels short.
-- Match the current route in `is-active` instead of setting `active` on the items on every navigation.
+- Let **Nav** find the current page, and use `active` or `is-active` only for pages it can't find.
 - Give a vertical **Nav** a fixed width, for example `15rem` in the `navigation` slot of [**App**](/components/app), and put it into a container that scrolls, such as [**Scroll Area**](/utilities/components/scroll-area).
 
 #dont
@@ -71,6 +71,10 @@ With `orientation="horizontal"`, the top-level items run in a line, for example 
 ## Behavior
 
 - Items nest through `children`, up to three levels in total. Icons are shown on top-level items only.
+- An item is the current page when its link points to the current page or to a page above it, such as `/products` for `/products/1`. A link to `/` only counts on `/` itself. When several items match, the most specific one wins.
+- A query or a hash in the link of an item has to be part of the current address. Links to other sites and to anchors on the same page (`#…`) never count.
+- Items marked `active`, or the items that `is-active` matches, take the place of the item **Nav** finds.
+- Without Vue Router, **Nav** knows the address once it has mounted, so server-rendered markup shows no current page yet.
 - The top-level item that holds the current page opens on its own. Opening another top-level item closes the others, except the one holding the current page.
 - `navigate` is emitted when an item with a `to` or an `href` is clicked. Items that open nested items don't emit it.
 - **Nav** grows with its items and doesn't scroll on its own. When the items don't fit, the container around it scrolls.

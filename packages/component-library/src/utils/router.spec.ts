@@ -3,10 +3,12 @@ import { render } from "@testing-library/vue";
 import { NavigationFailureType } from "vue-router";
 import { routerPlugin } from "@/components/mt-app/__tests__/shell-test-utils";
 import {
+  useLinkMatch,
   useMatchedRouteMeta,
   useRouteChange,
   useRouteGuard,
   useRouterBack,
+  type LinkTarget,
   type RouteLike,
 } from "./router";
 
@@ -208,6 +210,56 @@ describe("router", () => {
 
       // ASSERT
       expect(meta?.value).toEqual([]);
+    });
+  });
+
+  describe("useLinkMatch", () => {
+    it("matches a link on its page and below it, higher for a more specific link", () => {
+      // ARRANGE
+      let matchLink!: (link: LinkTarget) => number;
+      const router = {
+        currentRoute: shallowRef({
+          path: "/products/1",
+          hash: "",
+          fullPath: "/products/1?tab=info",
+        }),
+        resolve: (to: unknown) => ({ fullPath: to as string }),
+      };
+
+      // ACT
+      renderWithRouter(router, () => (matchLink = useLinkMatch()));
+
+      // ASSERT
+      expect(matchLink({ to: "/products" })).toBeGreaterThanOrEqual(0);
+      expect(matchLink({ to: "/products/1" })).toBeGreaterThan(matchLink({ to: "/products" }));
+      expect(matchLink({ to: "/products?tab=info" })).toBeGreaterThan(
+        matchLink({ to: "/products" }),
+      );
+
+      for (const to of ["/", "/product", "/products?tab=reviews", "/products#reviews"]) {
+        expect(matchLink({ to })).toBe(-1);
+      }
+
+      expect(matchLink({ href: "#top" })).toBe(-1);
+      expect(matchLink({ href: "https://docs.shopware.com/products" })).toBe(-1);
+    });
+
+    it("follows the browser's address without a router", () => {
+      // ARRANGE
+      let matchLink!: (link: LinkTarget) => number;
+      window.history.replaceState(null, "", "/orders");
+      renderWithRouter(undefined, () => (matchLink = useLinkMatch()));
+      expect(matchLink({ href: "/orders" })).toBeGreaterThanOrEqual(0);
+
+      // ACT
+      window.history.pushState(null, "", "/settings");
+      window.dispatchEvent(new PopStateEvent("popstate"));
+
+      // ASSERT
+      expect(matchLink({ href: "/orders" })).toBe(-1);
+      expect(matchLink({ href: "/settings" })).toBeGreaterThanOrEqual(0);
+
+      window.history.replaceState(null, "", "/");
     });
   });
 });

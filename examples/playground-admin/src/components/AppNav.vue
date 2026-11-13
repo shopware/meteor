@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import {
   MtActionMenuGroup,
   MtActionMenuItem,
@@ -13,16 +13,8 @@ import {
 import { useCurrentUser } from "../composables/useCurrentUser";
 
 const { t } = useI18n();
-const route = useRoute();
 const router = useRouter();
 const user = useCurrentUser();
-
-/** A row is active on its own page and on the pages below it, such as a product's detail page. */
-function isActive(path: string) {
-  if (path === "/") return route.path === "/";
-
-  return route.path === path || route.path.startsWith(`${path}/`);
-}
 
 /** The menu of the Shopware Administration, with the modules this playground has. */
 const sections = computed<NavSection[]>(() => [
@@ -33,7 +25,6 @@ const sections = computed<NavSection[]>(() => [
         label: t("nav.dashboard"),
         icon: "regular-dashboard",
         to: "/",
-        active: isActive("/"),
       },
       {
         id: "catalogues",
@@ -44,13 +35,11 @@ const sections = computed<NavSection[]>(() => [
             id: "products",
             label: t("nav.products"),
             to: "/products",
-            active: isActive("/products"),
           },
           {
             id: "categories",
             label: t("nav.categories"),
             to: "/categories",
-            active: isActive("/categories"),
           },
         ],
       },
@@ -63,7 +52,6 @@ const sections = computed<NavSection[]>(() => [
             id: "order-overview",
             label: t("nav.overview"),
             to: "/orders",
-            active: isActive("/orders"),
           },
         ],
       },
@@ -76,7 +64,6 @@ const sections = computed<NavSection[]>(() => [
             id: "shopping-experiences",
             label: t("nav.cms"),
             to: "/cms",
-            active: isActive("/cms"),
           },
         ],
       },
@@ -85,7 +72,6 @@ const sections = computed<NavSection[]>(() => [
         label: t("nav.settings"),
         icon: "regular-cog",
         to: "/settings",
-        active: isActive("/settings"),
       },
     ],
   },
