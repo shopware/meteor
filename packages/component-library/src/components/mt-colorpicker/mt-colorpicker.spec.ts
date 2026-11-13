@@ -246,6 +246,16 @@ describe("mt-colorpicker", () => {
     expect(screen.getByRole("button", { name: "Link inheritance" })).toBeInTheDocument();
   });
 
+  it("renders in the small size when the size prop is set to small", () => {
+    // ARRANGE
+    const { container } = render(MtColorpicker, {
+      props: { label: "Label", modelValue: "#0fcff5", size: "small" },
+    });
+
+    // ASSERT
+    expect(container.querySelector(".mt-colorpicker")).toHaveClass("mt-colorpicker--small");
+  });
+
   it("marks the field as inherited when the isInherited prop is set", () => {
     // ARRANGE
     const { container } = render(MtColorpicker, {

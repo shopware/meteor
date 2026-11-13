@@ -2,6 +2,7 @@
   <div
     :class="[
       componentClasses,
+      `mt-colorpicker--${size}`,
       {
         'mt-colorpicker--error': hasError,
         'mt-colorpicker--disabled': disabled,
@@ -457,6 +458,20 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
+    },
+
+    /**
+     * The size of the colorpicker.
+     *
+     * @values small, default
+     */
+    size: {
+      type: String as PropType<"small" | "default">,
+      required: false,
+      default: "default",
+      validator(value: string) {
+        return ["small", "default"].includes(value);
+      },
     },
 
     /**
@@ -1558,6 +1573,10 @@ export default defineComponent({
   background: var(--color-background-primary-default);
 }
 
+.mt-colorpicker--small .mt-colorpicker__block {
+  min-height: var(--scale-size-32);
+}
+
 .mt-colorpicker--focus .mt-colorpicker__block {
   outline: var(--scale-size-2) solid var(--color-border-brand-default);
   outline-offset: var(--scale-size-2);
@@ -1586,6 +1605,10 @@ export default defineComponent({
   outline: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+}
+
+.mt-colorpicker--small .mt-colorpicker__input {
+  padding: var(--scale-size-4) var(--scale-size-16);
 }
 
 .mt-colorpicker .mt-colorpicker__input::placeholder {
