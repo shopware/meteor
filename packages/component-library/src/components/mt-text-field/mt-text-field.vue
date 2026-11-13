@@ -310,7 +310,9 @@ export default defineComponent({
     },
 
     hasError(): boolean {
-      return !this.isValid || !!this.error;
+      // Only the error prop drives the error state. The validation prop is still
+      // accepted, but never turned the field red under mt-base-field either.
+      return !!this.error;
     },
 
     inheritanceState(): "linked" | "unlinked" | "none" {

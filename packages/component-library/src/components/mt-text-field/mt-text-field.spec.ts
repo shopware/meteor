@@ -200,10 +200,20 @@ describe("mt-text-field", () => {
     expect(container.querySelector(".mt-field")).toHaveClass("mt-field--small");
   });
 
-  it("shows the error state when the validation prop fails for the value", () => {
+  it("does not show the error state when only the validation prop fails", () => {
     // ARRANGE
     const { container } = render(MtTextField, {
       props: { label: "Label", modelValue: "", validation: "required" },
+    });
+
+    // ASSERT
+    expect(container.querySelector(".mt-field")).not.toHaveClass("has--error");
+  });
+
+  it("shows the error state when an error is passed", () => {
+    // ARRANGE
+    const { container } = render(MtTextField, {
+      props: { label: "Label", error: { code: 500, detail: "Error message" } },
     });
 
     // ASSERT
