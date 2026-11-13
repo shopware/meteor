@@ -11,6 +11,7 @@ Remove `mt-base-field` and make every form field self-contained
 - text, number, password, email, url, colorpicker, slider, select, checkbox, switch and radio group have no outer margin, including the extra margin a field used to get while showing an error. Space fields with your layout, for example a grid or flex `gap`.
 - field labels use the `--font-line-height-xs` token instead of `16px`.
 - a non-bordered `mt-switch` has no minimum height.
+- the gap between label and input is 2px on every field with an input box, matching the design. It was 8px on text, number, unit, password, colorpicker and select. Hints sit 4px below the input everywhere, and the radio group has 4px between its label and its options.
 
 `consistentLabelLineHeight` and `removeSwitchMinHeight` are removed. `removeDefaultMargin` still applies to `mt-card`, `mt-banner` and `mt-tabs`. The `removeTopMargin` prop on `mt-switch` is deprecated and has no effect.
 
