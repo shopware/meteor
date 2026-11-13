@@ -34,9 +34,9 @@
     />
 
     <div class="mt-select__block">
-      <mt-field-addition type="prefix" class="mt-select__prefix" :size="size" :has-error="!!error">
+      <mt-field-affix type="prefix" class="mt-select__prefix" :has-error="!!error">
         <slot name="mt-select-prefix" />
-      </mt-field-addition>
+      </mt-field-affix>
 
       <div
         ref="selectWrapper"
@@ -91,18 +91,13 @@
         </transition>
       </template>
 
-      <mt-field-addition
-        v-if="copyable"
-        class="mt-select__suffix"
-        :size="size"
-        :has-error="!!error"
-      >
+      <mt-field-affix v-if="copyable" class="mt-select__suffix" :has-error="!!error">
         <mt-field-copyable :copyable-text="copyableText" :tooltip="copyableTooltip" />
-      </mt-field-addition>
+      </mt-field-affix>
 
-      <mt-field-addition v-else class="mt-select__suffix" :size="size" :has-error="!!error">
+      <mt-field-affix v-else class="mt-select__suffix" :has-error="!!error">
         <slot name="mt-select-suffix" />
-      </mt-field-addition>
+      </mt-field-affix>
     </div>
 
     <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />
@@ -122,7 +117,7 @@ import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtLoader from "../../mt-loader/mt-loader.vue";
 import MtFieldError from "../mt-field-error/mt-field-error.vue";
 import MtFieldLabel from "../mt-field-label/mt-field-label.vue";
-import MtFieldAddition from "../mt-field-addition/mt-field-addition.vue";
+import MtFieldAffix from "../mt-field-affix/mt-field-affix.vue";
 import MtFieldCopyable from "../mt-field-copyable/mt-field-copyable.vue";
 import MtHelpText from "../../mt-help-text/mt-help-text.vue";
 
@@ -134,7 +129,7 @@ export default defineComponent({
     "mt-loader": MtLoader,
     "mt-field-error": MtFieldError,
     "mt-field-label": MtFieldLabel,
-    "mt-field-addition": MtFieldAddition,
+    "mt-field-affix": MtFieldAffix,
     "mt-field-copyable": MtFieldCopyable,
     "mt-help-text": MtHelpText,
   },

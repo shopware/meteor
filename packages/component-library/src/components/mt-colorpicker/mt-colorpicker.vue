@@ -33,7 +33,7 @@
     />
 
     <div class="mt-colorpicker__block">
-      <mt-field-addition type="prefix" class="mt-colorpicker__addition" :has-error="hasError">
+      <mt-field-affix type="prefix" class="mt-colorpicker__addition" :has-error="hasError">
         <div
           class="mt-colorpicker__previewWrapper"
           role="button"
@@ -51,7 +51,7 @@
             :class="{ 'is--invalid': !isColorValid }"
           />
         </div>
-      </mt-field-addition>
+      </mt-field-affix>
 
       <input
         :id="identification"
@@ -273,7 +273,7 @@ import { createId } from "../../utils/id";
 import { debounce } from "@/utils/debounce";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
-import MtFieldAddition from "../_internal/mt-field-addition/mt-field-addition.vue";
+import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
@@ -290,7 +290,7 @@ export default defineComponent({
   components: {
     "mt-field-hint": MtFieldHint,
     "mt-field-label": MtFieldLabel,
-    "mt-field-addition": MtFieldAddition,
+    "mt-field-affix": MtFieldAffix,
     "mt-help-text": MtHelpText,
     "mt-text": MtText,
     "mt-floating-ui": MtFloatingUi,
@@ -1953,9 +1953,8 @@ export default defineComponent({
 }
 
 .mt-colorpicker--compact .mt-colorpicker__addition {
-  border-right: none;
+  border-inline-end: none;
   padding: 0;
-  min-width: auto;
 }
 
 .mt-colorpicker--compact .mt-colorpicker__previewWrapper {

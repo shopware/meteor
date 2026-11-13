@@ -34,9 +34,9 @@
     />
 
     <div class="mt-number-field__block">
-      <mt-field-addition v-if="$slots.prefix" type="prefix" :size="size" :has-error="hasError">
+      <mt-field-affix v-if="$slots.prefix" type="prefix" :has-error="hasError">
         <slot name="prefix" />
-      </mt-field-addition>
+      </mt-field-affix>
 
       <input
         :id="inputId"
@@ -82,13 +82,13 @@
 
       <slot name="_unit-suffix" />
 
-      <mt-field-addition v-if="copyable" :size="size" :has-error="hasError">
+      <mt-field-affix v-if="copyable" :has-error="hasError">
         <mt-field-copyable :copyable-text="stringRepresentation" :tooltip="copyableTooltip" />
-      </mt-field-addition>
+      </mt-field-affix>
 
-      <mt-field-addition v-else-if="$slots.suffix" :size="size" :has-error="hasError">
+      <mt-field-affix v-else-if="$slots.suffix" :has-error="hasError">
         <slot name="suffix" />
-      </mt-field-addition>
+      </mt-field-affix>
     </div>
 
     <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />

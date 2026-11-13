@@ -34,9 +34,9 @@
     />
 
     <div class="mt-text-field__block">
-      <mt-field-addition v-if="$slots.prefix" type="prefix" :size="size" :has-error="hasError">
+      <mt-field-affix v-if="$slots.prefix" type="prefix" :has-error="hasError">
         <slot name="prefix" />
-      </mt-field-addition>
+      </mt-field-affix>
 
       <input
         :id="inputId"
@@ -54,13 +54,13 @@
         @blur="removeFocusClass"
       />
 
-      <mt-field-addition v-if="copyable" :size="size" :has-error="hasError">
+      <mt-field-affix v-if="copyable" :has-error="hasError">
         <mt-field-copyable :copyable-text="String(currentValue)" :tooltip="copyableTooltip" />
-      </mt-field-addition>
+      </mt-field-affix>
 
-      <mt-field-addition v-else-if="$slots.suffix" :size="size" :has-error="hasError">
+      <mt-field-affix v-else-if="$slots.suffix" :has-error="hasError">
         <slot name="suffix" />
-      </mt-field-addition>
+      </mt-field-affix>
     </div>
 
     <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />
@@ -83,7 +83,7 @@
 import { defineComponent, type PropType, type CSSProperties } from "vue";
 import { createId } from "../../utils/id";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
-import MtFieldAddition from "../_internal/mt-field-addition/mt-field-addition.vue";
+import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
 import MtFieldCopyable from "../_internal/mt-field-copyable/mt-field-copyable.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
@@ -95,7 +95,7 @@ export default defineComponent({
 
   components: {
     "mt-field-label": MtFieldLabel,
-    "mt-field-addition": MtFieldAddition,
+    "mt-field-affix": MtFieldAffix,
     "mt-field-copyable": MtFieldCopyable,
     "mt-field-error": MtFieldError,
     "mt-field-hint": MtFieldHint,

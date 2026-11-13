@@ -109,9 +109,9 @@
         data-testid="right-number-field"
       />
 
-      <mt-field-addition v-if="copyable" :size="size">
+      <mt-field-affix v-if="copyable">
         <mt-field-copyable :copyable-text="stringRepresentation" :tooltip="copyableTooltip" />
-      </mt-field-addition>
+      </mt-field-affix>
     </div>
 
     <div v-if="showFieldHint" class="mt-slider__hint-row">
@@ -133,7 +133,7 @@ import { createId } from "@/utils/id";
 import MtNumberField from "@/components/mt-number-field/mt-number-field.vue";
 import MtFieldHint from "@/components/_internal/mt-field-hint/mt-field-hint.vue";
 import MtFieldLabel from "@/components/_internal/mt-field-label/mt-field-label.vue";
-import MtFieldAddition from "@/components/_internal/mt-field-addition/mt-field-addition.vue";
+import MtFieldAffix from "@/components/_internal/mt-field-affix/mt-field-affix.vue";
 import MtFieldCopyable from "@/components/_internal/mt-field-copyable/mt-field-copyable.vue";
 import MtHelpText from "@/components/mt-help-text/mt-help-text.vue";
 import MtTooltipDirective from "@/directives/tooltip.directive";
@@ -150,7 +150,7 @@ export default defineComponent({
     MtNumberField,
     MtFieldHint,
     MtFieldLabel,
-    MtFieldAddition,
+    MtFieldAffix,
     MtFieldCopyable,
     MtHelpText,
   },

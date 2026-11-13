@@ -34,9 +34,9 @@
     />
 
     <div class="mt-password-field__block">
-      <mt-field-addition v-if="$slots.prefix" type="prefix" :size="size" :has-error="hasError">
+      <mt-field-affix v-if="$slots.prefix" type="prefix" :has-error="hasError">
         <slot name="prefix" />
-      </mt-field-addition>
+      </mt-field-affix>
 
       <input
         :id="inputId"
@@ -69,9 +69,9 @@
         />
       </button>
 
-      <mt-field-addition v-if="$slots.suffix" :size="size" :has-error="hasError">
+      <mt-field-affix v-if="$slots.suffix" :has-error="hasError">
         <slot name="suffix" />
-      </mt-field-addition>
+      </mt-field-affix>
     </div>
 
     <mt-field-error v-if="!!error" :error="error" :style="{ gridArea: 'error' }" />
@@ -92,7 +92,7 @@
 import { ref, computed, onMounted, useSlots, type CSSProperties } from "vue";
 import { createId } from "../../utils/id";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
-import MtFieldAddition from "../_internal/mt-field-addition/mt-field-addition.vue";
+import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
