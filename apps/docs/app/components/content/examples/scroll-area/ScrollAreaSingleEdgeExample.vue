@@ -4,7 +4,7 @@ import MtText from "@shopware-ag/meteor-component-library/MtText";
 </script>
 
 <template>
-  <mt-scroll-area fade="bottom" :fade-size="32" class="example-scroll-area">
+  <mt-scroll-area fade="end" :fade-size="32" class="example-scroll-area">
     <div class="example-scroll-area__content">
       <mt-text>Order #243</mt-text>
       <mt-text>Order #244</mt-text>

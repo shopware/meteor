@@ -32,14 +32,14 @@ const meta: MtScrollAreaMeta = {
   argTypes: {
     orientation: {
       control: { type: "select" },
-      options: ["vertical", "horizontal", "both"],
+      options: ["vertical", "horizontal"],
     },
     scrollbar: {
       control: { type: "boolean" },
     },
     fade: {
       control: { type: "select" },
-      options: [true, false, "top", "bottom", "start", "end"],
+      options: [true, false, "start", "end"],
     },
     fadeSize: {
       control: { type: "select" },
@@ -108,51 +108,9 @@ export const Horizontal: MtScrollAreaStory = {
   }),
 };
 
-export const Both: MtScrollAreaStory = {
-  name: "Both directions",
-  args: {
-    orientation: "both",
-  },
-  render: (args) => ({
-    components: { MtScrollArea, MtText },
-    setup() {
-      return { args, items };
-    },
-    template: `
-      <mt-scroll-area v-bind="args" style="height: 240px; width: 280px; border: 1px solid var(--color-border-primary-default); border-radius: var(--border-radius-m);">
-        <div style="padding: 8px 16px; width: 600px;">
-          <mt-text v-for="item in items" :key="item" style="padding-block: 6px;">{{ item }}, with a long description that does not fit into the width of the area</mt-text>
-        </div>
-      </mt-scroll-area>`,
-  }),
-};
-
 export const SingleEdge: MtScrollAreaStory = {
   name: "Single edge",
   args: {
-    fade: "bottom",
+    fade: "end",
   },
-};
-
-export const WithScrollbar: MtScrollAreaStory = {
-  name: "With scrollbar",
-  args: {
-    scrollbar: true,
-  },
-};
-
-export const WithoutOverflow: MtScrollAreaStory = {
-  name: "Without overflow",
-  render: (args) => ({
-    components: { MtScrollArea, MtText },
-    setup() {
-      return { args, items: items.slice(0, 3) };
-    },
-    template: `
-      <mt-scroll-area v-bind="args" style="max-height: 240px; width: 280px; border: 1px solid var(--color-border-primary-default); border-radius: var(--border-radius-m);">
-        <div style="padding: 8px 16px;">
-          <mt-text v-for="item in items" :key="item" style="padding-block: 6px;">{{ item }}</mt-text>
-        </div>
-      </mt-scroll-area>`,
-  }),
 };

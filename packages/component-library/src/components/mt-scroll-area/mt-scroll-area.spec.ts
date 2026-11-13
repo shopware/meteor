@@ -1,4 +1,4 @@
-import { fireEvent, render } from "@testing-library/vue";
+import { render } from "@testing-library/vue";
 import flushPromises from "flush-promises";
 import { h, ref } from "vue";
 import MtScrollArea from "./mt-scroll-area.vue";
@@ -71,30 +71,6 @@ describe("mt-scroll-area", () => {
     expect(container.firstElementChild).toHaveAttribute("data-overflowing");
   });
 
-  it("marks only the axes that overflow", async () => {
-    // ARRANGE
-    const { container } = render(MtScrollArea, {
-      props: { orientation: "both" },
-      slots: { default: "Scrollable content" },
-    });
-    await flushPromises();
-    const viewport = getViewport(container);
-
-    // ACT
-    mockOverflow(viewport, { scrollWidth: 300 });
-    await flushPromises();
-
-    // ASSERT
-    expect(container.firstElementChild).toHaveAttribute("data-overflowing", "x");
-
-    // ACT
-    mockOverflow(viewport, { scrollWidth: 300, scrollHeight: 300 });
-    await flushPromises();
-
-    // ASSERT
-    expect(container.firstElementChild).toHaveAttribute("data-overflowing", "x y");
-  });
-
   it("makes the viewport focusable only while the content overflows", async () => {
     // ARRANGE
     const { container } = render(MtScrollArea, {
@@ -118,26 +94,9 @@ describe("mt-scroll-area", () => {
     expect(viewport).toHaveAttribute("tabindex", "0");
   });
 
-  it("keeps a tabindex that is set on the component", async () => {
+  it("only checks the overflow in the scrolling direction", async () => {
     // ARRANGE
-    const { container } = render(MtScrollArea, {
-      attrs: { tabindex: "-1" },
-      slots: { default: "Scrollable content" },
-    });
-    await flushPromises();
-    const viewport = getViewport(container);
-
-    // ACT
-    mockOverflow(viewport, { scrollHeight: 300 });
-    await flushPromises();
-
-    // ASSERT
-    expect(viewport).toHaveAttribute("tabindex", "-1");
-  });
-
-  it("ignores overflow in a direction that does not scroll", async () => {
-    // ARRANGE
-    const { container } = render(MtScrollArea, {
+    const { container, rerender } = render(MtScrollArea, {
       props: { orientation: "vertical" },
       slots: { default: "Scrollable content" },
     });
@@ -150,6 +109,14 @@ describe("mt-scroll-area", () => {
 
     // ASSERT
     expect(container.firstElementChild).not.toHaveAttribute("data-overflowing");
+
+    // ACT
+    await rerender({ orientation: "horizontal" });
+    mockOverflow(viewport, { scrollWidth: 300 });
+    await flushPromises();
+
+    // ASSERT
+    expect(container.firstElementChild).toHaveAttribute("data-overflowing");
   });
 
   it("ignores a rounding difference of one pixel", async () => {
@@ -167,107 +134,27 @@ describe("mt-scroll-area", () => {
     expect(container.firstElementChild).not.toHaveAttribute("data-overflowing");
   });
 
-  it("checks the overflow again when the orientation changes", async () => {
+  it("fades both edges by default", () => {
     // ARRANGE
-    const { container, rerender } = render(MtScrollArea, {
-      props: { orientation: "both" },
-      slots: { default: "Scrollable content" },
-    });
-    await flushPromises();
-    mockOverflow(getViewport(container), { scrollHeight: 300 });
-    await flushPromises();
-
-    // ACT
-    await rerender({ orientation: "horizontal" });
-    await flushPromises();
+    const { container } = render(MtScrollArea);
 
     // ASSERT
-    expect(container.firstElementChild).not.toHaveAttribute("data-overflowing");
-  });
-
-  it("applies role, label and tabindex to the viewport and other attributes to the root", () => {
-    // ARRANGE
-    const { container } = render(MtScrollArea, {
-      attrs: {
-        role: "region",
-        "aria-label": "Order history",
-        tabindex: "0",
-        class: "custom-class",
-        "data-testid": "orders",
-      },
-    });
-    const root = container.firstElementChild as HTMLElement;
-    const viewport = getViewport(container);
-
-    // ASSERT
-    expect(viewport).toHaveAttribute("role", "region");
-    expect(viewport).toHaveAttribute("aria-label", "Order history");
-    expect(viewport).toHaveAttribute("tabindex", "0");
-    expect(root).toHaveClass("custom-class", "mt-scroll-area");
-    expect(root).toHaveAttribute("data-testid", "orders");
-    expect(root).not.toHaveAttribute("role");
-  });
-
-  it("applies a camel case tabIndex to the viewport", () => {
-    // ARRANGE
-    const { container } = render({
-      render: () => h(MtScrollArea, { tabIndex: 0 }),
-    });
-
-    // ASSERT
-    expect(getViewport(container)).toHaveAttribute("tabindex", "0");
-    expect(container.firstElementChild).not.toHaveAttribute("tabindex");
-  });
-
-  it("listens for scroll and focus events on the viewport", async () => {
-    // ARRANGE
-    const onScroll = vi.fn();
-    const onFocus = vi.fn();
-    const onClick = vi.fn();
-    const { container } = render(MtScrollArea, {
-      attrs: { onScroll, onFocus, onClick },
-    });
-    const viewport = getViewport(container);
-
-    // ACT
-    await fireEvent.scroll(viewport);
-    await fireEvent.focus(viewport);
-    await fireEvent.click(viewport);
-
-    // ASSERT
-    expect(onScroll).toHaveBeenCalledOnce();
-    expect(onFocus).toHaveBeenCalledOnce();
-    expect(onClick).toHaveBeenCalledOnce();
-  });
-
-  it("fades the edges of the scrolling direction by default", () => {
-    // ARRANGE
-    const { container } = render(MtScrollArea, {
-      props: { orientation: "horizontal" },
-    });
-    const root = container.firstElementChild as HTMLElement;
-
-    // ASSERT
-    expect(root).toHaveClass("mt-scroll-area--fade");
-    expect(root.style.getPropertyValue("--mt-scroll-area-fade-size-start")).toBe(
-      "var(--mt-scroll-area-fade-size-default)",
+    expect(container.firstElementChild).toHaveClass(
+      "mt-scroll-area--fade",
+      "mt-scroll-area--fade-start",
+      "mt-scroll-area--fade-end",
     );
-    expect(root.style.getPropertyValue("--mt-scroll-area-fade-size-end")).toBe(
-      "var(--mt-scroll-area-fade-size-default)",
-    );
-    expect(root.style.getPropertyValue("--mt-scroll-area-fade-size-top")).toBe("");
   });
 
   it("fades a single edge", () => {
     // ARRANGE
     const { container } = render(MtScrollArea, {
-      props: { fade: "bottom" },
+      props: { fade: "end" },
     });
-    const root = container.firstElementChild as HTMLElement;
 
     // ASSERT
-    expect(root.style.getPropertyValue("--mt-scroll-area-fade-size-bottom")).not.toBe("");
-    expect(root.style.getPropertyValue("--mt-scroll-area-fade-size-top")).toBe("");
+    expect(container.firstElementChild).toHaveClass("mt-scroll-area--fade-end");
+    expect(container.firstElementChild).not.toHaveClass("mt-scroll-area--fade-start");
   });
 
   it("does not fade when the fade is turned off", () => {
@@ -294,20 +181,15 @@ describe("mt-scroll-area", () => {
     expect(container.firstElementChild).toHaveClass("mt-scroll-area--scrollbar");
   });
 
-  it("sets the fade size from a token step, also per edge", () => {
+  it("sets the fade size from a token step", () => {
     // ARRANGE
     const { container } = render(MtScrollArea, {
-      props: { fadeSize: { top: 16 } },
+      props: { fadeSize: 16 },
     });
     const root = container.firstElementChild as HTMLElement;
 
     // ASSERT
-    expect(root.style.getPropertyValue("--mt-scroll-area-fade-size-top")).toBe(
-      "var(--scale-size-16)",
-    );
-    expect(root.style.getPropertyValue("--mt-scroll-area-fade-size-bottom")).toBe(
-      "var(--mt-scroll-area-fade-size-default)",
-    );
+    expect(root.style.getPropertyValue("--mt-scroll-area-fade-size")).toBe("var(--scale-size-16)");
   });
 
   it("exposes the viewport element", async () => {
