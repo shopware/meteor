@@ -42,6 +42,7 @@ import {
   type NavSlots,
 } from "./_internal/mt-nav-context";
 import { moveLinkFocus } from "./_internal/mt-nav-focus";
+import { useLinkMatch } from "@/utils/router";
 
 export type {
   NavActiveMatcher,
@@ -68,8 +69,9 @@ const props = withDefaults(
      */
     label?: string;
     /**
-     * Tells whether a row is the current page, e.g. by comparing its route with the current route.
-     * Lets the sections stay static instead of setting `active` on every route change.
+     * Tells whether a row is the current page, for apps with their own rule. Without it, the row
+     * linking most closely to the current page is active: through Vue Router, or the browser's
+     * address without it.
      */
     isActive?: NavActiveMatcher;
     /**
@@ -126,9 +128,34 @@ const branches = computed(() =>
   ),
 );
 
+const matchLink = useLinkMatch();
+
+// Every row of the navigation, nested rows included
+const rows = computed(() => {
+  const flatten = (items: NavItem[]): NavItem[] =>
+    items.flatMap((item) => [item, ...flatten(item.children ?? [])]);
+
+  return flatten(props.sections.flatMap((section) => section.items));
+});
+
+// The row linking most closely to the current page, unless `isActive` or an `active` row decides
+const matchedRow = computed(() => {
+  if (props.isActive || rows.value.some((row) => row.active)) return undefined;
+
+  const scores = rows.value.map((row) => matchLink(row));
+  const bestScore = Math.max(...scores);
+
+  return bestScore < 0 ? undefined : rows.value[scores.indexOf(bestScore)];
+});
+
+function matchesCurrentPage(item: NavItem) {
+  return props.isActive ? props.isActive(item) : item === matchedRow.value;
+}
+
 function isActiveItem(item: NavItem) {
-  // Tells whether the row or one of its descendants is active, through its flag or `isActive`
-  return isItemActive(item, props.isActive);
+  // Tells whether the row or one of its descendants is active, through its flag, `isActive` or
+  // the current page
+  return isItemActive(item, matchesCurrentPage);
 }
 
 const hasActiveItem = computed(() => branches.value.some((branch) => isActiveItem(branch.item)));
@@ -155,7 +182,7 @@ const activeRowSignature = computed(() =>
 provide(NAV_CONTEXT, {
   linkComponent: computed(() => props.linkComponent),
   orientation: computed(() => props.orientation),
-  isRowActive: (item) => isRowActive(item, props.isActive),
+  isRowActive: (item) => isRowActive(item, matchesCurrentPage),
   isItemActive: isActiveItem,
   slots,
   isBranchExpanded,

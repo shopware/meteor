@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import {
   MtActionMenuGroup,
   MtActionMenuItem,
@@ -9,13 +9,11 @@ import {
   MtNav,
   MtSidebar,
   MtUserMenu,
-  type NavItem,
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
 import { useCurrentUser } from "../composables/useCurrentUser";
 
 const { t } = useI18n();
-const route = useRoute();
 const router = useRouter();
 const user = useCurrentUser();
 
@@ -63,14 +61,6 @@ const sections = computed<NavSection[]>(() => [
     ],
   },
 ]);
-
-/** A row is active on its own page and on the pages below it, such as a product's detail page. */
-function isActive(item: NavItem) {
-  if (typeof item.to !== "string") return false;
-  if (item.to === "/") return route.path === "/";
-
-  return route.path === item.to || route.path.startsWith(`${item.to}/`);
-}
 </script>
 
 <template>
@@ -79,7 +69,7 @@ function isActive(item: NavItem) {
       <mt-brand title="Playground" subtitle="Shopware" />
     </template>
 
-    <mt-nav :sections="sections" :is-active="isActive" />
+    <mt-nav :sections="sections" />
 
     <template #footer>
       <mt-user-menu

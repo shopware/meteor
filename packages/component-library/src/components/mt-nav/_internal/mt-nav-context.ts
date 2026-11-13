@@ -11,7 +11,7 @@ export type NavLinkComponent = string | Component;
 export type NavLinkTarget = string | object;
 
 /**
- * Tells whether a row is the current page, e.g. by comparing its route with the current route.
+ * Tells whether a row is the current page, for apps with their own rule.
  */
 export type NavActiveMatcher = (item: NavItem) => boolean;
 
@@ -27,7 +27,10 @@ interface NavItemBase {
   label: string;
   /** Icon name of the meteor icon kit, e.g. `regular-products`. Shown on top-level rows only. */
   icon?: string;
-  /** Whether the row is the current page. Its ancestors open and highlight accordingly. Alternative to `isActive` on `mt-nav`. */
+  /**
+   * Marks the row as the current page, in place of the row `mt-nav` finds from the current page.
+   * Its ancestors open and highlight accordingly.
+   */
   active?: boolean;
 }
 
