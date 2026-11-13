@@ -350,7 +350,7 @@ export default defineComponent({
   }
 
   .mt-select-selection-list__input-wrapper--small .mt-select-selection-list__input {
-    min-height: 32px;
+    min-height: 30px;
     padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
   }
 
@@ -399,8 +399,13 @@ export default defineComponent({
 }
 
 .mt-select-selection-list--small {
+  .mt-select-selection-list__item-holder {
+    margin-top: 0;
+  }
+
+  /* Centres a 16px small tag in the 30px space inside the small field's border. */
   .mt-select-selection-list__item-holder .mt-label {
-    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
+    margin: calc((var(--scale-size-30) - var(--scale-size-16)) / 2) var(--scale-size-6) 0 0;
   }
 
   input {
