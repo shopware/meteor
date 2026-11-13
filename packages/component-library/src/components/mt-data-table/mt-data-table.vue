@@ -158,7 +158,9 @@
                 class="mt-data-table__table-selection-head"
                 scope="col"
               >
-                <mt-checkbox :checked="somethingSelected" @change="handleSelectAll" />
+                <div class="mt-data-table__selection-checkbox">
+                  <mt-checkbox :checked="somethingSelected" @change="handleSelectAll" />
+                </div>
               </th>
 
               <template v-for="column in sortedColumns">
@@ -404,11 +406,13 @@
                 </td>
 
                 <td v-if="allowRowSelection" v-stickyColumn class="mt-data-table__table-select-row">
-                  <mt-checkbox
-                    :checked="getSelectionValue(data.id)"
-                    :disabled="disableRowSelect.includes(data.id)"
-                    @change="onRowSelect(data.id)"
-                  />
+                  <div class="mt-data-table__selection-checkbox">
+                    <mt-checkbox
+                      :checked="getSelectionValue(data.id)"
+                      :disabled="disableRowSelect.includes(data.id)"
+                      @change="onRowSelect(data.id)"
+                    />
+                  </div>
                 </td>
 
                 <template v-for="column in sortedColumns">
@@ -564,14 +568,16 @@
     <template #footer>
       <mt-inset class="mt-data-table__footer-inset">
         <div class="mt-data-table__footer-left">
-          <mt-select
-            small
-            hide-clearable-button
-            :options="paginationOptionsConverted"
-            :model-value="paginationLimit"
-            :aria-label="t('itemsPerPage')"
-            @change="emitPaginationLimitChange"
-          />
+          <div class="mt-data-table__pagination-select">
+            <mt-select
+              small
+              hide-clearable-button
+              :options="paginationOptionsConverted"
+              :model-value="paginationLimit"
+              :aria-label="t('itemsPerPage')"
+              @change="emitPaginationLimitChange"
+            />
+          </div>
           <span class="mt-data-table__pagination-info-text">
             {{ t("itemsPerPage") }}
           </span>
@@ -2115,16 +2121,6 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     overflow: hidden;
   }
 
-  .mt-search {
-    .mt-field__label {
-      display: none;
-    }
-
-    .mt-field__hint:empty {
-      display: none;
-    }
-  }
-
   // add new Inter font to data table
   * {
     font-family: var(--font-family-body);
@@ -2442,21 +2438,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     padding-left: var(--scale-size-8);
   }
 
-  .mt-data-table__table-select-row,
-  .mt-data-table__table-selection-head {
-    .mt-field--checkbox {
-      margin-bottom: 0;
-
-      .mt-field--checkbox__content {
-        display: flex;
-        justify-content: center;
-        margin-top: var(--scale-size-2);
-      }
-
-      .mt-field {
-        display: none;
-      }
-    }
+  .mt-data-table__selection-checkbox {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--scale-size-2);
   }
 
   .mt-data-table__table-selection-bulk-edit {
@@ -2620,15 +2605,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
+  }
 
-    .mt-field__label {
-      display: none;
-    }
-
-    .mt-select {
-      margin-bottom: 0;
-      width: 100px;
-    }
+  &__pagination-select {
+    width: 100px;
   }
 
   &__footer-inset {

@@ -31,6 +31,7 @@
 
             <template v-if="action.hasCheckbox">
               <mt-checkbox
+                class="mt-segmented-control__checkbox"
                 :checked="action.checked"
                 :label="action.label"
                 @change="(event) => handleCheckboxChange(action, event)"
@@ -208,7 +209,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .mt-segmented-control {
   display: flex;
   gap: var(--scale-size-2);
@@ -222,29 +223,32 @@ export default defineComponent({
     display: flex;
   }
 
-  & .mt-floating-ui__trigger {
+  & :deep(.mt-floating-ui__trigger) {
     display: flex;
   }
+}
 
-  /*
-   * The doubled-up checkbox selectors outrank mt-checkbox's own label rules
-   * (.mt-field--checkbox__container .mt-field--checkbox .mt-field__label), so the
-   * segment's font wins like it did against the old global mt-base-field styles.
-   */
-  & .mt-field__label,
-  & .mt-field__label label,
-  & .mt-field--checkbox__container .mt-field--checkbox .mt-field__label,
-  & .mt-field--checkbox__container .mt-field--checkbox .mt-field__label label {
-    cursor: pointer;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    color: inherit;
-  }
+/*
+ * A checkbox inside a segment takes the segment's typography instead of the
+ * checkbox's own,. The selectors repeat the
+ * checkbox's own structure so they outrank its nested rules.
+ */
+.mt-segmented-control__action
+  .mt-segmented-control__checkbox
+  :deep(.mt-checkbox__field .mt-checkbox__label-row),
+.mt-segmented-control__action
+  .mt-segmented-control__checkbox
+  :deep(.mt-checkbox__field .mt-checkbox__label-row .mt-checkbox__label) {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
 
-  & .mt-field--checkbox__container .mt-field__label {
-    margin-left: var(--scale-size-8);
-  }
+.mt-segmented-control__checkbox :deep(#meteor-icon-kit__solid-checkmark-xs) {
+  width: var(--scale-size-8) !important;
+  height: var(--scale-size-6) !important;
 }
 
 .mt-segmented-control__action {
@@ -280,26 +284,13 @@ export default defineComponent({
   &:active {
     background-color: var(--color-interaction-secondary-pressed);
   }
-
-  & .mt-field--checkbox {
-    margin-bottom: 0;
-  }
-
-  & .mt-field__checkbox {
-    margin-top: 0;
-  }
-
-  & .mt-field__checkbox #meteor-icon-kit__solid-checkmark-xs {
-    width: var(--scale-size-8) !important;
-    height: var(--scale-size-6) !important;
-  }
 }
 
 .mt-segmented-control__action-icon.mt-icon {
   width: var(--scale-size-12);
   height: var(--scale-size-12);
 
-  & > svg {
+  & > :deep(svg) {
     width: 100% !important;
     height: 100% !important;
   }

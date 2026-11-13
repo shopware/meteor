@@ -446,10 +446,6 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   &__checkbox {
     margin-top: var(--scale-size-4);
-
-    .mt-field--checkbox {
-      margin: 0;
-    }
   }
 
   &__icon {

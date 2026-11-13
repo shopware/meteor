@@ -91,8 +91,8 @@ describe("mt-popover-item", () => {
       checkboxPartial: true,
     });
 
-    const checkbox = wrapper.find(".mt-field--checkbox");
-    expect(checkbox.classes()).toContain("is--partly-checked");
+    const checkbox = wrapper.find(".mt-checkbox__field");
+    expect(checkbox.classes()).toContain("mt-checkbox__field--partly-checked");
 
     const partialChecked = wrapper.find(".icon--solid-minus-xs");
     const fullChecked = wrapper.find(".icon--solid-checkmark-xs");
