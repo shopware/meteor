@@ -36,6 +36,8 @@ export interface AppContext extends MtAppContext {
   panelTrigger(panel: MtAppPanel): AppPanelTrigger | undefined;
   /** Whether a panel of the shell is being resized, during which pages keep their layout. */
   isResizing: Readonly<Ref<boolean>>;
+  /** Moves the focus to the content, for parts that go away while they hold it. */
+  focusContent(): void;
 }
 
 export const appContextKey = Symbol("mt-app") as InjectionKey<AppContext>;

@@ -1,7 +1,7 @@
 import { computed, shallowReactive } from "vue";
 import type { MtAppRegions } from "./useAppRegions";
 
-const REGIONS = ["header", "navigation", "sidebar", "contentFrame"] as const;
+const REGIONS = ["banner", "header", "navigation", "sidebar", "contentFrame"] as const;
 
 /**
  * The regions that views hide with `useAppRegions()` and routes with their meta. A region stays

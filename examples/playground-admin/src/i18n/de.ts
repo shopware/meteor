@@ -17,6 +17,10 @@ export const de: Messages = {
     settings: "Einstellungen",
     logout: "Abmelden",
   },
+  banner: {
+    maintenance:
+      "Geplante Wartung am Sonntag, 16. November, von 2:00 bis 4:00 Uhr MEZ. In dieser Zeit kannst du keine Änderungen speichern.",
+  },
   sidebar: {
     label: "Assistent",
     user: "Du",
