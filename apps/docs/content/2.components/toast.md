@@ -22,16 +22,16 @@ import { MtToast } from "@shopware-ag/meteor-component-library";
 
 **Toast** is removed in the next major version. Replace it with [**Snackbar**](/components/snackbar). Instead of keeping your own list and passing it through `toasts`, mount `mt-snackbar` once and call `addSnackbar` from [**useSnackbar**](/utilities/composables/use-snackbar) where the action happens. The store removes snackbars for you, so `remove-toast` handling goes away.
 
-| Toast              | Snackbar                                                                                                                                  |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | Assigned by `addSnackbar`, which returns the created snackbar.                                                                            |
-| `msg`              | `message`                                                                                                                                 |
-| `type: "positive"` | `variant: "success"`                                                                                                                      |
-| `type: "critical"` | `variant: "error"`. Critical toasts with an action never auto-close. To keep that, pass `duration: 0` and call `removeSnackbar` yourself. |
-| `type: "informal"` | Leave `variant` unset.                                                                                                                    |
-| `icon`             | `icon`                                                                                                                                    |
-| `action`           | No equivalent for callbacks such as Undo. `link` with `text` and `url` only navigates.                                                    |
-| `dismissible`      | No close control. Snackbars close on their own after `duration`. Pass `duration: 0` to keep one until you call `removeSnackbar`.          |
+| Toast              | Snackbar                                                                                                                                                                                 |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`               | Assigned by `addSnackbar`, which returns the created snackbar.                                                                                                                           |
+| `msg`              | `message`                                                                                                                                                                                |
+| `type: "positive"` | `variant: "success"`                                                                                                                                                                     |
+| `type: "critical"` | `variant: "error"`. Critical toasts with an action never auto-close. To keep that, pass `duration: 0`. The snackbar then stays until its `link` is clicked or you call `removeSnackbar`. |
+| `type: "informal"` | Leave `variant` unset.                                                                                                                                                                   |
+| `icon`             | `icon`                                                                                                                                                                                   |
+| `action`           | `link`, with `label` as `text` and `callback` as `onClick`. Clicking it closes the snackbar, as it did the toast.                                                                        |
+| `dismissible`      | No close control. Snackbars close on their own after `duration`. Pass `duration: 0` to keep one until you call `removeSnackbar`.                                                         |
 
 ## Anatomy
 
