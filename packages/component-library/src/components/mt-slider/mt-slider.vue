@@ -1,17 +1,17 @@
 <template>
   <div
-    class="mt-slider mt-field"
     :class="[
-      `mt-field--${size}`,
+      'mt-slider',
+      `mt-slider--${size}`,
       {
-        'is--disabled': disabled,
-        'is--inherited': isInherited,
+        'mt-slider--disabled': disabled,
+        'mt-slider--inherited': isInherited,
       },
     ]"
   >
     <mt-field-label
       v-if="label"
-      class="mt-field__label"
+      class="mt-slider__label"
       :for="identification"
       :required="required"
       :disabled="disableInheritanceToggle"
@@ -24,13 +24,13 @@
 
     <mt-help-text
       v-if="helpText"
-      class="mt-field__help-text"
+      class="mt-slider__help-text"
       :text="helpText"
       placement="right"
       :style="{ gridArea: 'help-text' }"
     />
 
-    <div class="mt-slider__block mt-block-field__block">
+    <div class="mt-slider__block">
       <mt-number-field
         v-model="rangeLeftValue as any"
         v-if="isRange"
@@ -40,6 +40,7 @@
         :disabled="disabled"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
         :show-controls="false"
+        class="mt-slider__number-field"
         data-testid="left-number-field"
       />
       <div class="mt-slider__slider">
@@ -104,6 +105,7 @@
         :disabled="disabled"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
         :show-controls="false"
+        class="mt-slider__number-field"
         data-testid="right-number-field"
       />
 
@@ -112,8 +114,8 @@
       </mt-field-addition>
     </div>
 
-    <div v-if="showFieldHint" class="mt-field__hint-wrapper">
-      <div class="mt-field__hint">
+    <div v-if="showFieldHint" class="mt-slider__hint-row">
+      <div class="mt-slider__hint">
         <mt-field-hint :hide-icon="!!$slots.hint">
           <slot name="hint">
             {{ hint }}
@@ -573,7 +575,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .mt-slider {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -593,13 +595,13 @@ export default defineComponent({
   overflow: visible;
 }
 
-.mt-slider .mt-field__hint-wrapper {
+.mt-slider .mt-slider__hint-row {
   grid-area: hint;
   display: flex;
   justify-content: space-between;
 }
 
-.mt-slider .mt-field__hint {
+.mt-slider .mt-slider__hint {
   margin-top: var(--scale-size-4);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
@@ -610,34 +612,18 @@ export default defineComponent({
   gap: var(--scale-size-8);
 }
 
-/*
- * The two nested number fields are laid out as slider handles, not as standalone fields.
- * The extra `.mt-field` in each selector keeps these ahead of mt-number-field's own scoped
- * rules, which would otherwise tie on specificity and be decided by stylesheet order.
- */
-.mt-slider .mt-field.mt-field--default {
+/* The two nested number fields are laid out as compact value boxes next to the bar. */
+.mt-slider__number-field {
   width: 5ch;
   flex-grow: 0;
   flex-shrink: 0;
-  margin-bottom: 0;
 }
 
-.mt-slider .mt-field.mt-field--default > .mt-field__label {
-  margin-bottom: 0;
-}
-
-.mt-slider .mt-number-field__controls {
-  flex-shrink: 1;
-}
-
-.mt-slider .mt-field.mt-field--default input {
+.mt-slider__number-field :deep(.mt-number-field__input) {
+  min-width: 0;
   text-align: center;
   padding-left: var(--scale-size-4);
   padding-right: var(--scale-size-4);
-}
-
-.mt-slider .mt-field--default.mt-number-field input {
-  min-width: 0;
 }
 
 .mt-slider .mt-slider__slider {

@@ -165,7 +165,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $mt-select-result-active-color-background: lighten($color-shopware-brand-500, 40%);
 $mt-select-result-active-color-text: $color-shopware-brand-500;
 $mt-select-result-color-border: $color-gray-300;
@@ -240,7 +240,7 @@ $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
       cursor: default;
     }
 
-    .mt-highlight-text__highlight {
+    :deep(.mt-highlight-text__highlight) {
       color: $mt-select-result-disabled-color-text;
     }
 

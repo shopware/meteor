@@ -1,19 +1,18 @@
 <template>
   <div
-    class="mt-field mt-field--default"
     :class="[
       componentClasses,
       {
-        'has--error': hasError,
-        'is--disabled': disabled,
-        'is--inherited': isInherited,
-        'has--focus': hasFocus,
+        'mt-colorpicker--error': hasError,
+        'mt-colorpicker--disabled': disabled,
+        'mt-colorpicker--inherited': isInherited,
+        'mt-colorpicker--focus': hasFocus,
       },
     ]"
   >
     <mt-field-label
       v-if="label"
-      class="mt-field__label"
+      class="mt-colorpicker__label"
       :for="identification"
       :required="required"
       :has-error="hasError"
@@ -27,13 +26,13 @@
 
     <mt-help-text
       v-if="helpText"
-      class="mt-field__help-text"
+      class="mt-colorpicker__help-text"
       :text="helpText"
       placement="right"
       :style="{ gridArea: 'help-text' }"
     />
 
-    <div class="mt-colorpicker__block mt-block-field__block">
+    <div class="mt-colorpicker__block">
       <mt-field-addition type="prefix" class="mt-colorpicker__addition" :has-error="hasError">
         <div
           class="mt-colorpicker__previewWrapper"
@@ -254,8 +253,8 @@
 
     <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />
 
-    <div v-if="showFieldHint" class="mt-field__hint-wrapper">
-      <div class="mt-field__hint">
+    <div v-if="showFieldHint" class="mt-colorpicker__hint-row">
+      <div class="mt-colorpicker__hint">
         <mt-field-hint :hide-icon="!!$slots.hint">
           <slot name="hint">
             {{ hint }}
@@ -1531,7 +1530,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .mt-colorpicker {
   position: relative;
   transition: all 0.3s ease;
@@ -1545,7 +1544,7 @@ export default defineComponent({
   width: 100%;
 }
 
-.mt-colorpicker.is--disabled {
+.mt-colorpicker--disabled {
   cursor: not-allowed;
 }
 
@@ -1559,17 +1558,17 @@ export default defineComponent({
   background: var(--color-background-primary-default);
 }
 
-.mt-colorpicker.has--focus .mt-colorpicker__block {
+.mt-colorpicker--focus .mt-colorpicker__block {
   outline: var(--scale-size-2) solid var(--color-border-brand-default);
   outline-offset: var(--scale-size-2);
 }
 
-.mt-colorpicker.has--error .mt-colorpicker__block {
+.mt-colorpicker--error .mt-colorpicker__block {
   background: var(--color-background-critical-default);
   border-color: var(--color-border-critical-default);
 }
 
-.mt-colorpicker.is--disabled .mt-colorpicker__block {
+.mt-colorpicker--disabled .mt-colorpicker__block {
   background: var(--color-background-tertiary-default);
 }
 
@@ -1601,13 +1600,13 @@ export default defineComponent({
   cursor: default;
 }
 
-.mt-colorpicker .mt-field__hint-wrapper {
+.mt-colorpicker .mt-colorpicker__hint-row {
   grid-area: hint;
   display: flex;
   justify-content: space-between;
 }
 
-.mt-colorpicker .mt-field__hint {
+.mt-colorpicker .mt-colorpicker__hint {
   margin-top: var(--scale-size-4);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
@@ -1722,17 +1721,6 @@ export default defineComponent({
   border-right: none;
   background: var(--color-background-primary-default);
   transform: rotate(45deg);
-}
-
-.mt-colorpicker__colorpicker--compact {
-  position: absolute;
-  top: var(--scale-size-30);
-  left: -20px;
-  z-index: 10;
-}
-
-.mt-colorpicker__colorpicker--compact::before {
-  top: -7px;
 }
 
 .mt-colorpicker__colorpicker-selection {
@@ -1947,18 +1935,14 @@ export default defineComponent({
   border-radius: var(--border-radius-checkbox);
 }
 
-.is--disabled .mt-colorpicker__previewWrapper {
-  cursor: default;
-}
-
 .mt-colorpicker--compact {
   display: inline-block;
   width: auto;
   margin-bottom: 0;
 }
 
-.mt-colorpicker--compact .mt-field__label,
-.mt-colorpicker--compact .mt-field__hint-wrapper,
+.mt-colorpicker--compact .mt-colorpicker__label,
+.mt-colorpicker--compact .mt-colorpicker__hint-row,
 .mt-colorpicker--compact .mt-colorpicker__input {
   display: none;
 }
@@ -1968,7 +1952,7 @@ export default defineComponent({
   border: none;
 }
 
-.mt-colorpicker--compact .mt-field__addition.mt-colorpicker__addition {
+.mt-colorpicker--compact .mt-colorpicker__addition {
   border-right: none;
   padding: 0;
   min-width: auto;
@@ -1984,44 +1968,19 @@ export default defineComponent({
   top: calc(100% + 2px);
 }
 
-.mt-colorpicker--compact.is--disabled {
+.mt-colorpicker--compact.mt-colorpicker--disabled {
   opacity: 0.5;
 }
 
-.is--disabled .mt-colorpicker__previewWrapper {
+.mt-colorpicker--disabled .mt-colorpicker__previewWrapper {
   cursor: not-allowed;
 }
 
-/*
- * Scoped to `.mt-colorpicker` on purpose: these used to be bare `.mt-field__addition` rules
- * that reached into every field in the application, not just this one. The doubled class
- * keeps them ahead of mt-field-addition's own scoped styles.
- */
-.mt-colorpicker .mt-field__addition.mt-colorpicker__addition {
+/* The extra `.mt-colorpicker` keeps this ahead of the addition's own scoped styles. */
+.mt-colorpicker .mt-colorpicker__addition {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.mt-colorpicker .mt-field__addition .mt-colorpicker__trigger {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.mt-colorpicker .mt-field__addition .mt-colorpicker__trigger .mt-icon {
-  line-height: 16px;
-}
-
-.mt-popover-deprecated__wrapper.--placement-bottom-outside .mt-colorpicker__colorpicker::before {
-  top: calc(100% - 7px);
-  transform: rotate(225deg);
 }
 </style>

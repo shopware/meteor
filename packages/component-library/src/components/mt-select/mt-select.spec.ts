@@ -236,7 +236,7 @@ describe("mt-select", () => {
   it("renders a help text when the helpText prop is set", async () => {
     const wrapper = await createWrapper({ props: { label: "Select", helpText: "Some help" } });
 
-    expect(wrapper.find(".mt-field__help-text").exists()).toBe(true);
+    expect(wrapper.find(".mt-select__help-text").exists()).toBe(true);
   });
 
   it("marks the label as required when the required prop is set", async () => {
@@ -279,7 +279,7 @@ describe("mt-select", () => {
       props: { label: "Select", isInheritanceField: true, isInherited: true },
     });
 
-    expect(wrapper.classes()).toContain("is--inherited");
+    expect(wrapper.classes()).toContain("mt-select--inherited");
     expect(wrapper.find('button[aria-label="Unlink inheritance"]').exists()).toBe(true);
   });
 

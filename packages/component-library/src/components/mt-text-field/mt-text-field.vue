@@ -1,19 +1,19 @@
 <template>
   <div
-    class="mt-text-field mt-field"
     :class="[
-      `mt-field--${size}`,
+      'mt-text-field',
+      `mt-text-field--${size}`,
       {
-        'has--error': hasError,
-        'is--disabled': disabled,
-        'is--inherited': isInherited,
-        'has--focus': hasFocus,
+        'mt-text-field--error': hasError,
+        'mt-text-field--disabled': disabled,
+        'mt-text-field--inherited': isInherited,
+        'mt-text-field--focus': hasFocus,
       },
     ]"
   >
     <mt-field-label
       v-if="label"
-      class="mt-field__label"
+      class="mt-text-field__label"
       :for="identification"
       :required="required"
       :has-error="hasError"
@@ -27,13 +27,13 @@
 
     <mt-help-text
       v-if="helpText"
-      class="mt-field__help-text"
+      class="mt-text-field__help-text"
       :text="helpText"
       placement="right"
       :style="{ gridArea: 'help-text' }"
     />
 
-    <div class="mt-text-field__block mt-block-field__block">
+    <div class="mt-text-field__block">
       <mt-field-addition v-if="$slots.prefix" type="prefix" :size="size" :has-error="hasError">
         <slot name="prefix" />
       </mt-field-addition>
@@ -65,14 +65,14 @@
 
     <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />
 
-    <div v-if="showFieldHint || maxLength" class="mt-field__hint-wrapper">
-      <div class="mt-field__hint">
+    <div v-if="showFieldHint || maxLength" class="mt-text-field__hint-row">
+      <div class="mt-text-field__hint">
         <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
           <slot name="hint">{{ hint }}</slot>
         </mt-field-hint>
       </div>
 
-      <div v-if="maxLength" class="mt-field__hint-right">
+      <div v-if="maxLength" class="mt-text-field__max-length">
         {{ String(modelValue)?.length ?? 0 }}/{{ maxLength }}
       </div>
     </div>
@@ -393,7 +393,7 @@ export default defineComponent({
   width: 100%;
 }
 
-.mt-text-field.is--disabled {
+.mt-text-field--disabled {
   cursor: not-allowed;
 }
 
@@ -406,16 +406,16 @@ export default defineComponent({
   overflow: hidden;
 }
 
-.mt-text-field.mt-field--small .mt-text-field__block {
+.mt-text-field--small .mt-text-field__block {
   min-height: var(--scale-size-32);
 }
 
-.mt-text-field.has--focus .mt-text-field__block {
+.mt-text-field--focus .mt-text-field__block {
   outline: var(--scale-size-2) solid var(--color-border-brand-default);
   outline-offset: var(--scale-size-2);
 }
 
-.mt-text-field.has--error .mt-text-field__block {
+.mt-text-field--error .mt-text-field__block {
   background: var(--color-background-critical-default);
   border-color: var(--color-border-critical-default);
 }
@@ -439,7 +439,7 @@ export default defineComponent({
   -moz-appearance: none;
 }
 
-.mt-text-field.mt-field--small .mt-text-field__input {
+.mt-text-field--small .mt-text-field__input {
   padding: var(--scale-size-4) var(--scale-size-16);
 }
 
@@ -453,7 +453,7 @@ export default defineComponent({
   cursor: default;
 }
 
-.mt-text-field.has--error .mt-text-field__input {
+.mt-text-field--error .mt-text-field__input {
   background-color: var(--color-background-critical-default);
 }
 
@@ -465,14 +465,14 @@ export default defineComponent({
   -webkit-box-shadow: 0 0 0 1000px #fff inset;
 }
 
-.mt-field__hint-wrapper {
+.mt-text-field__hint-row {
   grid-area: hint;
   display: flex;
   justify-content: space-between;
 }
 
-.mt-field__hint,
-.mt-field__hint-right {
+.mt-text-field__hint,
+.mt-text-field__max-length {
   margin-top: var(--scale-size-4);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
@@ -483,12 +483,12 @@ export default defineComponent({
   gap: var(--scale-size-8);
 }
 
-.mt-field__hint:empty,
-.mt-field__hint-right:empty {
+.mt-text-field__hint:empty,
+.mt-text-field__max-length:empty {
   display: none;
 }
 
-.mt-field__hint-right {
+.mt-text-field__max-length {
   justify-content: flex-end;
 }
 </style>

@@ -379,7 +379,7 @@ export const VisualTestHelpText: MtNumberFieldStory = {
     helpText: "Text for helping you",
   },
   play: ({ canvasElement }) => {
-    expect(canvasElement.querySelector(".mt-field__help-text")).toBeInTheDocument();
+    expect(canvasElement.querySelector(".mt-number-field__help-text")).toBeInTheDocument();
   },
 };
 

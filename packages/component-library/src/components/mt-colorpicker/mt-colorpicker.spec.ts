@@ -201,7 +201,7 @@ describe("mt-colorpicker", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field__help-text")).toBeInTheDocument();
+    expect(container.querySelector(".mt-colorpicker__help-text")).toBeInTheDocument();
   });
 
   it("marks the label as required when the required prop is set", () => {
@@ -253,7 +253,7 @@ describe("mt-colorpicker", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field")).toHaveClass("is--inherited");
+    expect(container.querySelector(".mt-colorpicker")).toHaveClass("mt-colorpicker--inherited");
     expect(screen.getByRole("button", { name: "Unlink inheritance" })).toBeInTheDocument();
   });
 
@@ -280,6 +280,6 @@ describe("mt-colorpicker", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field")).not.toHaveAttribute("validation");
+    expect(container.querySelector(".mt-colorpicker")).not.toHaveAttribute("validation");
   });
 });

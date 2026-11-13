@@ -103,7 +103,7 @@ describe("mt-text-field", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field__help-text")).toBeInTheDocument();
+    expect(container.querySelector(".mt-text-field__help-text")).toBeInTheDocument();
   });
 
   it("marks the label as required when the required prop is set", () => {
@@ -170,7 +170,7 @@ describe("mt-text-field", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field")).toHaveClass("is--inherited");
+    expect(container.querySelector(".mt-text-field")).toHaveClass("mt-text-field--inherited");
     expect(screen.getByRole("button", { name: "Unlink inheritance" })).toBeInTheDocument();
   });
 
@@ -197,7 +197,7 @@ describe("mt-text-field", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field")).toHaveClass("mt-field--small");
+    expect(container.querySelector(".mt-text-field")).toHaveClass("mt-text-field--small");
   });
 
   it("does not show the error state when only the validation prop fails", () => {
@@ -207,7 +207,7 @@ describe("mt-text-field", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field")).not.toHaveClass("has--error");
+    expect(container.querySelector(".mt-text-field")).not.toHaveClass("mt-text-field--error");
   });
 
   it("shows the error state when an error is passed", () => {
@@ -217,6 +217,6 @@ describe("mt-text-field", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field")).toHaveClass("has--error");
+    expect(container.querySelector(".mt-text-field")).toHaveClass("mt-text-field--error");
   });
 });

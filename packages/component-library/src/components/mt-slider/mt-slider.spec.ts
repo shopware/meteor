@@ -51,7 +51,7 @@ describe("mt-slider", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field__help-text")).toBeInTheDocument();
+    expect(container.querySelector(".mt-slider__help-text")).toBeInTheDocument();
   });
 
   it("marks the label as required when the required prop is set", () => {
@@ -97,7 +97,7 @@ describe("mt-slider", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field")).toHaveClass("is--inherited");
+    expect(container.querySelector(".mt-slider")).toHaveClass("mt-slider--inherited");
     expect(screen.getByRole("button", { name: "Unlink inheritance" })).toBeInTheDocument();
   });
 
@@ -124,7 +124,7 @@ describe("mt-slider", () => {
     });
 
     // ASSERT
-    expect(container.querySelector(".mt-field")).toHaveClass("mt-field--small");
+    expect(container.querySelector(".mt-slider")).toHaveClass("mt-slider--small");
   });
 
   it("accepts the validation prop without rendering it as an attribute", () => {
@@ -132,6 +132,6 @@ describe("mt-slider", () => {
     const { container } = renderSlider({ props: { label: "Label", validation: "required" } });
 
     // ASSERT
-    expect(container.querySelector(".mt-field")).not.toHaveAttribute("validation");
+    expect(container.querySelector(".mt-slider")).not.toHaveAttribute("validation");
   });
 });

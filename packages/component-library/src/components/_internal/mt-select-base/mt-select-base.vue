@@ -1,19 +1,19 @@
 <template>
   <div
-    class="mt-field"
     :class="[
-      `mt-field--${size}`,
+      'mt-select',
+      `mt-select--${size}`,
       {
-        'has--focus': expanded,
-        'has--error': !!error,
-        'is--disabled': disabled,
-        'is--inherited': isInherited,
+        'mt-select--focus': expanded,
+        'mt-select--error': !!error,
+        'mt-select--disabled': disabled,
+        'mt-select--inherited': isInherited,
       },
     ]"
   >
     <mt-field-label
       v-if="label"
-      class="mt-field__label"
+      class="mt-select__label"
       :for="identification"
       :required="required"
       :has-error="!!error"
@@ -27,14 +27,14 @@
 
     <mt-help-text
       v-if="helpText"
-      class="mt-field__help-text"
+      class="mt-select__help-text"
       :text="helpText"
       placement="right"
       :style="{ gridArea: 'help-text' }"
     />
 
-    <div class="mt-select__block mt-block-field__block">
-      <mt-field-addition type="prefix" :size="size" :has-error="!!error">
+    <div class="mt-select__block">
+      <mt-field-addition type="prefix" class="mt-select__prefix" :size="size" :has-error="!!error">
         <slot name="mt-select-prefix" />
       </mt-field-addition>
 
@@ -91,19 +91,24 @@
         </transition>
       </template>
 
-      <mt-field-addition v-if="copyable" :size="size" :has-error="!!error">
+      <mt-field-addition
+        v-if="copyable"
+        class="mt-select__suffix"
+        :size="size"
+        :has-error="!!error"
+      >
         <mt-field-copyable :copyable-text="copyableText" :tooltip="copyableTooltip" />
       </mt-field-addition>
 
-      <mt-field-addition v-else :size="size" :has-error="!!error">
+      <mt-field-addition v-else class="mt-select__suffix" :size="size" :has-error="!!error">
         <slot name="mt-select-suffix" />
       </mt-field-addition>
     </div>
 
     <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />
 
-    <div class="mt-field__hint-wrapper">
-      <div class="mt-field__hint">
+    <div class="mt-select__hint-row">
+      <div class="mt-select__hint">
         <slot name="mt-select-hint" />
       </div>
     </div>
@@ -342,9 +347,7 @@ export default defineComponent({
   methods: {
     updateSuffixWidth() {
       // Find the suffix container to get the width
-      const suffixElement = this.$el?.querySelector(
-        ".mt-block-field__block > .mt-field__addition:not(.is--prefix)",
-      );
+      const suffixElement = this.$el?.querySelector(".mt-select__block > .mt-select__suffix");
 
       if (!suffixElement) {
         this.suffixWidth = 0;
@@ -477,7 +480,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .mt-select {
   position: relative;
   min-width: 100px;
@@ -491,7 +494,7 @@ export default defineComponent({
   width: 100%;
 }
 
-.mt-select.is--disabled {
+.mt-select--disabled {
   cursor: not-allowed;
 }
 
@@ -506,27 +509,27 @@ export default defineComponent({
   overflow: hidden;
 }
 
-.mt-select.mt-field--small .mt-select__block {
+.mt-select--small .mt-select__block {
   min-height: var(--scale-size-32);
 }
 
-.mt-select.has--focus .mt-select__block {
+.mt-select--focus .mt-select__block {
   outline: var(--scale-size-2) solid var(--color-border-brand-default);
   outline-offset: var(--scale-size-2);
 }
 
-.mt-select.has--error .mt-select__block {
+.mt-select--error .mt-select__block {
   background-color: var(--color-background-critical-default);
   border-color: var(--color-border-critical-default);
 }
 
-.mt-select .mt-field__hint-wrapper {
+.mt-select .mt-select__hint-row {
   grid-area: hint;
   display: flex;
   justify-content: space-between;
 }
 
-.mt-select .mt-field__hint {
+.mt-select .mt-select__hint {
   margin-top: var(--scale-size-4);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
@@ -537,8 +540,8 @@ export default defineComponent({
   gap: var(--scale-size-8);
 }
 
-.mt-select .mt-field__hint:empty,
-.mt-select .mt-field__hint-wrapper:has(> .mt-field__hint:empty) {
+.mt-select .mt-select__hint:empty,
+.mt-select .mt-select__hint-row:has(> .mt-select__hint:empty) {
   display: none;
 }
 
@@ -574,7 +577,7 @@ export default defineComponent({
   top: -4px;
 }
 
-.mt-select .mt-select__selection-indicators .mt-loader .mt-loader__container {
+.mt-select .mt-select__selection-indicators .mt-loader :deep(.mt-loader__container) {
   transform: none;
   left: 0;
   top: 0;
@@ -625,23 +628,17 @@ export default defineComponent({
 }
 
 .mt-select:hover .mt-select__select-indicator-clear,
-.mt-select.has--focus .mt-select__select-indicator-clear {
+.mt-select--focus .mt-select__select-indicator-clear {
   opacity: 1;
   pointer-events: all;
   cursor: pointer;
 }
 
-.mt-select.mt-field--medium .mt-select__selection {
-  padding: var(--scale-size-4) var(--scale-size-6) 0;
+.mt-select--small .mt-select__selection {
+  padding: 0 var(--scale-size-6);
 }
 
-.mt-select.mt-field--small .mt-select__selection {
-  padding: var(--scale-size-4) var(--scale-size-6) 0;
-}
-
-.mt-select.is--disabled .mt-select__block,
-.mt-select.is--disabled .mt-label,
-.mt-select.is--disabled input {
+.mt-select--disabled .mt-select__block {
   background-color: var(--color-background-tertiary-default);
 }
 
@@ -649,26 +646,7 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.mt-select--small .mt-select-selection-list--single .mt-label {
-  cursor: pointer;
-  height: var(--scale-size-18);
-  padding-top: 1px;
-}
-
 .mt-select--small .mt-select__block {
   min-height: unset;
-}
-
-/* Vue.js transitions */
-.mt-select-result-list-fade-down-enter-active,
-.mt-select-result-list-fade-down-leave-active {
-  transition: all ease-in-out 0.2s;
-  transform: translateY(0);
-}
-
-.mt-select-result-list-fade-down-enter,
-.mt-select-result-list-fade-down-leave-to {
-  transform: translateY(-10px);
-  opacity: 0;
 }
 </style>

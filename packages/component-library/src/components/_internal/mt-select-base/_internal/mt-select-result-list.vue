@@ -331,7 +331,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "../../../../assets/scss/variables";
 
 $mt-select-result-list-transition: all ease-in-out 0.2s;
@@ -350,7 +350,7 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   overflow: hidden;
 }
 
-.mt-select-result-list-popover .mt-popover-deprecated__wrapper {
+.mt-select-result-list-popover :deep(.mt-popover-deprecated__wrapper) {
   width: 100%;
 }
 
@@ -384,7 +384,23 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   height: 293px;
 }
 
-.mt-popover-deprecated__wrapper.--placement-bottom-outside.mt-select-result-list-popover-wrapper {
+/* The deprecated popover moves its wrapper to the end of the page, outside this component. */
+:global(
+    .mt-popover-deprecated__wrapper.--placement-bottom-outside.mt-select-result-list-popover-wrapper
+  ) {
   transform: translate(0, calc(-100% - 48px));
+}
+
+/* Transition the select base applies to this list when it opens and closes. */
+.mt-select-result-list-fade-down-enter-active,
+.mt-select-result-list-fade-down-leave-active {
+  transition: all ease-in-out 0.2s;
+  transform: translateY(0);
+}
+
+.mt-select-result-list-fade-down-enter,
+.mt-select-result-list-fade-down-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
 }
 </style>

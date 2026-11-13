@@ -1,19 +1,19 @@
 <template>
   <div
-    class="mt-password-field mt-field"
     :class="[
-      `mt-field--${size}`,
+      'mt-password-field',
+      `mt-password-field--${size}`,
       {
-        'has--error': hasError,
-        'is--disabled': disabled,
-        'is--inherited': isInherited,
-        'has--focus': hasFocus,
+        'mt-password-field--error': hasError,
+        'mt-password-field--disabled': disabled,
+        'mt-password-field--inherited': isInherited,
+        'mt-password-field--focus': hasFocus,
       },
     ]"
   >
     <mt-field-label
       v-if="label"
-      class="mt-field__label"
+      class="mt-password-field__label"
       :for="identification"
       :required="required"
       :has-error="hasError"
@@ -27,13 +27,13 @@
 
     <mt-help-text
       v-if="helpText"
-      class="mt-field__help-text"
+      class="mt-password-field__help-text"
       :text="helpText"
       placement="right"
       :style="{ gridArea: 'help-text' }"
     />
 
-    <div class="mt-password-field__block mt-block-field__block">
+    <div class="mt-password-field__block">
       <mt-field-addition v-if="$slots.prefix" type="prefix" :size="size" :has-error="hasError">
         <slot name="prefix" />
       </mt-field-addition>
@@ -76,8 +76,8 @@
 
     <mt-field-error v-if="!!error" :error="error" :style="{ gridArea: 'error' }" />
 
-    <div v-if="showFieldHint" class="mt-field__hint-wrapper">
-      <div class="mt-field__hint">
+    <div v-if="showFieldHint" class="mt-password-field__hint-row">
+      <div class="mt-password-field__hint">
         <mt-field-hint :hide-icon="!!$slots.hint">
           <slot name="hint">
             {{ hint }}
@@ -244,7 +244,7 @@ const { t } = useI18n({
   width: 100%;
 }
 
-.mt-password-field.is--disabled {
+.mt-password-field--disabled {
   cursor: not-allowed;
 }
 
@@ -258,7 +258,7 @@ const { t } = useI18n({
   background-color: var(--color-background-primary-default);
 }
 
-.mt-password-field.mt-field--small .mt-password-field__block {
+.mt-password-field--small .mt-password-field__block {
   min-height: var(--scale-size-32);
 }
 
@@ -266,12 +266,12 @@ const { t } = useI18n({
   background-color: var(--color-background-tertiary-default);
 }
 
-.mt-password-field.has--focus .mt-password-field__block {
+.mt-password-field--focus .mt-password-field__block {
   outline: var(--scale-size-2) solid var(--color-border-brand-default);
   outline-offset: var(--scale-size-2);
 }
 
-.mt-password-field.has--error .mt-password-field__block {
+.mt-password-field--error .mt-password-field__block {
   background-color: var(--color-background-critical-default);
   border-color: var(--color-border-critical-default);
 }
@@ -292,7 +292,7 @@ const { t } = useI18n({
   -moz-appearance: none;
 }
 
-.mt-password-field.mt-field--small .mt-password-field__input {
+.mt-password-field--small .mt-password-field__input {
   padding: var(--scale-size-4) var(--scale-size-16);
 }
 
@@ -326,13 +326,13 @@ const { t } = useI18n({
   }
 }
 
-.mt-field__hint-wrapper {
+.mt-password-field__hint-row {
   grid-area: hint;
   display: flex;
   justify-content: space-between;
 }
 
-.mt-field__hint {
+.mt-password-field__hint {
   margin-top: var(--scale-size-4);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
@@ -343,7 +343,7 @@ const { t } = useI18n({
   gap: var(--scale-size-8);
 }
 
-.mt-field__hint:empty {
+.mt-password-field__hint:empty {
   display: none;
 }
 </style>

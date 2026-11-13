@@ -964,7 +964,7 @@ export const VisualTestHelpText: MtSelectStory = {
     helpText: "Text for helping you",
   },
   play: ({ canvasElement }) => {
-    expect(canvasElement.querySelector(".mt-field__help-text")).toBeInTheDocument();
+    expect(canvasElement.querySelector(".mt-select__help-text")).toBeInTheDocument();
   },
 };
 

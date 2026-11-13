@@ -1,5 +1,11 @@
 <template>
-  <ul class="mt-select-selection-list">
+  <ul
+    :class="[
+      'mt-select-selection-list',
+      `mt-select-selection-list--${size ?? 'default'}`,
+      { 'mt-select-selection-list--disabled': disabled },
+    ]"
+  >
     <!-- eslint-disable vue/no-use-v-if-with-v-for -->
     <template v-for="(selection, index) in selections" :key="selection[valueProperty]">
       <li
@@ -307,7 +313,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "../../../../assets/scss/variables";
 
 .mt-select-selection-list {
@@ -375,7 +381,14 @@ export default defineComponent({
   }
 }
 
-.mt-field--medium .mt-select-selection-list {
+.mt-select-selection-list--disabled {
+  .mt-label,
+  input {
+    background-color: var(--color-background-tertiary-default);
+  }
+}
+
+.mt-select-selection-list--medium {
   .mt-select-selection-list__item-holder .mt-label {
     margin: var(--scale-size-4) var(--scale-size-6) 0 0;
   }
@@ -385,7 +398,7 @@ export default defineComponent({
   }
 }
 
-.mt-field--small .mt-select-selection-list {
+.mt-select-selection-list--small {
   .mt-select-selection-list__item-holder .mt-label {
     margin: var(--scale-size-4) var(--scale-size-6) 0 0;
   }

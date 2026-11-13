@@ -484,7 +484,7 @@ export const VisualTestHelpText: MtSliderStory = {
     helpText: "Text for helping you",
   },
   play: ({ canvasElement }) => {
-    expect(canvasElement.querySelector(".mt-field__help-text")).toBeInTheDocument();
+    expect(canvasElement.querySelector(".mt-slider__help-text")).toBeInTheDocument();
   },
 };
 
