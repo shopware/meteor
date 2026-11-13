@@ -210,6 +210,15 @@ const arrowOffset = computed<string>(() => {
 
 provide(TooltipContext, true);
 
+defineExpose({
+  /**
+   * Shows the tooltip again while its trigger is hovered or focused, for
+   * example to confirm an action after a click or key press closed it.
+   */
+  // Treated as a hover so moving the pointer away closes it, even though a clicked trigger keeps focus
+  show: () => show({ gotOpenedBy: "hover" }),
+});
+
 /**
  * This composable uses DOMPurify to sanitize HTML content.
  * It returns the value as a computed read-only property.
