@@ -26,4 +26,6 @@ Remove `mt-base-field` and make every form field self-contained
 
 Each field now uses only classes named after itself, with its state as a modifier, for example `mt-text-field--error`. CSS that targeted the old classes, including `:deep()` overrides, no longer applies. Use the component's props instead. If you need something a prop doesn't cover, open an issue.
 
+**Small sizes.** `mt-colorpicker` has a new `size` prop, and `size="small"` gives it the 32px field the other inputs have. The small `mt-select` is now 32px tall instead of 34px, with selected tags centred.
+
 **One prefix and suffix style.** The boxed prefix and suffix inside text, number, password, select, slider and colorpicker fields now use the same `mt-field-affix` as `mt-email-field`. They have rounded outer corners and smaller, medium-weight text, and no minimum width.
