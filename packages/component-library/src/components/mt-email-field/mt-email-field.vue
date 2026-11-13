@@ -284,7 +284,7 @@ const { t } = useI18n({
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   color: var(--color-text-secondary-default);
-  margin-top: 0.1875rem;
+  margin-top: var(--scale-size-4);
 }
 
 .mt-email-field__block--small {

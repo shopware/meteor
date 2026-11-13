@@ -119,7 +119,7 @@ provide("radioGroupContext", {
 
 .mt-radio-group-root__label {
   line-height: var(--font-line-height-xs) !important;
-  margin-bottom: var(--scale-size-2);
+  margin-bottom: var(--scale-size-4);
   font-size: var(--font-size-xs);
 }
 
@@ -134,6 +134,6 @@ provide("radioGroupContext", {
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   color: var(--color-text-secondary-default);
-  margin-top: 0.1875rem;
+  margin-top: var(--scale-size-4);
 }
 </style>

@@ -167,7 +167,7 @@ const inheritanceState = computed<"linked" | "unlinked" | "none">(() => {
 
 const labelStyle = computed<CSSProperties>(() => ({
   gridArea: "label",
-  marginBottom: "var(--scale-size-8)",
+  marginBottom: "var(--scale-size-2)",
   lineHeight: "var(--font-line-height-xs)",
 }));
 

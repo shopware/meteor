@@ -308,7 +308,7 @@ export default defineComponent({
     labelStyle(): CSSProperties {
       return {
         gridArea: "label",
-        marginBottom: "var(--scale-size-8)",
+        marginBottom: "var(--scale-size-2)",
         lineHeight: "var(--font-line-height-xs)",
       };
     },

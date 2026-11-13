@@ -810,7 +810,7 @@ export default defineComponent({
     labelStyle(): Record<string, string> {
       return {
         gridArea: "label",
-        marginBottom: "var(--scale-size-8)",
+        marginBottom: "var(--scale-size-2)",
         lineHeight: "var(--font-line-height-xs)",
       };
     },
