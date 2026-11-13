@@ -1,13 +1,28 @@
 ---
-"@shopware-ag/meteor-component-library": minor
+"@shopware-ag/meteor-component-library": major
 ---
 
-Remove the internal `mt-base-field` layout wrapper and its global styles
+Remove `mt-base-field` and make every form field self-contained
 
-`mt-text-field`, `mt-number-field`, `mt-password-field`, `mt-colorpicker`, `mt-slider`, `mt-checkbox` and `mt-select` now compose the same internal primitives the already-migrated fields use (`mt-field-label`, `mt-field-error`, `mt-field-hint`, and the new `mt-field-addition`) over their own CSS grid, instead of nesting an `mt-base-field` wrapper.
+`mt-text-field`, `mt-number-field`, `mt-password-field`, `mt-colorpicker`, `mt-slider`, `mt-checkbox` and `mt-select` no longer nest the internal `mt-base-field` wrapper. Each one lays out its own label, input, error and hint, like `mt-textarea`, `mt-email-field` and `mt-url-field` already did. Public props, slots and events are unchanged.
 
-**Global styles removed.** `mt-base-field` used to ship an unscoped stylesheet (`.mt-field input`, `.mt-field textarea`, `.mt-field .mt-block-field__block`, `.mt-field .mt-field__addition` and friends). Those rules now live scoped inside each component, with the same values, so the library's own fields look the same. If your app relied on these rules styling your own markup inside an element with the `mt-field` class, that markup loses those styles and needs its own CSS.
+**Form fields have no outer margin.** The spacing behind the `removeDefaultMargin`, `consistentLabelLineHeight` and `removeSwitchMinHeight` future flags is now the only behaviour for form fields:
 
-Public props, slots and events are unchanged. The legacy structural class names (`mt-field`, `mt-block-field__block`, `mt-field__label`, `mt-field__addition`, `has--error`, `has--focus`, `is--disabled`, `is--inherited`, `mt-field--small`) are kept as aliases on the new elements so existing `:deep()` overrides keep working; they are deprecated and will be removed in the next major.
+- text, number, password, email, url, colorpicker, slider, select, checkbox, switch and radio group have no outer margin, including the extra margin a field used to get while showing an error. Space fields with your layout, for example a grid or flex `gap`.
+- field labels use the `--font-line-height-xs` token instead of `16px`.
+- a non-bordered `mt-switch` has no minimum height.
 
-The inheritance toggle in these fields' labels now renders through the shared `mt-field-label`, picking up the same compact icon spacing `mt-url-field`, `mt-textarea` and `mt-switch` already use.
+`consistentLabelLineHeight` and `removeSwitchMinHeight` are removed. `removeDefaultMargin` still applies to `mt-card`, `mt-banner` and `mt-tabs`. The `removeTopMargin` prop on `mt-switch` is deprecated and has no effect.
+
+**Styles are scoped and the shared classes are gone.** `mt-base-field` shipped a global stylesheet that styled any `input`, `select` or `textarea` inside an element with the `mt-field` class. That stylesheet is gone, and every form field's styles are now scoped to the component. These class names are no longer rendered:
+
+- `mt-field`, `mt-field--small`, `mt-field--default`, `mt-block-field__block`
+- `mt-field__label`, `mt-field__help-text`, `mt-field__inheritance-icon`
+- `mt-field__hint-wrapper`, `mt-field__hint`, `mt-field__hint-right`
+- `mt-field__addition`, `is--prefix`
+- `has--error`, `has--focus`, `is--disabled`, `is--inherited` on fields
+- `mt-field--checkbox*` and `mt-field__checkbox*`, now `mt-checkbox__*`
+
+Each field now uses only classes named after itself, with its state as a modifier, for example `mt-text-field--error`. CSS that targeted the old classes, including `:deep()` overrides, no longer applies. Use the component's props instead. If you need something a prop doesn't cover, open an issue.
+
+**One prefix and suffix style.** The boxed prefix and suffix inside text, number, password, select, slider and colorpicker fields now use the same `mt-field-affix` as `mt-email-field`. They have rounded outer corners and smaller, medium-weight text, and no minimum width.
