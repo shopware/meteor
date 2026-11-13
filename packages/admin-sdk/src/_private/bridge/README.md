@@ -55,6 +55,19 @@ Unsubscribing removes only that subscription. It does not cancel an already runn
 
 `HANDLER_ERROR` reports an exception thrown by the business handler. `INTERNAL_ERROR` reports an unexpected error while the SDK processes a request. Both are returned as SDK errors to the publisher.
 
+## Built-in contracts
+
+The SDK validates these events on both sides. Events without a contract are delivered unvalidated.
+
+| Event key | Publisher → receiver | Receiving location ID | Request | Response |
+|---|---|---|---|---|
+| `copilot.chat.prompt.v1` | Any allowed service → Copilot | `copilot-chat` | `{ prompt: string }` (nonempty, no other fields) | `{ status: 'success' \| 'error', message?: string }` |
+| `analytics.dashboards.changed.v1` | Copilot → Analytics | `sw-main-hidden` | Object, no required fields; unknown fields are accepted | `{ status: 'success' \| 'error', message?: string }` |
+
+`analytics.dashboards.changed.v1` tells Analytics that charts or dashboards of the current user may have changed, so it can reload them. It carries no details; the receiver refetches. Publish it fire-and-forget: `TIMEOUT` is expected when Analytics is not installed or not loaded.
+
+New fields may be added to a v1 request only as optional fields that receivers can ignore. Anything else needs a new event key, such as `analytics.dashboards.changed.v2`.
+
 ## Example: send a prompt to Copilot
 
 The example uses the built-in `copilot.chat.prompt.v1` contract.
@@ -94,4 +107,38 @@ try {
 } catch (error) {
   console.error('Prompt submission failed:', error);
 }
+```
+
+## Example: notify Analytics about changed dashboards
+
+### Subscribe in Analytics
+
+Register in the Administration's hidden iframe, whose location ID is `sw-main-hidden` (`location.MAIN_HIDDEN`).
+
+```ts
+import { subscribeServiceEvent, SERVICE_ORIGINS } from '@shopware-ag/meteor-admin-sdk/es/_private/bridge';
+
+subscribeServiceEvent(
+  'analytics.dashboards.changed.v1',
+  () => {
+    reloadDashboards(); // your app refetches its charts and dashboards
+    return { status: 'success' };
+  },
+  { allowedOrigins: [SERVICE_ORIGINS.COPILOT] },
+);
+```
+
+### Publish from Copilot
+
+```ts
+import { publishServiceEvent, SERVICE_ORIGINS } from '@shopware-ag/meteor-admin-sdk/es/_private/bridge';
+
+publishServiceEvent({
+  targetOrigin: SERVICE_ORIGINS.ANALYTICS,
+  targetLocationId: 'sw-main-hidden',
+  eventKey: 'analytics.dashboards.changed.v1',
+  data: {},
+}).catch(() => {
+  // Analytics may not be installed or loaded.
+});
 ```

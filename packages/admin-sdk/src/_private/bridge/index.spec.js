@@ -159,6 +159,43 @@ test('validates handler results', async () => {
     .rejects.toMatchObject({ code: 'RESPONSE_VALIDATION_FAILED' });
 });
 
+describe('analytics.dashboards.changed.v1', () => {
+  const eventKey = 'analytics.dashboards.changed.v1';
+  const hiddenFrame = { ...params, targetLocationId: 'sw-main-hidden' };
+
+  beforeEach(() => {
+    window.history.replaceState({}, '', '/?location-id=sw-main-hidden');
+  });
+
+  test.each([
+    {},
+    { dashboardIds: ['a'] },
+  ])('delivers %p and resolves the handler result', async (data) => {
+    const handler = jest.fn(() => ({ status: 'success' }));
+    subscribe(handler, {}, eventKey);
+    await expect(publishServiceEvent({ ...hiddenFrame, eventKey, data })).resolves.toEqual({ status: 'success' });
+    expect(handler).toHaveBeenCalledWith(data);
+  });
+
+  test.each([null, [], 'changed', 1])('rejects %p on both publisher and receiver', async (data) => {
+    const handler = jest.fn();
+    subscribe(handler, {}, eventKey);
+    await expect(publishServiceEvent({ ...hiddenFrame, eventKey, data }))
+      .rejects.toMatchObject({ code: 'REQUEST_VALIDATION_FAILED' });
+    emit(request('invalid', { eventKey, data, targetLocationId: 'sw-main-hidden' }), senderOrigin, sender);
+    expect(handler).not.toHaveBeenCalled();
+    expect(sender.postMessage).toHaveBeenCalledWith(expect.objectContaining({
+      ok: false, error: expect.objectContaining({ code: 'REQUEST_VALIDATION_FAILED' }),
+    }), senderOrigin);
+  });
+
+  test('validates handler results', async () => {
+    subscribe(() => ({ status: 'refreshed' }), {}, eventKey);
+    await expect(publishServiceEvent({ ...hiddenFrame, eventKey, data: {} }))
+      .rejects.toMatchObject({ code: 'RESPONSE_VALIDATION_FAILED' });
+  });
+});
+
 test('returns INTERNAL_ERROR when receiver request validation unexpectedly throws', async () => {
   const validateContract = contracts.validateContract;
   jest.spyOn(contracts, 'validateContract')
