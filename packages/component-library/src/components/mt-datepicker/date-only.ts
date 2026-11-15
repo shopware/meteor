@@ -77,11 +77,10 @@ export function toDateOnlyString(value: Date | string, timeZone: string): string
 }
 
 /**
- * Returns the UTC ISO string of midnight of the calendar day ("yyyy-MM-dd") in the time zone.
- * If midnight does not exist on that day (clocks skip it), the first moment of the day is used.
- * Returns null for values that are not a valid calendar day.
+ * Returns midnight UTC of the calendar day ("yyyy-MM-dd") in milliseconds, or null if the value
+ * is not a calendar day that exists.
  */
-export function dateOnlyStringToUtcIso(dateOnly: string, timeZone: string): string | null {
+function parseDateOnlyString(dateOnly: string): number | null {
   const match = DATE_ONLY_PATTERN.exec(dateOnly);
   if (!match) return null;
 
@@ -89,6 +88,27 @@ export function dateOnlyStringToUtcIso(dateOnly: string, timeZone: string): stri
   const midnightAsUtc = Date.UTC(year, month - 1, day);
   const parsed = new Date(midnightAsUtc);
   if (parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) return null;
+
+  return midnightAsUtc;
+}
+
+/**
+ * Returns true if the value is a calendar day ("yyyy-MM-dd") that exists.
+ */
+export function isDateOnlyString(value: string): boolean {
+  return parseDateOnlyString(value) !== null;
+}
+
+/**
+ * Returns the UTC ISO string of midnight of the calendar day ("yyyy-MM-dd") in the time zone.
+ * If midnight does not exist on that day (clocks skip it), the first moment of the day is used.
+ * Returns null for values that are not a valid calendar day.
+ */
+export function dateOnlyStringToUtcIso(dateOnly: string, timeZone: string): string | null {
+  const midnightAsUtc = parseDateOnlyString(dateOnly);
+  if (midnightAsUtc === null) return null;
+
+  const day = new Date(midnightAsUtc).getUTCDate();
 
   // The offset depends on the instant, which is what we are looking for. Start with the offset
   // around that time and correct it once in case a clock change lies in between.

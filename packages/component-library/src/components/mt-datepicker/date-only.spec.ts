@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { dateOnlyStringToUtcIso, toDateOnlyString } from "./date-only";
+import { dateOnlyStringToUtcIso, isDateOnlyString, toDateOnlyString } from "./date-only";
 
 describe("toDateOnlyString", () => {
   it.each([
@@ -80,6 +80,19 @@ describe("dateOnlyStringToUtcIso", () => {
     "returns null for %j",
     (dateOnly) => {
       expect(dateOnlyStringToUtcIso(dateOnly, "UTC")).toBeNull();
+    },
+  );
+});
+
+describe("isDateOnlyString", () => {
+  it.each(["2000-01-15", "2024-02-29", "1999-12-31"])("accepts %s", (value) => {
+    expect(isDateOnlyString(value)).toBe(true);
+  });
+
+  it.each(["", "2000-1-5", "2000/01/15", "2000-01-15T00:00:00.000Z", "2023-02-29", "2000-13-01"])(
+    "rejects %j",
+    (value) => {
+      expect(isDateOnlyString(value)).toBe(false);
     },
   );
 });

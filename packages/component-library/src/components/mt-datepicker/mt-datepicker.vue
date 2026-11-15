@@ -118,7 +118,7 @@ import { useId } from "vue";
 import { enUS } from "date-fns/locale/en-US";
 import type { Locale } from "date-fns";
 import { importDateFnsLocaleModule } from "./date-fns-locale";
-import { dateOnlyStringToUtcIso, toDateOnlyString } from "./date-only";
+import { dateOnlyStringToUtcIso, isDateOnlyString, toDateOnlyString } from "./date-only";
 
 // @deprecated tag:v5 remove the `wrapper` class of the root element. Keep `mt-datepicker__wrapper`,
 // which the styles build on.
@@ -160,6 +160,18 @@ const props = withDefaults(
      * Useful for adjusting date and time according to a specific timezone.
      */
     timeZone?: string;
+    /**
+     * Defines the value of a date-only picker (`dateType="date"`). It has no effect on the other
+     * date types.
+     *
+     * - "datetime": midnight of the picked day in `timeZone` as a UTC ISO string. January 15 in
+     *   Europe/Berlin is "2000-01-14T23:00:00.000Z". Use it when the day depends on where the
+     *   user is, for example in a filter for orders of a day.
+     * - "date": the picked calendar day as "yyyy-MM-dd", for example "2000-01-15". The day is the
+     *   same in every time zone and `timeZone` is ignored. Use it for days that do not depend on
+     *   a place, such as birthdays. A value with a time is read as the day it falls on in UTC.
+     */
+    valueFormat?: "datetime" | "date";
     /**
      * The value of the date picker. Can be a single string or an array of strings.
      * This represents the currently selected date(s).
@@ -252,6 +264,9 @@ const props = withDefaults(
     locale: "de",
     format: undefined,
     timeZone: "UTC",
+    // @deprecated tag:v6 - "date" will become the default, so date-only pickers work with plain
+    // calendar days unless "datetime" is requested.
+    valueFormat: "datetime",
     modelValue: null,
     placeholder: "Y-m-d ...",
     is24: true,
@@ -369,12 +384,19 @@ const datePickerInputAttrs = computed<
   "aria-describedby": errorMessage.value || props.error ? errorId : undefined,
 }));
 
+// A plain calendar day is the same in every time zone. The picker then reads and emits
+// "yyyy-MM-dd" and does not use the configured time zone.
+const isPlainDate = computed(() => props.dateType === "date" && props.valueFormat === "date");
+
+// The time zone in which a date-only picker looks up the calendar day of a value
+const dateOnlyTimeZone = computed(() => (isPlainDate.value ? "UTC" : props.timeZone));
+
 // The library does not know the time zone in date-only mode, so limits are handed over as the
-// calendar day they fall on in the configured time zone.
+// calendar day they fall on in that time zone.
 const toDatePickerLimit = (limit: Date | string | undefined) => {
   if (props.dateType !== "date" || limit === undefined) return limit;
 
-  const dateOnly = toDateOnlyString(limit, props.timeZone);
+  const dateOnly = toDateOnlyString(limit, dateOnlyTimeZone.value);
   if (!dateOnly) return limit;
 
   const [year, month, day] = dateOnly.split("-").map(Number);
@@ -390,11 +412,11 @@ const dateValue = computed<Date | Date[] | Time | string | string[] | null>(() =
   if (props.dateType === "date") {
     if (Array.isArray(props.modelValue)) {
       return props.modelValue
-        .map((value) => (value === null ? null : toDateOnlyString(value, props.timeZone)))
+        .map((value) => (value === null ? null : toDateOnlyString(value, dateOnlyTimeZone.value)))
         .filter((value): value is string => value !== null);
     }
 
-    return toDateOnlyString(props.modelValue, props.timeZone);
+    return toDateOnlyString(props.modelValue, dateOnlyTimeZone.value);
   }
 
   if (props.dateType === "time") {
@@ -469,8 +491,11 @@ const onDateValueChange = (
     return;
   }
 
-  const toUtcIso = (value: Date | string | null) => {
+  const toEmittedValue = (value: Date | string | null) => {
     if (value === null) return null;
+    if (isPlainDate.value && typeof value === "string") {
+      return isDateOnlyString(value) ? value : null;
+    }
     if (props.dateType === "date" && typeof value === "string") {
       return dateOnlyStringToUtcIso(value, props.timeZone);
     }
@@ -482,12 +507,12 @@ const onDateValueChange = (
   if (Array.isArray(newValue)) {
     emit(
       "update:modelValue",
-      newValue.map((value) => toUtcIso(value)),
+      newValue.map((value) => toEmittedValue(value)),
     );
     return;
   }
 
-  emit("update:modelValue", toUtcIso(newValue));
+  emit("update:modelValue", toEmittedValue(newValue));
 };
 
 watch(
