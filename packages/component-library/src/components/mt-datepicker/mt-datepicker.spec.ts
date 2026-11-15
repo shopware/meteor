@@ -1,6 +1,6 @@
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/vue";
+import { cleanup, render, screen } from "@testing-library/vue";
 import MtDatepicker from "./mt-datepicker.vue";
 import userEvent from "@testing-library/user-event";
 import { waitUntil } from "@/_internal/test-helper";
@@ -709,6 +709,212 @@ describe("mt-datepicker", () => {
 
     const monthLabel = document.querySelector('[data-test-id="month-toggle-overlay-0"]');
     expect(monthLabel).toHaveTextContent("juil.");
+  });
+});
+
+// A date-only picker has no visible time, so the emitted value must not depend on a hidden one.
+// Contract: picking a day emits midnight of that day in the configured time zone, regardless of
+// whether the day was clicked or typed, and regardless of the previous value, the current time or
+// the time zone of the browser.
+// See https://github.com/shopware/meteor/issues/1483
+describe("mt-datepicker date-only values", () => {
+  beforeEach(() => {
+    // 09:00 UTC, so a leaked "current time" is visible in every tested time zone
+    vi.setSystemTime(new Date("2024-07-15T09:00:00Z"));
+  });
+
+  // Renders the date-only picker with v-model, like real usage, and returns the emit spy
+  function renderDatePicker(fieldProps: {
+    timeZone: string;
+    modelValue?: string | null;
+    textInput?: boolean;
+    range?: boolean;
+  }) {
+    const handler = vi.fn();
+
+    render(
+      defineComponent({
+        components: { MtDatepicker },
+        setup() {
+          const { modelValue, ...rest } = fieldProps;
+          const value = ref<unknown>(modelValue ?? null);
+          const onUpdate = (newValue: unknown) => {
+            value.value = newValue;
+            handler(newValue);
+          };
+
+          return { value, onUpdate, rest };
+        },
+        template: `
+          <MtDatepicker
+            v-bind="rest"
+            date-type="date"
+            locale="en-US"
+            :model-value="value"
+            @update:model-value="onUpdate"
+          />
+        `,
+      }),
+    );
+
+    return handler;
+  }
+
+  async function clickDay(day: string) {
+    if (!document.querySelector(".dp__menu")) {
+      await userEvent.click(screen.getByRole("textbox"));
+      await waitUntil(() => document.querySelector(".dp__menu") !== null);
+    }
+
+    await waitUntil(() => document.getElementById(`dp-${day}`) !== null);
+    await userEvent.click(document.getElementById(`dp-${day}`) as HTMLElement);
+  }
+
+  async function typeDay(day: string, { hasValue }: { hasValue: boolean }) {
+    const input = screen.getByRole<HTMLInputElement>("textbox");
+
+    if (hasValue) {
+      // The existing value is rendered asynchronously; wait for it so it can be replaced
+      await waitUntil(() => input.value !== "");
+      await userEvent.clear(input);
+    }
+
+    await userEvent.type(input, day.replace(/-/g, "/"));
+    await userEvent.keyboard("{Enter}");
+  }
+
+  // Midnight of the picked day in each time zone, in winter and in summer (DST)
+  const timeZones = [
+    {
+      timeZone: "UTC",
+      winterMidnight: "2000-01-15T00:00:00.000Z",
+      summerMidnight: "2024-07-20T00:00:00.000Z",
+    },
+    {
+      timeZone: "Europe/Berlin",
+      winterMidnight: "2000-01-14T23:00:00.000Z",
+      summerMidnight: "2024-07-19T22:00:00.000Z",
+    },
+    {
+      timeZone: "America/New_York",
+      winterMidnight: "2000-01-15T05:00:00.000Z",
+      summerMidnight: "2024-07-20T04:00:00.000Z",
+    },
+    {
+      timeZone: "Asia/Tokyo",
+      winterMidnight: "2000-01-14T15:00:00.000Z",
+      summerMidnight: "2024-07-19T15:00:00.000Z",
+    },
+  ];
+
+  // The time zone of the browser, which must not influence the result
+  const systemTimeZones = ["UTC", "America/Los_Angeles", "Asia/Tokyo"];
+
+  const cases = systemTimeZones.flatMap((systemTimeZone) =>
+    timeZones.map((timeZone) => ({ systemTimeZone, ...timeZone })),
+  );
+
+  describe.each(cases)("in $timeZone with the browser in $systemTimeZone", (testCase) => {
+    const { systemTimeZone, timeZone, winterMidnight, summerMidnight } = testCase;
+
+    beforeEach(() => {
+      vi.stubEnv("TZ", systemTimeZone);
+    });
+
+    it("emits midnight of the clicked day when the field is empty", async () => {
+      // ARRANGE
+      const handler = renderDatePicker({ timeZone });
+
+      // ACT
+      await clickDay("2024-07-20");
+      await waitUntil(() => handler.mock.calls.length > 0);
+
+      // ASSERT
+      expect(handler).toHaveBeenLastCalledWith(summerMidnight);
+    });
+
+    it("emits midnight of the clicked day when the field already has a value", async () => {
+      // ARRANGE - midnight UTC is how a backend typically returns a stored date
+      const handler = renderDatePicker({ timeZone, modelValue: "2000-01-10T00:00:00.000Z" });
+
+      // ACT
+      await clickDay("2000-01-15");
+      await waitUntil(() => handler.mock.calls.length > 0);
+
+      // ASSERT
+      expect(handler).toHaveBeenLastCalledWith(winterMidnight);
+    });
+
+    it("emits midnight of the clicked day when the previous value has a time of day", async () => {
+      // ARRANGE
+      const handler = renderDatePicker({ timeZone, modelValue: "2000-01-10T13:37:42.000Z" });
+
+      // ACT
+      await clickDay("2000-01-15");
+      await waitUntil(() => handler.mock.calls.length > 0);
+
+      // ASSERT
+      expect(handler).toHaveBeenLastCalledWith(winterMidnight);
+    });
+
+    it("emits midnight of the typed day when the field is empty", async () => {
+      // ARRANGE
+      const handler = renderDatePicker({ timeZone, textInput: true });
+
+      // ACT
+      await typeDay("2024-07-20", { hasValue: false });
+
+      // ASSERT
+      expect(handler).toHaveBeenLastCalledWith(summerMidnight);
+    });
+
+    it("emits midnight of the typed day when the field already has a value", async () => {
+      // ARRANGE
+      const handler = renderDatePicker({
+        timeZone,
+        textInput: true,
+        modelValue: "2000-01-10T00:00:00.000Z",
+      });
+
+      // ACT
+      await typeDay("2000-01-15", { hasValue: true });
+
+      // ASSERT
+      expect(handler).toHaveBeenLastCalledWith(winterMidnight);
+    });
+
+    it("emits the same value for a clicked day and a typed day", async () => {
+      // ARRANGE
+      const props = { timeZone, textInput: true, modelValue: "2000-01-10T00:00:00.000Z" };
+
+      // ACT - click the day
+      const clickHandler = renderDatePicker(props);
+      await clickDay("2000-01-15");
+      await waitUntil(() => clickHandler.mock.calls.length > 0);
+      cleanup();
+
+      // ACT - type the same day
+      const typeHandler = renderDatePicker(props);
+      await typeDay("2000-01-15", { hasValue: true });
+
+      // ASSERT
+      expect(clickHandler.mock.lastCall).toEqual(typeHandler.mock.lastCall);
+    });
+
+    it("emits midnight for both ends of a clicked range", async () => {
+      // ARRANGE
+      const handler = renderDatePicker({ timeZone, range: true });
+
+      // ACT
+      await clickDay("2024-07-20");
+      await clickDay("2024-07-22");
+      await waitUntil(() => handler.mock.calls.length > 0);
+
+      // ASSERT
+      const dayInMs = 24 * 60 * 60 * 1000;
+      const rangeEnd = new Date(Date.parse(summerMidnight) + 2 * dayInMs).toISOString();
+      expect(handler).toHaveBeenLastCalledWith([summerMidnight, rangeEnd]);
+    });
   });
 });
 
