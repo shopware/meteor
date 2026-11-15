@@ -916,6 +916,89 @@ describe("mt-datepicker date-only values", () => {
       expect(handler).toHaveBeenLastCalledWith([summerMidnight, rangeEnd]);
     });
   });
+
+  describe.each(systemTimeZones)("with the browser in %s", (systemTimeZone) => {
+    beforeEach(() => {
+      vi.stubEnv("TZ", systemTimeZone);
+    });
+
+    it.each([
+      ["2000-01-10T00:00:00.000Z", "UTC", "2000/01/10"],
+      ["2000-01-10T00:00:00.000Z", "Europe/Berlin", "2000/01/10"],
+      ["2000-01-10T00:00:00.000Z", "America/New_York", "2000/01/09"],
+      ["2000-01-10T15:00:00.000Z", "Asia/Tokyo", "2000/01/11"],
+    ])("shows %s in %s as %s", async (modelValue, timeZone, expected) => {
+      // ARRANGE
+      renderDatePicker({ timeZone, modelValue });
+
+      // ASSERT
+      const input = screen.getByRole<HTMLInputElement>("textbox");
+      await waitUntil(() => input.value !== "");
+      expect(input).toHaveValue(expected);
+    });
+
+    it("still shows the clicked day after the value was updated", async () => {
+      // ARRANGE
+      const handler = renderDatePicker({
+        timeZone: "America/New_York",
+        modelValue: "2000-01-10T00:00:00.000Z",
+      });
+
+      // ACT
+      await clickDay("2000-01-15");
+      await waitUntil(() => handler.mock.calls.length > 0);
+
+      // ASSERT
+      const input = screen.getByRole<HTMLInputElement>("textbox");
+      await waitUntil(() => input.value !== "2000/01/09");
+      expect(input).toHaveValue("2000/01/15");
+    });
+
+    it("passes the shown day to a custom format function", async () => {
+      // ARRANGE
+      render(MtDatepicker, {
+        props: {
+          dateType: "date",
+          timeZone: "America/New_York",
+          modelValue: "2000-01-10T00:00:00.000Z",
+          format: (date: Date) =>
+            `Year: ${date.getFullYear()}, Month: ${date.getMonth() + 1}, Day: ${date.getDate()}`,
+        },
+      });
+
+      // ASSERT
+      const input = screen.getByRole<HTMLInputElement>("textbox");
+      await waitUntil(() => input.value !== "");
+      expect(input).toHaveValue("Year: 2000, Month: 1, Day: 9");
+    });
+
+    it("applies minDate and maxDate to the day they fall on in the time zone", async () => {
+      // ARRANGE - both limits are midnight in Europe/Berlin: March 20 and March 22
+      render(MtDatepicker, {
+        props: {
+          dateType: "date",
+          locale: "en-US",
+          timeZone: "Europe/Berlin",
+          modelValue: "2024-03-20T23:00:00.000Z",
+          minDate: "2024-03-19T23:00:00.000Z",
+          maxDate: "2024-03-21T23:00:00.000Z",
+        },
+      });
+
+      // ACT
+      await userEvent.click(screen.getByRole("textbox"));
+      await waitUntil(() => document.getElementById("dp-2024-03-23") !== null);
+
+      // ASSERT
+      const isDisabled = (day: string) =>
+        document.getElementById(`dp-${day}`)?.getAttribute("aria-disabled") === "true";
+
+      expect(isDisabled("2024-03-19")).toBe(true);
+      expect(isDisabled("2024-03-20")).toBe(false);
+      expect(isDisabled("2024-03-22")).toBe(false);
+      expect(isDisabled("2024-03-23")).toBe(true);
+    });
+  });
 });
 
 describe("mt-datepicker conditional hint", () => {

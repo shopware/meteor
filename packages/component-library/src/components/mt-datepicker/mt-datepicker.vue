@@ -23,13 +23,14 @@
 
     <VueDatePicker
       :model-value="dateValue"
+      :model-type="dateType === 'date' ? DATE_ONLY_MODEL_TYPE : undefined"
       class="date-picker"
       :style="{ gridArea: 'input' }"
       :floating="datePickerFloating"
       :placeholder="placeholder"
       :disabled="disabled || isInherited"
       :locale="datePickerLocale"
-      :timezone="timeZone"
+      :timezone="dateType === 'date' ? undefined : timeZone"
       :teleport="true"
       :action-row="{ showCancel: true }"
       :auto-apply="true"
@@ -40,8 +41,8 @@
       :time-config="datePickerTimeConfig"
       :is-24="is24"
       :time-picker="dateType === 'time'"
-      :min-date="minDate"
-      :max-date="maxDate"
+      :min-date="datePickerMinDate"
+      :max-date="datePickerMaxDate"
       @update:model-value="onDateValueChange"
       @closed="onDatepickerClosed"
     >
@@ -117,6 +118,7 @@ import { useId } from "vue";
 import { enUS } from "date-fns/locale/en-US";
 import type { Locale } from "date-fns";
 import { importDateFnsLocaleModule } from "./date-fns-locale";
+import { dateOnlyStringToUtcIso, toDateOnlyString } from "./date-only";
 
 // @deprecated tag:v5 remove the `wrapper` class of the root element. Keep `mt-datepicker__wrapper`,
 // which the styles build on.
@@ -125,6 +127,12 @@ interface Time {
   hours: number;
   minutes: number;
 }
+
+// In date-only mode the picker exchanges plain calendar days with the underlying library instead
+// of Date objects, and does the time zone conversion itself. A Date always carries a time of day,
+// and the library fills that hidden time from the previous value or the current time, which made
+// the emitted value unpredictable and could even move it to another day.
+const DATE_ONLY_MODEL_TYPE = "yyyy-MM-dd";
 
 const props = withDefaults(
   defineProps<{
@@ -361,8 +369,33 @@ const datePickerInputAttrs = computed<
   "aria-describedby": errorMessage.value || props.error ? errorId : undefined,
 }));
 
-const dateValue = computed<Date | Date[] | Time | null>(() => {
+// The library does not know the time zone in date-only mode, so limits are handed over as the
+// calendar day they fall on in the configured time zone.
+const toDatePickerLimit = (limit: Date | string | undefined) => {
+  if (props.dateType !== "date" || limit === undefined) return limit;
+
+  const dateOnly = toDateOnlyString(limit, props.timeZone);
+  if (!dateOnly) return limit;
+
+  const [year, month, day] = dateOnly.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const datePickerMinDate = computed(() => toDatePickerLimit(props.minDate));
+const datePickerMaxDate = computed(() => toDatePickerLimit(props.maxDate));
+
+const dateValue = computed<Date | Date[] | Time | string | string[] | null>(() => {
   if (!props.modelValue) return null;
+
+  if (props.dateType === "date") {
+    if (Array.isArray(props.modelValue)) {
+      return props.modelValue
+        .map((value) => (value === null ? null : toDateOnlyString(value, props.timeZone)))
+        .filter((value): value is string => value !== null);
+    }
+
+    return toDateOnlyString(props.modelValue, props.timeZone);
+  }
 
   if (props.dateType === "time") {
     if (
@@ -438,6 +471,9 @@ const onDateValueChange = (
 
   const toUtcIso = (value: Date | string | null) => {
     if (value === null) return null;
+    if (props.dateType === "date" && typeof value === "string") {
+      return dateOnlyStringToUtcIso(value, props.timeZone);
+    }
     const ms = typeof value === "string" ? Date.parse(value) : value.getTime();
     if (Number.isNaN(ms)) return null;
     return new Date(ms).toISOString();

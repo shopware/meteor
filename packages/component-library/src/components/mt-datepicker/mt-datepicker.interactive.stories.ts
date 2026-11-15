@@ -77,10 +77,8 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
     const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
     expect(input.value).toContain("2024/11/13");
 
-    // Expect updatemodelvalue to have been called with date
-    expect(args.updateModelValue).toHaveBeenCalledWith(
-      expect.stringMatching(/^2024-11-13T\d{2}:\d{2}:\d{2}.\d{3}Z$/),
-    );
+    // Expect updatemodelvalue to have been called with midnight of the date, without a hidden time
+    expect(args.updateModelValue).toHaveBeenCalledWith("2024-11-13T00:00:00.000Z");
   },
 };
 
