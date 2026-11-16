@@ -12,3 +12,11 @@ export function parseIconName(
 
   return match ? { mode: match[1] as IconMode, name: match[2] } : { mode: fallbackMode, name };
 }
+
+/**
+ * Gives an icon name the style a component wants, whatever style the name asks for: `regular-cog`
+ * becomes `solid-cog` with `mode` set to `solid`.
+ */
+export function withIconMode(name: string, mode: IconMode): string {
+  return `${mode}-${parseIconName(name).name}`;
+}

@@ -162,6 +162,23 @@ describe("mt-nav", () => {
       expect(getRowLabel("Products").closest(".mt-nav__link")).not.toHaveAttribute("aria-current");
     });
 
+    it.each(["products", "solid-products"])(
+      "shows the icon %s in the regular style on an inactive row",
+      (icon) => {
+        renderNav({ sections: [{ items: [{ label: "Products", icon, to: { name: "sw" } }] }] });
+
+        expect(screen.getByTestId("mt-icon__regular-products")).toBeInTheDocument();
+      },
+    );
+
+    it("shows the icon in the solid style on the row holding the active row", async () => {
+      renderNav({ sections: sampleSections("sw.category.index") });
+
+      await waitFor(() =>
+        expect(screen.getByTestId("mt-icon__solid-products")).toBeInTheDocument(),
+      );
+    });
+
     it("marks a closed branch with aria-current true in place of the active row it hides", async () => {
       renderNav({ sections: sampleSections("sw.category.index") });
 

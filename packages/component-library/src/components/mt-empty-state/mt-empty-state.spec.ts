@@ -48,8 +48,7 @@ describe("mt-empty-state", () => {
     });
     const icon = wrapper.find("mt-icon-stub");
     expect(icon.exists()).toBeTruthy();
-    expect(icon.attributes("name")).toBe("chart-line-arrow");
-    expect(icon.attributes("mode")).toBe("regular");
+    expect(icon.attributes("name")).toBe("regular-chart-line-arrow");
   });
 
   it("shows the icon in the regular style when the name asks for another one", async () => {
@@ -57,8 +56,7 @@ describe("mt-empty-state", () => {
       icon: "solid-chart-line-arrow",
     });
     const icon = wrapper.find("mt-icon-stub");
-    expect(icon.attributes("name")).toBe("chart-line-arrow");
-    expect(icon.attributes("mode")).toBe("regular");
+    expect(icon.attributes("name")).toBe("regular-chart-line-arrow");
   });
 
   it("should render a link", async () => {
