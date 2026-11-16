@@ -2,8 +2,8 @@
  * Test helpers for mt-datepicker.
  *
  * Everything the tests need to know about the markup of the underlying date picker library lives
- * in this file: its class names, ids and test ids. The spec files only describe what a user does
- * and sees, so replacing the library means adjusting this file, not every test.
+ * in this file: its class names, ids and test ids. The tests only describe what a user does and
+ * sees, so replacing the library means adjusting this file, not every test.
  */
 import { defineComponent, nextTick, reactive } from "vue";
 import { cleanup, render, screen, waitFor } from "@testing-library/vue";
