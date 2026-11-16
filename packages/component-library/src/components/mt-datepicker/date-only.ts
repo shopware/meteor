@@ -31,6 +31,20 @@ function getFormatter(timeZone: string): Intl.DateTimeFormat {
   return formatter;
 }
 
+/**
+ * Returns the time zone if the browser knows it, and "UTC" otherwise.
+ */
+export function resolveTimeZone(timeZone: string | null | undefined): string {
+  if (!timeZone) return "UTC";
+
+  try {
+    getFormatter(timeZone);
+    return timeZone;
+  } catch {
+    return "UTC";
+  }
+}
+
 interface WallClock {
   year: number;
   month: number;

@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { dateOnlyStringToUtcIso, isDateOnlyString, toDateOnlyString } from "./date-only";
+import {
+  dateOnlyStringToUtcIso,
+  isDateOnlyString,
+  resolveTimeZone,
+  toDateOnlyString,
+} from "./date-only";
 
 describe("toDateOnlyString", () => {
   it.each([
@@ -93,4 +98,14 @@ describe("isDateOnlyString", () => {
       expect(isDateOnlyString(value)).toBe(false);
     },
   );
+});
+
+describe("resolveTimeZone", () => {
+  it.each(["UTC", "Europe/Berlin", "America/New_York"])("keeps the time zone %s", (timeZone) => {
+    expect(resolveTimeZone(timeZone)).toBe(timeZone);
+  });
+
+  it.each(["Not/A_Zone", "", null, undefined])("falls back to UTC for %j", (timeZone) => {
+    expect(resolveTimeZone(timeZone)).toBe("UTC");
+  });
 });

@@ -24,6 +24,7 @@ import {
   renderDatepicker,
   resetPage,
   selectTime,
+  setBrowserTimeZone,
   setCurrentTime,
   typeValue,
   user,
@@ -49,10 +50,12 @@ describe("mt-datepicker", () => {
       expect(getInput()).toBeDisabled();
     });
 
-    it("connects the label to the input", () => {
+    it("opens the calendar when the label is clicked", async () => {
       renderDatepicker({ label: "Publish date" });
 
-      expect(screen.getByLabelText("Publish date")).toBe(getInput());
+      await user().click(screen.getByText("Publish date"));
+
+      await expect.poll(isCalendarOpen).toBe(true);
     });
 
     it("names the input after its label for assistive technology", () => {
@@ -71,8 +74,10 @@ describe("mt-datepicker", () => {
 
       const [start, end] = screen.getAllByRole("textbox");
 
-      expect(screen.getByLabelText("Start")).toBe(start);
-      expect(screen.getByLabelText("End")).toBe(end);
+      // A label points at its input by id, so every picker needs an id of its own
+      expect(start.id).not.toBe(end.id);
+      expect(screen.getByText("Start").closest("label")).toHaveAttribute("for", start.id);
+      expect(screen.getByText("End").closest("label")).toHaveAttribute("for", end.id);
     });
 
     it("shows the help text in a tooltip", async () => {
@@ -146,6 +151,13 @@ describe("mt-datepicker", () => {
 
     it("shows UTC as the time zone hint by default", () => {
       renderDatepicker({ dateType: "datetime" });
+
+      expect(screen.getByTestId("time-zone-hint")).toHaveTextContent("UTC");
+    });
+
+    it("shows UTC as the time zone hint when the time zone does not exist", () => {
+      // The picker works in UTC then, so that is what the hint has to say
+      renderDatepicker({ dateType: "datetime", timeZone: "Not/A_Zone" });
 
       expect(screen.getByTestId("time-zone-hint")).toHaveTextContent("UTC");
     });
@@ -325,26 +337,36 @@ describe("mt-datepicker", () => {
     const required = { required: true, dateType: "date" } as const;
     const requiredWithValue = { ...required, modelValue: "2024-07-10T00:00:00.000Z" } as const;
 
-    it("shows the error for an empty picker only after the user closed it without a choice", async () => {
-      renderDatepicker(required);
+    // In a datetime picker the focus moves into the calendar when it opens, which is not leaving
+    it.each(["date", "datetime"] as const)(
+      "shows the error for an empty %s picker only after the user closed it without a choice",
+      async (dateType) => {
+        renderDatepicker({ required: true, dateType });
 
-      await openCalendar();
-      expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
+        await openCalendar();
+        expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
 
-      await closeCalendar();
-      expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
-    });
+        await closeCalendar();
+        expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
+      },
+    );
 
-    it("shows the error for an empty picker only after the user moved past it with the keyboard", async () => {
-      renderDatepicker(required);
+    it.each([
+      ["moved on with the keyboard", () => user().tab()],
+      ["clicked somewhere else", () => user().click(document.body)],
+    ])(
+      "shows the error for an empty picker only after the user was in it and %s",
+      async (_, leave) => {
+        renderDatepicker(required);
 
-      await user().tab();
-      expect(getInput()).toHaveFocus();
-      expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
+        await user().tab();
+        expect(getInput()).toHaveFocus();
+        expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
 
-      await user().tab();
-      expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
-    });
+        await leave();
+        expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
+      },
+    );
 
     it("shows no error when the value is removed from the outside in an untouched picker", async () => {
       const { setProps } = renderDatepicker(requiredWithValue);
@@ -377,13 +399,17 @@ describe("mt-datepicker", () => {
       await expect.poll(() => screen.queryByText(REQUIRED_ERROR)).toBeNull();
     });
 
-    it("marks the input as invalid when the value is cleared", async () => {
+    it("marks the input as invalid while the error shows", async () => {
       renderDatepicker(requiredWithValue);
       await expect.poll(getShownValue).toBe("2024/07/10");
 
       await clearValue();
-
       await expect.poll(() => getInput().getAttribute("aria-invalid")).toBe("true");
+      expect(getInput()).toHaveAccessibleDescription(expect.stringContaining(REQUIRED_ERROR));
+
+      await clickDay("2024-07-20");
+      await expect.poll(() => getInput().getAttribute("aria-invalid")).toBeNull();
+      expect(getInput()).not.toHaveAttribute("aria-describedby");
     });
   });
 
@@ -456,6 +482,22 @@ describe("mt-datepicker", () => {
       await clickDay("2024-07-20");
 
       await expect.poll(isCalendarOpen).toBe(false);
+    });
+
+    it("emits a day again when it is picked again after the value was reset from the outside", async () => {
+      const { emittedValues, setProps } = renderDatepicker({
+        dateType: "date",
+        modelValue: "2024-07-10T00:00:00.000Z",
+      });
+      await clickDay("2024-07-20");
+      await expect.poll(getShownValue).toBe("2024/07/20");
+
+      await setProps({ modelValue: "2024-07-10T00:00:00.000Z" });
+      await expect.poll(getShownValue).toBe("2024/07/10");
+      await clickDay("2024-07-20");
+
+      await expect.poll(getShownValue).toBe("2024/07/20");
+      expect(emittedValues()).toEqual(["2024-07-20T00:00:00.000Z", "2024-07-20T00:00:00.000Z"]);
     });
 
     it("is removed from the page together with the picker", async () => {
@@ -695,6 +737,16 @@ describe("mt-datepicker", () => {
       },
     );
 
+    it("emits the typed date once when the user clicks somewhere else", async () => {
+      const { emittedValues } = renderDatepicker(typable);
+      await typeValue("2025/01/01", { confirm: "none" });
+
+      await user().click(document.body);
+
+      await expect.poll(getShownValue).toBe("2025/01/01");
+      expect(emittedValues()).toEqual(["2025-01-01T00:00:00.000Z"]);
+    });
+
     it.each([
       ["datetime", "2025/01/01, 08:05", "2025-01-01T08:05:00.000Z"],
       ["time", "08:05", "08:05"],
@@ -732,6 +784,31 @@ describe("mt-datepicker", () => {
       // Deleting the old text on the way is not a value of its own
       await expect.poll(getShownValue).toBe("2025/01/01");
       expect(emittedValues()).toEqual(["2025-01-01T00:00:00.000Z"]);
+    });
+
+    it("emits only the picked day when the user types and then picks a day in the calendar", async () => {
+      const { emittedValues } = renderDatepicker(typable);
+      await typeValue("2025/01/01", { confirm: "none" });
+
+      await clickDay("2025-01-15");
+
+      await expect.poll(getShownValue).toBe("2025/01/15");
+      expect(emittedValues()).toEqual(["2025-01-15T00:00:00.000Z"]);
+    });
+
+    it("discards what was typed when Escape is pressed", async () => {
+      const { onUpdate } = renderDatepicker({
+        ...typable,
+        modelValue: "2024-03-20T00:00:00.000Z",
+      });
+      await expect.poll(getShownValue).toBe("2024/03/20");
+      await typeValue("2025/01/01", { confirm: "none" });
+
+      await user().keyboard("{Escape}");
+      await user().tab();
+
+      await expect.poll(getShownValue).toBe("2024/03/20");
+      expect(onUpdate).not.toHaveBeenCalled();
     });
 
     it("emits null once when the user deletes the text and confirms", async () => {
@@ -852,13 +929,35 @@ describe("mt-datepicker", () => {
       },
     );
 
-    it("reads a time typed on a 12-hour clock when is24 is false", async () => {
-      const { onUpdate } = renderDatepicker({ dateType: "datetime", is24: false, textInput: true });
+    it("reads a time typed on a 12-hour clock in the time zone of the picker", async () => {
+      setBrowserTimeZone("Asia/Tokyo");
+      const { onUpdate } = renderDatepicker({
+        dateType: "datetime",
+        locale: "en-US",
+        timeZone: "America/New_York",
+        is24: false,
+        textInput: true,
+      });
 
       await typeValue("2025/01/01, 08:05 PM");
 
+      // 8:05 in the evening in New York, which is 5 hours behind UTC in winter
       await expect.poll(getShownValue).toBe("2025/01/01, 08:05 PM");
-      expect(onUpdate).toHaveBeenLastCalledWith("2025-01-01T20:05:00.000Z");
+      expect(onUpdate).toHaveBeenLastCalledWith("2025-01-02T01:05:00.000Z");
+    });
+
+    it("reads a typed 12-hour time of a time-only picker and emits it on a 24-hour clock", async () => {
+      const { onUpdate } = renderDatepicker({
+        dateType: "time",
+        locale: "en-US",
+        is24: false,
+        textInput: true,
+      });
+
+      await typeValue("08:05 PM");
+
+      await expect.poll(getShownValue).toBe("08:05 PM");
+      expect(onUpdate).toHaveBeenLastCalledWith("20:05");
     });
 
     it("keeps a custom format when is24 is false", async () => {

@@ -1,14 +1,18 @@
 <template>
   <div
+    ref="wrapper"
     class="mt-datepicker__wrapper wrapper"
     :class="{
       'mt-datepicker__wrapper--small': size === 'small',
       'has-error': error,
     }"
+    @input.capture="onTextInput"
+    @keydown.capture="onInputKeydown"
+    @focusout="onInputFocusOut"
   >
     <mt-field-label
       class="mt-datepicker__label"
-      for="field-id"
+      :for="inputId"
       :has-error="!!error || !!errorMessage"
       :required="required"
       :inheritance="isInheritanceField ? (isInherited ? 'linked' : 'unlinked') : 'none'"
@@ -30,11 +34,12 @@
       :placeholder="placeholder"
       :disabled="disabled || isInherited"
       :locale="datePickerLocale"
-      :timezone="dateType === 'date' ? undefined : timeZone"
+      :timezone="isPlainDate ? undefined : resolvedTimeZone"
+      :aria-labels="datePickerAriaLabels"
       :teleport="true"
       :action-row="{ showCancel: true }"
       :auto-apply="true"
-      :text-input="textInput"
+      :text-input="datePickerTextInput"
       :range="range"
       :formats="datePickerFormats"
       :input-attrs="datePickerInputAttrs"
@@ -44,7 +49,8 @@
       :min-date="datePickerMinDate"
       :max-date="datePickerMaxDate"
       @update:model-value="onDateValueChange"
-      @closed="onDatepickerClosed"
+      @cleared="onUserInteraction"
+      @closed="onUserInteraction"
     >
       <template #clear-icon="{ clear }">
         <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
@@ -94,31 +100,39 @@
       :data-testid="showFieldHint() ? undefined : 'time-zone-hint'"
       :style="{ gridArea: 'hint' }"
     >
-      <slot name="hint">{{ showFieldHint() ? hint : timeZone || "UTC" }}</slot>
+      <slot name="hint">{{ showFieldHint() ? hint : resolvedTimeZone }}</slot>
     </mt-field-hint>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch, watchEffect } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import {
+  TZDate,
   VueDatePicker,
+  type AriaLabelsConfig,
   type FloatingConfig,
   type FormatsConfig,
   type InputAttributesConfig,
+  type TextInputConfig,
   type TimeConfig,
 } from "@vuepic/vue-datepicker";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { useId } from "vue";
 import { enUS } from "date-fns/locale/en-US";
-import type { Locale } from "date-fns";
+import { isValid, parse, type Locale } from "date-fns";
 import { importDateFnsLocaleModule } from "./date-fns-locale";
-import { dateOnlyStringToUtcIso, isDateOnlyString, toDateOnlyString } from "./date-only";
+import {
+  dateOnlyStringToUtcIso,
+  isDateOnlyString,
+  resolveTimeZone,
+  toDateOnlyString,
+} from "./date-only";
 
 // @deprecated tag:v5 remove the `wrapper` class of the root element. Keep `mt-datepicker__wrapper`,
 // which the styles build on.
@@ -128,11 +142,15 @@ interface Time {
   minutes: number;
 }
 
+type EmittedValue = string | Array<string | null> | null;
+
 // In date-only mode the picker exchanges plain calendar days with the underlying library instead
-// of Date objects, and does the time zone conversion itself. A Date always carries a time of day,
-// and the library fills that hidden time from the previous value or the current time, which made
-// the emitted value unpredictable and could even move it to another day.
+// of Date objects, and turns them into a moment itself. A Date always carries a time of day, and
+// the library fills that hidden time from the previous value or the current time, which made the
+// emitted value unpredictable.
 const DATE_ONLY_MODEL_TYPE = "yyyy-MM-dd";
+
+const NOTHING = Symbol("nothing");
 
 const props = withDefaults(
   defineProps<{
@@ -158,6 +176,7 @@ const props = withDefaults(
     /**
      * Defines the time zone for the date picker.
      * Useful for adjusting date and time according to a specific timezone.
+     * A time zone the browser does not know is treated as "UTC".
      */
     timeZone?: string;
     /**
@@ -182,12 +201,14 @@ const props = withDefaults(
      */
     placeholder?: string;
     /**
-     * Determines if the timepicker is in 24 or 12 hour format
+     * Determines if the time picker uses a 24 or a 12 hour clock. The input shows the same clock,
+     * unless a custom `format` is set.
      */
     is24?: boolean;
     /**
      * Determines if the date picker field is required.
-     * If true, the user must select a value before submitting the form.
+     * If true, the user must select a value before submitting the form. The picker shows an
+     * error once the user has been in it and left it empty.
      */
     required?: boolean;
     /**
@@ -223,7 +244,6 @@ const props = withDefaults(
     /**
      * The minimum selectable date. Can be a Date object or an ISO string.
      * Any date before this will be disabled in the calendar.
-     * For example: "today"
      */
     minDate?: Date | string;
     /**
@@ -237,7 +257,8 @@ const props = withDefaults(
      */
     minuteIncrement?: number;
     /**
-     * Enables typing directly into the input field.
+     * Enables typing directly into the input field. A typed value is emitted when the user
+     * presses Enter or Tab, or leaves the field.
      */
     textInput?: boolean;
     /**
@@ -310,9 +331,28 @@ const onInheritanceChange = (inheritance: "linked" | "unlinked") => {
   emit("inheritance-remove");
 };
 
+const wrapper = ref<HTMLElement | null>(null);
+const inputId = useId();
 const errorId = useId();
-const errorMessage = ref<{ detail: string } | undefined>(undefined);
 const isTimeHintVisible = ref(true);
+
+const resolvedTimeZone = computed(() => resolveTimeZone(props.timeZone));
+
+// The required error is feedback on what the user did. It only shows once the user has cleared
+// the value, or has been in the picker and left it empty, not on a picker nobody has touched yet.
+const hasUserInteracted = ref(false);
+
+const onUserInteraction = () => {
+  hasUserInteracted.value = true;
+};
+
+const errorMessage = computed(() =>
+  props.required && hasUserInteracted.value && !props.modelValue
+    ? { detail: "This field is required" }
+    : undefined,
+);
+
+const hasError = computed(() => !!(errorMessage.value || props.error));
 const datePickerLocale = ref<Locale>(enUS);
 let localeLoadId = 0;
 
@@ -344,16 +384,37 @@ watch(
   { immediate: true },
 );
 
+// A 12-hour time picker comes with a 12-hour clock in the input, so both show the same time
+const usesTwelveHourInput = computed(
+  () => !props.is24 && !props.format && props.dateType !== "date",
+);
+
 const datePickerFormats = computed<Partial<FormatsConfig>>(() => {
+  const time = usesTwelveHourInput.value ? "hh:mm aa" : "HH:mm";
   const input =
     props.format ??
     (props.dateType === "date"
       ? "yyyy/MM/dd"
       : props.dateType === "time"
-        ? "HH:mm"
-        : "yyyy/MM/dd, HH:mm");
+        ? time
+        : `yyyy/MM/dd, ${time}`);
   return { input };
 });
+
+// The library reads typed text by its digits and cannot read "AM" or "PM", so a 12-hour time
+// is read here. The text is taken as a time in the time zone of the picker.
+const parseTwelveHourText = (text: string) => {
+  const now = new TZDate(Date.now(), resolvedTimeZone.value);
+  const parsed = parse(text, datePickerFormats.value.input as string, now, {
+    locale: datePickerLocale.value,
+  });
+
+  return isValid(parsed) ? parsed : null;
+};
+
+const datePickerTextInput = computed<boolean | Partial<TextInputConfig>>(() =>
+  props.textInput && usesTwelveHourInput.value ? { format: parseTwelveHourText } : props.textInput,
+);
 
 const datePickerTimeConfig = computed<Partial<TimeConfig>>(() => ({
   enableTimePicker: props.dateType !== "date",
@@ -371,30 +432,46 @@ const datePickerFloating = computed<Partial<FloatingConfig>>(() => ({
   offset: 3,
 }));
 
-const datePickerInputAttrs = computed<
-  Partial<InputAttributesConfig> & {
-    "aria-invalid"?: boolean | "true" | "false";
-    "aria-describedby"?: string;
-  }
->(() => ({
-  id: "field-id",
+const datePickerInputAttrs = computed<Partial<InputAttributesConfig>>(() => ({
+  id: inputId,
   required: props.required,
   clearable: true,
-  "aria-invalid": !!(errorMessage.value || props.error),
-  "aria-describedby": errorMessage.value || props.error ? errorId : undefined,
+  // The library marks the input as invalid for assistive technology when the state is `false`
+  state: hasError.value ? false : undefined,
 }));
+
+// The library gives the input a fixed name for assistive technology, which would replace the label
+const datePickerAriaLabels = computed<Partial<AriaLabelsConfig>>(() =>
+  props.label ? { input: props.label } : {},
+);
+
+// The library has no option to connect the input to the error message, so the attribute is set
+// on its input directly
+watchEffect(
+  () => {
+    const input = wrapper.value?.querySelector("input");
+    if (!input) return;
+
+    if (hasError.value) {
+      input.setAttribute("aria-describedby", errorId);
+    } else {
+      input.removeAttribute("aria-describedby");
+    }
+  },
+  { flush: "post" },
+);
 
 // A plain calendar day is the same in every time zone. The picker then reads and emits
 // "yyyy-MM-dd" and does not use the configured time zone.
 const isPlainDate = computed(() => props.dateType === "date" && props.valueFormat === "date");
 
 // The time zone in which a date-only picker looks up the calendar day of a value
-const dateOnlyTimeZone = computed(() => (isPlainDate.value ? "UTC" : props.timeZone));
+const dateOnlyTimeZone = computed(() => (isPlainDate.value ? "UTC" : resolvedTimeZone.value));
 
-// The library does not know the time zone in date-only mode, so limits are handed over as the
-// calendar day they fall on in that time zone.
+// The library does not get a time zone for plain days, so it reads a limit on the clock of the
+// browser. It is handed over as the plain day it stands for.
 const toDatePickerLimit = (limit: Date | string | undefined) => {
-  if (props.dateType !== "date" || limit === undefined) return limit;
+  if (!isPlainDate.value || limit === undefined) return limit;
 
   const dateOnly = toDateOnlyString(limit, dateOnlyTimeZone.value);
   if (!dateOnly) return limit;
@@ -458,36 +535,113 @@ const updateOpacitySettings = () => {
   );
 };
 
-const checkValidity = () => {
-  if (!props.required) {
-    errorMessage.value = undefined;
-    return;
-  }
+// Brings a value into a form in which two values can be compared, however they are written
+const toComparable = (value: unknown): string => {
+  const normalize = (item: unknown) => {
+    if (item === null || item === undefined || item === "") return null;
+    if (item instanceof Date) return Number.isNaN(item.getTime()) ? null : item.toISOString();
+    if (typeof item !== "string" || isDateOnlyString(item)) return item;
 
-  if (!props.modelValue) {
-    errorMessage.value = { detail: "This field is required" };
-    return;
-  }
+    const ms = Date.parse(item);
+    return Number.isNaN(ms) ? item : new Date(ms).toISOString();
+  };
 
-  errorMessage.value = undefined;
+  return JSON.stringify(Array.isArray(value) ? value.map(normalize) : normalize(value));
 };
 
-const onDatepickerClosed = () => {
-  checkValidity();
+// What the user types counts once they confirm it with Enter or Tab, or leave the field. Until
+// then the library already reports every text it can read as a date, including unfinished ones
+// such as the year 2020 for "20". Those values are held back here.
+let isTyping = false;
+let typedValue: EmittedValue | typeof NOTHING = NOTHING;
+
+// The library reports a value more than once, for example when a typed date is confirmed and
+// again when the field loses focus, and it reports the value it already has when the user tabs
+// through the field. Only a value that differs from the current one is passed on.
+//
+// The current value is the model value. After an emit it is the emitted value, until the model
+// value changes: a parent that does not hand the emitted value back still has received it.
+let lastEmitted: string | typeof NOTHING = NOTHING;
+
+watch(
+  () => props.modelValue,
+  () => {
+    lastEmitted = NOTHING;
+  },
+  { flush: "sync" },
+);
+
+const emitValue = (value: EmittedValue) => {
+  if (isTyping) {
+    typedValue = value;
+    return;
+  }
+
+  const comparable = toComparable(value);
+  const current = lastEmitted === NOTHING ? toComparable(props.modelValue) : lastEmitted;
+  if (comparable === current) return;
+
+  lastEmitted = comparable;
+  emit("update:modelValue", value);
+};
+
+const discardTypedValue = () => {
+  isTyping = false;
+  typedValue = NOTHING;
+};
+
+const confirmTypedValue = () => {
+  const value = typedValue;
+  discardTypedValue();
+
+  if (value !== NOTHING) emitValue(value);
+};
+
+const isInput = (target: EventTarget | null) => target instanceof HTMLInputElement;
+
+const onTextInput = (event: Event) => {
+  if (!isInput(event.target)) return;
+
+  // Every key press starts over: only what the library reads from the current text can be
+  // confirmed, not a value it read from an earlier, shorter text
+  isTyping = true;
+  typedValue = NOTHING;
+};
+
+const onInputKeydown = (event: KeyboardEvent) => {
+  if (!isInput(event.target)) return;
+
+  if (event.key === "Enter" || event.key === "Tab") confirmTypedValue();
+  if (event.key === "Escape") discardTypedValue();
+};
+
+const onInputFocusOut = (event: FocusEvent) => {
+  if (!isInput(event.target)) return;
+
+  // Moving on into the calendar is not leaving the picker. The library keeps what was typed
+  // and combines it with what the user picks there.
+  const next = event.relatedTarget;
+  if (next instanceof Element && next.closest(".dp__menu")) {
+    discardTypedValue();
+    return;
+  }
+
+  confirmTypedValue();
+  onUserInteraction();
 };
 
 const onDateValueChange = (
   newValue: Date | [Date, Date] | Time | string | string[] | Array<Date | string | null> | null,
 ) => {
   if (!newValue) {
-    emit("update:modelValue", null);
+    emitValue(null);
     return;
   }
 
   if (typeof newValue === "object" && !Array.isArray(newValue) && "hours" in newValue) {
     const hours = String(newValue.hours).padStart(2, "0");
     const minutes = String(newValue.minutes).padStart(2, "0");
-    emit("update:modelValue", `${hours}:${minutes}`);
+    emitValue(`${hours}:${minutes}`);
     return;
   }
 
@@ -497,7 +651,7 @@ const onDateValueChange = (
       return isDateOnlyString(value) ? value : null;
     }
     if (props.dateType === "date" && typeof value === "string") {
-      return dateOnlyStringToUtcIso(value, props.timeZone);
+      return dateOnlyStringToUtcIso(value, resolvedTimeZone.value);
     }
     const ms = typeof value === "string" ? Date.parse(value) : value.getTime();
     if (Number.isNaN(ms)) return null;
@@ -505,14 +659,11 @@ const onDateValueChange = (
   };
 
   if (Array.isArray(newValue)) {
-    emit(
-      "update:modelValue",
-      newValue.map((value) => toEmittedValue(value)),
-    );
+    emitValue(newValue.map((value) => toEmittedValue(value)));
     return;
   }
 
-  emit("update:modelValue", toEmittedValue(newValue));
+  emitValue(toEmittedValue(newValue));
 };
 
 watch(
@@ -520,14 +671,6 @@ watch(
   () => {
     isTimeHintVisible.value = props.dateType === "datetime";
     updateOpacitySettings();
-  },
-  { immediate: true },
-);
-
-watch(
-  () => props.modelValue,
-  () => {
-    checkValidity();
   },
   { immediate: true },
 );
@@ -861,6 +1004,14 @@ onMounted(() => {
 
 .mt-datepicker__hint {
   margin-top: var(--scale-size-4);
+}
+
+/* The invalid state of the library only tells assistive technology about the error. How an
+   error looks is defined by the has-error rule below. */
+.mt-datepicker__wrapper .dp__input_invalid,
+.mt-datepicker__wrapper .dp__input_invalid:hover {
+  box-shadow: none;
+  border-color: var(--dp-border-color);
 }
 
 .mt-datepicker__wrapper.has-error .dp__input {

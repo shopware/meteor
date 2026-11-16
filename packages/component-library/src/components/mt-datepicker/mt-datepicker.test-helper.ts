@@ -22,9 +22,15 @@ const WAIT = { timeout: 2500 };
  * removed by the automatic cleanup and would otherwise break every following test.
  */
 export function resetPage() {
-  cleanup();
-  document.body.innerHTML = "";
-  vi.useRealTimers();
+  try {
+    cleanup();
+  } catch {
+    // A picker that crashed can also fail to unmount. The test that rendered it has failed
+    // already; what matters here is that the page is empty for the next one.
+  } finally {
+    document.body.innerHTML = "";
+    vi.useRealTimers();
+  }
 }
 
 /**
@@ -149,18 +155,22 @@ export function getShownValue() {
 type Confirm = "enter" | "blur" | "none";
 
 /**
- * Types into the input like a user, then confirms with Enter or by leaving the field, or leaves
- * the text unconfirmed. An existing value is replaced. Requires the `textInput` prop.
+ * Types into the input like a user: click into the field, replace what is there, then confirm
+ * with Enter or by leaving the field, or leave the text unconfirmed. Requires `textInput`.
  */
 export async function typeValue(text: string, { confirm = "enter" }: { confirm?: Confirm } = {}) {
   await deleteText({ confirm: "none" });
-  await user().type(getInput(), text);
+  await user().type(getInput(), text, { skipClick: true });
   await confirmText(confirm);
 }
 
 /** Deletes the text in the input with the keyboard and confirms like `typeValue` */
 export async function deleteText({ confirm = "enter" }: { confirm?: Confirm } = {}) {
   const input = getInput();
+
+  if (document.activeElement !== input) {
+    await user().click(input);
+  }
 
   if (input.value !== "") {
     await user().clear(input);
