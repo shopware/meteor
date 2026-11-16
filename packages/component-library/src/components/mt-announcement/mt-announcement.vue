@@ -2,7 +2,11 @@
   <div
     ref="root"
     class="mt-announcement"
-    :class="[`mt-announcement--variant-${variant}`, { 'mt-announcement--closable': closable }]"
+    :class="[
+      `mt-announcement--variant-${variant}`,
+      `mt-announcement--appearance-${appearance}`,
+      { 'mt-announcement--closable': closable },
+    ]"
   >
     <div class="mt-announcement__message">
       <span v-if="icon" class="mt-announcement__icon">
@@ -18,7 +22,7 @@
       :aria-label="t('close')"
       @click="emit('close')"
     >
-      <mt-icon name="regular-times-s" size="var(--scale-size-12)" decorative />
+      <mt-icon name="regular-times" size="var(--scale-size-10)" decorative />
     </button>
   </div>
 </template>
@@ -31,7 +35,7 @@ import { appContextKey } from "@/components/mt-app/_internal/mt-app-context";
 
 /**
  * A full-width message at the top of an application, such as planned downtime or an upcoming
- * event, usually in the `banner` slot of `mt-app`. The text wraps and is never cut off.
+ * event, usually in the `announcement` slot of `mt-app`. The text wraps and is never cut off.
  *
  * @experimental The API may still change in a future release.
  */
@@ -43,13 +47,21 @@ withDefaults(
      * @values neutral, info, attention, critical, positive
      */
     variant?: "neutral" | "info" | "attention" | "critical" | "positive";
-    /** An icon at the start of the message, such as `regular-tools` for planned maintenance. */
+    /**
+     * How strongly the announcement stands out: `subtle` tints the background, `strong` fills it
+     * with the color of the variant.
+     *
+     * @values subtle, strong
+     */
+    appearance?: "subtle" | "strong";
+    /** An icon at the start of the message, such as `solid-tools` for planned maintenance. */
     icon?: string;
     /** Shows a close button. The announcement doesn't hide itself: remove it on `close`. */
     closable?: boolean;
   }>(),
   {
     variant: "neutral",
+    appearance: "subtle",
     icon: undefined,
     closable: false,
   },
@@ -135,6 +147,7 @@ onBeforeUnmount(() => {
   align-items: center;
   height: var(--font-line-height-xs);
   margin-inline-end: var(--scale-size-8);
+  color: var(--mt-announcement-icon-color);
   vertical-align: top;
 }
 
@@ -186,27 +199,63 @@ onBeforeUnmount(() => {
   outline-color: currentColor;
 }
 
-.mt-announcement--variant-neutral {
+.mt-announcement--appearance-subtle {
+  --mt-announcement-color: var(--color-text-primary-default);
+}
+
+/* The secondary background matches the background of mt-app, so neutral uses the tertiary one. */
+.mt-announcement--appearance-subtle.mt-announcement--variant-neutral {
+  --mt-announcement-background: var(--color-background-tertiary-default);
+  --mt-announcement-icon-color: var(--color-icon-primary-default);
+}
+
+.mt-announcement--appearance-subtle.mt-announcement--variant-info {
+  --mt-announcement-background: var(--color-background-brand-default);
+  --mt-announcement-icon-color: var(--color-icon-brand-default);
+}
+
+.mt-announcement--appearance-subtle.mt-announcement--variant-attention {
+  --mt-announcement-background: var(--color-background-attention-default);
+  --mt-announcement-icon-color: var(--color-icon-attention-default);
+}
+
+.mt-announcement--appearance-subtle.mt-announcement--variant-critical {
+  --mt-announcement-background: var(--color-background-critical-default);
+  --mt-announcement-icon-color: var(--color-icon-critical-default);
+}
+
+.mt-announcement--appearance-subtle.mt-announcement--variant-positive {
+  --mt-announcement-background: var(--color-background-positive-default);
+  --mt-announcement-icon-color: var(--color-icon-positive-default);
+}
+
+.mt-announcement--appearance-strong {
+  --mt-announcement-icon-color: var(--mt-announcement-color);
+}
+
+.mt-announcement--appearance-strong.mt-announcement--variant-neutral {
   --mt-announcement-background: var(--color-elevation-surface-floating);
   --mt-announcement-color: var(--color-text-primary-inverse);
 }
 
-.mt-announcement--variant-info {
+.mt-announcement--appearance-strong.mt-announcement--variant-info {
   --mt-announcement-background: var(--color-interaction-primary-default);
   --mt-announcement-color: var(--color-static-white);
 }
 
-.mt-announcement--variant-attention {
+/* TODO: Replace the icon tokens of attention and positive with strong background tokens once
+   they exist. */
+.mt-announcement--appearance-strong.mt-announcement--variant-attention {
   --mt-announcement-background: var(--color-icon-attention-default);
   --mt-announcement-color: var(--color-static-black);
 }
 
-.mt-announcement--variant-critical {
+.mt-announcement--appearance-strong.mt-announcement--variant-critical {
   --mt-announcement-background: var(--color-interaction-critical-default);
   --mt-announcement-color: var(--color-static-white);
 }
 
-.mt-announcement--variant-positive {
+.mt-announcement--appearance-strong.mt-announcement--variant-positive {
   --mt-announcement-background: var(--color-icon-positive-default);
   --mt-announcement-color: var(--color-static-black);
 }
