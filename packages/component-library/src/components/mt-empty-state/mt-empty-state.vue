@@ -2,7 +2,7 @@
   <div class="mt-empty-state" :class="{ 'mt-empty-state--left-aligned': !centered }">
     <div class="mt-empty-state__icon">
       <mt-icon
-        :name="withIconMode(icon, 'regular')"
+        :name="forceIconMode(icon, 'regular')"
         color="var(--color-icon-primary-default)"
         aria-hidden="true"
       />
@@ -45,13 +45,13 @@ import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtLink from "@/components/mt-link/mt-link.vue";
-import { withIconMode } from "@/utils/icon";
+import { forceIconMode } from "@/utils/icon";
 
 withDefaults(
   defineProps<{
     headline: string;
     description: string;
-    /** It always shows in the regular style, such as `chart-line-arrow`. */
+    /** The icon above the headline, always in the regular style, such as `chart-line-arrow`. */
     icon: string;
     linkHref?: string;
     linkText?: string;

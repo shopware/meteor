@@ -41,7 +41,7 @@ import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 import { useI18n } from "vue-i18n";
-import { withIconMode } from "@/utils/icon";
+import { forceIconMode } from "@/utils/icon";
 
 const { t } = useI18n({
   messages: {
@@ -61,7 +61,7 @@ const props = withDefaults(
     hideIcon?: boolean;
     closable?: boolean;
     bannerIndex?: string;
-    /** Replaces the icon of the variant. It always shows in the solid style, such as `cog`. */
+    /** Replaces the icon of the variant, always in the solid style, such as `cog`. */
     icon?: string;
   }>(),
   {
@@ -75,9 +75,8 @@ defineEmits<{
   close: [bannerIndex?: string];
 }>();
 
-// The banner always shows solid icons, whatever style the name asks for.
 const bannerIcon = computed(() => {
-  if (props.icon) return withIconMode(props.icon, "solid");
+  if (props.icon) return forceIconMode(props.icon, "solid");
 
   const iconConfig = {
     neutral: "info-circle",
@@ -88,7 +87,7 @@ const bannerIcon = computed(() => {
     inherited: "link",
   };
 
-  return withIconMode(iconConfig[props.variant] || "info-circle", "solid");
+  return forceIconMode(iconConfig[props.variant] || "info-circle", "solid");
 });
 
 const future = useFutureFlags();

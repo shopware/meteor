@@ -6,7 +6,7 @@
       :size="indicatorSize"
       data-testid="mt-badge__indicator"
     />
-    <mt-icon v-if="icon" :name="withIconMode(icon, 'solid')" :size="iconSize" />
+    <mt-icon v-if="icon" :name="forceIconMode(icon, 'solid')" :size="iconSize" />
     <slot />
   </span>
 </template>
@@ -15,12 +15,12 @@
 import { computed } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtStatusDot from "../mt-status-dot/mt-status-dot.vue";
-import { withIconMode } from "@/utils/icon";
+import { forceIconMode } from "@/utils/icon";
 
 const props = withDefaults(
   defineProps<{
     variant?: "neutral" | "info" | "attention" | "critical" | "positive";
-    /** An icon in front of the label. It always shows in the solid style, such as `cog`. */
+    /** The icon in front of the label, always in the solid style, such as `cog`. */
     icon?: string;
     size?: "s" | "m" | "l";
     statusIndicator?: boolean;

@@ -17,6 +17,6 @@ export function parseIconName(
  * Gives an icon name the style a component wants, whatever style the name asks for: `regular-cog`
  * becomes `solid-cog` with `mode` set to `solid`.
  */
-export function withIconMode(name: string, mode: IconMode): string {
+export function forceIconMode(name: string, mode: IconMode): string {
   return `${mode}-${parseIconName(name).name}`;
 }
