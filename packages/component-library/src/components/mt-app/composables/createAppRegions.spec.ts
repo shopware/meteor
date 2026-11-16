@@ -13,7 +13,7 @@ describe("createAppRegions", () => {
 
     // ASSERT
     expect(hidden.value).toEqual({
-      banner: false,
+      announcement: false,
       header: true,
       navigation: false,
       sidebar: false,

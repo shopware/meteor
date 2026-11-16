@@ -18,12 +18,12 @@
     </div>
 
     <div
-      v-if="hasSlot('banner')"
-      ref="banner"
-      class="mt-app__banner"
-      :hidden="hiddenRegions.banner || undefined"
+      v-if="hasSlot('announcement')"
+      ref="announcement"
+      class="mt-app__announcement"
+      :hidden="hiddenRegions.announcement || undefined"
     >
-      <slot name="banner" />
+      <slot name="announcement" />
     </div>
 
     <header
@@ -152,8 +152,8 @@ import type { MtAppContext, MtAppPanel } from "./composables/useApp";
 import type { MtAppRegions } from "./composables/useAppRegions";
 
 /**
- * The root shell of a standalone application: a banner, a header, the navigation, the content and a
- * sidebar, whose panels become drawers on small screens. Use one shell per application.
+ * The root shell of a standalone application: an announcement, a header, the navigation, the content
+ * and a sidebar, whose panels become drawers on small screens. Use one shell per application.
  *
  * @experimental The API may still change in a future release.
  */
@@ -201,7 +201,7 @@ const slots = defineSlots<{
    * A full-width strip above the header for messages about the whole application, such as planned
    * downtime or an upcoming event. Not for alerts, which belong in the content of their page.
    */
-  banner?(): unknown;
+  announcement?(): unknown;
   /**
    * The header bar of the application. A component in it that shows the triggers of the navigation
    * and the sidebar, such as `mt-app-header`, shows them instead of the pages. The shell shows no
@@ -243,7 +243,7 @@ const { t } = useI18n({
 
 const PANELS = ["navigation", "sidebar"] as const;
 
-const bannerElement = useTemplateRef<HTMLElement>("banner");
+const announcementElement = useTemplateRef<HTMLElement>("announcement");
 const headerElement = useTemplateRef<HTMLElement>("header");
 const mainElement = useTemplateRef<HTMLElement>("main");
 const panelIds: Record<MtAppPanel, string> = { navigation: useId(), sidebar: useId() };
@@ -292,7 +292,7 @@ const api: MtAppContext = {
 const headerSlotProps = computed<HeaderSlotProps>(() => ({ ...api, isMobile: isMobile.value }));
 
 const renderedSlots = useRenderCache(() => ({
-  banner: hasSlotContent(slots.banner),
+  announcement: hasSlotContent(slots.announcement),
   header: hasSlotContent(slots.header, headerSlotProps.value),
   default: hasSlotContent(slots.default),
 }));
@@ -301,7 +301,7 @@ const isLoadingBarShown = computed(() => props.loadingBar && isLoading.value);
 // The content is busy for as long as the loading lasts, while the bar may stay a bit longer.
 const isBusy = computed(() => props.loadingBar && isPending.value);
 
-function hasSlot(name: "banner" | "header" | "default" | MtAppPanel) {
+function hasSlot(name: "announcement" | "header" | "default" | MtAppPanel) {
   return name === "navigation" || name === "sidebar"
     ? panelSlot(name).isFilled
     : renderedSlots()[name];
@@ -383,10 +383,10 @@ watch(hiddenRegions, (hidden) => {
 });
 
 watch(
-  () => [hiddenRegions.value.banner, hiddenRegions.value.header],
-  ([bannerHidden, headerHidden]) => {
+  () => [hiddenRegions.value.announcement, hiddenRegions.value.header],
+  ([announcementHidden, headerHidden]) => {
     const isFocusHidden =
-      (bannerHidden && bannerElement.value?.contains(document.activeElement)) ||
+      (announcementHidden && announcementElement.value?.contains(document.activeElement)) ||
       (headerHidden && headerElement.value?.contains(document.activeElement));
 
     if (isFocusHidden) nextTick(focusContent);
@@ -494,7 +494,7 @@ defineExpose(api);
   }
 }
 
-.mt-app__banner {
+.mt-app__announcement {
   flex: none;
   min-width: 0;
 }
@@ -514,7 +514,7 @@ defineExpose(api);
   overflow-x: clip;
 }
 
-.mt-app__banner[hidden],
+.mt-app__announcement[hidden],
 .mt-app__header[hidden] {
   display: none;
 }
@@ -640,7 +640,7 @@ defineExpose(api);
   }
 
   .mt-app__skip,
-  .mt-app__banner,
+  .mt-app__announcement,
   .mt-app__header,
   .mt-app__loading-bar {
     display: none;

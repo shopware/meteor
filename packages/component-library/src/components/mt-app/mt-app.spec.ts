@@ -36,7 +36,7 @@ const allSlots = {
   sidebar: '<aside aria-label="Details"><button>End action</button></aside>',
 };
 
-type Slots = Partial<Record<keyof typeof allSlots | "banner", unknown>>;
+type Slots = Partial<Record<keyof typeof allSlots | "announcement", unknown>>;
 
 async function renderApp(
   options: {
@@ -191,16 +191,16 @@ describe("mt-app", () => {
       );
     });
 
-    it("renders the banner above the header, outside of its landmark", async () => {
+    it("renders the announcement above the header, outside of its landmark", async () => {
       // ACT
-      await renderApp({ slots: { ...allSlots, banner: "<p>Planned maintenance</p>" } });
+      await renderApp({ slots: { ...allSlots, announcement: "<p>Planned maintenance</p>" } });
 
       // ASSERT
-      const banner = screen.getByText("Planned maintenance");
+      const announcement = screen.getByText("Planned maintenance");
       const header = screen.getByRole("banner");
-      expect(banner).toBeVisible();
-      expect(header).not.toContainElement(banner);
-      expect(banner.compareDocumentPosition(header)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      expect(announcement).toBeVisible();
+      expect(header).not.toContainElement(announcement);
+      expect(announcement.compareDocumentPosition(header)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     });
 
     it("moves the focus to the content when an announcement that holds it closes", async () => {
@@ -214,7 +214,7 @@ describe("mt-app", () => {
           </mt-announcement>
         `,
       });
-      await renderApp({ slots: { ...allSlots, banner: () => h(Announcement) } });
+      await renderApp({ slots: { ...allSlots, announcement: () => h(Announcement) } });
 
       // ACT
       await userEvent.click(screen.getByRole("button", { name: "Close announcement" }));
@@ -1014,14 +1014,14 @@ describe("mt-app", () => {
       });
     }
 
-    it("hides the banner and the header while a view hides them and shows them again when the view goes away", async () => {
+    it("hides the announcement and the header while a view hides them and shows them again when the view goes away", async () => {
       // ARRANGE
-      const View = createView({ banner: false, header: false });
+      const View = createView({ announcement: false, header: false });
       const showView = ref(true);
       await renderApp({
         slots: {
           ...allSlots,
-          banner: "<p>Planned maintenance</p>",
+          announcement: "<p>Planned maintenance</p>",
           default: () => [showView.value ? h(View) : h("p", "Page")],
         },
       });

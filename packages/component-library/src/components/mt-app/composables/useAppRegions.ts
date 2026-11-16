@@ -11,8 +11,8 @@ import type {} from "vue-router";
  * @experimental The API may still change in a future release.
  */
 export interface MtAppRegions {
-  /** The banner above the header. */
-  banner?: boolean;
+  /** The announcement above the header. */
+  announcement?: boolean;
   header?: boolean;
   navigation?: boolean;
   sidebar?: boolean;

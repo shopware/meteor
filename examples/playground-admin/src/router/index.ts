@@ -89,7 +89,7 @@ export const router = createRouter({
         title: "nav.cms",
         icon: "image-text",
         mtAppRegions: {
-          banner: false,
+          announcement: false,
           header: false,
           navigation: false,
           sidebar: false,
