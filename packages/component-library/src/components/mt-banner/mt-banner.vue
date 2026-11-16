@@ -6,6 +6,7 @@
         size="var(--scale-size-16)"
         class="mt-banner__icon"
         :name="bannerIcon"
+        mode="solid"
         decorative
       />
     </slot>
@@ -41,6 +42,7 @@ import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 import { useI18n } from "vue-i18n";
+import { parseIconName } from "@/utils/icon";
 
 const { t } = useI18n({
   messages: {
@@ -60,6 +62,7 @@ const props = withDefaults(
     hideIcon?: boolean;
     closable?: boolean;
     bannerIndex?: string;
+    /** Replaces the icon of the variant. It always shows in the solid style, such as `cog`. */
     icon?: string;
   }>(),
   {
@@ -73,19 +76,20 @@ defineEmits<{
   close: [bannerIndex?: string];
 }>();
 
+// The banner always shows solid icons, whatever style the name asks for.
 const bannerIcon = computed(() => {
-  if (props.icon) return props.icon;
+  if (props.icon) return parseIconName(props.icon).name;
 
   const iconConfig = {
-    neutral: "solid-info-circle",
-    info: "solid-info-circle",
-    attention: "solid-exclamation-triangle",
-    critical: "solid-exclamation-circle",
-    positive: "solid-check-circle",
-    inherited: "solid-link",
+    neutral: "info-circle",
+    info: "info-circle",
+    attention: "exclamation-triangle",
+    critical: "exclamation-circle",
+    positive: "check-circle",
+    inherited: "link",
   };
 
-  return iconConfig[props.variant] || "solid-info-circle";
+  return iconConfig[props.variant] || "info-circle";
 });
 
 const future = useFutureFlags();

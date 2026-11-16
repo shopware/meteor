@@ -52,7 +52,7 @@ const DefaultTemplate: StoryFn = (args) => ({
 
 export const Default: StoryFn = DefaultTemplate.bind({});
 Default.args = {
-  icon: "solid-chart-line-arrow",
+  icon: "chart-line-arrow",
   headline: "Default Headline",
   description: "Default Description",
 };
@@ -61,7 +61,7 @@ Default.parameters = {
     source: {
       language: "html",
       code: `<mt-empty-state
-  icon="solid-chart-line-arrow"
+  icon="chart-line-arrow"
   headline="Default Headline"
   description="Default Description"
 />`,
@@ -83,7 +83,7 @@ export const Extended: StoryFn = ExtendedTemplate.bind({});
 Extended.args = {
   headline: "Extended Headline",
   description: "Extended Description",
-  icon: "solid-chart-line-arrow",
+  icon: "chart-line-arrow",
   linkHref: "https://storybook.js.org",
   linkText: "Learn more",
   buttonText: "Button text",
@@ -96,7 +96,7 @@ Extended.parameters = {
     source: {
       language: "html",
       code: `<mt-empty-state
-  icon="solid-chart-line-arrow"
+  icon="chart-line-arrow"
   headline="Extended Headline"
   description="Extended Description"
   link-href="https://storybook.js.org"

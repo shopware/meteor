@@ -39,4 +39,23 @@ describe("mt-banner", () => {
     expect(closeHandler).toHaveBeenCalledOnce();
     expect(closeHandler).toHaveBeenCalledWith("some-banner-index");
   });
+
+  it("shows the icon of the variant in the solid style", () => {
+    // ARRANGE
+    render(MtBanner, { props: { variant: "critical" } });
+
+    // ASSERT
+    expect(screen.getByTestId("mt-icon__solid-exclamation-circle")).toBeInTheDocument();
+  });
+
+  it.each(["cog", "regular-cog", "solid-cog"])(
+    "shows the custom icon %s in the solid style",
+    (icon) => {
+      // ARRANGE
+      render(MtBanner, { props: { icon } });
+
+      // ASSERT
+      expect(screen.getByTestId("mt-icon__solid-cog")).toBeInTheDocument();
+    },
+  );
 });

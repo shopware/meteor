@@ -4,7 +4,7 @@ import MtEmptyState from "./mt-empty-state.vue";
 async function createWrapper(customOptions = {}, props = {}) {
   return mount(MtEmptyState, {
     props: {
-      icon: "solid-chart-line-arrow",
+      icon: "chart-line-arrow",
       headline: "Foo",
       description: "Bar",
       ...props,
@@ -44,11 +44,21 @@ describe("mt-empty-state", () => {
 
   it("should render an icon", async () => {
     wrapper = await createWrapper(undefined, {
-      icon: "solid-chart-line-arrow",
+      icon: "chart-line-arrow",
     });
     const icon = wrapper.find("mt-icon-stub");
     expect(icon.exists()).toBeTruthy();
-    expect(icon.attributes("name")).toBe("solid-chart-line-arrow");
+    expect(icon.attributes("name")).toBe("chart-line-arrow");
+    expect(icon.attributes("mode")).toBe("regular");
+  });
+
+  it("shows the icon in the regular style when the name asks for another one", async () => {
+    wrapper = await createWrapper(undefined, {
+      icon: "solid-chart-line-arrow",
+    });
+    const icon = wrapper.find("mt-icon-stub");
+    expect(icon.attributes("name")).toBe("chart-line-arrow");
+    expect(icon.attributes("mode")).toBe("regular");
   });
 
   it("should render a link", async () => {
