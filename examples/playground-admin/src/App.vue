@@ -20,7 +20,7 @@ const { isClosed: isAnnouncementClosed, close: closeAnnouncement } =
 
 <template>
   <mt-app loading-bar>
-    <template #banner>
+    <template #announcement>
       <mt-announcement
         v-if="!isAnnouncementClosed"
         variant="critical"
@@ -28,7 +28,7 @@ const { isClosed: isAnnouncementClosed, close: closeAnnouncement } =
         closable
         @close="closeAnnouncement"
       >
-        {{ t("banner.maintenance") }}
+        {{ t("announcement.maintenance") }}
       </mt-announcement>
     </template>
 

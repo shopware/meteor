@@ -15,7 +15,7 @@ export const en = {
     settings: "Settings",
     logout: "Log out",
   },
-  banner: {
+  announcement: {
     maintenance:
       "Planned maintenance on Sunday, November 16, from 2:00 to 4:00 AM CET. You can't save changes during this time.",
   },

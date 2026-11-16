@@ -4,8 +4,8 @@ import { MtApp } from "@shopware-ag/meteor-component-library";
 
 <template>
   <mt-app style="--mt-app-height: 480px" :breakpoint="0">
-    <template #banner>
-      <placeholder-slot name="banner" />
+    <template #announcement>
+      <placeholder-slot name="announcement" />
     </template>
 
     <template #header>
