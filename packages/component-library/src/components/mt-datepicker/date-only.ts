@@ -91,6 +91,16 @@ export function toDateOnlyString(value: Date | string, timeZone: string): string
 }
 
 /**
+ * Returns the calendar day ("yyyy-MM-dd") of the Date on the clock of the browser, which is the
+ * day `getDate()` returns. Returns null for an invalid Date.
+ */
+export function toLocalDateOnlyString(value: Date): string | null {
+  if (Number.isNaN(value.getTime())) return null;
+
+  return `${pad(value.getFullYear(), 4)}-${pad(value.getMonth() + 1, 2)}-${pad(value.getDate(), 2)}`;
+}
+
+/**
  * Returns midnight UTC of the calendar day ("yyyy-MM-dd") in milliseconds, or null if the value
  * is not a calendar day that exists.
  */

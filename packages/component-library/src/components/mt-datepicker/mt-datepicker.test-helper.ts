@@ -13,6 +13,7 @@ import MtDatepicker from "./mt-datepicker.vue";
 
 type DatepickerProps = InstanceType<typeof MtDatepicker>["$props"];
 
+// The same limit as `expect.poll` in vitest.config.ts, so all waits in these tests give up alike
 const WAIT = { timeout: 2500 };
 
 /* The page, the clock and the time zones */
@@ -69,13 +70,15 @@ export const browserTimeZones = ["UTC", "America/Los_Angeles", "Asia/Tokyo"];
 
 /**
  * Combinations of the browser's and the picker's time zone that the value tests run in. Every
- * tested zone appears on both sides, with the browser ahead of, behind and equal to the picker.
+ * tested picker zone appears, with the browser ahead of and behind the picker. At
+ * `AROUND_MIDNIGHT` the browser and the picker are on different days in each pair, so a value
+ * taken from the browser's clock instead of the picker's shows up as a wrong day.
+ *
+ * The browser and the picker in the same time zone is left out: it is the case in which mixing
+ * the two up goes unnoticed.
  */
 export const timeZonePairs = [
   { browserTimeZone: "UTC", timeZone: "Europe/Berlin" },
-  // The usual setup: a user whose profile has the time zone they work in
-  { browserTimeZone: "Europe/Berlin", timeZone: "Europe/Berlin" },
-  { browserTimeZone: "America/Los_Angeles", timeZone: "UTC" },
   { browserTimeZone: "America/Los_Angeles", timeZone: "Asia/Tokyo" },
   { browserTimeZone: "Asia/Tokyo", timeZone: "UTC" },
   { browserTimeZone: "Asia/Tokyo", timeZone: "America/New_York" },
@@ -189,7 +192,10 @@ export function getClearButton() {
 }
 
 export async function clearValue() {
-  await user().click(screen.getByRole("button", { name: "Clear value" }));
+  const button = getClearButton();
+  if (!button) throw new Error("There is no clear button. Is the picker empty?");
+
+  await user().click(button);
 }
 
 /* The calendar */
@@ -223,9 +229,16 @@ function getDayCell(day: string) {
   return cell;
 }
 
-/** Clicks the day given as "yyyy-MM-dd". Opens the calendar first if it is closed. */
-export async function clickDay(day: string) {
-  if (!isCalendarOpen()) await openCalendar();
+/**
+ * Clicks the day given as "yyyy-MM-dd". Opens the calendar first if it is closed, unless
+ * `stillOpen` is set: then a closed calendar fails the test. Use it for a click that must happen
+ * in the calendar the previous click left open, as the second day of a range.
+ */
+export async function clickDay(day: string, { stillOpen = false }: { stillOpen?: boolean } = {}) {
+  if (!isCalendarOpen()) {
+    if (stillOpen) throw new Error(`The calendar closed before the day ${day} could be clicked`);
+    await openCalendar();
+  }
 
   await waitFor(() => getDayCell(day), WAIT);
   await user().click(getDayCell(day));

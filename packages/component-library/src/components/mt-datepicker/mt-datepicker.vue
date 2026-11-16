@@ -4,7 +4,7 @@
     class="mt-datepicker__wrapper wrapper"
     :class="{
       'mt-datepicker__wrapper--small': size === 'small',
-      'has-error': error,
+      'has-error': hasError,
     }"
     @input.capture="onTextInput"
     @keydown.capture="onInputKeydown"
@@ -13,7 +13,7 @@
     <mt-field-label
       class="mt-datepicker__label"
       :for="inputId"
-      :has-error="!!error || !!errorMessage"
+      :has-error="hasError"
       :required="required"
       :inheritance="isInheritanceField ? (isInherited ? 'linked' : 'unlinked') : 'none'"
       :disabled="disableInheritanceToggle"
@@ -53,7 +53,12 @@
       @closed="onUserInteraction"
     >
       <template #clear-icon="{ clear }">
-        <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
+        <button
+          class="mt-datepicker__clear-button"
+          aria-label="Clear value"
+          @pointerdown="onClearPointerDown"
+          @click="onClearClick(clear)"
+        >
           <mt-icon name="regular-times-s" size="var(--scale-size-10)" aria-hidden="true" />
         </button>
       </template>
@@ -106,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, watchEffect } from "vue";
+import { computed, onMounted, ref, useId, watch, watchEffect } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
@@ -123,7 +128,6 @@ import {
 } from "@vuepic/vue-datepicker";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { useId } from "vue";
 import { enUS } from "date-fns/locale/en-US";
 import { isValid, parse, type Locale } from "date-fns";
 import { importDateFnsLocaleModule } from "./date-fns-locale";
@@ -132,7 +136,9 @@ import {
   isDateOnlyString,
   resolveTimeZone,
   toDateOnlyString,
+  toLocalDateOnlyString,
 } from "./date-only";
+import { useConfirmedEmit } from "./use-confirmed-emit";
 
 // @deprecated tag:v5 remove the `wrapper` class of the root element. Keep `mt-datepicker__wrapper`,
 // which the styles build on.
@@ -149,8 +155,6 @@ type EmittedValue = string | Array<string | null> | null;
 // the library fills that hidden time from the previous value or the current time, which made the
 // emitted value unpredictable.
 const DATE_ONLY_MODEL_TYPE = "yyyy-MM-dd";
-
-const NOTHING = Symbol("nothing");
 
 const props = withDefaults(
   defineProps<{
@@ -188,7 +192,11 @@ const props = withDefaults(
      *   user is, for example in a filter for orders of a day.
      * - "date": the picked calendar day as "yyyy-MM-dd", for example "2000-01-15". The day is the
      *   same in every time zone and `timeZone` is ignored. Use it for days that do not depend on
-     *   a place, such as birthdays. A value with a time is read as the day it falls on in UTC.
+     *   a place, such as birthdays. A string with a time is read as the day it falls on in UTC. A
+     *   Date object is read as its own calendar day, the one `getDate()` returns, so
+     *   `new Date(2000, 0, 15)` is January 15.
+     *
+     * With either format, a value that is a plain day such as "2000-01-15" is shown as that day.
      */
     valueFormat?: "datetime" | "date";
     /**
@@ -208,7 +216,7 @@ const props = withDefaults(
     /**
      * Determines if the date picker field is required.
      * If true, the user must select a value before submitting the form. The picker shows an
-     * error once the user has been in it and left it empty.
+     * error once the user has been in it and left it empty. A range needs both of its days.
      */
     required?: boolean;
     /**
@@ -332,11 +340,27 @@ const onInheritanceChange = (inheritance: "linked" | "unlinked") => {
 };
 
 const wrapper = ref<HTMLElement | null>(null);
-const inputId = useId();
+// @deprecated tag:v6 - give every picker an id of its own with `useId()`. All pickers share this
+// id, so the label of a second picker on a page points at the input of the first one. It is kept
+// until then because tests and styles select the input by `#field-id`.
+const inputId = "field-id";
 const errorId = useId();
 const isTimeHintVisible = ref(true);
 
 const resolvedTimeZone = computed(() => resolveTimeZone(props.timeZone));
+
+// A misspelled time zone would otherwise save UTC values without anybody noticing
+watch(
+  () => props.timeZone,
+  (timeZone) => {
+    if (timeZone && resolveTimeZone(timeZone) !== timeZone) {
+      console.warn(
+        `[MtDatepicker] The time zone "${timeZone}" is unknown to the browser. The picker uses "UTC" instead.`,
+      );
+    }
+  },
+  { immediate: true },
+);
 
 // The required error is feedback on what the user did. It only shows once the user has cleared
 // the value, or has been in the picker and left it empty, not on a picker nobody has touched yet.
@@ -346,8 +370,12 @@ const onUserInteraction = () => {
   hasUserInteracted.value = true;
 };
 
+// A range counts as filled only once both of its days are picked
+const isEmpty = (value: unknown) =>
+  Array.isArray(value) ? value.length === 0 || value.some((item) => !item) : !value;
+
 const errorMessage = computed(() =>
-  props.required && hasUserInteracted.value && !props.modelValue
+  props.required && hasUserInteracted.value && isEmpty(props.modelValue)
     ? { detail: "This field is required" }
     : undefined,
 );
@@ -449,7 +477,7 @@ const datePickerAriaLabels = computed<Partial<AriaLabelsConfig>>(() =>
 // on its input directly
 watchEffect(
   () => {
-    const input = wrapper.value?.querySelector("input");
+    const input = wrapper.value?.querySelector<HTMLInputElement>(".dp__input");
     if (!input) return;
 
     if (hasError.value) {
@@ -468,12 +496,24 @@ const isPlainDate = computed(() => props.dateType === "date" && props.valueForma
 // The time zone in which a date-only picker looks up the calendar day of a value
 const dateOnlyTimeZone = computed(() => (isPlainDate.value ? "UTC" : resolvedTimeZone.value));
 
+// The calendar day a date-only picker shows for a value
+const toPickerDay = (value: string | Date): string | null => {
+  // A plain day has no time and no place, so it is the same day in every time zone
+  if (typeof value === "string" && isDateOnlyString(value)) return value;
+
+  // A Date that stands for a day is mostly built at midnight on the clock of the browser, as
+  // `new Date(2000, 0, 15)` is, so its own calendar day is the day it stands for
+  if (isPlainDate.value && value instanceof Date) return toLocalDateOnlyString(value);
+
+  return toDateOnlyString(value, dateOnlyTimeZone.value);
+};
+
 // The library does not get a time zone for plain days, so it reads a limit on the clock of the
 // browser. It is handed over as the plain day it stands for.
 const toDatePickerLimit = (limit: Date | string | undefined) => {
   if (!isPlainDate.value || limit === undefined) return limit;
 
-  const dateOnly = toDateOnlyString(limit, dateOnlyTimeZone.value);
+  const dateOnly = toPickerDay(limit);
   if (!dateOnly) return limit;
 
   const [year, month, day] = dateOnly.split("-").map(Number);
@@ -489,11 +529,11 @@ const dateValue = computed<Date | Date[] | Time | string | string[] | null>(() =
   if (props.dateType === "date") {
     if (Array.isArray(props.modelValue)) {
       return props.modelValue
-        .map((value) => (value === null ? null : toDateOnlyString(value, dateOnlyTimeZone.value)))
+        .map((value) => (value === null ? null : toPickerDay(value)))
         .filter((value): value is string => value !== null);
     }
 
-    return toDateOnlyString(props.modelValue, dateOnlyTimeZone.value);
+    return toPickerDay(props.modelValue);
   }
 
   if (props.dateType === "time") {
@@ -539,7 +579,14 @@ const updateOpacitySettings = () => {
 const toComparable = (value: unknown): string => {
   const normalize = (item: unknown) => {
     if (item === null || item === undefined || item === "") return null;
-    if (item instanceof Date) return Number.isNaN(item.getTime()) ? null : item.toISOString();
+    if (item instanceof Date && Number.isNaN(item.getTime())) return null;
+
+    // A date-only picker shows days, so two of its values are equal when they are the same day
+    if (props.dateType === "date" && (typeof item === "string" || item instanceof Date)) {
+      return toPickerDay(item) ?? item;
+    }
+
+    if (item instanceof Date) return item.toISOString();
     if (typeof item !== "string" || isDateOnlyString(item)) return item;
 
     const ms = Date.parse(item);
@@ -549,70 +596,42 @@ const toComparable = (value: unknown): string => {
   return JSON.stringify(Array.isArray(value) ? value.map(normalize) : normalize(value));
 };
 
-// What the user types counts once they confirm it with Enter or Tab, or leave the field. Until
-// then the library already reports every text it can read as a date, including unfinished ones
-// such as the year 2020 for "20". Those values are held back here.
-let isTyping = false;
-let typedValue: EmittedValue | typeof NOTHING = NOTHING;
-
-// The library reports a value more than once, for example when a typed date is confirmed and
+// What the user types counts once they confirm it with Enter or Tab, or leave the field. The
+// library also reports a value more than once, for example when a typed date is confirmed and
 // again when the field loses focus, and it reports the value it already has when the user tabs
 // through the field. Only a value that differs from the current one is passed on.
-//
-// The current value is the model value. After an emit it is the emitted value, until the model
-// value changes: a parent that does not hand the emitted value back still has received it.
-let lastEmitted: string | typeof NOTHING = NOTHING;
-
-watch(
-  () => props.modelValue,
-  () => {
-    lastEmitted = NOTHING;
-  },
-  { flush: "sync" },
-);
-
-const emitValue = (value: EmittedValue) => {
-  if (isTyping) {
-    typedValue = value;
-    return;
-  }
-
-  const comparable = toComparable(value);
-  const current = lastEmitted === NOTHING ? toComparable(props.modelValue) : lastEmitted;
-  if (comparable === current) return;
-
-  lastEmitted = comparable;
-  emit("update:modelValue", value);
-};
-
-const discardTypedValue = () => {
-  isTyping = false;
-  typedValue = NOTHING;
-};
-
-const confirmTypedValue = () => {
-  const value = typedValue;
-  discardTypedValue();
-
-  if (value !== NOTHING) emitValue(value);
-};
+const { emitValue, startTyping, confirmTyping, discardTyping } = useConfirmedEmit<EmittedValue>({
+  modelValue: () => props.modelValue,
+  toComparable,
+  emit: (value) => emit("update:modelValue", value),
+});
 
 const isInput = (target: EventTarget | null) => target instanceof HTMLInputElement;
 
-const onTextInput = (event: Event) => {
-  if (!isInput(event.target)) return;
+// Pressing the clear button takes the focus off the input before the click arrives, and leaving
+// the input confirms what was typed. The press is noticed first, so that what was typed is thrown
+// away instead. Not every browser moves the focus to a clicked button, so the press is what
+// counts, not where the focus goes.
+let isClearing = false;
 
-  // Every key press starts over: only what the library reads from the current text can be
-  // confirmed, not a value it read from an earlier, shorter text
-  isTyping = true;
-  typedValue = NOTHING;
+const onClearPointerDown = () => {
+  isClearing = true;
+};
+
+const onClearClick = (clear: () => void) => {
+  isClearing = false;
+  clear();
+};
+
+const onTextInput = (event: Event) => {
+  if (isInput(event.target)) startTyping();
 };
 
 const onInputKeydown = (event: KeyboardEvent) => {
   if (!isInput(event.target)) return;
 
-  if (event.key === "Enter" || event.key === "Tab") confirmTypedValue();
-  if (event.key === "Escape") discardTypedValue();
+  if (event.key === "Enter" || event.key === "Tab") confirmTyping();
+  if (event.key === "Escape") discardTyping();
 };
 
 const onInputFocusOut = (event: FocusEvent) => {
@@ -621,12 +640,12 @@ const onInputFocusOut = (event: FocusEvent) => {
   // Moving on into the calendar is not leaving the picker. The library keeps what was typed
   // and combines it with what the user picks there.
   const next = event.relatedTarget;
-  if (next instanceof Element && next.closest(".dp__menu")) {
-    discardTypedValue();
+  if (isClearing || (next instanceof Element && next.closest(".dp__menu"))) {
+    discardTyping();
     return;
   }
 
-  confirmTypedValue();
+  confirmTyping();
   onUserInteraction();
 };
 

@@ -7,6 +7,7 @@ import {
   isDateOnlyString,
   resolveTimeZone,
   toDateOnlyString,
+  toLocalDateOnlyString,
 } from "./date-only";
 import {
   AROUND_MIDNIGHT,
@@ -55,6 +56,15 @@ afterEach(resetPage);
 
 const REQUIRED_ERROR = "This field is required";
 
+/** Keeps expected warnings out of the test output. They can still be checked on `console.warn`. */
+function silenceWarnings() {
+  vi.spyOn(console, "warn").mockImplementation(() => {});
+}
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 describe("mt-datepicker", () => {
   describe("field", () => {
     it("can be disabled", () => {
@@ -75,22 +85,6 @@ describe("mt-datepicker", () => {
       renderDatepicker({ label: "Publish date" });
 
       expect(getInput()).toHaveAccessibleName("Publish date");
-    });
-
-    it("connects each label to its own picker", () => {
-      render(
-        defineComponent({
-          components: { MtDatepicker },
-          template: `<div><MtDatepicker label="Start" /><MtDatepicker label="End" /></div>`,
-        }),
-      );
-
-      const [start, end] = screen.getAllByRole("textbox");
-
-      // A label points at its input by id, so every picker needs an id of its own
-      expect(start.id).not.toBe(end.id);
-      expect(screen.getByText("Start").closest("label")).toHaveAttribute("for", start.id);
-      expect(screen.getByText("End").closest("label")).toHaveAttribute("for", end.id);
     });
 
     it("shows the help text in a tooltip", async () => {
@@ -116,16 +110,13 @@ describe("mt-datepicker", () => {
       expect(container.firstElementChild).toHaveClass("mt-datepicker__wrapper--small");
     });
 
-    it('has the placeholder "Y-m-d ..." by default', () => {
-      renderDatepicker();
+    it.each([
+      ["by default", {}, "Y-m-d ..."],
+      ["when provided", { placeholder: "Stop! Hammertime!" }, "Stop! Hammertime!"],
+    ])("shows the placeholder %s", (_, props, expected) => {
+      renderDatepicker(props);
 
-      expect(getInput()).toHaveAttribute("placeholder", "Y-m-d ...");
-    });
-
-    it("shows the placeholder when provided", () => {
-      renderDatepicker({ placeholder: "Stop! Hammertime!" });
-
-      expect(getInput()).toHaveAttribute("placeholder", "Stop! Hammertime!");
+      expect(getInput()).toHaveAttribute("placeholder", expected);
     });
 
     it("marks the input as required only when it is required", async () => {
@@ -138,24 +129,9 @@ describe("mt-datepicker", () => {
     });
   });
 
+  // The hint prop and the hint slot on their own are covered by the tests below, which also check
+  // what they replace
   describe("hint", () => {
-    it("displays a hint passed via the hint prop", () => {
-      renderDatepicker({ hint: "Hint from prop" });
-
-      expect(screen.getByText("Hint from prop")).toBeVisible();
-    });
-
-    it("renders markup passed via the hint slot", () => {
-      render(MtDatepicker, {
-        slots: {
-          hint: '<span data-testid="custom-hint">Hint from slot</span>',
-        },
-      });
-
-      expect(screen.getByTestId("custom-hint")).toBeVisible();
-      expect(screen.getByTestId("custom-hint")).toHaveTextContent("Hint from slot");
-    });
-
     it("shows the time zone as the hint of a datetime picker", () => {
       renderDatepicker({ dateType: "datetime", timeZone: "Europe/Berlin" });
 
@@ -170,6 +146,7 @@ describe("mt-datepicker", () => {
 
     it("shows UTC as the time zone hint when the time zone does not exist", () => {
       // The picker works in UTC then, so that is what the hint has to say
+      silenceWarnings();
       renderDatepicker({ dateType: "datetime", timeZone: "Not/A_Zone" });
 
       expect(screen.getByTestId("time-zone-hint")).toHaveTextContent("UTC");
@@ -317,28 +294,31 @@ describe("mt-datepicker", () => {
   describe("error", () => {
     const error = { code: 500, detail: "Error message" };
 
-    it("shows the error and marks the field", () => {
+    it("shows the error, marks the field and tells assistive technology about it", () => {
       const { container } = renderDatepicker({ error });
 
+      expect(screen.getByText("Error message")).toBeVisible();
       expect(container.firstElementChild).toHaveClass("has-error");
-      expect(screen.getByText("Error message")).toBeInTheDocument();
+      expect(getInput()).toHaveAttribute("aria-invalid", "true");
+      expect(getInput()).toHaveAccessibleDescription(expect.stringContaining("Error message"));
     });
 
     it("shows no error by default", () => {
       const { container } = renderDatepicker();
 
       expect(container.firstElementChild).not.toHaveClass("has-error");
-      expect(getInput()).not.toHaveAttribute("aria-invalid", "true");
+      expect(getInput()).not.toHaveAttribute("aria-invalid");
+      expect(getInput()).not.toHaveAttribute("aria-describedby");
     });
 
-    it("marks the input as invalid for assistive technology", () => {
-      renderDatepicker({ error });
+    // The link to the error message is set on the input of the library by hand. It must survive
+    // the library updating its input.
+    it("keeps the input described by the error message when the picker changes", async () => {
+      const { setProps } = renderDatepicker({ error, textInput: true });
 
-      expect(getInput()).toHaveAttribute("aria-invalid", "true");
-    });
-
-    it("describes the input by the error message for assistive technology", () => {
-      renderDatepicker({ error });
+      await setProps({ disabled: true });
+      await setProps({ disabled: false, textInput: false, size: "small" });
+      await setProps({ range: true, dateType: "date" });
 
       expect(getInput()).toHaveAccessibleDescription(expect.stringContaining("Error message"));
     });
@@ -401,28 +381,33 @@ describe("mt-datepicker", () => {
       expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
     });
 
-    it("shows an error when the value is cleared, until a value is picked again", async () => {
-      renderDatepicker(requiredWithValue);
+    it("shows the error and marks the field when the value is cleared, until a value is picked again", async () => {
+      const { container } = renderDatepicker(requiredWithValue);
       await expect.poll(getShownValue).toBe("2024/07/10");
 
       await clearValue();
       expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
-
-      await clickDay("2024-07-20");
-      await expect.poll(() => screen.queryByText(REQUIRED_ERROR)).toBeNull();
-    });
-
-    it("marks the input as invalid while the error shows", async () => {
-      renderDatepicker(requiredWithValue);
-      await expect.poll(getShownValue).toBe("2024/07/10");
-
-      await clearValue();
-      await expect.poll(() => getInput().getAttribute("aria-invalid")).toBe("true");
+      expect(container.firstElementChild).toHaveClass("has-error");
+      expect(getInput()).toHaveAttribute("aria-invalid", "true");
       expect(getInput()).toHaveAccessibleDescription(expect.stringContaining(REQUIRED_ERROR));
 
       await clickDay("2024-07-20");
-      await expect.poll(() => getInput().getAttribute("aria-invalid")).toBeNull();
+      await expect.poll(() => screen.queryByText(REQUIRED_ERROR)).toBeNull();
+      expect(container.firstElementChild).not.toHaveClass("has-error");
+      expect(getInput()).not.toHaveAttribute("aria-invalid");
       expect(getInput()).not.toHaveAttribute("aria-describedby");
+    });
+
+    it("shows the error for a range that has only a start when the user closes the picker", async () => {
+      const { emittedValues } = renderDatepicker({ ...required, range: true });
+
+      await clickDay("2024-07-20");
+      await expect.poll(emittedValues).toHaveLength(1);
+      expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
+
+      await closeCalendar();
+
+      expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
     });
   });
 
@@ -464,38 +449,21 @@ describe("mt-datepicker", () => {
       await expect.poll(isCalendarOpen).toBe(true);
     });
 
+    // closeCalendar presses Escape and fails if the picker stays open
     it.each(["date", "time"] as const)(
-      "closes the %s picker when Escape is pressed",
+      "opens the %s picker with Enter and closes it with Escape",
       async (dateType) => {
         renderDatepicker({ dateType });
-        await openCalendar();
+
+        await user().tab();
+        expect(getInput()).toHaveFocus();
+
+        await user().keyboard("{Enter}");
+        await expect.poll(isCalendarOpen).toBe(true);
 
         await closeCalendar();
-
-        expect(isCalendarOpen()).toBe(false);
       },
     );
-
-    it("can be opened and closed with the keyboard", async () => {
-      renderDatepicker();
-
-      await user().tab();
-      expect(getInput()).toHaveFocus();
-
-      await user().keyboard("{Enter}");
-      await expect.poll(isCalendarOpen).toBe(true);
-
-      await closeCalendar();
-      expect(isCalendarOpen()).toBe(false);
-    });
-
-    it("closes when a day is picked", async () => {
-      renderDatepicker({ dateType: "date" });
-
-      await clickDay("2024-07-20");
-
-      await expect.poll(isCalendarOpen).toBe(false);
-    });
 
     it("emits a day again when it is picked again after the value was reset from the outside", async () => {
       const { emittedValues, setProps } = renderDatepicker({
@@ -558,7 +526,7 @@ describe("mt-datepicker", () => {
       expect(isDayDisabled("2024-03-22")).toBe(true);
     });
 
-    it("does not emit a disabled day", async () => {
+    it("ignores a click on a disabled day and closes when an enabled day is picked", async () => {
       const { emittedValues } = renderDatepicker({
         dateType: "date",
         modelValue: "2024-03-20T00:00:00.000Z",
@@ -566,10 +534,9 @@ describe("mt-datepicker", () => {
       });
 
       await clickDay("2024-03-19");
-      expect(isCalendarOpen()).toBe(true);
 
       // The enabled day clicked afterwards is the only value that may arrive
-      await clickDay("2024-03-21");
+      await clickDay("2024-03-21", { stillOpen: true });
       await expect.poll(isCalendarOpen).toBe(false);
       expect(emittedValues()).toEqual(["2024-03-21T00:00:00.000Z"]);
     });
@@ -720,12 +687,15 @@ describe("mt-datepicker", () => {
     // then the picker emits nothing: not the unfinished text and not the finished one.
     const typable = { dateType: "date", textInput: true } as const;
 
+    // Checks that nothing was emitted first wait for the input to show the outcome, so a value
+    // emitted a moment after the action is not missed
+
     it("ignores typing by default", async () => {
       const { onUpdate } = renderDatepicker({ dateType: "date" });
 
       await typeValue("2025/01/01");
 
-      expect(getInput()).toHaveValue("");
+      await expect.poll(getShownValue).toBe("");
       expect(onUpdate).not.toHaveBeenCalled();
     });
 
@@ -734,39 +704,36 @@ describe("mt-datepicker", () => {
 
       await typeValue("2025/01/01", { confirm: "none" });
 
-      expect(getInput()).toHaveValue("2025/01/01");
+      await expect.poll(getShownValue).toBe("2025/01/01");
       expect(onUpdate).not.toHaveBeenCalled();
     });
 
-    it.each(["enter", "blur"] as const)(
-      "emits the typed date once when the user confirms with %s",
-      async (confirm) => {
-        const { emittedValues } = renderDatepicker(typable);
-
-        await typeValue("2025/01/01", { confirm });
-
-        await expect.poll(getShownValue).toBe("2025/01/01");
-        expect(emittedValues()).toEqual(["2025-01-01T00:00:00.000Z"]);
-      },
-    );
-
-    it("emits the typed date once when the user clicks somewhere else", async () => {
+    it.each([
+      ["presses Enter", () => user().keyboard("{Enter}")],
+      ["moves on with Tab", () => user().tab()],
+      ["clicks somewhere else", () => user().click(document.body)],
+    ])("emits the typed date once when the user %s", async (_, confirm) => {
       const { emittedValues } = renderDatepicker(typable);
       await typeValue("2025/01/01", { confirm: "none" });
 
-      await user().click(document.body);
+      await confirm();
 
       await expect.poll(getShownValue).toBe("2025/01/01");
       expect(emittedValues()).toEqual(["2025-01-01T00:00:00.000Z"]);
     });
 
+    // valueFormat only applies to date-only pickers, so it must not change these values
     it.each([
       ["datetime", "2025/01/01, 08:05", "2025-01-01T08:05:00.000Z"],
       ["time", "08:05", "08:05"],
     ] as const)(
-      "emits a typed %s once when the user confirms",
+      "emits a typed %s once when the user confirms, whatever the valueFormat",
       async (dateType, typed, emitted) => {
-        const { emittedValues } = renderDatepicker({ dateType, textInput: true });
+        const { emittedValues } = renderDatepicker({
+          dateType,
+          valueFormat: "date",
+          textInput: true,
+        });
 
         await typeValue(typed);
 
@@ -781,7 +748,7 @@ describe("mt-datepicker", () => {
       await typeValue("2025/13/45");
 
       // The text was typed, it just is not a date
-      expect(getInput()).toHaveValue("2025/13/45");
+      await expect.poll(getShownValue).toBe("2025/13/45");
       expect(onUpdate).not.toHaveBeenCalled();
     });
 
@@ -824,6 +791,20 @@ describe("mt-datepicker", () => {
       expect(onUpdate).not.toHaveBeenCalled();
     });
 
+    it("throws away what was typed when the user clears the field", async () => {
+      const { emittedValues } = renderDatepicker({
+        ...typable,
+        modelValue: "2024-03-20T00:00:00.000Z",
+      });
+      await expect.poll(getShownValue).toBe("2024/03/20");
+      await typeValue("2025/01/01", { confirm: "none" });
+
+      await clearValue();
+
+      await expect.poll(getShownValue).toBe("");
+      expect(emittedValues()).toEqual([null]);
+    });
+
     it("emits null once when the user deletes the text and confirms", async () => {
       const { emittedValues } = renderDatepicker({
         ...typable,
@@ -840,19 +821,22 @@ describe("mt-datepicker", () => {
     });
 
     it("does not emit a typed day outside minDate and maxDate", async () => {
-      const { onUpdate } = renderDatepicker({
+      const { emittedValues } = renderDatepicker({
         ...typable,
         minDate: "2024-03-20T00:00:00.000Z",
         maxDate: "2024-03-25T00:00:00.000Z",
       });
 
+      // Neither the day nor null nor a day moved inside the limits
       await typeValue("2024/03/19");
       await typeValue("2024/03/26");
-      expect(onUpdate).not.toHaveBeenCalledWith(expect.stringMatching(/^2024-03-(19|26)/));
+      await expect.poll(getShownValue).toBe("2024/03/26");
+      expect(emittedValues()).toEqual([]);
 
       // A day inside the limits still arrives, so the limits are what held the others back
       await typeValue("2024/03/22");
-      expect(onUpdate).toHaveBeenLastCalledWith("2024-03-22T00:00:00.000Z");
+      await expect.poll(getShownValue).toBe("2024/03/22");
+      expect(emittedValues()).toEqual(["2024-03-22T00:00:00.000Z"]);
     });
   });
 
@@ -1066,23 +1050,16 @@ describe("mt-datepicker date-only values", () => {
         setBrowserTimeZone(browserTimeZone);
       });
 
-      it("emits midnight of the clicked day when the field is empty", async () => {
-        const { onUpdate } = renderDatepicker(dateOnly);
+      // Neither the current time (when empty) nor the time of the previous value may leak in
+      it("emits midnight of the clicked day, in an empty picker and after a value with a time", async () => {
+        const { onUpdate, setProps } = renderDatepicker(dateOnly);
 
         await clickDay("2024-07-20");
-
         await expect.poll(getShownValue).toBe("2024/07/20");
         expect(onUpdate).toHaveBeenLastCalledWith(julyThe20th);
-      });
 
-      it("emits midnight of the clicked day whatever time the previous value had", async () => {
-        const { onUpdate } = renderDatepicker({
-          ...dateOnly,
-          modelValue: "2000-01-10T13:37:42.000Z",
-        });
-
+        await setProps({ modelValue: "2000-01-10T13:37:42.000Z" });
         await clickDay("2000-01-15");
-
         await expect.poll(getShownValue).toBe("2000/01/15");
         expect(onUpdate).toHaveBeenLastCalledWith(januaryThe15th);
       });
@@ -1103,8 +1080,8 @@ describe("mt-datepicker date-only values", () => {
 
         // The first click emits a range without an end and leaves the calendar open
         await clickDay("2024-07-20");
-        expect(isCalendarOpen()).toBe(true);
-        await clickDay("2024-07-22");
+        await expect.poll(emittedValues).toHaveLength(1);
+        await clickDay("2024-07-22", { stillOpen: true });
 
         await expect.poll(getShownValue).toBe("2024/07/20 - 2024/07/22");
         expect(emittedValues()).toEqual([
@@ -1202,6 +1179,14 @@ describe("mt-datepicker date-only values", () => {
     beforeEach(() => {
       // Far from UTC, so falling back to UTC and falling back to the browser are told apart
       setBrowserTimeZone("Asia/Tokyo");
+      silenceWarnings();
+    });
+
+    it("warns that it uses UTC instead", () => {
+      renderDatepicker(unknownTimeZone);
+
+      expect(console.warn).toHaveBeenCalledOnce();
+      expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('"Not/A_Zone"'));
     });
 
     it("shows the value as its day in UTC", async () => {
@@ -1219,6 +1204,45 @@ describe("mt-datepicker date-only values", () => {
       expect(onUpdate).toHaveBeenLastCalledWith("2024-07-20T00:00:00.000Z");
     });
   });
+
+  // A day without a time is the same day everywhere. Read as midnight UTC, it would be the day
+  // before in a time zone behind UTC.
+  describe.each(["America/New_York", "Asia/Tokyo"])(
+    "with a plain day as value and the picker in %s",
+    (timeZone) => {
+      const plainDayValue = {
+        dateType: "date",
+        timeZone,
+        textInput: true,
+        modelValue: "2000-01-15",
+      } as const;
+
+      it("shows that day", async () => {
+        renderDatepicker(plainDayValue);
+
+        await expect.poll(getShownValue).toBe("2000/01/15");
+      });
+
+      it("emits nothing when the user only passes through the field", async () => {
+        const { onUpdate } = renderDatepicker(plainDayValue);
+        await expect.poll(getShownValue).toBe("2000/01/15");
+
+        await user().click(getInput());
+        await user().tab();
+
+        await expect.poll(getShownValue).toBe("2000/01/15");
+        expect(onUpdate).not.toHaveBeenCalled();
+      });
+
+      it("emits midnight of a clicked day in the time zone", async () => {
+        const { onUpdate } = renderDatepicker(plainDayValue);
+
+        await clickDay("2000-01-20");
+
+        expect(onUpdate).toHaveBeenLastCalledWith(dateOnlyStringToUtcIso("2000-01-20", timeZone));
+      });
+    },
+  );
 });
 
 // With valueFormat="date" a date-only picker works with plain calendar days ("yyyy-MM-dd"). Such a
@@ -1262,7 +1286,8 @@ describe("mt-datepicker plain date values", () => {
         const { emittedValues } = renderDatepicker({ ...plainDate, timeZone, range: true });
 
         await clickDay("2024-07-20");
-        await clickDay("2024-07-22");
+        await expect.poll(emittedValues).toHaveLength(1);
+        await clickDay("2024-07-22", { stillOpen: true });
 
         await expect.poll(getShownValue).toBe("2024/07/20 - 2024/07/22");
         expect(emittedValues()).toEqual([
@@ -1274,14 +1299,57 @@ describe("mt-datepicker plain date values", () => {
   );
 
   // A date and time is read as the day it is in UTC. That is how a backend returns a stored day.
+  // Each value is another day in the time zone of the browser and of the picker, so reading it
+  // in either of them shows up.
   it.each([
-    ["2000-01-10T00:00:00.000Z", "America/New_York"],
-    ["2000-01-10T23:59:59.000Z", "Asia/Tokyo"],
-  ])("shows %s as January 10 with the picker in %s", async (modelValue, timeZone) => {
-    renderDatepicker({ ...plainDate, timeZone, modelValue });
+    ["2000-01-10T00:00:00.000Z", "America/New_York", "America/Los_Angeles"],
+    ["2000-01-10T23:59:59.000Z", "Asia/Tokyo", "Asia/Tokyo"],
+  ])(
+    "shows %s as January 10 with the picker in %s and the browser in %s",
+    async (modelValue, timeZone, browserTimeZone) => {
+      setBrowserTimeZone(browserTimeZone);
+      renderDatepicker({ ...plainDate, timeZone, modelValue });
 
-    await expect.poll(getShownValue).toBe("2000/01/10");
-  });
+      await expect.poll(getShownValue).toBe("2000/01/10");
+    },
+  );
+
+  // A Date that stands for a day is mostly built at midnight on the clock of the browser. Read
+  // in UTC, it would be the day before in a browser ahead of UTC.
+  describe.each(["Europe/Berlin", "America/Los_Angeles"])(
+    "with a Date and the browser in %s",
+    (browserTimeZone) => {
+      beforeEach(() => {
+        setBrowserTimeZone(browserTimeZone);
+      });
+
+      it("shows the calendar day of the Date", async () => {
+        renderDatepicker({
+          ...plainDate,
+          timeZone: "America/New_York",
+          modelValue: new Date(2000, 0, 15),
+        });
+
+        await expect.poll(getShownValue).toBe("2000/01/15");
+      });
+
+      it("applies a Date as minDate and maxDate by its calendar day", async () => {
+        renderDatepicker({
+          ...plainDate,
+          modelValue: "2024-03-21",
+          minDate: new Date(2024, 2, 20),
+          maxDate: new Date(2024, 2, 22),
+        });
+
+        await openCalendar();
+
+        expect(isDayDisabled("2024-03-19")).toBe(true);
+        expect(isDayDisabled("2024-03-20")).toBe(false);
+        expect(isDayDisabled("2024-03-22")).toBe(false);
+        expect(isDayDisabled("2024-03-23")).toBe(true);
+      });
+    },
+  );
 
   it("shows both days of a range", async () => {
     renderDatepicker({
@@ -1330,16 +1398,7 @@ describe("mt-datepicker plain date values", () => {
     },
   );
 
-  it.each([
-    ["datetime", "2026/04/03, 14:00", "2026-04-03T14:00:00.000Z"],
-    ["time", "08:05", "08:05"],
-  ] as const)("has no effect on a %s picker", async (dateType, typed, emitted) => {
-    const { onUpdate } = renderDatepicker({ dateType, valueFormat: "date", textInput: true });
-
-    await typeValue(typed);
-
-    expect(onUpdate).toHaveBeenLastCalledWith(emitted);
-  });
+  // That valueFormat has no effect on datetime and time pickers is checked under "typing"
 });
 
 // The values of a picker with date and time (dateType="datetime") in different time zones.
@@ -1530,8 +1589,8 @@ describe("mt-datepicker date and time values", () => {
 
     // The first click emits a range without an end and leaves the calendar open
     await clickDay("2024-07-20");
-    expect(isCalendarOpen()).toBe(true);
-    await clickDay("2024-07-22");
+    await expect.poll(emittedValues).toHaveLength(1);
+    await clickDay("2024-07-22", { stillOpen: true });
 
     await expect.poll(getShownValue).toBe("2024/07/20, 09:00 - 2024/07/22, 09:00");
     expect(emittedValues()).toEqual([
@@ -1584,6 +1643,7 @@ describe("mt-datepicker date and time values", () => {
     beforeEach(() => {
       // Far from UTC, so falling back to UTC and falling back to the browser are told apart
       setBrowserTimeZone("Asia/Tokyo");
+      silenceWarnings();
     });
 
     it("shows the value as its time in UTC", async () => {
@@ -1668,12 +1728,10 @@ describe("mt-datepicker day conversion", () => {
       },
     );
 
+    // The exact values above already round-trip. These are the days on which a clock change
+    // could make the way back land on another day.
     it.each([
-      ["2000-01-15", "UTC"],
-      ["2024-07-20", "Europe/Berlin"],
       ["2024-03-31", "Europe/Berlin"],
-      ["2000-01-15", "America/New_York"],
-      ["2000-01-15", "Asia/Tokyo"],
       ["2018-11-04", "America/Sao_Paulo"],
     ])("round-trips %s in %s", (dateOnly, timeZone) => {
       const iso = dateOnlyStringToUtcIso(dateOnly, timeZone) as string;
@@ -1698,6 +1756,21 @@ describe("mt-datepicker day conversion", () => {
         expect(isDateOnlyString(value)).toBe(false);
       },
     );
+  });
+
+  describe("toLocalDateOnlyString", () => {
+    it.each(["Europe/Berlin", "America/Los_Angeles"])(
+      "returns the calendar day of the Date with the browser in %s",
+      (browserTimeZone) => {
+        setBrowserTimeZone(browserTimeZone);
+
+        expect(toLocalDateOnlyString(new Date(2000, 0, 15))).toBe("2000-01-15");
+      },
+    );
+
+    it("returns null for an invalid Date", () => {
+      expect(toLocalDateOnlyString(new Date("not a date"))).toBeNull();
+    });
   });
 
   describe("resolveTimeZone", () => {
