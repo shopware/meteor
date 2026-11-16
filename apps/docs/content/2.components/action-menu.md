@@ -185,6 +185,7 @@ Re-export of Reka UI's [`DropdownMenuSub`](https://reka-ui.com/docs/components/d
 - Use `mod` for cross-platform shortcuts because it maps to `Command` on Mac and `Control` on Windows and Linux. Use `meta` only when you need the platform-specific meta key explicitly.
 - Supported special keys are `enter`, `esc`, `tab`, `space`, `backspace`, `delete`, `up`, `down`, `left`, and `right`.
 - Shortcut labels are formatted automatically for Mac and PC, and `aria-keyshortcuts` is added for assistive technology.
+- The `icon` of `mt-action-menu-item` always shows in the regular style. Pass the name without a style, such as `cog`. A name with a style, such as `solid-cog`, still works and shows as `regular-cog`.
 - An `mt-action-menu-item` with a `link` prop renders as an external anchor and opens in a new tab.
 - `is-sub-menu` on `mt-action-menu` and `is-sub-trigger` on `mt-action-menu-item` are used together for nested submenu patterns.
 - `match-trigger-width` is useful when the menu should align visually with a wider trigger such as a row action or account switcher.

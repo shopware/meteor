@@ -399,7 +399,7 @@ export const VisualTestAllStates: MtActionMenuStory = {
 
           <mt-action-menu-group>
             <!-- Critical variant -->
-            <mt-action-menu-item icon="warning" variant="critical">
+            <mt-action-menu-item icon="exclamation-triangle" variant="critical">
               Critical item with icon
             </mt-action-menu-item>
 
@@ -622,7 +622,7 @@ export const VisualTestExternalLinks: MtActionMenuStory = {
               Documentation
             </mt-action-menu-item>
 
-            <mt-action-menu-item icon="help" link="https://support.example.com">
+            <mt-action-menu-item icon="question-circle" link="https://support.example.com">
               Help Center
             </mt-action-menu-item>
 
