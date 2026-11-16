@@ -70,7 +70,7 @@ Set `value-format="date"` when the value is a day that does not depend on a plac
 - `valueFormat="date"` turns the value of a date-only picker into the plain day, such as `2000-01-15`. It is the same in every time zone and `timeZone` is ignored. A `Date` is read as its own calendar day, so `new Date(2000, 0, 15)` is January 15.
 - `textInput` lets users type a value. It is saved when they press Enter or Tab, or leave the field, not while they are typing.
 - `is24` set to `false` shows a 12-hour clock in the time picker and in the input. A custom `format` takes precedence in the input.
-- `required` shows an error and marks the field once the user has cleared the value, or has been in the picker and left it empty. A required range needs both of its days.
+- `required` shows the error "This field is required" while the value is empty. This built-in error is deprecated and will be removed in the next major version. `required` will then only mark the input as required, so show your own message with `error` instead.
 - `helpText`, `required`, `disabled`, `error`, and `size` integrate with the shared field styling.
 
 ## Accessibility

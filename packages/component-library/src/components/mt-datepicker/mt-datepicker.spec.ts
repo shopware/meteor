@@ -324,90 +324,47 @@ describe("mt-datepicker", () => {
     });
   });
 
+  // @deprecated tag:v6 - the built-in required error will be removed. Then only the first test,
+  // that the input is marked as required, stays.
   describe("required", () => {
-    // The error is feedback on what the user did. A picker the user has not touched never shows
-    // it, however empty it is.
     const required = { required: true, dateType: "date" } as const;
     const requiredWithValue = { ...required, modelValue: "2024-07-10T00:00:00.000Z" } as const;
 
-    // In a datetime picker the focus moves into the calendar when it opens, which is not leaving
-    it.each(["date", "datetime"] as const)(
-      "shows the error for an empty %s picker only after the user closed it without a choice",
-      async (dateType) => {
-        renderDatepicker({ required: true, dateType });
+    it("shows the error for an empty picker and tells assistive technology about it", () => {
+      renderDatepicker(required);
 
-        await openCalendar();
-        expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
+      expect(screen.getByText(REQUIRED_ERROR)).toBeVisible();
+      expect(getInput()).toHaveAttribute("aria-invalid", "true");
+      expect(getInput()).toHaveAccessibleDescription(expect.stringContaining(REQUIRED_ERROR));
+    });
 
-        await closeCalendar();
-        expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
-      },
-    );
+    it("shows no error for a picker that has a value", async () => {
+      renderDatepicker(requiredWithValue);
+      await expect.poll(getShownValue).toBe("2024/07/10");
 
-    it.each([
-      ["moved on with the keyboard", () => user().tab()],
-      ["clicked somewhere else", () => user().click(document.body)],
-    ])(
-      "shows the error for an empty picker only after the user was in it and %s",
-      async (_, leave) => {
-        renderDatepicker(required);
+      expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
+    });
 
-        await user().tab();
-        expect(getInput()).toHaveFocus();
-        expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
-
-        await leave();
-        expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
-      },
-    );
-
-    it("shows no error when the value is removed from the outside in an untouched picker", async () => {
+    it("shows the error when the value is removed from the outside", async () => {
       const { setProps } = renderDatepicker(requiredWithValue);
       await expect.poll(getShownValue).toBe("2024/07/10");
 
       await setProps({ modelValue: null });
 
-      await expect.poll(getShownValue).toBe("");
-      expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
+      expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
     });
 
-    it("shows no error when the user leaves a picker that has a value", async () => {
+    it("shows the error when the value is cleared, until a value is picked again", async () => {
       renderDatepicker(requiredWithValue);
-      await expect.poll(getShownValue).toBe("2024/07/10");
-
-      await openCalendar();
-      await closeCalendar();
-
-      expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
-    });
-
-    it("shows the error and marks the field when the value is cleared, until a value is picked again", async () => {
-      const { container } = renderDatepicker(requiredWithValue);
       await expect.poll(getShownValue).toBe("2024/07/10");
 
       await clearValue();
       expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
-      expect(container.firstElementChild).toHaveClass("has-error");
-      expect(getInput()).toHaveAttribute("aria-invalid", "true");
-      expect(getInput()).toHaveAccessibleDescription(expect.stringContaining(REQUIRED_ERROR));
 
       await clickDay("2024-07-20");
       await expect.poll(() => screen.queryByText(REQUIRED_ERROR)).toBeNull();
-      expect(container.firstElementChild).not.toHaveClass("has-error");
       expect(getInput()).not.toHaveAttribute("aria-invalid");
       expect(getInput()).not.toHaveAttribute("aria-describedby");
-    });
-
-    it("shows the error for a range that has only a start when the user closes the picker", async () => {
-      const { emittedValues } = renderDatepicker({ ...required, range: true });
-
-      await clickDay("2024-07-20");
-      await expect.poll(emittedValues).toHaveLength(1);
-      expect(screen.queryByText(REQUIRED_ERROR)).not.toBeInTheDocument();
-
-      await closeCalendar();
-
-      expect(await screen.findByText(REQUIRED_ERROR)).toBeVisible();
     });
   });
 

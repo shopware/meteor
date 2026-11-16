@@ -4,7 +4,7 @@
     class="mt-datepicker__wrapper wrapper"
     :class="{
       'mt-datepicker__wrapper--small': size === 'small',
-      'has-error': hasError,
+      'has-error': !!error,
     }"
     @input.capture="onTextInput"
     @keydown.capture="onInputKeydown"
@@ -49,8 +49,7 @@
       :min-date="datePickerMinDate"
       :max-date="datePickerMaxDate"
       @update:model-value="onDateValueChange"
-      @cleared="onUserInteraction"
-      @closed="onUserInteraction"
+      @closed="checkValidity"
     >
       <template #clear-icon="{ clear }">
         <button
@@ -156,6 +155,8 @@ type EmittedValue = string | Array<string | null> | null;
 // emitted value unpredictable.
 const DATE_ONLY_MODEL_TYPE = "yyyy-MM-dd";
 
+const REQUIRED_ERROR = "This field is required";
+
 const props = withDefaults(
   defineProps<{
     /**
@@ -215,8 +216,11 @@ const props = withDefaults(
     is24?: boolean;
     /**
      * Determines if the date picker field is required.
-     * If true, the user must select a value before submitting the form. The picker shows an
-     * error once the user has been in it and left it empty. A range needs both of its days.
+     * If true, the user must select a value before submitting the form. The picker shows the
+     * error "This field is required" while the value is empty.
+     *
+     * @deprecated tag:v6 - the built-in error will be removed, and `required` will only mark the
+     * input as required. Show your own message with `error` instead.
      */
     required?: boolean;
     /**
@@ -362,23 +366,15 @@ watch(
   { immediate: true },
 );
 
-// The required error is feedback on what the user did. It only shows once the user has cleared
-// the value, or has been in the picker and left it empty, not on a picker nobody has touched yet.
-const hasUserInteracted = ref(false);
+// @deprecated tag:v6 - remove the built-in required error. `required` will then only mark the
+// input as required, and the parent shows its own message through `error`, as with other fields.
+const errorMessage = ref<{ detail: string } | undefined>(undefined);
 
-const onUserInteraction = () => {
-  hasUserInteracted.value = true;
+const checkValidity = () => {
+  errorMessage.value = props.required && !props.modelValue ? { detail: REQUIRED_ERROR } : undefined;
 };
 
-// A range counts as filled only once both of its days are picked
-const isEmpty = (value: unknown) =>
-  Array.isArray(value) ? value.length === 0 || value.some((item) => !item) : !value;
-
-const errorMessage = computed(() =>
-  props.required && hasUserInteracted.value && isEmpty(props.modelValue)
-    ? { detail: "This field is required" }
-    : undefined,
-);
+watch(() => props.modelValue, checkValidity, { immediate: true });
 
 const hasError = computed(() => !!(errorMessage.value || props.error));
 const datePickerLocale = ref<Locale>(enUS);
@@ -646,7 +642,6 @@ const onInputFocusOut = (event: FocusEvent) => {
   }
 
   confirmTyping();
-  onUserInteraction();
 };
 
 const onDateValueChange = (
