@@ -24,12 +24,20 @@ export default defineNuxtModule({
     );
 
     const entries = await readdir(componentsRoot, { recursive: true });
-    // _internal components are excluded from the API docs, except
-    // mt-floating-ui which is publicly exported and has its own page.
+    // _internal components are excluded from the API docs, except the
+    // publicly exported ones that live in an _internal folder.
+    // mt-text-editor-toolbar-button is matched with its extension so the
+    // internal -color/-link/-table toolbar buttons stay excluded.
+    const internalExemptions = [
+      "mt-floating-ui",
+      "mt-text-editor-toolbar-button.vue",
+      "mt-grant-permission-service-banner",
+    ];
     const componentFiles = entries.filter(
       (file) =>
         /(^|\/)mt-[\w-]+\.vue$/.test(file) &&
-        (!file.includes("_internal") || file.includes("mt-floating-ui")),
+        (!file.includes("_internal") ||
+          internalExemptions.some((exemption) => file.includes(exemption))),
     );
 
     interface MetaParserOptions {

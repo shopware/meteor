@@ -5,6 +5,8 @@ import Entity from '../_internals/data/Entity';
 import EntityCollection from '../_internals/data/EntityCollection';
 import repository from './repository';
 
+export type { RepositoryRequestOptions } from './repository';
+
 // Internal function to create a filterable subscriber
 function createFilteredSubscriber(type: 'datasetSubscribe' | 'datasetUpdate') {
   return (

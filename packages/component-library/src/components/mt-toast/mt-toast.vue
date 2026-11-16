@@ -34,6 +34,9 @@
 import { type PropType, ref, toRef, computed, watch } from "vue";
 import MtToastNotification from "./mt-toast-notification.vue";
 
+/**
+ * @deprecated tag:v6 - Will be removed in the next major version. Use `mt-snackbar` with `useSnackbar` instead.
+ */
 export interface Toast {
   id: number | string;
 

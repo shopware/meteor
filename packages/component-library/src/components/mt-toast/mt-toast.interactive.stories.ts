@@ -8,7 +8,7 @@ import type { MtToastMeta, MtToastStory } from "./mt-toast.stories";
 export default {
   ...meta,
   title: "Components/Toast/Interaction tests",
-  tags: ["!autodocs"],
+  tags: ["!autodocs", "deprecated"],
 } as MtToastMeta;
 
 export const TestQuickTimer: MtToastStory = {

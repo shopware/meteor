@@ -4,7 +4,7 @@ Base options are shared configuration options that can be passed to SDK methods 
 
 This applies to APIs such as `notification.dispatch()`, `toast.dispatch()`, many `ui.*` methods, `context.*`, `data.get()`, and `data.update()`.
 
-Higher-level data helpers such as `data.repository.*` and `data.subscribe()` currently use narrower method signatures and do not expose base options on their public API.
+Higher-level data helpers such as `data.repository.*` and `data.subscribe()` currently use narrower method signatures and do not expose base options on their public API. For how long `data.repository.*` waits for an answer, see [request options](./data/repository.md#request-options).
 
 More options may be added in the future. Currently, the following option is available:
 

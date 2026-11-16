@@ -310,4 +310,20 @@ describe('RepositoryAdapter', () => {
 
     expect(adapter).toBeInstanceOf(RepositoryAdapter);
   });
+  describe('request options', () => {
+    it('keeps the SDK request options away from the source, which may read that slot as cache options', async () => {
+      const criteria = { limit: 1 } as Criteria;
+      const options = { timeout: 30000 };
+      const adapter = asyncRepositoryAdapter as unknown as RepositoryAdapter<TestEntityName> & {
+        search: (...args: unknown[]) => Promise<unknown>,
+        get: (...args: unknown[]) => Promise<unknown>,
+      };
+
+      await adapter.search(criteria, mockContext, options);
+      await adapter.get('123', mockContext, criteria, options);
+
+      expect(mockAsyncSource.search).toHaveBeenCalledWith(criteria, mockContext);
+      expect(mockAsyncSource.get).toHaveBeenCalledWith('123', mockContext, criteria);
+    });
+  });
 });

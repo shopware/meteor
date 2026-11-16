@@ -34,7 +34,17 @@ These parts are exported together so the pattern can be composed in one place.
 
 ## API reference
 
+### MtPopover
+
 :component-api
+
+### MtPopoverItem
+
+:component-api{name="MtPopoverItem"}
+
+### MtPopoverItemResult
+
+:component-api{name="MtPopoverItemResult"}
 
 ## Best practices
 
