@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": minor
 ---
 
-`mt-banner` and the field hints now always show their icons in the solid style, and `mt-empty-state` in the regular style. Icon names work with or without a style, such as `cog` or `regular-cog`
+Components now set the style of the icons passed to them: `mt-banner`, `mt-badge` and the field hints always show solid icons, `mt-empty-state` regular ones, and the rows of `mt-nav` regular icons that turn solid while active. Icon names work with or without a style, such as `cog` or `regular-cog`

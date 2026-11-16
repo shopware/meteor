@@ -59,6 +59,7 @@
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
+import { withIconMode } from "@/utils/icon";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
@@ -139,11 +140,11 @@ const rowActive = computed(
 
 const childActive = computed(() => hasActiveDescendant.value && subtreeOpen.value);
 
-// Active rows show the solid variant of their regular icon
-const iconName = computed(() =>
-  rowActive.value || childActive.value
-    ? props.item.icon?.replace(/^regular-/, "solid-")
-    : props.item.icon,
+// Icons are regular, and solid on active rows, whatever style the name asks for
+const iconName = computed(
+  () =>
+    props.item.icon &&
+    withIconMode(props.item.icon, rowActive.value || childActive.value ? "solid" : "regular"),
 );
 
 // Rows leaving the app through a plain anchor mark themselves with a trailing icon

@@ -23,7 +23,10 @@ export interface NavItem {
   id?: string;
   /** Translated label of the row. */
   label: string;
-  /** Icon name of the meteor icon kit, e.g. `regular-products`. Shown on top-level rows only. */
+  /**
+   * Icon name of the meteor icon kit, e.g. `products`. Shown on top-level rows only, in the regular
+   * style and in the solid style while the row is active.
+   */
   icon?: string;
   /** Route location handed to the link component as `to`. */
   to?: NavLinkTarget;

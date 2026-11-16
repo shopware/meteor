@@ -1,4 +1,4 @@
-import { parseIconName } from "./icon";
+import { parseIconName, withIconMode } from "./icon";
 
 describe("parseIconName", () => {
   it.each([
@@ -17,5 +17,15 @@ describe("parseIconName", () => {
 
   it("keeps names that only start like a style", () => {
     expect(parseIconName("solid", "solid")).toEqual({ mode: "solid", name: "solid" });
+  });
+});
+
+describe("withIconMode", () => {
+  it.each(["cog", "regular-cog", "solid-cog"])("gives %s the solid style", (name) => {
+    expect(withIconMode(name, "solid")).toBe("solid-cog");
+  });
+
+  it("keeps size suffixes", () => {
+    expect(withIconMode("solid-times-s", "regular")).toBe("regular-times-s");
   });
 });

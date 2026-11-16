@@ -6,7 +6,6 @@
         size="var(--scale-size-16)"
         class="mt-banner__icon"
         :name="bannerIcon"
-        mode="solid"
         decorative
       />
     </slot>
@@ -42,7 +41,7 @@ import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 import { useI18n } from "vue-i18n";
-import { parseIconName } from "@/utils/icon";
+import { withIconMode } from "@/utils/icon";
 
 const { t } = useI18n({
   messages: {
@@ -78,7 +77,7 @@ defineEmits<{
 
 // The banner always shows solid icons, whatever style the name asks for.
 const bannerIcon = computed(() => {
-  if (props.icon) return parseIconName(props.icon).name;
+  if (props.icon) return withIconMode(props.icon, "solid");
 
   const iconConfig = {
     neutral: "info-circle",
@@ -89,7 +88,7 @@ const bannerIcon = computed(() => {
     inherited: "link",
   };
 
-  return iconConfig[props.variant] || "info-circle";
+  return withIconMode(iconConfig[props.variant] || "info-circle", "solid");
 });
 
 const future = useFutureFlags();
