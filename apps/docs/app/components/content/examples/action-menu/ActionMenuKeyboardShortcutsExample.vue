@@ -18,7 +18,7 @@ import MtActionMenuItem from "@shopware-ag/meteor-component-library/MtActionMenu
     <mt-dropdown-menu-portal>
       <mt-action-menu>
         <mt-action-menu-item
-          icon="solid-duplicate"
+          icon="duplicate"
           :shortcut="{ modifiers: ['mod'], key: 'd' }"
         >
           Duplicate
