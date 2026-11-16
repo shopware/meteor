@@ -16,7 +16,8 @@ const meta: MtAnnouncementMeta = {
   },
   args: {
     variant: "attention",
-    icon: "regular-tools",
+    appearance: "subtle",
+    icon: "solid-tools",
     closable: false,
     default:
       "Planned maintenance on Sunday, November 16, from 2:00 to 4:00 AM CET. You can't save changes during this time.",
@@ -25,6 +26,10 @@ const meta: MtAnnouncementMeta = {
     variant: {
       control: { type: "select" },
       options: ["neutral", "info", "attention", "critical", "positive"],
+    },
+    appearance: {
+      control: { type: "select" },
+      options: ["subtle", "strong"],
     },
     icon: {
       control: { type: "text" },
@@ -36,7 +41,7 @@ const meta: MtAnnouncementMeta = {
   render: (args) => ({
     components: { MtAnnouncement },
     setup: () => ({ args }),
-    template: `<mt-announcement :variant="args.variant" :icon="args.icon" :closable="args.closable">{{ args.default }}</mt-announcement>`,
+    template: `<mt-announcement :variant="args.variant" :appearance="args.appearance" :icon="args.icon" :closable="args.closable">{{ args.default }}</mt-announcement>`,
   }),
 };
 
@@ -44,3 +49,9 @@ export default meta;
 export type MtAnnouncementStory = StoryObj<MtAnnouncementMeta>;
 
 export const Default: MtAnnouncementStory = {};
+
+export const Strong: MtAnnouncementStory = {
+  args: {
+    appearance: "strong",
+  },
+};

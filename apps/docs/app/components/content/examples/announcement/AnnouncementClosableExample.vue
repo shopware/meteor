@@ -9,7 +9,7 @@ const isOpen = ref(true);
   <mt-announcement
     v-if="isOpen"
     variant="info"
-    icon="regular-megaphone"
+    icon="solid-megaphone"
     closable
     @close="isOpen = false"
   >

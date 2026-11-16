@@ -12,7 +12,7 @@ description: A full-width message at the top of an application, such as planned 
 
 ## Usage
 
-**Announcement** is a full-width message at the top of an application, for news that concerns everyone who uses it, such as planned downtime or an upcoming event. Place it in the `banner` slot of [**App**](/components/app), above the header, as shown in [Status banner](/components/app#status-banner). Messages about a single page belong in a [**Banner**](/components/banner) in that page.
+**Announcement** is a full-width message at the top of an application, for news that concerns everyone who uses it, such as planned downtime or an upcoming event. Place it in the `announcement` slot of [**App**](/components/app), above the header, as shown in the [App example](/components/app#announcement). Messages about a single page belong in a [**Banner**](/components/banner) in that page.
 
 ```ts
 import { MtAnnouncement } from "@shopware-ag/meteor-component-library";
@@ -25,6 +25,13 @@ import { MtAnnouncement } from "@shopware-ag/meteor-component-library";
 Pick the variant by how urgent the message is.
 
 ::component-example{name="announcement-variants-example"}
+::
+
+### Appearances
+
+`subtle`, the default, tints the background and keeps the regular text color. `strong` fills the background with the color of the variant, for messages that nobody should miss.
+
+::component-example{name="announcement-appearances-example"}
 ::
 
 ### Links
@@ -64,11 +71,11 @@ function close() {
 
 <template>
   <mt-app>
-    <template #banner>
+    <template #announcement>
       <mt-announcement
         v-if="!isClosed"
         variant="attention"
-        icon="regular-tools"
+        icon="solid-tools"
         closable
         @close="close"
       >
@@ -93,6 +100,7 @@ function close() {
 - Keep the message to one or two sentences.
 - Say in the text what the message is about, so its meaning doesn't depend on the color.
 - Pick the variant by urgency: `critical` for an ongoing outage, `attention` for planned downtime, `info` or `neutral` for news and events, and `positive` for good news, such as a fixed outage.
+- Use the `subtle` appearance by default. Save `strong` for messages that nobody should miss, such as an ongoing outage.
 - Show one announcement at a time.
 - Make an announcement closable when people can work without it, and keep it closed once they close it.
 
@@ -111,12 +119,13 @@ function close() {
 - Long text wraps onto more lines and is never cut off. Long words and links break instead of making the page wider.
 - On wide screens, the text is centered. Below 640px of viewport width, it is aligned to the start, so wrapped lines are easier to read.
 - The icon is part of the first line and stays there when the text wraps.
+- With `subtle`, the icon takes the color of the variant. With `strong`, it takes the text color.
 - Links take the text color, keep their underline, and show a focus ring in the text color.
 - With `closable`, a close button sits at the end of the first line, and the text stays centered on the whole width. The announcement doesn't hide itself when it is closed.
 
 ## Accessibility
 
-- **Announcement** has no role and no live region. Screen readers read it in the order of the page, before the header when it sits in the `banner` slot of [**App**](/components/app).
+- **Announcement** has no role and no live region. Screen readers read it in the order of the page, before the header when it sits in the `announcement` slot of [**App**](/components/app).
 - The icon is decorative and hidden from screen readers, so the text has to carry the whole message.
 - The close button is named "Close announcement" ("Ankündigung schließen" in German).
 - Inside [**App**](/components/app), the focus moves to the content when the announcement goes away while it holds the focus.
@@ -124,5 +133,5 @@ function close() {
 ## Related components
 
 - [**Banner**](/components/banner): for messages about a single page, in its content.
-- [**App**](/components/app): for the shell whose `banner` slot holds the announcement.
+- [**App**](/components/app): for the shell whose `announcement` slot holds the announcement.
 - [**Snackbar**](/components/snackbar): for short feedback after an action.
