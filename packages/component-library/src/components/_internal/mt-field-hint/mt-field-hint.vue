@@ -3,7 +3,7 @@
     <span v-if="!hideIcon" class="mt-field-hint__icon-wrapper">
       <mt-icon
         class="mt-field-hint__icon"
-        :name="withIconMode(icon, 'solid')"
+        :name="forceIconMode(icon, 'solid')"
         size="var(--scale-size-12)"
         color="var(--color-icon-secondary-default)"
         decorative
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
-import { withIconMode } from "@/utils/icon";
+import { forceIconMode } from "@/utils/icon";
 
 withDefaults(
   defineProps<{
