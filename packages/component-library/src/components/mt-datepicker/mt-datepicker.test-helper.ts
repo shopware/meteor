@@ -1,8 +1,8 @@
 /**
  * Test helpers for mt-datepicker.
  *
- * Everything the tests need to know about the markup of the underlying date picker library lives
- * in this file: its class names, ids and test ids. The tests only describe what a user does and
+ * Everything the tests need to know about the markup of the picker lives in this file: its class
+ * names, attributes and test ids. The tests only describe what a user does and
  * sees, so replacing the library means adjusting this file, not every test.
  */
 import { defineComponent, nextTick, reactive } from "vue";
@@ -201,7 +201,7 @@ export async function clearValue() {
 /* The calendar */
 
 export function isCalendarOpen() {
-  return document.querySelector(".dp__menu") !== null;
+  return document.querySelector(".mt-datepicker__menu") !== null;
 }
 
 export async function openCalendar() {
@@ -218,12 +218,14 @@ export async function closeCalendar() {
 
 /** True if the open picker has a calendar to pick a day from */
 export function hasCalendar() {
-  return document.querySelector('[data-test-id="month-toggle-overlay-0"]') !== null;
+  return document.querySelector(".mt-datepicker-calendar") !== null;
 }
 
-/** Finds the cell of a day given as "yyyy-MM-dd". Fails if the calendar does not show that day. */
+/** Finds the button of a day given as "yyyy-MM-dd". Fails if the calendar does not show that day. */
 function getDayCell(day: string) {
-  const cell = document.getElementById(`dp-${day}`);
+  const cell = document.querySelector<HTMLElement>(
+    `.mt-datepicker__menu [data-reka-calendar-cell-trigger][data-value="${day}"]`,
+  );
   if (!cell) throw new Error(`The calendar does not show the day ${day}`);
 
   return cell;
@@ -250,90 +252,112 @@ export function isDayDisabled(day: string) {
 
 /** The day the calendar marks as today, as "yyyy-MM-dd" */
 export function getDayMarkedAsToday() {
-  const cell = document.querySelector(".dp__today")?.closest("[id^='dp-']");
-
-  return cell ? cell.id.replace("dp-", "") : null;
+  return document.querySelector("[data-mt-today]")?.getAttribute("data-value") ?? null;
 }
 
 /** The month shown in the calendar header, for example "Mar" */
 export function getShownMonth() {
-  return getByTestId("month-toggle-overlay-0").textContent?.trim();
+  return getByTestId("mt-datepicker-calendar__month-toggle").textContent?.trim();
 }
 
 /** The weekday names shown above the days, for example ["Mo", "Tu", ...] */
 export function getShownWeekdays() {
-  return Array.from(document.querySelectorAll(".dp__calendar_header_item")).map((item) =>
+  return Array.from(document.querySelectorAll(".mt-datepicker-calendar__weekday")).map((item) =>
     item.textContent?.trim(),
   );
 }
 
 /** Picks a month by the name shown in the month list, for example "Mar" */
 export async function selectMonth(name: string) {
-  await pickFromOverlay("month-toggle-overlay-0", name);
+  await pickFromOverlay(
+    "mt-datepicker-calendar__month-toggle",
+    ".mt-datepicker-calendar__overlay",
+    "button",
+    name,
+  );
 }
 
 export async function selectYear(year: number) {
-  await pickFromOverlay("year-toggle-overlay-0", String(year));
+  await pickFromOverlay(
+    "mt-datepicker-calendar__year-toggle",
+    ".mt-datepicker-calendar__overlay",
+    "button",
+    String(year),
+  );
 }
 
 /* The time picker */
 
 type TimeUnit = "hours" | "minutes";
 
+const TIME_OVERLAY = ".mt-datepicker-time__overlay";
+const TIME_OPTION = ".mt-datepicker-time__option";
+
 /** True if the open picker has controls to pick a time */
 export function hasTimePicker() {
-  return document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') !== null;
+  return document.querySelector('[data-testid="mt-datepicker-time__hours-toggle"]') !== null;
 }
 
 /** The time shown in the time picker, for example "08:05" */
 export function getShownTime() {
-  const hours = getByTestId("hours-toggle-overlay-btn-0").textContent?.trim();
-  const minutes = getByTestId("minutes-toggle-overlay-btn-0").textContent?.trim();
+  const hours = getByTestId("mt-datepicker-time__hours-toggle").textContent?.trim();
+  const minutes = getByTestId("mt-datepicker-time__minutes-toggle").textContent?.trim();
 
   return `${hours}:${minutes}`;
 }
 
 /** Picks an hour or minute from its list. The value is given as shown, for example "08". */
 export async function selectTime(unit: TimeUnit, value: string) {
-  const toggle = `${unit}-toggle-overlay-btn-0`;
+  const toggle = `mt-datepicker-time__${unit}-toggle`;
 
-  await pickFromOverlay(toggle, value);
+  await pickFromOverlay(toggle, TIME_OVERLAY, TIME_OPTION, value);
   await waitFor(() => expect(getByTestId(toggle).textContent?.trim()).toBe(value), WAIT);
 }
 
 /** Opens the list of hours or minutes and returns the values it offers */
 export async function getTimeOptions(unit: TimeUnit) {
-  await user().click(getByTestId(`${unit}-toggle-overlay-btn-0`));
-  await waitFor(() => expect(document.querySelector(".dp__overlay")).not.toBeNull(), WAIT);
+  await user().click(getByTestId(`mt-datepicker-time__${unit}-toggle`));
+  await waitFor(() => expect(document.querySelector(TIME_OVERLAY)).not.toBeNull(), WAIT);
 
-  return Array.from(document.querySelectorAll(".dp__overlay_cell")).map((cell) =>
-    cell.textContent?.trim(),
+  return Array.from(document.querySelectorAll(`${TIME_OVERLAY} ${TIME_OPTION}`)).map((option) =>
+    option.textContent?.trim(),
   );
 }
 
 /** Clicks the arrow that moves the hours or minutes one step up */
 export async function increaseTime(unit: TimeUnit) {
-  await user().click(getByTestId(`${unit}-time-inc-btn-0`));
+  await user().click(getByTestId(`mt-datepicker-time__${unit}-increase`));
 }
 
 /** The switch between AM and PM, which only a 12-hour time picker has */
 export function getAmPmSwitch() {
-  return document.querySelector<HTMLElement>(".dp__pm_am_button");
+  return document.querySelector<HTMLElement>(".mt-datepicker-time__am-pm");
 }
 
 /* Internals */
 
 function getByTestId(testId: string) {
-  const element = document.querySelector<HTMLElement>(`[data-test-id="${testId}"]`);
+  const element = document.querySelector<HTMLElement>(`[data-testid="${testId}"]`);
   if (!element) throw new Error(`The picker has no element "${testId}". Is the calendar open?`);
 
   return element;
 }
 
-async function pickFromOverlay(toggleTestId: string, option: string) {
+async function pickFromOverlay(
+  toggleTestId: string,
+  overlaySelector: string,
+  optionSelector: string,
+  option: string,
+) {
   await waitFor(() => getByTestId(toggleTestId), WAIT);
   await user().click(getByTestId(toggleTestId));
-  await waitFor(() => expect(document.querySelector(".dp__overlay")).not.toBeNull(), WAIT);
-  await user().click(getByTestId(option));
-  await waitFor(() => expect(document.querySelector(".dp__overlay")).toBeNull(), WAIT);
+  await waitFor(() => expect(document.querySelector(overlaySelector)).not.toBeNull(), WAIT);
+
+  const choice = Array.from(
+    document.querySelectorAll<HTMLElement>(`${overlaySelector} ${optionSelector}`),
+  ).find((element) => element.textContent?.trim() === option);
+  if (!choice) throw new Error(`The list has no option "${option}"`);
+
+  await user().click(choice);
+  await waitFor(() => expect(document.querySelector(overlaySelector)).toBeNull(), WAIT);
 }
