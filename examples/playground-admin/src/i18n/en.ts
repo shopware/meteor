@@ -16,8 +16,12 @@ export const en = {
     logout: "Log out",
   },
   announcement: {
-    maintenance:
+    neutral: "Our support team is away on December 24 and 25.",
+    info: "Join our live product update on Thursday, November 20, at 3:00 PM CET.",
+    attention:
       "Planned maintenance on Sunday, November 16, from 2:00 to 4:00 AM CET. You can't save changes during this time.",
+    critical: "Orders can't be saved right now. We are working on a fix.",
+    positive: "Everything works again. Thanks for your patience.",
   },
   sidebar: {
     label: "Assistant",
@@ -310,9 +314,20 @@ export const en = {
     theme: "Theme",
     navigationClosable: "Show and hide the navigation on desktop",
     sidebarClosable: "Show and hide the sidebar on desktop",
+    announcementShown: "Show the announcement",
+    announcementVariant: "Announcement variant",
+    announcementVariants: {
+      neutral: "Neutral",
+      info: "Info",
+      attention: "Attention",
+      critical: "Critical",
+      positive: "Positive",
+    },
+    announcementStrong: "Strong announcement",
     reset: "Reset settings",
     resetTitle: "Reset settings?",
-    resetText: "Language, theme and layout go back to their defaults.",
+    resetText:
+      "Language, theme and layout go back to their defaults, and closed announcements show again.",
     resetDone: "Settings reset",
   },
 };

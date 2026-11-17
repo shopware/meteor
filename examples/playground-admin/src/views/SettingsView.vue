@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   MtButton,
@@ -17,6 +18,7 @@ import {
   useTheme,
 } from "@shopware-ag/meteor-component-library";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
+import { resetClosedAnnouncements } from "../composables/useClosedAnnouncements";
 import {
   resetLayoutSettings,
   useLayoutSettings,
@@ -28,6 +30,12 @@ const { theme } = useTheme();
 const { addSnackbar } = useSnackbar();
 const layout = useLayoutSettings();
 
+const announcementVariantOptions = computed(() =>
+  (["neutral", "info", "attention", "critical", "positive"] as const).map(
+    (value) => ({ label: t(`settings.announcementVariants.${value}`), value }),
+  ),
+);
+
 const localeOptions = [
   { label: "English", value: "en" },
   { label: "Deutsch", value: "de" },
@@ -37,6 +45,7 @@ function reset(close: () => void) {
   locale.value = "en";
   theme.value = "system";
   resetLayoutSettings();
+  resetClosedAnnouncements();
   close();
   addSnackbar({ message: t("settings.resetDone"), variant: "success" });
 }
@@ -89,6 +98,24 @@ function reset(close: () => void) {
         <mt-switch
           v-model="layout.sidebarClosable"
           :label="t('settings.sidebarClosable')"
+        />
+        <mt-switch
+          v-model="layout.announcementShown"
+          :label="t('settings.announcementShown')"
+        />
+        <mt-select
+          v-model="layout.announcementVariant"
+          :label="t('settings.announcementVariant')"
+          :options="announcementVariantOptions"
+          :enable-search="false"
+          hide-clearable-button
+        />
+        <mt-switch
+          :model-value="layout.announcementAppearance === 'strong'"
+          :label="t('settings.announcementStrong')"
+          @update:model-value="
+            layout.announcementAppearance = $event ? 'strong' : 'subtle'
+          "
         />
       </div>
     </mt-card>
