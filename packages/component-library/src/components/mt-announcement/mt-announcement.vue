@@ -10,6 +10,7 @@
   >
     <div class="mt-announcement__message">
       <span v-if="icon" class="mt-announcement__icon">
+        <!-- TODO: Always show the icon in the solid style with resolveIconName(icon, "solid") once #1500 is merged. -->
         <mt-icon :name="icon" size="var(--scale-size-16)" decorative />
       </span>
       <slot />
@@ -266,7 +267,7 @@ onBeforeUnmount(() => {
 }
 
 /* TODO: Replace the icon tokens of attention and positive with strong background tokens once
-   they exist. */
+   they exist (#1507). */
 .mt-announcement--appearance-strong.mt-announcement--variant-attention {
   --mt-announcement-background: var(--color-icon-attention-default);
   --mt-announcement-color: var(--color-static-black);
