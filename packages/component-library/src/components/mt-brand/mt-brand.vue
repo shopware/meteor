@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-brand" :title="compact ? title : undefined">
+  <div class="mt-brand">
     <slot name="logo">
       <div class="mt-brand__image" :class="`mt-brand__image--${appearance}`">
         <mt-icon :name="productLogos[variant].icon" :size="productLogos[variant].size" decorative />
@@ -7,7 +7,7 @@
     </slot>
 
     <div class="mt-brand__text" :class="{ 'visually-hidden': compact }">
-      <mt-text as="div" size="s" weight="semibold" class="mt-brand__title" :title="title">
+      <mt-text as="div" :size="size" weight="semibold" class="mt-brand__title">
         {{ title }}
       </mt-text>
       <mt-text v-if="subtitle" as="div" size="2xs" class="mt-brand__subtitle">
@@ -22,8 +22,8 @@ import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 
 /**
- * A logo with a title and an optional subtitle, for example the name of the shop in the header of
- * `mt-sidebar`.
+ * A logo with a title and an optional subtitle, for example the name of the shop at the start of
+ * `mt-app-sidebar`.
  *
  * @experimental The API may still change in a future release.
  */
@@ -43,17 +43,17 @@ withDefaults(
      * Colors of the logo. `dark` shows a white mark on a brand box, `light` a brand mark on a white box.
      */
     appearance?: "dark" | "light";
-    /**
-     * Shows only the logo. The title and subtitle stay available to screen readers, and the title
-     * shows on hover.
-     */
+    /** Shows only the logo. The title and the subtitle stay available to assistive technology. */
     compact?: boolean;
+    /** Size of the title. `xs` fits a bar such as `mt-app-header`. */
+    size?: "xs" | "s";
   }>(),
   {
     subtitle: undefined,
     variant: "shopware",
     appearance: "dark",
     compact: false,
+    size: "s",
   },
 );
 

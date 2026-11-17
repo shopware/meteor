@@ -47,10 +47,7 @@ withDefaults(
     subtitle?: string;
     /** An image for the avatar instead of the initials. */
     imageUrl?: string;
-    /**
-     * Shows only the avatar. The name and the subtitle stay available to assistive technology, and
-     * the name shows on hover.
-     */
+    /** Shows only the avatar. The name and the subtitle stay available to assistive technology. */
     compact?: boolean;
   }>(),
   {
@@ -90,6 +87,9 @@ defineSlots<{
   color: inherit;
   text-align: start;
   cursor: pointer;
+  transition-property: background-color, box-shadow;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-out;
 }
 
 .mt-user-menu__trigger:hover,
@@ -100,6 +100,20 @@ defineSlots<{
 .mt-user-menu__trigger:focus-visible {
   outline: var(--scale-size-2) solid var(--color-border-brand-default);
   outline-offset: calc(-1 * var(--scale-size-2));
+}
+
+.mt-user-menu--compact .mt-user-menu__trigger {
+  padding: 0;
+  border-radius: var(--border-radius-round);
+}
+
+.mt-user-menu--compact .mt-user-menu__trigger:hover,
+.mt-user-menu--compact .mt-user-menu__trigger[data-state="open"] {
+  box-shadow: 0 0 0 var(--scale-size-4) var(--color-border-primary-default);
+}
+
+.mt-user-menu--compact .mt-user-menu__trigger:focus-visible {
+  outline-offset: var(--scale-size-2);
 }
 
 .mt-user-menu__user {
