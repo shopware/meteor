@@ -9,7 +9,13 @@
         @click="isDrawerOpen = !isDrawerOpen"
       />
 
-      <mt-drawer :id="drawerId" v-model:open="isDrawerOpen" side="start" :title="t('navigation')">
+      <mt-drawer
+        v-if="isDrawerMounted"
+        :id="drawerId"
+        v-model:open="isDrawerOpen"
+        side="start"
+        :title="t('navigation')"
+      >
         <mt-app-sidebar :sections="sections">
           <template #start>
             <slot name="start" :is-mobile="isMobile" />
@@ -103,6 +109,9 @@ const drawerId = useId();
 // Unknown until measured, so the server markup and the first client render both show the row.
 const headerWidth = ref<number | null>(null);
 const isDrawerOpen = shallowRef(false);
+// The drawer mounts when it first opens. Mounted with the switch to the mobile layout, which
+// happens in the ResizeObserver callback, its own observers make the browser report a loop error.
+const isDrawerMounted = shallowRef(false);
 
 const isMobile = computed(
   () => headerWidth.value !== null && props.breakpoint > 0 && headerWidth.value < props.breakpoint,
@@ -112,8 +121,15 @@ useResizeObserver(rootElement, ([entry]) => {
   if (entry) headerWidth.value = entry.borderBoxSize?.[0]?.inlineSize ?? entry.contentRect.width;
 });
 
+watch(isDrawerOpen, (open) => {
+  if (open) isDrawerMounted.value = true;
+});
+
 watch(isMobile, (mobile) => {
-  if (!mobile) isDrawerOpen.value = false;
+  if (mobile) return;
+
+  isDrawerOpen.value = false;
+  isDrawerMounted.value = false;
 });
 
 useRouteChange({
