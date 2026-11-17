@@ -22,7 +22,7 @@
         v-bind="{ ...$attrs, class: '' }"
       />
 
-      <label v-if="showLabel" :for="identification" :class="mtFieldLabelClasses">
+      <label v-if="showLabel" :id="labelId" :for="identification" :class="mtFieldLabelClasses">
         <slot name="label" />
       </label>
 
@@ -39,7 +39,7 @@
         <slot name="field-prefix" v-bind="{ disabled, identification }" />
       </div>
 
-      <slot name="element" v-bind="{ disabled, identification }" />
+      <slot name="element" v-bind="{ disabled, identification, labelId }" />
 
       <div v-if="copyable" class="mt-field__addition">
         <mt-field-copyable
@@ -215,6 +215,15 @@ export default defineComponent({
       }
 
       return `mt-field--${this.id}`;
+    },
+
+    /**
+     * Id of the label, so an element that the label's `for` cannot reach can still be named by it.
+     *
+     * @example <div role="combobox" :aria-labelledby="labelId">
+     */
+    labelId(): string | undefined {
+      return this.showLabel ? `${this.identification}-label` : undefined;
     },
 
     showLabel(): boolean {
