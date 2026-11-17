@@ -29,7 +29,7 @@ Pick the variant by how urgent the message is.
 
 ### Appearances
 
-`subtle`, the default, tints the background and keeps the regular text color. `strong` fills the background with the color of the variant, for messages that nobody should miss.
+`subtle`, the default, tints the background, keeps the regular text color and draws a light line in the color of the variant along the bottom edge. `strong` fills the background with the color of the variant, for messages that nobody should miss.
 
 ::component-example{name="announcement-appearances-example"}
 ::
