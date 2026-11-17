@@ -55,6 +55,12 @@ const sections = computed<NavSection[]>(() => [
         ],
       },
       {
+        id: "components",
+        label: t("nav.components"),
+        icon: "regular-layout",
+        to: "/components",
+      },
+      {
         id: "settings",
         label: t("nav.settings"),
         icon: "regular-cog",

@@ -13,6 +13,7 @@ export const en = {
     content: "Content",
     cms: "Shopping Experiences",
     settings: "Settings",
+    components: "Components",
     logout: "Log out",
   },
   announcement: {
