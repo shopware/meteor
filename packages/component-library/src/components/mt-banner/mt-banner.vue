@@ -41,7 +41,7 @@ import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 import { useI18n } from "vue-i18n";
-import { forceIconMode } from "@/utils/icon";
+import { resolveIconName } from "@/utils/icon";
 
 const { t } = useI18n({
   messages: {
@@ -76,7 +76,7 @@ defineEmits<{
 }>();
 
 const bannerIcon = computed(() => {
-  if (props.icon) return forceIconMode(props.icon, "solid");
+  if (props.icon) return resolveIconName(props.icon, "solid");
 
   const iconConfig = {
     neutral: "info-circle",
@@ -87,7 +87,7 @@ const bannerIcon = computed(() => {
     inherited: "link",
   };
 
-  return forceIconMode(iconConfig[props.variant] || "info-circle", "solid");
+  return resolveIconName(iconConfig[props.variant] || "info-circle", "solid");
 });
 
 const future = useFutureFlags();

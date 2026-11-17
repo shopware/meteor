@@ -6,7 +6,7 @@
       :size="indicatorSize"
       data-testid="mt-badge__indicator"
     />
-    <mt-icon v-if="icon" :name="forceIconMode(icon, 'solid')" :size="iconSize" />
+    <mt-icon v-if="icon" :name="resolveIconName(icon, 'solid')" :size="iconSize" />
     <slot />
   </span>
 </template>
@@ -15,7 +15,7 @@
 import { computed } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtStatusDot from "../mt-status-dot/mt-status-dot.vue";
-import { forceIconMode } from "@/utils/icon";
+import { resolveIconName } from "@/utils/icon";
 
 const props = withDefaults(
   defineProps<{

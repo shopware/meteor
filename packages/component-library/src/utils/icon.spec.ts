@@ -1,4 +1,4 @@
-import { parseIconName, forceIconMode } from "./icon";
+import { parseIconName, resolveIconName } from "./icon";
 
 describe("parseIconName", () => {
   it.each([
@@ -20,12 +20,12 @@ describe("parseIconName", () => {
   });
 });
 
-describe("forceIconMode", () => {
+describe("resolveIconName", () => {
   it.each(["cog", "regular-cog", "solid-cog"])("gives %s the solid style", (name) => {
-    expect(forceIconMode(name, "solid")).toBe("solid-cog");
+    expect(resolveIconName(name, "solid")).toBe("solid-cog");
   });
 
   it("keeps size suffixes", () => {
-    expect(forceIconMode("solid-times-s", "regular")).toBe("regular-times-s");
+    expect(resolveIconName("solid-times-s", "regular")).toBe("regular-times-s");
   });
 });

@@ -59,7 +59,7 @@
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
-import { forceIconMode } from "@/utils/icon";
+import { resolveIconName } from "@/utils/icon";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
@@ -144,7 +144,7 @@ const childActive = computed(() => hasActiveDescendant.value && subtreeOpen.valu
 const iconName = computed(
   () =>
     props.item.icon &&
-    forceIconMode(props.item.icon, rowActive.value || childActive.value ? "solid" : "regular"),
+    resolveIconName(props.item.icon, rowActive.value || childActive.value ? "solid" : "regular"),
 );
 
 // Rows leaving the app through a plain anchor mark themselves with a trailing icon
