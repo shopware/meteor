@@ -201,32 +201,54 @@ onBeforeUnmount(() => {
 
 .mt-announcement--appearance-subtle {
   --mt-announcement-color: var(--color-text-primary-default);
+
+  border-block-end: 1px solid var(--mt-announcement-border-color);
 }
 
-/* The secondary background matches the background of mt-app, so neutral uses the tertiary one. */
 .mt-announcement--appearance-subtle.mt-announcement--variant-neutral {
-  --mt-announcement-background: var(--color-background-tertiary-default);
+  --mt-announcement-background: var(--color-background-secondary-default);
   --mt-announcement-icon-color: var(--color-icon-primary-default);
+  --mt-announcement-border-color: var(--color-border-secondary-default);
 }
 
 .mt-announcement--appearance-subtle.mt-announcement--variant-info {
   --mt-announcement-background: var(--color-background-brand-default);
   --mt-announcement-icon-color: var(--color-icon-brand-default);
+  --mt-announcement-border-color: color-mix(
+    in srgb,
+    var(--color-border-brand-default) 20%,
+    transparent
+  );
 }
 
 .mt-announcement--appearance-subtle.mt-announcement--variant-attention {
   --mt-announcement-background: var(--color-background-attention-default);
   --mt-announcement-icon-color: var(--color-icon-attention-default);
+  --mt-announcement-border-color: color-mix(
+    in srgb,
+    var(--color-border-attention-default) 20%,
+    transparent
+  );
 }
 
 .mt-announcement--appearance-subtle.mt-announcement--variant-critical {
   --mt-announcement-background: var(--color-background-critical-default);
   --mt-announcement-icon-color: var(--color-icon-critical-default);
+  --mt-announcement-border-color: color-mix(
+    in srgb,
+    var(--color-border-critical-default) 20%,
+    transparent
+  );
 }
 
 .mt-announcement--appearance-subtle.mt-announcement--variant-positive {
   --mt-announcement-background: var(--color-background-positive-default);
   --mt-announcement-icon-color: var(--color-icon-positive-default);
+  --mt-announcement-border-color: color-mix(
+    in srgb,
+    var(--color-border-positive-default) 20%,
+    transparent
+  );
 }
 
 .mt-announcement--appearance-strong {
