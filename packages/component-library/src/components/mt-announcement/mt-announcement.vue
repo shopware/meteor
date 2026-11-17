@@ -192,7 +192,7 @@ onBeforeUnmount(() => {
 
 .mt-announcement :deep(a:is(:hover, :active)) {
   color: inherit;
-  text-decoration-thickness: var(--scale-size-2);
+  opacity: 0.8;
 }
 
 .mt-announcement :deep(a:focus-visible) {
