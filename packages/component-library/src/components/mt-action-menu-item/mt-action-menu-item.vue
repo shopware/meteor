@@ -10,7 +10,7 @@
     :data-has-icon="!!icon || undefined"
     :aria-keyshortcuts="ariaKeyShortcuts"
   >
-    <mt-icon v-if="!!icon" :name="forceIconMode(icon, 'regular')" size="14" />
+    <mt-icon v-if="!!icon" :name="resolveIconName(icon, 'regular')" size="14" />
 
     <slot name="default" />
 
@@ -48,7 +48,7 @@
 <script setup lang="ts">
 import { DropdownMenuItem, DropdownMenuSubTrigger } from "reka-ui";
 import MtIcon from "../mt-icon/mt-icon.vue";
-import { forceIconMode } from "@/utils/icon";
+import { resolveIconName } from "@/utils/icon";
 import { computed, inject, onMounted, type Component } from "vue";
 import { useI18n } from "vue-i18n";
 

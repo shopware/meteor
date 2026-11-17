@@ -2,7 +2,7 @@
   <div class="mt-empty-state" :class="{ 'mt-empty-state--left-aligned': !centered }">
     <div class="mt-empty-state__icon">
       <mt-icon
-        :name="forceIconMode(icon, 'regular')"
+        :name="resolveIconName(icon, 'regular')"
         color="var(--color-icon-primary-default)"
         aria-hidden="true"
       />
@@ -45,7 +45,7 @@ import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtLink from "@/components/mt-link/mt-link.vue";
-import { forceIconMode } from "@/utils/icon";
+import { resolveIconName } from "@/utils/icon";
 
 withDefaults(
   defineProps<{
