@@ -132,6 +132,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 - In the desktop layout, `v-model:navigation-open` and `v-model:sidebar-open` show and hide the panels. A [**Panel**](/components/panel) with `closable` also shows its trigger in the desktop layout.
 - A panel that a view hides has no trigger in either layout.
 - In the desktop layout, a panel slides in and out over its outer edge when it opens or closes, also when a view hides or shows it, while the content grows into its place. Switching between the desktop and the mobile layout doesn't slide. With reduced motion, the panels show and hide at once.
+- An announcement that appears after the page has loaded slides down from the top edge and pushes the header down. When it is removed, for example after it was closed, it slides back up and the content takes over its focus. An announcement that is there when the page loads, or that a view hides or shows, doesn't slide. With reduced motion, it shows and hides at once.
 - Views can hide the announcement, the header, the navigation and the sidebar with [**useAppRegions**](/utilities/composables/use-app-regions). The announcement and the header are not printed.
 - **App** applies the stored theme preference, enables all future flags for the components inside, and mounts the [**Snackbar**](/components/snackbar) host.
 - With Vue Router installed, a navigation closes the open drawer and shows the new page from its top, or from the element of its URL hash.

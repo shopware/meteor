@@ -17,14 +17,20 @@
       </mt-button>
     </div>
 
-    <div
-      v-if="hasSlot('announcement')"
-      ref="announcement"
-      class="mt-app__announcement"
-      :hidden="hiddenRegions.announcement || undefined"
-    >
-      <slot name="announcement" />
-    </div>
+    <Transition name="mt-app-announcement-slide" @before-leave="onAnnouncementLeave">
+      <div
+        v-if="hasSlot('announcement')"
+        ref="announcement"
+        class="mt-app__announcement"
+        :hidden="hiddenRegions.announcement || undefined"
+      >
+        <div class="mt-app__announcement-clip">
+          <div class="mt-app__announcement-content">
+            <slot name="announcement" />
+          </div>
+        </div>
+      </div>
+    </Transition>
 
     <header
       v-if="hasSlot('header') || hasHeaderTriggers()"
@@ -371,6 +377,12 @@ function focusContent() {
   mainElement.value?.focus({ preventScroll: true });
 }
 
+/** The closed announcement stays while it slides out, so the content takes over its focus at once. */
+function onAnnouncementLeave(element: Element) {
+  if (element.contains(document.activeElement)) focusContent();
+  (element as HTMLElement).inert = true;
+}
+
 /** Closing the confirmation in any other way than discarding keeps the changes. */
 function onLeaveDialogChange(open: boolean) {
   if (!open) answerLeave(false);
@@ -514,8 +526,52 @@ defineExpose(api);
 }
 
 .mt-app__announcement {
+  display: grid;
+  grid-template-rows: 1fr;
   flex: none;
   min-width: 0;
+}
+
+.mt-app__announcement-clip {
+  min-height: 0;
+}
+
+/* An announcement that arrives after the page has loaded slides down and pushes the header down
+   with it. Closing it slides it up, a bit faster. */
+.mt-app-announcement-slide-enter-active,
+.mt-app-announcement-slide-leave-active {
+  transition: grid-template-rows 200ms cubic-bezier(0.3, 0, 0, 1);
+
+  & .mt-app__announcement-clip {
+    overflow: hidden;
+  }
+
+  & .mt-app__announcement-content {
+    transition: transform 200ms cubic-bezier(0.3, 0, 0, 1);
+  }
+}
+
+.mt-app-announcement-slide-leave-active,
+.mt-app-announcement-slide-leave-active .mt-app__announcement-content {
+  transition-duration: 150ms;
+}
+
+.mt-app-announcement-slide-enter-from,
+.mt-app-announcement-slide-leave-to {
+  grid-template-rows: 0fr;
+
+  & .mt-app__announcement-content {
+    transform: translateY(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-app-announcement-slide-enter-active,
+  .mt-app-announcement-slide-leave-active,
+  .mt-app-announcement-slide-enter-active .mt-app__announcement-content,
+  .mt-app-announcement-slide-leave-active .mt-app__announcement-content {
+    transition: none;
+  }
 }
 
 .mt-app__header {
