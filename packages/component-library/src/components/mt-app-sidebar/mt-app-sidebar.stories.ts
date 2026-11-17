@@ -1,26 +1,21 @@
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import MtSidebar from "./mt-sidebar.vue";
+import MtAppSidebar from "./mt-app-sidebar.vue";
 import MtButton from "../mt-button/mt-button.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import {
   demoComponents,
-  demoLinkComponent,
   demoSections,
   shortDemoSections,
-  demoNavigationTemplate,
-  demoHeaderTemplate,
-  demoFooterTemplate,
+  demoStartTemplate,
+  demoEndTemplate,
 } from "./_mocks/demo-navigation";
 
-export type MtSidebarMeta = SlottedMeta<
-  typeof MtSidebar,
-  "header" | "actions" | "default" | "footer"
->;
+export type MtAppSidebarMeta = SlottedMeta<typeof MtAppSidebar, "start" | "actions" | "end">;
 
-const meta: MtSidebarMeta = {
-  title: "Components/Sidebar",
-  component: MtSidebar,
+const meta: MtAppSidebarMeta = {
+  title: "Components/App Sidebar",
+  component: MtAppSidebar,
   parameters: {
     docs: {
       description: {
@@ -29,68 +24,58 @@ const meta: MtSidebarMeta = {
     },
   },
   args: {
-    header: "",
+    sections: demoSections,
+    start: "",
     actions: "",
-    default: "",
-    footer: "",
+    end: "",
   },
   argTypes: {
-    header: { control: { type: "text" } },
+    start: { control: { type: "text" } },
     actions: { control: { type: "text" } },
-    default: { control: { type: "text" } },
-    footer: { control: { type: "text" } },
+    end: { control: { type: "text" } },
   },
   render: (args) => ({
     components: demoComponents,
-    setup: () => ({ args, sections: demoSections, linkComponent: demoLinkComponent }),
+    setup: () => ({ args }),
     template: `
 <div style="height: 480px; display: flex;">
-  <mt-sidebar v-bind="args">
-    <template v-if="args.header" #header>
-      <div v-html="args.header"></div>
+  <mt-app-sidebar :sections="args.sections">
+    <template v-if="args.start" #start>
+      <div v-html="args.start"></div>
     </template>
-    <template v-else #header>
-      ${demoHeaderTemplate}
+    <template v-else #start>
+      ${demoStartTemplate}
     </template>
 
     <template v-if="args.actions" #actions>
       <div v-html="args.actions"></div>
     </template>
 
-    <template v-if="args.default" #default>
-      <div v-html="args.default"></div>
+    <template v-if="args.end" #end>
+      <div v-html="args.end"></div>
     </template>
-    <template v-else #default>
-      ${demoNavigationTemplate}
+    <template v-else #end>
+      ${demoEndTemplate}
     </template>
-
-    <template v-if="args.footer" #footer>
-      <div v-html="args.footer"></div>
-    </template>
-    <template v-else #footer>
-      ${demoFooterTemplate}
-    </template>
-  </mt-sidebar>
+  </mt-app-sidebar>
 </div>`,
   }),
 };
 
 export default meta;
-export type MtSidebarStory = StoryObj<MtSidebarMeta>;
+export type MtAppSidebarStory = StoryObj<MtAppSidebarMeta>;
 
-export const Default: MtSidebarStory = {
+export const Default: MtAppSidebarStory = {
   parameters: {
     docs: {
       source: {
         language: "html",
-        code: `<mt-sidebar>
-  <template #header>
+        code: `<mt-app-sidebar :sections="sections">
+  <template #start>
     <mt-brand title="Demo shop" subtitle="Shopware" />
   </template>
 
-  <mt-nav :sections="sections" />
-
-  <template #footer>
+  <template #end>
     <mt-user-menu name="Max Mustermann" subtitle="Administrator">
       <mt-action-menu-group>
         <mt-action-menu-item icon="regular-sign-out" variant="critical" @select="logout">
@@ -99,52 +84,37 @@ export const Default: MtSidebarStory = {
       </mt-action-menu-group>
     </mt-user-menu>
   </template>
-</mt-sidebar>`,
+</mt-app-sidebar>`,
       },
     },
   },
 };
 
-export const ShortNavigation: MtSidebarStory = {
+export const ShortNavigation: MtAppSidebarStory = {
   name: "Short navigation",
-  render: () => ({
-    components: demoComponents,
-    setup: () => ({ sections: shortDemoSections, linkComponent: demoLinkComponent }),
-    template: `
-<div style="height: 480px; display: flex;">
-  <mt-sidebar>
-    <template #header>
-      ${demoHeaderTemplate}
-    </template>
-
-    ${demoNavigationTemplate}
-
-    <template #footer>
-      ${demoFooterTemplate}
-    </template>
-  </mt-sidebar>
-</div>`,
-  }),
+  args: {
+    sections: shortDemoSections,
+  },
   parameters: {
     docs: {
       description: {
         story:
-          "When the navigation fits, nothing scrolls. The footer still sits at the bottom of the sidebar.",
+          "When the navigation fits, nothing scrolls. The end still sits at the bottom of the sidebar.",
       },
     },
   },
 };
 
-export const WithActions: MtSidebarStory = {
+export const WithActions: MtAppSidebarStory = {
   name: "With actions",
   render: () => ({
     components: { ...demoComponents, MtButton, MtIcon },
-    setup: () => ({ sections: demoSections, linkComponent: demoLinkComponent }),
+    setup: () => ({ sections: demoSections }),
     template: `
 <div style="height: 480px; display: flex;">
-  <mt-sidebar>
-    <template #header>
-      ${demoHeaderTemplate}
+  <mt-app-sidebar :sections="sections">
+    <template #start>
+      ${demoStartTemplate}
     </template>
 
     <template #actions>
@@ -155,24 +125,22 @@ export const WithActions: MtSidebarStory = {
       </mt-button>
     </template>
 
-    ${demoNavigationTemplate}
-
-    <template #footer>
-      ${demoFooterTemplate}
+    <template #end>
+      ${demoEndTemplate}
     </template>
-  </mt-sidebar>
+  </mt-app-sidebar>
 </div>`,
   }),
   parameters: {
     docs: {
       description: {
         story:
-          "The `actions` slot sits next to the header, for example for a button that opens the notifications.",
+          "The `actions` slot sits below the start, for example for a button that opens the notifications.",
       },
       source: {
         language: "html",
-        code: `<mt-sidebar>
-  <template #header>
+        code: `<mt-app-sidebar :sections="sections">
+  <template #start>
     <mt-brand title="Demo shop" subtitle="Shopware" />
   </template>
 
@@ -183,9 +151,7 @@ export const WithActions: MtSidebarStory = {
       </template>
     </mt-button>
   </template>
-
-  <mt-nav :sections="sections" />
-</mt-sidebar>`,
+</mt-app-sidebar>`,
       },
     },
   },
