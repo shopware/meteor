@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { RouterView } from "vue-router";
 import {
@@ -9,26 +10,42 @@ import {
 import AppConfirmModal from "./components/AppConfirmModal.vue";
 import AppNav from "./components/AppNav.vue";
 import AppSidebar from "./components/AppSidebar.vue";
-import { useClosedAnnouncement } from "./composables/useClosedAnnouncement";
-import { useLayoutSettings } from "./composables/useLayoutSettings";
+import { useClosedAnnouncements } from "./composables/useClosedAnnouncements";
+import {
+  useLayoutSettings,
+  type AnnouncementVariant,
+} from "./composables/useLayoutSettings";
 
 const { t } = useI18n();
 const layout = useLayoutSettings();
-const { isClosed: isAnnouncementClosed, close: closeAnnouncement } =
-  useClosedAnnouncement("maintenance-2026-11-16");
+const { isClosed, close } = useClosedAnnouncements();
+
+const announcementIcons: Record<AnnouncementVariant, string> = {
+  neutral: "solid-calendar",
+  info: "solid-megaphone",
+  attention: "solid-tools",
+  critical: "solid-exclamation-circle",
+  positive: "solid-check-circle",
+};
+
+// Changing the variant or the appearance in the settings shows a closed announcement again.
+const announcementId = computed(
+  () => `${layout.announcementVariant}-${layout.announcementAppearance}`,
+);
 </script>
 
 <template>
   <mt-app loading-bar>
     <template #announcement>
       <mt-announcement
-        v-if="!isAnnouncementClosed"
-        variant="critical"
-        icon="solid-exclamation-triangle"
-        closable
-        @close="closeAnnouncement"
+        v-if="layout.announcementShown && !isClosed(announcementId)"
+        :variant="layout.announcementVariant"
+        :appearance="layout.announcementAppearance"
+        :icon="announcementIcons[layout.announcementVariant]"
+        :closable="layout.announcementVariant !== 'critical'"
+        @close="close(announcementId)"
       >
-        {{ t("announcement.maintenance") }}
+        {{ t(`announcement.${layout.announcementVariant}`) }}
       </mt-announcement>
     </template>
 
