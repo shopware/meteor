@@ -74,8 +74,8 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 
 ## Anatomy
 
-- `header`: the application's own bar above the other regions. The triggers of the navigation and the sidebar sit in the header of the page. Only while no page shows them, the shell's header shows them at its start and end, also when the slot is empty.
-- `navigation`: the main navigation, such as [**Nav**](/components/nav), next to the content, usually in a [**Panel**](/components/panel).
+- `header`: the application's own bar above the other regions, for example [**App Header**](/components/app-header). The triggers of the navigation and the sidebar sit in the header of the page. Only while no page shows them, the shell's header shows them at its start and end, also when the slot is empty.
+- `navigation`: the main navigation, such as [**App Sidebar**](/components/app-sidebar), next to the content, usually in a [**Panel**](/components/panel). Use either a navigation here or [**App Header**](/components/app-header) in the `header` slot, not both.
 - default slot: the scrollable main content in a frame, usually a [**Page**](/components/page). It fills the shell without the frame when no other slot is filled, or when no other region is visible and a view sets `contentFrame: false`.
 - `sidebar`: a panel next to the content, for example an assistant, usually in a [**Panel**](/components/panel). It is framed like the content unless its `appearance` is `plain`.
 
@@ -124,5 +124,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 
 - [**Page**](/components/page): for the frame of each page in the content.
 - [**Panel**](/components/panel): for the label, the trigger icon and the width of the navigation and the sidebar.
-- [**Nav**](/components/nav): for the main navigation in the `navigation` slot.
+- [**App Sidebar**](/components/app-sidebar): for the main navigation in the `navigation` slot.
+- [**App Header**](/components/app-header): for the main navigation in the `header` slot.
+- [**Nav**](/components/nav): for the navigation that both of them show.
 - [**Theme Provider**](/utilities/components/theme-provider): for theming Meteor components in an application or extension without the shell.

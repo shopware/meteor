@@ -2,9 +2,8 @@
 import {
   MtActionMenuGroup,
   MtActionMenuItem,
+  MtAppSidebar,
   MtBrand,
-  MtNav,
-  MtSidebar,
   MtUserMenu,
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
@@ -33,14 +32,12 @@ const sections: NavSection[] = [
   <div
     style="height: 480px; background-color: var(--color-elevation-surface-sunken)"
   >
-    <mt-sidebar>
-      <template #header>
+    <mt-app-sidebar :sections="sections">
+      <template #start>
         <mt-brand title="Demo shop" subtitle="Shopware" />
       </template>
 
-      <mt-nav :sections="sections" />
-
-      <template #footer>
+      <template #end>
         <mt-user-menu name="Max Mustermann" subtitle="Administrator">
           <mt-action-menu-group>
             <mt-action-menu-item icon="regular-sign-out" variant="critical">
@@ -49,6 +46,6 @@ const sections: NavSection[] = [
           </mt-action-menu-group>
         </mt-user-menu>
       </template>
-    </mt-sidebar>
+    </mt-app-sidebar>
   </div>
 </template>

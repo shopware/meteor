@@ -12,13 +12,13 @@ description: A logo with the name of the shop or app next to it, and an optional
 
 ## Usage
 
-**Brand** shows the logo of the app with a title, such as the name of the shop, and a subtitle, such as the name of the product. The `title` is required, and without a `subtitle` the second line stays empty. It is made for the `header` slot of [**Sidebar**](/components/sidebar), but works anywhere the name of the shop is shown with a logo.
+**Brand** shows the logo of the app with a title, such as the name of the shop, and a subtitle, such as the name of the product. The `title` is required, and without a `subtitle` the second line stays empty. It is made for the `start` slot of [**App Sidebar**](/components/app-sidebar) and [**App Header**](/components/app-header), but works anywhere the name of the shop is shown with a logo.
 
 ```ts
 import { MtBrand } from "@shopware-ag/meteor-component-library";
 ```
 
-The default logo is the Shopware logo. The `variant` prop shows the logo of another Shopware product instead: `copilot`, `intelligence`, `nexus` or `payments`. The `appearance` prop sets its colors: `dark`, the default, shows a white mark on a blue box, and `light` shows a blue mark on a white box. The `compact` prop shows only the logo, for example in a collapsed sidebar. The `logo` slot replaces the logo as a whole, including its box.
+The default logo is the Shopware logo. The `variant` prop shows the logo of another Shopware product instead: `copilot`, `intelligence`, `nexus` or `payments`. The `appearance` prop sets its colors: `dark`, the default, shows a white mark on a blue box, and `light` shows a blue mark on a white box. The `compact` prop shows only the logo, for example in a collapsed sidebar. The `size` prop sets the size of the title: `s`, the default, for a sidebar, and `xs` for a header bar. The `logo` slot replaces the logo as a whole, including its box.
 
 ## Examples
 
@@ -38,7 +38,7 @@ The dark appearance shows a white mark on a blue box, the light appearance a blu
 
 ### Compact
 
-Only the logo shows. The title shows on hover.
+Only the logo shows.
 
 ::component-example{name="brand-compact-example"}
 ::
@@ -66,8 +66,8 @@ Only the logo shows. The title shows on hover.
 
 ## Behavior
 
-- A title or subtitle that does not fit is cut off with an ellipsis. The full title shows on hover.
-- When compact, only the logo shows, and the title shows on hover.
+- A title or subtitle that does not fit is cut off with an ellipsis.
+- When compact, only the logo shows.
 
 ## Accessibility
 

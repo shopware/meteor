@@ -12,7 +12,7 @@ description: A user shown as avatar, name and an optional secondary line.
 
 ## Usage
 
-**User** identifies a person with an [**Avatar**](/components/avatar), their name and an optional secondary line such as a role, an email address or a workspace. Use it in places that show who is signed in, such as in the footer of [**Sidebar**](/components/sidebar) or in [**User Menu**](/components/user-menu).
+**User** identifies a person with an [**Avatar**](/components/avatar), their name and an optional secondary line such as a role, an email address or a workspace. Use it in places that show who is signed in, such as at the end of [**App Sidebar**](/components/app-sidebar) or in [**User Menu**](/components/user-menu).
 
 ```ts
 import { MtUser } from "@shopware-ag/meteor-component-library";
@@ -22,7 +22,7 @@ import { MtUser } from "@shopware-ag/meteor-component-library";
 
 ### Compact
 
-`compact` hides the name and the subtitle visually. The name shows on hover.
+`compact` hides the name and the subtitle visually.
 
 ::component-example{name="user-compact-example"}
 ::

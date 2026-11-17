@@ -113,4 +113,4 @@ The panels of a page work the same way:
 
 - [**App**](/components/app): for the shell with the navigation and the sidebar.
 - [**Page**](/components/page): for the frame of a page with its start and end panels.
-- [**Sidebar**](/components/sidebar): for the frame of the main navigation, which fills its panel.
+- [**App Sidebar**](/components/app-sidebar): for the main navigation in a sidebar, which fills its panel.

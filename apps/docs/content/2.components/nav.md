@@ -59,7 +59,7 @@ With `orientation="horizontal"`, the top-level rows run in a line, for example i
 
 - Give every top-level row an icon, and keep the labels short.
 - Match the current route in `is-active` instead of setting `active` on the rows on every navigation.
-- Give a vertical **Nav** a fixed width, for example `15rem` in the `navigation` slot of [**App**](/components/app), and put it into a container that scrolls, such as [**Sidebar**](/components/sidebar).
+- Give a vertical **Nav** a fixed width, for example `15rem` in the `navigation` slot of [**App**](/components/app), and put it into a container that scrolls, such as [**Scroll Area**](/utilities/components/scroll-area).
 
 #dont
 
@@ -86,5 +86,7 @@ With `orientation="horizontal"`, the top-level rows run in a line, for example i
 ## Related components
 
 - [**App**](/components/app): for the shell whose `navigation` slot holds **Nav**.
+- [**App Header**](/components/app-header): for the main navigation in the header, with the logo and the user around it.
+- [**App Sidebar**](/components/app-sidebar): for the main navigation in a sidebar, with the logo and the user around it.
 - [**Breadcrumb**](/components/breadcrumb): for the path to the current page inside a page.
 - [**Tabs**](/components/tabs): for switching between sections of the same page.
