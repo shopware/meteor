@@ -8,6 +8,10 @@ component library, set up the way the Meteor docs recommend.
   drawer on narrow screens, and a Copilot chat in the sidebar
 - one `mt-page` per route: documentation pages with their tree in a panel next to the content, an
   editor with a panel on each side and a full-screen route, and settings with a vertical `mt-nav`
+- layout settings under Settings > Layout, kept per browser, to try where the triggers of the
+  shell's panels show: `mt-app-header`, a custom header with `mt-app-panel-trigger` or no header,
+  the navigation and the sidebar off, always open or closable, and the settings without `mt-page`,
+  with or without their own `mt-app-panel-trigger`, or with the header hidden
 - Vue Router, mounted after the first route resolves, with a 404 page
 - vue-i18n in English and German, remembered per browser and set on `<html lang>`
 - the page title in the browser tab, announced to screen readers by the shell
@@ -41,6 +45,7 @@ src/
   main.ts              # i18n, router and the mount after the first route
   App.vue              # the mt-app shell
   components/          # parts of the shell and the views, such as the chat
+  composables/         # state shared by the shell and the views, such as the layout settings
   views/               # one view per route, each an mt-page
   router/index.ts      # routes, their titles and the page title in the browser tab
   i18n/                # vue-i18n and the app's strings

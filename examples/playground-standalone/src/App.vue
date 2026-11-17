@@ -7,17 +7,23 @@ import {
   MtActionMenuItem,
   MtApp,
   MtAppHeader,
+  MtAppPanelTrigger,
+  MtAppSidebar,
   MtBrand,
   MtButton,
   MtIcon,
+  MtNav,
   MtPanel,
+  MtScrollArea,
   MtUserMenu,
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
 import AppChat from "./components/AppChat.vue";
+import { useLayoutSettings } from "./composables/useLayoutSettings";
 
 const { t } = useI18n();
 const route = useRoute();
+const layout = useLayoutSettings();
 
 const sections = computed<NavSection[]>(() => [
   {
@@ -49,11 +55,13 @@ const sections = computed<NavSection[]>(() => [
       {
         label: t("nav.settings"),
         icon: "regular-cog",
-        children: ["general", "account", "notifications"].map((section) => ({
-          label: t(`settings.sections.${section}`),
-          to: `/settings/${section}`,
-          active: route.path === `/settings/${section}`,
-        })),
+        children: ["general", "account", "notifications", "layout"].map(
+          (section) => ({
+            label: t(`settings.sections.${section}`),
+            to: `/settings/${section}`,
+            active: route.path === `/settings/${section}`,
+          }),
+        ),
       },
     ],
   },
@@ -61,9 +69,10 @@ const sections = computed<NavSection[]>(() => [
 </script>
 
 <template>
+  <!-- Settings > Layout picks what fills the shell's slots, to try where it shows the triggers. -->
   <mt-app loading-bar>
-    <template #header>
-      <mt-app-header :sections="sections">
+    <template v-if="layout.header !== 'off'" #header>
+      <mt-app-header v-if="layout.header === 'app-header'" :sections="sections">
         <template #start="{ isMobile }">
           <mt-brand
             title="Playground"
@@ -118,15 +127,54 @@ const sections = computed<NavSection[]>(() => [
           </mt-user-menu>
         </template>
       </mt-app-header>
+
+      <div v-else class="custom-header">
+        <mt-app-panel-trigger
+          v-if="layout.customHeaderNavigationTrigger"
+          panel="navigation"
+        />
+        <mt-brand title="Playground" subtitle="Shopware" size="xs" />
+        <mt-scroll-area orientation="horizontal" class="custom-header__nav">
+          <mt-nav orientation="horizontal" :sections="sections" />
+        </mt-scroll-area>
+        <mt-app-panel-trigger
+          v-if="layout.customHeaderSidebarTrigger"
+          panel="sidebar"
+        />
+      </div>
+    </template>
+
+    <template v-if="layout.navigation !== 'off'" #navigation>
+      <mt-panel
+        :label="t('nav.navigation')"
+        :closable="layout.navigation === 'closable'"
+        resizable
+      >
+        <mt-app-sidebar :sections="sections">
+          <template #start>
+            <mt-brand title="Playground" subtitle="Shopware" />
+          </template>
+
+          <template #end>
+            <mt-user-menu name="Jane Doe" subtitle="jane.doe@example.com">
+              <mt-action-menu-group>
+                <mt-action-menu-item icon="regular-sign-out" variant="critical">
+                  {{ t("nav.logout") }}
+                </mt-action-menu-item>
+              </mt-action-menu-group>
+            </mt-user-menu>
+          </template>
+        </mt-app-sidebar>
+      </mt-panel>
     </template>
 
     <RouterView />
 
-    <template #sidebar>
+    <template v-if="layout.sidebar !== 'off'" #sidebar>
       <mt-panel
         :label="t('copilot.title')"
         icon="regular-shopware-copilot"
-        closable
+        :closable="layout.sidebar === 'closable'"
         resizable
       >
         <AppChat />
@@ -134,3 +182,18 @@ const sections = computed<NavSection[]>(() => [
     </template>
   </mt-app>
 </template>
+
+<style scoped>
+.custom-header {
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-16);
+  min-height: var(--scale-size-64);
+  padding-inline: var(--scale-size-10);
+}
+
+.custom-header__nav {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+</style>
