@@ -11,6 +11,8 @@ export const de: Messages = {
     releaseNotes: "Versionshinweise",
     settings: "Einstellungen",
     logout: "Abmelden",
+    notifications: "Benachrichtigungen",
+    help: "Hilfe",
   },
   editor: {
     title: "Editor",

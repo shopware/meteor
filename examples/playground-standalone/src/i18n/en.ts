@@ -9,6 +9,8 @@ export const en = {
     releaseNotes: "Release notes",
     settings: "Settings",
     logout: "Log out",
+    notifications: "Notifications",
+    help: "Help",
   },
   editor: {
     title: "Editor",
