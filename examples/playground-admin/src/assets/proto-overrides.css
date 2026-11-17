@@ -1,0 +1,186 @@
+/* Prototype of the new color palettes: component styles that the token mapping can't express yet.
+   Only for this playground, while the root element has `data-proto-colors`. */
+
+/* Strong announcements fill their background with the main step of the palette and show white
+   text, also in the dark theme. The attribute and the extra class outweigh the scoped styles of
+   the component. */
+[data-proto-colors] .mt-announcement.mt-announcement--appearance-strong {
+  --mt-announcement-color: var(--color-white);
+
+  &.mt-announcement--variant-neutral {
+    --mt-announcement-background: var(--color-neutral-1000);
+    --mt-announcement-color: var(--color-white);
+  }
+
+  &.mt-announcement--variant-info {
+    --mt-announcement-background: var(--color-brand-1000);
+    --mt-announcement-color: var(--color-white);
+  }
+
+  &.mt-announcement--variant-attention {
+    --mt-announcement-background: var(--color-orange-1000);
+    --mt-announcement-color: var(--color-white);
+  }
+
+  &.mt-announcement--variant-critical {
+    --mt-announcement-background: var(--color-red-1000);
+    --mt-announcement-color: var(--color-white);
+  }
+
+  &.mt-announcement--variant-positive {
+    --mt-announcement-background: var(--color-green-1000);
+    --mt-announcement-color: var(--color-white);
+  }
+}
+
+/* Banners and badges have no border and a tinted background instead: 200 in the light theme and
+   1400 in the dark theme. The border stays transparent, so the size doesn't change. */
+[data-proto-colors] {
+  --proto-tint-neutral: var(--color-neutral-200);
+  --proto-tint-info: var(--color-brand-200);
+  --proto-tint-attention: var(--color-orange-200);
+  --proto-tint-critical: var(--color-red-200);
+  --proto-tint-positive: var(--color-green-200);
+  --proto-tint-accent: var(--color-purple-200);
+}
+
+[data-proto-colors][data-theme="dark"],
+[data-proto-colors] [data-theme="dark"] {
+  --proto-tint-neutral: var(--color-neutral-1400);
+  --proto-tint-info: var(--color-brand-1400);
+  --proto-tint-attention: var(--color-orange-1400);
+  --proto-tint-critical: var(--color-red-1400);
+  --proto-tint-positive: var(--color-green-1400);
+  --proto-tint-accent: var(--color-purple-1400);
+}
+
+[data-proto-colors] :is(.mt-banner.mt-banner, .mt-badge.mt-badge) {
+  border-color: transparent;
+}
+
+[data-proto-colors]
+  :is(.mt-banner.mt-banner--neutral, .mt-badge.mt-badge--variant-neutral) {
+  background-color: var(--proto-tint-neutral);
+}
+
+[data-proto-colors]
+  :is(.mt-banner.mt-banner--info, .mt-badge.mt-badge--variant-info) {
+  background-color: var(--proto-tint-info);
+}
+
+[data-proto-colors]
+  :is(.mt-banner.mt-banner--attention, .mt-badge.mt-badge--variant-attention) {
+  background-color: var(--proto-tint-attention);
+}
+
+[data-proto-colors]
+  :is(.mt-banner.mt-banner--critical, .mt-badge.mt-badge--variant-critical) {
+  background-color: var(--proto-tint-critical);
+}
+
+[data-proto-colors]
+  :is(.mt-banner.mt-banner--positive, .mt-badge.mt-badge--variant-positive) {
+  background-color: var(--proto-tint-positive);
+}
+
+[data-proto-colors] .mt-banner.mt-banner--inherited {
+  background-color: var(--proto-tint-accent);
+}
+
+/* In the light theme, a very slight shadow lifts cards and the content and sidebar frames of mt-app
+   off the background: a half-pixel ring, a soft drop and a tight contact shadow. The ring replaces
+   the border, which stays transparent, so nothing moves. The dark theme uses the same shadow with a
+   light ring. */
+[data-proto-colors] {
+  --proto-frame-shadow:
+    0 0 0 0.5px lch(0 0 0 / 0.088), 0 3px 6px -2px lch(0 0 0 / 0.02),
+    0 1px 1px 0 lch(0 0 0 / 0.04);
+  --proto-frame-border: transparent;
+}
+
+[data-proto-colors][data-theme="dark"],
+[data-proto-colors] [data-theme="dark"] {
+  --proto-frame-shadow:
+    0 0 0 0.5px lch(100 0 0 / 0.1), 0 3px 6px -2px lch(0 0 0 / 0.2),
+    0 1px 1px 0 lch(0 0 0 / 0.3);
+}
+
+[data-proto-colors] .mt-card.mt-card,
+[data-proto-colors] .mt-app:not(.mt-app--frameless) .mt-app__content,
+[data-proto-colors] .mt-app .mt-app__body > .mt-panel-region--bordered {
+  border-color: var(--proto-frame-border);
+  box-shadow: var(--proto-frame-shadow);
+}
+
+/* In the dark theme, the content and sidebar frames of mt-app keep their secondary border instead
+   of the shadow. Cards keep the shadow. */
+:is(
+    [data-proto-colors][data-theme="dark"],
+    [data-proto-colors] [data-theme="dark"]
+  )
+  .mt-app:not(.mt-app--frameless)
+  .mt-app__content,
+:is(
+    [data-proto-colors][data-theme="dark"],
+    [data-proto-colors] [data-theme="dark"]
+  )
+  .mt-app
+  .mt-app__body
+  > .mt-panel-region--bordered {
+  border-color: var(--color-border-secondary-default);
+  box-shadow: none;
+}
+
+/* Action menus float above the page like popovers, so they take the raised surface instead of the
+   default one, which is darker than cards in the dark theme and grey in the light theme. */
+[data-proto-colors] .mt-action-menu.mt-action-menu {
+  background-color: var(--color-elevation-surface-raised);
+}
+
+/* The track of an unchecked switch uses `interaction-secondary-disabled`, which is now muted for
+   disabled buttons and disappears on cards. It takes the field border color instead. */
+[data-proto-colors]
+  .mt-switch
+  .mt-switch__switch:not(:checked, .mt-switch__switch--errored) {
+  background: var(--color-border-primary-default);
+}
+
+/* The vertical guide lines of nested mt-nav items take the primary border color. */
+[data-proto-colors]
+  .mt-nav__list-item--nested
+  > .mt-nav__sub-list.mt-nav__sub-list::before,
+[data-proto-colors]
+  .mt-nav__list-item--nested
+  > .mt-nav__item-row
+  > .mt-nav__link.mt-nav__link::before {
+  background: var(--color-border-primary-default);
+}
+
+/* Subtle announcements take the tints of banners and badges and drop their bottom border. The
+   border stays transparent, so the height doesn't change. */
+[data-proto-colors] .mt-announcement.mt-announcement--appearance-subtle {
+  &.mt-announcement--variant-neutral {
+    --mt-announcement-background: var(--proto-tint-neutral);
+    --mt-announcement-border-color: transparent;
+  }
+
+  &.mt-announcement--variant-info {
+    --mt-announcement-background: var(--proto-tint-info);
+    --mt-announcement-border-color: transparent;
+  }
+
+  &.mt-announcement--variant-attention {
+    --mt-announcement-background: var(--proto-tint-attention);
+    --mt-announcement-border-color: transparent;
+  }
+
+  &.mt-announcement--variant-critical {
+    --mt-announcement-background: var(--proto-tint-critical);
+    --mt-announcement-border-color: transparent;
+  }
+
+  &.mt-announcement--variant-positive {
+    --mt-announcement-background: var(--proto-tint-positive);
+    --mt-announcement-border-color: transparent;
+  }
+}

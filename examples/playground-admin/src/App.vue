@@ -9,14 +9,17 @@ import {
 } from "@shopware-ag/meteor-component-library";
 import AppConfirmModal from "./components/AppConfirmModal.vue";
 import AppNav from "./components/AppNav.vue";
+import AppProtoColorsToggle from "./components/AppProtoColorsToggle.vue";
 import AppSidebar from "./components/AppSidebar.vue";
 import { useClosedAnnouncements } from "./composables/useClosedAnnouncements";
+import { useThemeShortcut } from "./composables/useThemeShortcut";
 import {
   useLayoutSettings,
   type AnnouncementVariant,
 } from "./composables/useLayoutSettings";
 
 const { t } = useI18n();
+useThemeShortcut();
 const layout = useLayoutSettings();
 const { isClosed, close } = useClosedAnnouncements();
 
@@ -61,6 +64,7 @@ const announcementId = computed(
 
     <RouterView />
     <AppConfirmModal />
+    <AppProtoColorsToggle />
 
     <template #sidebar>
       <mt-panel
