@@ -30,7 +30,7 @@ import { hasSlotContent } from "@/utils/slot";
  * @experimental The API may still change in a future release.
  */
 defineProps<{
-  /** The sections of the navigation, each holding its rows, as for `mt-nav`. */
+  /** The sections of the navigation, each holding its items, as for `mt-nav`. */
   sections: NavSection[];
 }>();
 

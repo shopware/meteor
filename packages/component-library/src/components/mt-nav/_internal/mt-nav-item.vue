@@ -106,9 +106,9 @@ import { focusableLinks, moveLinkFocus, tabbableAfterTrigger } from "./mt-nav-fo
 
 const props = defineProps<{
   item: NavItem;
-  /** Nesting depth of the row, starting at 1 for the top level. */
+  /** Nesting depth of the item, starting at 1 for the top level. */
   depth: number;
-  /** Key of the top-level row this row belongs to, under which the navigation keeps the open state. */
+  /** Key of the top-level item this item belongs to, under which the navigation keeps the open state. */
   branchKey: string;
 }>();
 
@@ -137,14 +137,14 @@ if (isLeafDepth && hasNestedItems(props.item)) {
 if (hasNestedItems(props.item) && (props.item.to || props.item.href)) {
   console.error(
     `[mt-nav] The navigation item "${props.item.label}" has both a link and nested items. ` +
-      "A row either links to a page or holds nested rows, so its link is ignored.",
+      "An item either links to a page or holds nested items, so its link is ignored.",
   );
 }
 
-// Rows on the last supported level are leaves even when they have nested items
+// Items on the last supported level are leaves even when they have nested items
 const hasChildren = computed(() => hasNestedItems(props.item) && !isLeafDepth);
 
-// Top-level rows of a horizontal navigation show their nested rows in a floating panel
+// Top-level items of a horizontal navigation show their nested items in a floating panel
 const isFlyout = computed(
   () => context.orientation.value === "horizontal" && props.depth === 1 && hasChildren.value,
 );
@@ -159,7 +159,7 @@ const flyoutId = `mt-nav-flyout-${useId()}`;
 // branches it never opens on its own.
 const flyoutOpen = computed(() => context.isFlyoutOpen(props.branchKey));
 
-// Time the pointer may spend outside the row and panel, e.g. crossing the gap between them
+// Time the pointer may spend outside the item and panel, e.g. crossing the gap between them
 const FLYOUT_CLOSE_DELAY = 200;
 
 const { start: scheduleFlyoutClose, stop: cancelFlyoutClose } = useTimeoutFn(
@@ -171,7 +171,7 @@ const { start: scheduleFlyoutClose, stop: cancelFlyoutClose } = useTimeoutFn(
 // Set while the panel is open because the mouse rests on it, so a click does not close it again
 let flyoutOpenedByHover = false;
 
-// The panel unmounts when it closes, so the focus inside it moves back to its row
+// The panel unmounts when it closes, so the focus inside it moves back to its item
 watch(flyoutOpen, (open) => {
   if (open) {
     return;
@@ -184,7 +184,7 @@ watch(flyoutOpen, (open) => {
   }
 });
 
-// The nested row that is active or holds the active row
+// The nested item that is active or holds the active item
 const activeChildKey = computed(() => {
   const activeChild = props.item.children?.find(context.isItemActive);
 
@@ -193,17 +193,17 @@ const activeChildKey = computed(() => {
 
 const hasActiveDescendant = computed(() => activeChildKey.value !== null);
 
-// The user's last toggle of a nested row. Unset, the row is open while it holds the active row.
+// The user's last toggle of a nested item. Unset, the item is open while it holds the active item.
 const manualOpen = ref<boolean | null>(null);
 
-// A manual collapse holds until the active row changes
+// A manual collapse holds until the active item changes
 watch(activeChildKey, () => {
   if (manualOpen.value === false) {
     manualOpen.value = null;
   }
 });
 
-// Top-level rows are opened by the navigation, which keeps one branch open at a time
+// Top-level items are opened by the navigation, which keeps one branch open at a time
 const subtreeOpen = computed(() => {
   if (isFlyout.value) {
     return flyoutOpen.value;
@@ -214,10 +214,10 @@ const subtreeOpen = computed(() => {
     : manualOpen.value ?? hasActiveDescendant.value;
 });
 
-// The deepest active row is the current page, so a row holding an active row defers to it
+// The deepest active item is the current page, so an item holding an active item defers to it
 const isCurrentPage = computed(() => context.isRowActive(props.item) && !hasActiveDescendant.value);
 
-// A closed branch stands in for the active row it hides, and so does a floating panel, open or not
+// A closed branch stands in for the active item it hides, and so does a floating panel, open or not
 const rowActive = computed(
   () =>
     isCurrentPage.value || (hasActiveDescendant.value && (isFlyout.value || !subtreeOpen.value)),
@@ -227,14 +227,14 @@ const childActive = computed(
   () => hasActiveDescendant.value && subtreeOpen.value && !isFlyout.value,
 );
 
-// Active rows show the solid variant of their regular icon
+// Active items show the solid variant of their regular icon
 const iconName = computed(() =>
   rowActive.value || childActive.value
     ? props.item.icon?.replace(/^regular-/, "solid-")
     : props.item.icon,
 );
 
-// Rows leaving the app through a plain anchor mark themselves with a trailing icon
+// Items leaving the app through a plain anchor mark themselves with a trailing icon
 const isExternal = computed(() => !hasChildren.value && !props.item.to && !!props.item.href);
 
 const isCollapsible = computed(() => hasChildren.value && !isFlyout.value);
@@ -274,7 +274,7 @@ const linkAttrs = computed(() => {
     };
   }
 
-  // The collapsible trigger toggles the nested rows itself
+  // The collapsible trigger toggles the nested items itself
   if (hasChildren.value) {
     return { type: "button" };
   }
@@ -311,7 +311,7 @@ function onFlyoutRowClick() {
 }
 
 function onFlyoutPointerEnter(event: PointerEvent) {
-  // The mouse opens the panel while it rests on the row or the panel; touch opens it with a tap
+  // The mouse opens the panel while it rests on the item or the panel; touch opens it with a tap
   if (event.pointerType !== "mouse") {
     return;
   }
@@ -325,14 +325,14 @@ function onFlyoutPointerEnter(event: PointerEvent) {
 }
 
 function onFlyoutPointerLeave(event: PointerEvent) {
-  // Closes the panel once the mouse has left both the row and the panel
+  // Closes the panel once the mouse has left both the item and the panel
   if (event.pointerType === "mouse") {
     scheduleFlyoutClose();
   }
 }
 
 function setSubtreeOpen(open: boolean) {
-  // Opens or closes the nested rows: the navigation decides for top-level rows, the row itself below
+  // Opens or closes the nested items: the navigation decides for top-level items, the item itself below
   if (isFlyout.value) {
     cancelFlyoutClose();
     context.onFlyoutToggle(props.branchKey, open);
@@ -355,7 +355,7 @@ function panelContainer() {
 }
 
 function onRowKeydown(event: KeyboardEvent) {
-  // On a row whose floating panel is open, ArrowDown and Tab move focus to the first row in the
+  // On an item whose floating panel is open, ArrowDown and Tab move focus to the first item in the
   // panel, and Escape closes it
   const panel = flyoutElement.value;
 
@@ -381,7 +381,7 @@ function onRowKeydown(event: KeyboardEvent) {
 }
 
 function onFlyoutKeydown(event: KeyboardEvent) {
-  // Moves focus between the rows of the floating panel; Escape closes it and returns to its row
+  // Moves focus between the items of the floating panel; Escape closes it and returns to its item
   const panel = flyoutElement.value;
 
   if (!panel) {
@@ -466,7 +466,7 @@ function onFlyoutFocusOut(event: FocusEvent) {
   background: var(--color-interaction-secondary-hover);
 }
 
-/* Rows of a horizontal navigation, in the bar and in its panels, fade into their hover background.
+/* Items of a horizontal navigation, in the bar and in its panels, fade into their hover background.
    The panels are teleported to the body, outside of .mt-nav--horizontal. */
 .mt-nav--horizontal .mt-nav__link,
 .mt-nav__flyout .mt-nav__link {
@@ -507,13 +507,13 @@ function onFlyoutFocusOut(event: FocusEvent) {
   transition: transform 0.15s ease-out;
 }
 
-/* The chevron turns to point up while the row's nested rows fold open */
+/* The chevron turns to point up while the item's nested items fold open */
 .mt-nav__list-item.is--open > .mt-nav__item-row .mt-nav__link-expand-icon {
   transform: rotate(180deg);
 }
 
-/* Rows of a horizontal bar keep their chevron pointing down: the floating panel already shows the
-   row is open. Rows inside the panel are teleported to the body, so they still turn theirs. */
+/* Items of a horizontal bar keep their chevron pointing down: the floating panel already shows the
+   item is open. Items inside the panel are teleported to the body, so they still turn theirs. */
 .mt-nav--horizontal .mt-nav__list-item.is--open > .mt-nav__item-row .mt-nav__link-expand-icon {
   transform: none;
 }
@@ -634,7 +634,7 @@ function onFlyoutFocusOut(event: FocusEvent) {
   color: var(--color-icon-brand-default);
 }
 
-/* A fixed width keeps the panel steady while its rows open and close; long labels truncate */
+/* A fixed width keeps the panel steady while its items open and close; long labels truncate */
 .mt-nav__flyout {
   box-sizing: border-box;
   /* stylelint-disable-next-line meteor/prefer-sizing-token */
@@ -687,7 +687,7 @@ function onFlyoutFocusOut(event: FocusEvent) {
   }
 }
 
-/* The first level of a panel has no tree line, so its nested rows hang from its label */
+/* The first level of a panel has no tree line, so its nested items hang from its label */
 .mt-nav__list-item--panel-top > .mt-nav__sub-list {
   padding-left: var(--scale-size-12);
 }

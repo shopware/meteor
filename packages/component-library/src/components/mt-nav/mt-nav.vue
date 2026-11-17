@@ -55,7 +55,7 @@ export type {
 const props = withDefaults(
   defineProps<{
     /**
-     * The sections of the navigation, each holding its rows. Rows nest through `children`.
+     * The sections of the navigation, each holding its items. Items nest through `children`.
      */
     sections: NavSection[];
     /**
@@ -68,12 +68,12 @@ const props = withDefaults(
      */
     label?: string;
     /**
-     * Tells whether a row is the current page, e.g. by comparing its route with the current route.
-     * Lets the sections stay static instead of setting `active` on every route change.
+     * Tells whether an item is the current page, e.g. by comparing its route with the current
+     * route. Lets the sections stay static instead of setting `active` on every route change.
      */
     isActive?: NavActiveMatcher;
     /**
-     * Direction the top-level rows run in. Horizontal rows show their nested rows in a floating
+     * Direction the top-level items run in. Horizontal items show their nested items in a floating
      * panel that opens on hover, or on click with the keyboard or touch.
      */
     orientation?: NavOrientation;
@@ -88,7 +88,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   /**
-   * Emitted when a row with a `to` or `href` is clicked. Rows that only toggle nested rows do not emit it.
+   * Emitted when an item with a `to` or `href` is clicked. Items that only toggle nested items do not emit it.
    */
   (e: "navigate", item: NavItem): void;
 }>();
@@ -110,16 +110,16 @@ const navigationLabelId = `mt-nav-label-${useId()}`;
 
 const navBodyElement = ref<HTMLElement | null>(null);
 
-// Keys of the open top-level rows. Nested rows keep their own open state.
+// Keys of the open top-level items. Nested items keep their own open state.
 const expandedKeys = ref<string[]>([]);
 
-// Key of the top-level row whose floating panel is open, in a horizontal navigation
+// Key of the top-level item whose floating panel is open, in a horizontal navigation
 const openFlyoutKey = ref<string | null>(null);
 
 // Set when the open panel took over from another open panel instead of opening from closed
 const flyoutSwitched = ref(false);
 
-// The top-level rows of every section, with the keys their open state is kept under
+// The top-level items of every section, with the keys their open state is kept under
 const branches = computed(() =>
   props.sections.flatMap((section, sectionIndex) =>
     section.items.map((item) => ({ key: branchKey(sectionIndex, item), item })),
@@ -127,7 +127,7 @@ const branches = computed(() =>
 );
 
 function isActiveItem(item: NavItem) {
-  // Tells whether the row or one of its descendants is active, through its flag or `isActive`
+  // Tells whether the item or one of its descendants is active, through its flag or `isActive`
   return isItemActive(item, props.isActive);
 }
 
@@ -140,7 +140,7 @@ const activeOwnerKey = computed(
       ?.key ?? null,
 );
 
-// Changes whenever the active row moves, also within the branch already holding it
+// Changes whenever the active item moves, also within the branch already holding it
 const activeRowSignature = computed(() =>
   branches.value
     .filter((branch) => isActiveItem(branch.item))
@@ -180,24 +180,25 @@ watch(
 );
 
 function isBranchExpanded(key: string) {
-  // Tells whether the top-level row with this key is open
+  // Tells whether the top-level item with this key is open
   return expandedKeys.value.includes(key);
 }
 
 function expandBranch(key: string) {
-  // Opens the top-level row with this key
+  // Opens the top-level item with this key
   if (!isBranchExpanded(key)) {
     expandedKeys.value = [...expandedKeys.value, key];
   }
 }
 
 function collapseBranch(key: string) {
-  // Closes the top-level row with this key
+  // Closes the top-level item with this key
   expandedKeys.value = expandedKeys.value.filter((expanded) => expanded !== key);
 }
 
 function onBranchToggle(key: string, open: boolean) {
-  // Applies a user toggle: opening a row closes the others, except the one holding the active item
+  // Applies a user toggle: opening an item closes the others, except the one holding the active
+  // item
   if (!open) {
     collapseBranch(key);
     return;
@@ -219,7 +220,7 @@ function onFlyoutToggle(key: string, open: boolean) {
 }
 
 function collapseInactiveBranches(exceptKey: string | null) {
-  // Closes every open row that neither holds the active item nor matches the given key
+  // Closes every open item that neither holds the active item nor matches the given key
   expandedKeys.value = expandedKeys.value.filter((key) => {
     if (key === exceptKey) {
       return true;
@@ -232,7 +233,7 @@ function collapseInactiveBranches(exceptKey: string | null) {
 }
 
 function openBranchOfActiveItem() {
-  // Opens the row holding the active item and closes the others; leaves the tree alone if nothing is active
+  // Opens the item holding the active item and closes the others; leaves the tree alone if nothing is active
   if (!hasActiveItem.value) {
     return;
   }
