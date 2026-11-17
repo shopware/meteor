@@ -48,6 +48,7 @@ withDefaults(
      * @values neutral, info, attention, critical, positive
      */
     variant?: "neutral" | "info" | "attention" | "critical" | "positive";
+    // TODO: Remove the strong appearance, so announcements only come in the tinted look of banners.
     /**
      * How strongly the announcement stands out: `subtle` tints the background, `strong` fills it
      * with the color of the variant.
