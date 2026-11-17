@@ -592,8 +592,10 @@ export default defineComponent({
         this.currentValue = identifier;
         // @ts-expect-error - ref exists
         this.$refs.selectBase.collapse();
+        // A pick with the mouse moved the focus into the result list, outside the select
         // @ts-expect-error - ref exists
-        this.$refs.selectionList.blur();
+        this.$refs.selectBase.focus();
+        return;
       }
 
       // @ts-expect-error - ref exists
@@ -698,6 +700,9 @@ export default defineComponent({
     onSelectExpanded() {
       // @ts-expect-error - ref exists
       this.$refs.selectionList.focus();
+      // A character typed to open the select replaces the shown value and starts the search
+      // @ts-expect-error - ref exists
+      this.$refs.selectionList.select();
     },
 
     onSelectCollapsed() {

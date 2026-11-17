@@ -41,31 +41,145 @@ vi.mock("@/utils/debounce", () => ({
 }));
 
 describe("mt-select", () => {
-  it("moves the focus to the previous element on Shift+Tab without clicking it", async () => {
-    // ARRANGE
-    const onClick = vi.fn();
-    const wrapper = mount(
-      defineComponent({
-        components: { MtSelect },
-        setup: () => ({ onClick, options: [{ id: 1, label: "Option Alfred", value: "alfred" }] }),
-        template: `
-          <div>
-            <button id="before" @click="onClick">Before</button>
-            <div inert><button @click="onClick">Inert</button></div>
-            <mt-select label="Select" :options="options" />
-          </div>
-        `,
-      }),
-      { attachTo: document.body },
+  describe("keyboard", () => {
+    let wrapper: ReturnType<typeof mount>;
+
+    async function createFocusedSelect(props = {}) {
+      wrapper = mount(MtSelect, {
+        props: {
+          label: "Select",
+          options: [
+            { id: 1, label: "Option Alfred", value: "alfred" },
+            { id: 2, label: "Option Becky", value: "becky" },
+          ],
+          ...props,
+        },
+        attachTo: document.body,
+      });
+
+      const selection = wrapper.find<HTMLElement>(".mt-select__selection").element;
+      selection.focus();
+      await flushPromises();
+
+      return selection;
+    }
+
+    function dispatchKey(type: "keydown" | "keypress", element: Element, init: KeyboardEventInit) {
+      const event = new KeyboardEvent(type, { bubbles: true, cancelable: true, ...init });
+      element.dispatchEvent(event);
+
+      return event;
+    }
+
+    const isExpanded = () => wrapper.find(".mt-select-result-list").exists();
+
+    afterEach(() => {
+      wrapper.unmount();
+      document.body.innerHTML = "";
+    });
+
+    it("shows the focus without expanding when the select gets focus", async () => {
+      await createFocusedSelect();
+
+      expect(isExpanded()).toBe(false);
+      expect(wrapper.find(".mt-field").classes()).toContain("has--focus");
+    });
+
+    it.each(["ArrowDown", "ArrowUp", "Enter", " "])(
+      'expands on "%s" without scrolling the page',
+      async (key) => {
+        const selection = await createFocusedSelect();
+
+        const event = dispatchKey("keydown", selection, { key });
+        await flushPromises();
+
+        expect(isExpanded()).toBe(true);
+        expect(event.defaultPrevented).toBe(true);
+      },
     );
 
-    // ACT
-    await wrapper.find(".mt-select__selection").trigger("keydown", { key: "Tab", shiftKey: true });
+    it.each([
+      ["a plain character", { key: "a" }],
+      ["an AltGr character", { key: "@", ctrlKey: true, altKey: true }],
+      ["an Option character", { key: "@", altKey: true }],
+    ])("expands on %s and lets it reach the search", async (_, init) => {
+      const selection = await createFocusedSelect();
 
-    // ASSERT
-    expect(document.activeElement).toBe(wrapper.find("#before").element);
-    expect(onClick).not.toHaveBeenCalled();
-    wrapper.unmount();
+      const event = dispatchKey("keypress", selection, init);
+      await flushPromises();
+
+      expect(isExpanded()).toBe(true);
+      expect(event.defaultPrevented).toBe(false);
+    });
+
+    it("does not expand on a shortcut", async () => {
+      const selection = await createFocusedSelect();
+
+      dispatchKey("keydown", selection, { key: "ArrowDown", metaKey: true });
+      await flushPromises();
+
+      expect(isExpanded()).toBe(false);
+    });
+
+    it.each([
+      ["keydown", "Enter"],
+      ["keydown", " "],
+      ["keypress", " "],
+    ] as const)('leaves a %s of "%s" on the clear button to that button', async (type, key) => {
+      await createFocusedSelect({ modelValue: "alfred" });
+      const clearButton = wrapper.find<HTMLElement>("[data-clearable-button]").element;
+      clearButton.focus();
+
+      const event = dispatchKey(type, clearButton, { key });
+      await flushPromises();
+
+      expect(isExpanded()).toBe(false);
+      expect(event.defaultPrevented).toBe(false);
+    });
+
+    it("keeps the focus on the select when ESC collapses it", async () => {
+      const selection = await createFocusedSelect();
+      dispatchKey("keydown", selection, { key: "ArrowDown" });
+      await flushPromises();
+      const searchInput = wrapper.find(".mt-select-selection-list__input").element;
+      expect(document.activeElement).toBe(searchInput);
+
+      dispatchKey("keydown", searchInput, { key: "Escape" });
+      await flushPromises();
+
+      expect(isExpanded()).toBe(false);
+      expect(document.activeElement).toBe(selection);
+    });
+
+    it("leaves SHIFT+TAB to the browser, starting from the select", async () => {
+      const selection = await createFocusedSelect();
+      dispatchKey("keydown", selection, { key: "ArrowDown" });
+      await flushPromises();
+      const searchInput = wrapper.find(".mt-select-selection-list__input").element;
+
+      const event = dispatchKey("keydown", searchInput, { key: "Tab", shiftKey: true });
+      await flushPromises();
+
+      expect(isExpanded()).toBe(false);
+      expect(event.defaultPrevented).toBe(false);
+      expect(document.activeElement).toBe(selection);
+    });
+
+    it("takes the focus back to the select after picking a single value with the mouse", async () => {
+      const selection = await createFocusedSelect();
+      dispatchKey("keydown", selection, { key: "ArrowDown" });
+      await flushPromises();
+
+      const result = document.querySelectorAll<HTMLElement>(".mt-select-result")[1];
+      // A mouse pick moves the focus out of the select before the click lands
+      (document.activeElement as HTMLElement).blur();
+      result.click();
+      await flushPromises();
+
+      expect(wrapper.emitted("update:modelValue")).toEqual([["becky"]]);
+      expect(isExpanded()).toBe(false);
+      expect(document.activeElement).toBe(selection);
+    });
   });
 
   it("should render the select component", async () => {

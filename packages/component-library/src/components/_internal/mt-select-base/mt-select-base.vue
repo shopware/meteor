@@ -3,7 +3,7 @@
     :class="mtFieldClasses"
     v-bind="$attrs"
     :disabled="disabled"
-    :has-focus="expanded"
+    :has-focus="hasFocus"
     :is-inherited="isInherited"
     :is-inheritance-field="isInheritanceField"
     :disable-inheritance-toggle="disableInheritanceToggle"
@@ -25,7 +25,10 @@
         class="mt-select__selection"
         tabindex="0"
         @click="expand"
-        @focus="expand"
+        @focusin="isFocusWithin = true"
+        @focusout="isFocusWithin = false"
+        @keydown="expandByKeyboard"
+        @keypress="expandByTyping"
         @keydown.tab="collapse"
         @keydown.esc="collapse"
       >
@@ -46,7 +49,6 @@
           data-clearable-button
           data-testid="select-clear-button"
           @click.prevent.stop="emitClear"
-          @keydown.tab.stop="focusParentSelect"
         >
           <mt-icon
             class="mt-select__select-indicator mt-select__select-indicator-clear"
@@ -94,6 +96,12 @@ import MtBaseField from "../mt-base-field/mt-base-field.vue";
 import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtLoader from "../../mt-loader/mt-loader.vue";
 import MtFieldError from "../mt-field-error/mt-field-error.vue";
+
+/**
+ * Keys that open a focused, closed select, the same ones that open a native select.
+ * Printable characters open it too, see `expandByTyping`.
+ */
+const OPENING_KEYS = ["ArrowDown", "ArrowUp", "Enter", " "];
 
 export default defineComponent({
   name: "MtSelectBase",
@@ -192,13 +200,18 @@ export default defineComponent({
   data() {
     return {
       expanded: false,
+      isFocusWithin: false,
       suffixWidth: 0,
     };
   },
 
   computed: {
+    hasFocus(): boolean {
+      return this.expanded || this.isFocusWithin;
+    },
+
     mtFieldClasses(): { "has--focus": boolean } {
-      return { "has--focus": this.expanded };
+      return { "has--focus": this.hasFocus };
     },
 
     selectionIndicatorsRight(): string {
@@ -262,7 +275,45 @@ export default defineComponent({
       this.$emit("select-expanded");
     },
 
+    /**
+     * Opens the select from ArrowDown, ArrowUp, Enter or Space, like a native select.
+     * Only keys on the select itself count, so buttons inside it keep their own keys.
+     */
+    expandByKeyboard(event: KeyboardEvent) {
+      if (this.expanded || event.target !== this.$refs.selectWrapper) {
+        return;
+      }
+
+      if (!OPENING_KEYS.includes(event.key) || event.ctrlKey || event.metaKey) {
+        return;
+      }
+
+      // Keeps Space and the arrow keys from scrolling the page
+      event.preventDefault();
+      this.expand();
+    },
+
+    /**
+     * Opens the select when a key types a character, so the character starts the search.
+     * `keypress` fires only for keys that produce text, AltGr and Option characters included,
+     * and never for shortcuts like CTRL+S.
+     *
+     * @example <div @keypress="expandByTyping">
+     */
+    expandByTyping(event: KeyboardEvent) {
+      if (this.expanded || event.target !== this.$refs.selectWrapper) {
+        return;
+      }
+
+      if (event.key.length === 1) {
+        this.expand();
+      }
+    },
+
     collapse(event?: Event) {
+      const wrapper = this.$refs.selectWrapper as HTMLElement | undefined;
+      const hadFocus = wrapper?.contains(document.activeElement) ?? false;
+
       document.removeEventListener("click", this.listenToClickOutside);
       this.expanded = false;
 
@@ -272,30 +323,10 @@ export default defineComponent({
         this.$emit("select-collapsed");
       }
 
-      // @ts-expect-error - event is a click event
-      // allow to step back through form via SHIFT+TAB
-      if (event?.shiftKey) {
-        event.preventDefault();
-        this.focusPreviousFormElement();
+      // TAB and SHIFT+TAB then move on from the select itself, and ESC keeps the focus on it
+      if (hadFocus) {
+        wrapper?.focus();
       }
-    },
-
-    focusPreviousFormElement() {
-      const focusableSelector =
-        'a[href], button, input, textarea, select, summary, [tabindex]:not([tabindex="-1"])';
-      const wrapper = this.$refs.selectWrapper as HTMLElement;
-      const keyboardFocusable = Array.from(
-        document.querySelectorAll<HTMLElement>(focusableSelector),
-      ).filter(
-        (element) =>
-          !element.hasAttribute("disabled") &&
-          element.tabIndex >= 0 &&
-          !element.closest("[inert]") &&
-          (typeof element.checkVisibility !== "function" || element.checkVisibility()),
-      );
-
-      const index = keyboardFocusable.indexOf(wrapper);
-      if (index > 0) keyboardFocusable[index - 1].focus();
     },
 
     listenToClickOutside(event: Event) {
@@ -338,16 +369,17 @@ export default defineComponent({
       return path;
     },
 
-    emitClear() {
-      this.$emit("clear");
+    /**
+     * Moves the focus to the select itself, where the keyboard can open it again.
+     *
+     * @example this.$refs.selectBase.focus();
+     */
+    focus() {
+      (this.$refs.selectWrapper as HTMLElement | undefined)?.focus();
     },
 
-    focusParentSelect(event: KeyboardEvent) {
-      if (event?.shiftKey) {
-        // @ts-expect-error - ref selectWrapper is defined
-        this.$refs.selectWrapper.click();
-        event.preventDefault();
-      }
+    emitClear() {
+      this.$emit("clear");
     },
   },
 });
