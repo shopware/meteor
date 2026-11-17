@@ -3,21 +3,23 @@ import { renderToString } from "vue/server-renderer";
 import { waitFor } from "@testing-library/vue";
 import { createI18n } from "vue-i18n";
 import MtApp from "./mt-app.vue";
+import MtAppHeader from "../mt-app-header/mt-app-header.vue";
 import MtPage from "../mt-page/mt-page.vue";
 import MtPanel from "../mt-panel/mt-panel.vue";
 import { stubMatchMedia } from "./__tests__/shell-test-utils";
 
 interface AppOptions {
+  header?: () => unknown;
   content?: () => unknown;
   navigation?: () => unknown;
   sidebar?: () => unknown;
 }
 
-function createApp({ content, navigation, sidebar }: AppOptions = {}) {
+function createApp({ header, content, navigation, sidebar }: AppOptions = {}) {
   return createSSRApp({
     render: () =>
       h(MtApp, null, {
-        header: () => h("span", "Header content"),
+        header: header ?? (() => h("span", "Header content")),
         navigation: navigation ?? (() => h("a", { href: "/" }, "Orders")),
         default: content ?? (() => h("p", "Main content")),
         sidebar: sidebar ?? (() => h("div", "Tools")),
@@ -89,9 +91,29 @@ describe("mt-app server-side rendering", () => {
     // ASSERT
     expect(html).toContain('aria-label="Toggle Assistant"');
     expect(hydrationMessages).toEqual([]);
+    expect(container.querySelectorAll('.mt-page__header [aria-label^="Toggle"]')).toHaveLength(2);
+  });
+
+  it("hydrates an app header that shows the triggers instead of the page without mismatches", async () => {
+    // ACT
+    const { html, container, hydrationMessages } = await hydrate(1440, {
+      header: () => h(MtAppHeader, { sections: [{ items: [{ label: "Orders", href: "/" }] }] }),
+      content: () => h(MtPage, { breadcrumb: [{ label: "Orders" }] }),
+      navigation: () => h(MtPanel, { closable: true }, () => h("a", { href: "/" }, "Orders")),
+      sidebar: () =>
+        h(MtPanel, { closable: true, label: "Assistant", icon: "regular-sparkles" }, () =>
+          h("div", "Tools"),
+        ),
+    });
+
+    // ASSERT
+    expect(html.match(/aria-label="Toggle Assistant"/g)).toHaveLength(1);
+    expect(hydrationMessages).toEqual([]);
+    expect(container.querySelector(".mt-app-header")).toContainElement(
+      container.querySelector('[aria-label="Toggle Assistant"]'),
+    );
     expect(
-      container.querySelectorAll(".mt-page__header .mt-app-panel-trigger__button"),
-    ).toHaveLength(2);
-    expect(container.querySelector(".mt-app__header .mt-app__trigger")).not.toBeInTheDocument();
+      container.querySelector('.mt-page__header [aria-label^="Toggle"]'),
+    ).not.toBeInTheDocument();
   });
 });

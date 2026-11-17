@@ -16,6 +16,7 @@ import userEvent from "@testing-library/user-event";
 import MtApp from "./mt-app.vue";
 import MtAppPanelTrigger from "./mt-app-panel-trigger.vue";
 import MtPanel from "../mt-panel/mt-panel.vue";
+import MtPage from "../mt-page/mt-page.vue";
 import { useApp } from "./composables/useApp";
 import { useAppRegions, type MtAppRegions } from "./composables/useAppRegions";
 import { useAppLoading } from "./composables/useAppLoading";
@@ -29,7 +30,8 @@ const allSlots = {
   header: "<span>Header content</span>",
   navigation:
     '<nav aria-label="Main"><a href="/orders">Orders</a><button>Start action</button></nav>',
-  default: "<p>Main content</p><button>Content action</button>",
+  // A page, which shows the triggers of the panels, as the shell shows none of its own.
+  default: () => h(MtPage, null, () => [h("p", "Main content"), h("button", "Content action")]),
   sidebar: '<aside aria-label="Details"><button>End action</button></aside>',
 };
 
@@ -139,6 +141,14 @@ function controlledBy(triggerName: string) {
   const trigger = screen.getByRole("button", { name: triggerName });
 
   return document.getElementById(trigger.getAttribute("aria-controls") ?? "")!;
+}
+
+/**
+ * The shell's header. Queried by class, because jsdom also counts the `<header>` of a page inside
+ * the content as a banner.
+ */
+function shellHeader() {
+  return document.querySelector<HTMLElement>(".mt-app__header")!;
 }
 
 function isInert(element: Element) {
@@ -256,18 +266,6 @@ describe("mt-app", () => {
       expect(screen.getByRole("button", { name: sidebarTriggerName })).toBeInTheDocument();
     });
 
-    it("renders a shell-owned header with just the triggers when the header slot is empty", async () => {
-      // ACT
-      await renderApp({
-        props: mobileProps(),
-        slots: { default: allSlots.default, navigation: allSlots.navigation },
-      });
-
-      // ASSERT
-      expect(screen.getByRole("banner")).not.toHaveTextContent("Header content");
-      expect(screen.getByRole("button", { name: navigationTriggerName })).toBeInTheDocument();
-    });
-
     it("renders no header when there is neither header content nor a sidebar", async () => {
       // ACT
       await renderApp({ props: mobileProps(), slots: { default: allSlots.default } });
@@ -291,70 +289,109 @@ describe("mt-app", () => {
   });
 
   describe("triggers", () => {
-    const PageWithTriggers = defineComponent({
-      name: "PageWithTriggers",
-      render: () =>
-        h("div", [
-          h(MtAppPanelTrigger, { panel: "navigation" }),
-          h("p", "Main content"),
-          h(MtAppPanelTrigger, { panel: "sidebar" }),
-        ]),
-    });
-
-    it("leaves the triggers to a page that shows them", async () => {
+    it("shows no triggers of its own while nothing else shows them", async () => {
       // ACT
       await renderApp({
         props: mobileProps(),
         slots: {
           navigation: allSlots.navigation,
-          default: () => [h(PageWithTriggers)],
+          default: () => h("p", "Main content"),
           sidebar: allSlots.sidebar,
         },
       });
 
       // ASSERT
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: sidebarTriggerName })).not.toBeInTheDocument();
+    });
+
+    it("shows a placed trigger wherever it is, also for a panel without a trigger of its own", async () => {
+      // ARRANGE
+      await renderApp({
+        slots: {
+          default: () => [
+            h("p", "Main content"),
+            h(MtAppPanelTrigger, { panel: "sidebar" }),
+            h(MtAppPanelTrigger, { panel: "sidebar" }),
+          ],
+          sidebar: allSlots.sidebar,
+        },
+      });
+      const triggers = screen.getAllByRole("button", { name: sidebarTriggerName });
+
+      // ASSERT
+      expect(triggers).toHaveLength(2);
+      expect(triggers[0]).toHaveAttribute("aria-expanded", "true");
+
+      // ACT
+      await userEvent.click(triggers[0]);
+
+      // ASSERT
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+      expect(triggers[1]).toHaveAttribute("aria-expanded", "false");
+    });
+
+    it("leaves a panel's trigger to a placed trigger, for each panel on its own", async () => {
+      // ACT
+      await renderApp({
+        props: mobileProps(),
+        slots: {
+          navigation: allSlots.navigation,
+          default: () => [h(MtPage), h(MtAppPanelTrigger, { panel: "sidebar" })],
+          sidebar: allSlots.sidebar,
+        },
+      });
+
+      // ASSERT
+      expect(screen.getAllByRole("button", { name: navigationTriggerName })).toHaveLength(1);
+      expect(screen.getAllByRole("button", { name: sidebarTriggerName })).toHaveLength(1);
+      expect(document.querySelector(".mt-page__header")).not.toContainElement(
+        screen.getByRole("button", { name: sidebarTriggerName }),
+      );
+    });
+
+    it("gives the triggers back to the page while a view hides the header with the placed triggers", async () => {
+      // ARRANGE
+      const hidesHeader = ref(false);
+      const FocusView = defineComponent({
+        setup() {
+          useAppRegions({ header: false });
+          return () => h("p", "Focus view");
+        },
+      });
+      await renderApp({
+        props: mobileProps(),
+        slots: {
+          header: () => [
+            h(MtAppPanelTrigger, { panel: "navigation" }),
+            h("span", "Header content"),
+            h(MtAppPanelTrigger, { panel: "sidebar" }),
+          ],
+          navigation: allSlots.navigation,
+          default: () => [h(MtPage), hidesHeader.value ? h(FocusView) : null],
+          sidebar: allSlots.sidebar,
+        },
+      });
+
+      // ASSERT
+      expect(shellHeader()).toContainElement(
+        screen.getByRole("button", { name: navigationTriggerName }),
+      );
+      expect(shellHeader()).toContainElement(
+        screen.getByRole("button", { name: sidebarTriggerName }),
+      );
+
+      // ACT
+      hidesHeader.value = true;
+
+      // ASSERT
+      await waitFor(() => expect(shellHeader()).not.toBeVisible());
       expect(screen.getByRole("main")).toContainElement(
         screen.getByRole("button", { name: navigationTriggerName }),
       );
       expect(screen.getByRole("main")).toContainElement(
         screen.getByRole("button", { name: sidebarTriggerName }),
-      );
-      expect(controlledBy(navigationTriggerName)).toHaveAttribute("role", "dialog");
-    });
-
-    it("shows a trigger in its header while no page shows it", async () => {
-      // ARRANGE
-      const showsPage = ref(true);
-      const OtherView = defineComponent({ name: "OtherView", render: () => h("p", "Other view") });
-
-      await renderApp({
-        props: mobileProps(),
-        slots: {
-          navigation: allSlots.navigation,
-          default: () => [
-            h(KeepAlive, null, [showsPage.value ? h(PageWithTriggers) : h(OtherView)]),
-          ],
-        },
-      });
-
-      // ACT
-      showsPage.value = false;
-
-      // ASSERT
-      await waitFor(() =>
-        expect(screen.getByRole("banner")).toContainElement(
-          screen.getByRole("button", { name: navigationTriggerName }),
-        ),
-      );
-
-      // ACT
-      showsPage.value = true;
-
-      // ASSERT
-      await waitFor(() => expect(screen.queryByRole("banner")).not.toBeInTheDocument());
-      expect(screen.getByRole("main")).toContainElement(
-        screen.getByRole("button", { name: navigationTriggerName }),
       );
     });
 
@@ -401,7 +438,7 @@ describe("mt-app", () => {
       });
       await renderApp({
         slots: {
-          default: () => [showsView.value ? h(FocusView) : h("p", "Page")],
+          default: () => [h(MtPage), showsView.value ? h(FocusView) : null],
           sidebar: () =>
             h(MtPanel, { closable: true }, () => h("aside", { "aria-label": "Details" }, "Tools")),
         },
@@ -447,7 +484,7 @@ describe("mt-app", () => {
       const drawer = screen.getByRole("dialog", { name: "Navigation" });
       expect(drawer).not.toHaveAttribute("inert");
       expect(drawer).toHaveAttribute("id", controlledBy(navigationTriggerName).id);
-      expect(isInert(screen.getByRole("banner"))).toBe(true);
+      expect(isInert(shellHeader())).toBe(true);
       expect(isInert(screen.getByRole("main"))).toBe(true);
       expect(controlledBy(sidebarTriggerName)).toHaveAttribute("inert");
       expect(visibleBackdrops()).toHaveLength(1);
@@ -508,21 +545,6 @@ describe("mt-app", () => {
       expect(isInert(screen.getByRole("main"))).toBe(false);
       await waitFor(() =>
         expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveFocus(),
-      );
-    });
-
-    it("closes with its close button", async () => {
-      // ARRANGE
-      await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: sidebarTriggerName }));
-
-      // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Close Sidebar" }));
-
-      // ASSERT
-      expect(controlledBy(sidebarTriggerName)).toHaveAttribute("inert");
-      await waitFor(() =>
-        expect(screen.getByRole("button", { name: sidebarTriggerName })).toHaveFocus(),
       );
     });
   });
@@ -646,11 +668,11 @@ describe("mt-app", () => {
     it("removes the trigger and closes the drawer when the open sidebar disappears", async () => {
       // ARRANGE
       const Wrapper = defineComponent({
-        components: { MtApp },
+        components: { MtApp, MtPage },
         props: { showEnd: Boolean },
         template: `
           <mt-app :breakpoint="99999">
-            <template #default><p>Main content</p></template>
+            <template #default><mt-page><p>Main content</p></mt-page></template>
             <template #navigation><a href="/">Start nav</a></template>
             <template v-if="showEnd" #sidebar><div>End tools</div></template>
           </mt-app>
@@ -915,9 +937,8 @@ describe("mt-app", () => {
       await renderApp({
         props: mobileProps(),
         slots: {
-          header: allSlots.header,
           navigation: () => [h(NavigationItem)],
-          default: () => [showView.value ? h(View) : h("p", "Page")],
+          default: () => [h(MtPage), showView.value ? h(View) : null],
         },
       });
 

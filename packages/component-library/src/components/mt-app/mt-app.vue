@@ -18,39 +18,16 @@
     </div>
 
     <header
-      v-if="hasSlot('header') || hasHeaderTriggers()"
+      v-if="hasSlot('header')"
+      ref="header"
       class="mt-app__header"
-      :class="{ 'mt-app__header--with-triggers': hasHeaderTriggers() }"
-      :hidden="(hiddenRegions.header && !hasHeaderTriggers()) || undefined"
+      :hidden="hiddenRegions.header || undefined"
     >
-      <mt-panel-trigger-button
-        v-if="hasHeaderTrigger('navigation')"
-        class="mt-app__trigger"
-        :label="panelSettings('navigation').label"
-        :icon="panelSettings('navigation').icon"
-        :expanded="panels.isOpen('navigation')"
-        :controls="panelIds.navigation"
-        @click="panels.toggle('navigation')"
-      />
-
-      <div
-        v-if="hasSlot('header')"
-        ref="headerContent"
-        class="mt-app__header-content"
-        :hidden="hiddenRegions.header || undefined"
-      >
-        <slot name="header" v-bind="headerSlotProps" />
+      <div class="mt-app__header-content">
+        <mt-app-header-region>
+          <slot name="header" v-bind="headerSlotProps" />
+        </mt-app-header-region>
       </div>
-
-      <mt-panel-trigger-button
-        v-if="hasHeaderTrigger('sidebar')"
-        class="mt-app__trigger mt-app__trigger--sidebar"
-        :label="panelSettings('sidebar').label"
-        :icon="panelSettings('sidebar').icon"
-        :expanded="panels.isOpen('sidebar')"
-        :controls="panelIds.sidebar"
-        @click="panels.toggle('sidebar')"
-      />
     </header>
 
     <div class="mt-app__body">
@@ -147,7 +124,6 @@ import MtModalRoot from "@/components/mt-modal/sub-components/mt-modal-root.vue"
 import MtSnackbar from "@/components/mt-snackbar/mt-snackbar.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtPanelRegion from "@/components/_internal/mt-panel-region/mt-panel-region.vue";
-import MtPanelTriggerButton from "@/components/_internal/mt-panel-region/mt-panel-trigger-button.vue";
 import {
   createPanelState,
   type PanelController,
@@ -158,6 +134,7 @@ import { useTheme } from "@/composables/useTheme";
 import { scrollToRoute, useMatchedRouteMeta, useRouteChange, useRouteGuard } from "@/utils/router";
 import { hasSlotContent, useRenderCache } from "@/utils/slot";
 import { appContextKey } from "./_internal/mt-app-context";
+import MtAppHeaderRegion from "./_internal/mt-app-header-region.vue";
 import { createAppLoading } from "./composables/createAppLoading";
 import { createAppRegions } from "./composables/createAppRegions";
 import { createAppTriggers } from "./composables/createAppTriggers";
@@ -212,8 +189,9 @@ type HeaderSlotProps = Omit<MtAppContext, "isMobile"> & { isMobile: boolean };
 
 const slots = defineSlots<{
   /**
-   * The header bar of the application. While no page shows the triggers of the navigation and the
-   * sidebar, they sit at its start and end.
+   * The header bar of the application. A component in it that shows the triggers of the navigation
+   * and the sidebar, such as `mt-app-header`, shows them instead of the pages. The shell shows no
+   * triggers of its own.
    */
   header?(props: HeaderSlotProps): unknown;
   /** The scrollable main content. */
@@ -251,7 +229,7 @@ const { t } = useI18n({
 
 const PANELS = ["navigation", "sidebar"] as const;
 
-const headerContentElement = useTemplateRef<HTMLElement>("headerContent");
+const headerElement = useTemplateRef<HTMLElement>("header");
 const mainElement = useTemplateRef<HTMLElement>("main");
 const panelIds: Record<MtAppPanel, string> = { navigation: useId(), sidebar: useId() };
 
@@ -266,7 +244,9 @@ let announcedTitle = "";
 
 const { hidden: hiddenRegions, registerRegions } = createAppRegions();
 const { isLoading, isPending, startLoading } = createAppLoading();
-const { hasPageTrigger, registerTrigger } = createAppTriggers();
+const { showsTrigger, registerHeaderTrigger, registerPlacedTrigger } = createAppTriggers(
+  () => !hiddenRegions.value.header,
+);
 const {
   hasUnsavedChanges,
   isConfirmingLeave,
@@ -319,18 +299,16 @@ function isHiddenInline(panel: MtAppPanel) {
   return hiddenRegions.value[panel] || !inlineOpen[panel].value;
 }
 
+function triggerOf(panel: MtAppPanel) {
+  void panelSlotChanges.value;
+  const { label, icon } = panelSettings(panel);
+
+  return { label, icon, controls: panelIds[panel] };
+}
+
 /** Whether the panel has a trigger: it is available, and it is a drawer or closable. */
 function hasTrigger(panel: MtAppPanel) {
   return isAvailable(panel) && (isMobile.value || panelSettings(panel).closable);
-}
-
-// Only after mounting: pages register their triggers while they render, after the header.
-function hasHeaderTrigger(panel: MtAppPanel) {
-  return isMounted.value && hasTrigger(panel) && !hasPageTrigger(panel);
-}
-
-function hasHeaderTriggers() {
-  return PANELS.some(hasHeaderTrigger);
 }
 
 /**
@@ -341,7 +319,7 @@ function isFrameless() {
   if (!hasSlot("default")) return false;
   if (!hasSlot("header") && !PANELS.some(hasSlot)) return true;
 
-  const isHeaderVisible = (hasSlot("header") && !hiddenRegions.value.header) || hasHeaderTriggers();
+  const isHeaderVisible = hasSlot("header") && !hiddenRegions.value.header;
   const isPanelVisible = PANELS.some(
     (panel) => hasSlot(panel) && !isMobile.value && !isHiddenInline(panel),
   );
@@ -366,8 +344,8 @@ function announcePage() {
   pageAnnouncement.value = document.title;
 }
 
-// Pages read the panels' triggers while they render, after the shell. When a later render of the
-// shell changes its panel slots, this makes them render again.
+// The components that show the panels' triggers read them while they render, after the shell.
+// When a later render of the shell changes its panel slots, this makes them render again.
 const panelSlotChanges = shallowRef(0);
 let renderedPanelSlots = "";
 
@@ -389,7 +367,7 @@ watch(hiddenRegions, (hidden) => {
 watch(
   () => hiddenRegions.value.header,
   (hidden) => {
-    if (hidden && headerContentElement.value?.contains(document.activeElement)) {
+    if (hidden && headerElement.value?.contains(document.activeElement)) {
       nextTick(focusContent);
     }
   },
@@ -456,13 +434,13 @@ provide(appContextKey, {
   startLoading,
   registerRegions,
   registerUnsavedChanges,
-  registerTrigger,
-  panelTrigger(panel) {
-    void panelSlotChanges.value;
-    if (!hasTrigger(panel)) return undefined;
+  registerHeaderTrigger,
+  registerPlacedTrigger,
+  triggerOf,
+  panelTrigger(panel, region) {
+    if (!hasTrigger(panel) || !showsTrigger(panel, region)) return undefined;
 
-    const { label, icon } = panelSettings(panel);
-    return { label, icon, controls: panelIds[panel] };
+    return triggerOf(panel);
   },
   isResizing,
 });
@@ -496,31 +474,18 @@ defineExpose(api);
   display: flex;
   flex: none;
   align-items: center;
-  column-gap: var(--scale-size-8);
   min-width: 0;
   padding-inline: var(--scale-size-4);
 }
 
-.mt-app__header--with-triggers {
-  min-height: var(--scale-size-56);
-}
-
-.mt-app__trigger {
-  flex: none;
-}
-
-.mt-app__trigger--sidebar {
-  margin-inline-start: auto;
-}
-
+/* Centered rather than stretched, so the content keeps its own height, also with `height: 100%`. */
 .mt-app__header-content {
   flex: 1 1 auto;
   min-width: 0;
   overflow-x: clip;
 }
 
-.mt-app__header[hidden],
-.mt-app__header-content[hidden] {
+.mt-app__header[hidden] {
   display: none;
 }
 

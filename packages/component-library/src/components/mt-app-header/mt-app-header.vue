@@ -1,5 +1,14 @@
 <template>
   <div ref="root" class="mt-app-header" :class="{ 'mt-app-header--mobile': isMobile }">
+    <mt-panel-trigger-button
+      v-if="navigationTrigger"
+      :label="navigationTrigger.label"
+      :icon="navigationTrigger.icon"
+      :expanded="navigationTrigger.expanded"
+      :controls="navigationTrigger.controls"
+      @click="navigationTrigger.toggle"
+    />
+
     <template v-if="isMobile">
       <mt-panel-trigger-button
         :label="t('navigation')"
@@ -38,8 +47,20 @@
       </mt-scroll-area>
     </template>
 
-    <div v-if="hasSlotContent($slots.actions, { isMobile })" class="mt-app-header__actions">
+    <div
+      v-if="sidebarTrigger || hasSlotContent($slots.actions, { isMobile })"
+      class="mt-app-header__actions"
+    >
       <slot name="actions" :is-mobile="isMobile" />
+
+      <mt-panel-trigger-button
+        v-if="sidebarTrigger"
+        :label="sidebarTrigger.label"
+        :icon="sidebarTrigger.icon"
+        :expanded="sidebarTrigger.expanded"
+        :controls="sidebarTrigger.controls"
+        @click="sidebarTrigger.toggle"
+      />
     </div>
 
     <div v-if="!isMobile && hasSlotContent($slots.end, { isMobile })" class="mt-app-header__end">
@@ -57,19 +78,22 @@ import MtNav, { type NavSection } from "@/components/mt-nav/mt-nav.vue";
 import MtScrollArea from "@/components/mt-scroll-area/mt-scroll-area.vue";
 import MtDrawer from "@/components/_internal/mt-drawer/mt-drawer.vue";
 import MtPanelTriggerButton from "@/components/_internal/mt-panel-region/mt-panel-trigger-button.vue";
+import { useAppPanelTrigger } from "@/components/mt-app/_internal/mt-app-context";
 import { useRouteChange } from "@/utils/router";
 import { hasSlotContent } from "@/utils/slot";
 
 /**
  * The main navigation of an application in its header: the start, the navigation, the actions and
- * the end in a row. In the mobile layout, below `breakpoint`, the start, the navigation and the end
- * move into a drawer that opens from a button, while the actions stay in the header.
+ * the end side by side. In the mobile layout, below `breakpoint`, the start, the navigation and the end
+ * move into a drawer that opens from a button, while the actions stay in the header. In the
+ * `header` slot of `mt-app`, it shows the triggers of the shell's navigation at its start and of
+ * the shell's sidebar after the actions, instead of the pages.
  *
  * @experimental The API may still change in a future release.
  */
 const props = withDefaults(
   defineProps<{
-    /** The sections of the navigation, each holding its rows, as for `mt-nav`. */
+    /** The sections of the navigation, each holding its items, as for `mt-nav`. */
     sections: NavSection[];
     /**
      * The header width in pixels below which the start, the navigation and the end move into a
@@ -90,7 +114,10 @@ interface AppHeaderSlotProps {
 defineSlots<{
   /** The start of the header, for example `mt-brand`. Moves into the drawer in the mobile layout. */
   start?(props: AppHeaderSlotProps): unknown;
-  /** Buttons after the navigation. They stay in the header in the mobile layout. */
+  /**
+   * Buttons after the navigation, followed by the trigger of the shell's sidebar. They stay in the
+   * header in the mobile layout.
+   */
   actions?(props: AppHeaderSlotProps): unknown;
   /** The end of the header, for example `mt-user-menu`. Moves into the drawer in the mobile layout. */
   end?(props: AppHeaderSlotProps): unknown;
@@ -106,12 +133,16 @@ const { t } = useI18n({
 const rootElement = useTemplateRef<HTMLElement>("root");
 const drawerId = useId();
 
-// Unknown until measured, so the server markup and the first client render both show the row.
+// Unknown until measured, so the server markup and the first client render both show the desktop
+// layout.
 const headerWidth = ref<number | null>(null);
 const isDrawerOpen = shallowRef(false);
 // The drawer mounts when it first opens. Mounted with the switch to the mobile layout, which
 // happens in the ResizeObserver callback, its own observers make the browser report a loop error.
 const isDrawerMounted = shallowRef(false);
+
+const navigationTrigger = useAppPanelTrigger(() => "navigation");
+const sidebarTrigger = useAppPanelTrigger(() => "sidebar");
 
 const isMobile = computed(
   () => headerWidth.value !== null && props.breakpoint > 0 && headerWidth.value < props.breakpoint,

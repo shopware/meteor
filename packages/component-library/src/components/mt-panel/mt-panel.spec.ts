@@ -1,6 +1,7 @@
 import { defineComponent, h, nextTick } from "vue";
 import { fireEvent, render, screen } from "@testing-library/vue";
 import MtApp from "../mt-app/mt-app.vue";
+import MtAppPanelTrigger from "../mt-app/mt-app-panel-trigger.vue";
 import MtPage from "../mt-page/mt-page.vue";
 import MtPanel from "./mt-panel.vue";
 import {
@@ -13,10 +14,11 @@ import {
 
 async function renderSidebar(panel: string, data: Record<string, unknown> = {}) {
   const result = render({
-    components: { MtApp, MtPanel },
+    components: { MtApp, MtAppPanelTrigger, MtPanel },
     data: () => data,
     template: `
       <mt-app>
+        <template #header><mt-app-panel-trigger panel="sidebar" /></template>
         <template #default><p>Main content</p></template>
         <template #sidebar>${panel}</template>
       </mt-app>
@@ -79,9 +81,10 @@ describe("mt-panel", () => {
 
       // ACT
       render({
-        components: { MtApp, AppAssistant },
+        components: { MtApp, MtAppPanelTrigger, AppAssistant },
         template: `
           <mt-app>
+            <template #header><mt-app-panel-trigger panel="sidebar" /></template>
             <template #default><p>Main content</p></template>
             <template #sidebar><AppAssistant /></template>
           </mt-app>

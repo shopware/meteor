@@ -1,6 +1,10 @@
+import { h, nextTick } from "vue";
 import { render, screen, within } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtAppHeader from "./mt-app-header.vue";
+import MtApp from "../mt-app/mt-app.vue";
+import MtPage from "../mt-page/mt-page.vue";
+import MtPanel from "../mt-panel/mt-panel.vue";
 import { stubResizeObserver } from "../mt-app/__tests__/shell-test-utils";
 
 const sections = [{ items: [{ label: "Dashboard", href: "#" }] }];
@@ -51,6 +55,38 @@ describe("mt-app-header", () => {
     );
     expect(within(drawer).getByRole("button", { name: "User true" })).toBeInTheDocument();
     expect(drawer).not.toContainElement(screen.getByRole("button", { name: "Notifications true" }));
+  });
+
+  it("shows the triggers of the shell's panels at its start and after the actions, instead of the page", async () => {
+    // ARRANGE
+    stubResizeObserver(1200);
+
+    // ACT
+    render(MtApp, {
+      slots: {
+        header: () =>
+          h(
+            MtAppHeader,
+            { sections },
+            {
+              start: () => h("span", "Brand"),
+              actions: () => h("button", "Notifications"),
+            },
+          ),
+        navigation: () => h(MtPanel, { closable: true }, () => h("a", { href: "/" }, "Orders")),
+        default: () => h(MtPage, { breadcrumb: [{ label: "Orders" }] }),
+        sidebar: () => h(MtPanel, { closable: true }, () => h("div", "Tools")),
+      },
+    });
+    await nextTick();
+
+    // ASSERT
+    expect(
+      screen.getByRole("button", { name: "Toggle Navigation" }).nextElementSibling,
+    ).toHaveTextContent("Brand");
+    expect(screen.getByRole("button", { name: "Notifications" }).nextElementSibling).toBe(
+      screen.getByRole("button", { name: "Toggle Sidebar" }),
+    );
   });
 
   it("keeps the navigation in a header wider than a custom breakpoint", async () => {

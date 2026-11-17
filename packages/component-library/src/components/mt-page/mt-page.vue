@@ -9,7 +9,17 @@
     :data-layout="isMeasured ? (isNarrow ? 'narrow' : 'wide') : undefined"
   >
     <header v-if="hasHeader()" class="mt-page__header">
-      <mt-app-panel-trigger panel="navigation" />
+      <template v-if="navigationTrigger">
+        <mt-panel-trigger-button
+          class="mt-page__app-trigger"
+          :label="navigationTrigger.label"
+          :icon="navigationTrigger.icon"
+          :expanded="navigationTrigger.expanded"
+          :controls="navigationTrigger.controls"
+          @click="navigationTrigger.toggle"
+        />
+        <mt-divider class="mt-page__divider" orientation="vertical" decorative />
+      </template>
 
       <template v-if="closable">
         <mt-button
@@ -22,7 +32,7 @@
         >
           <mt-icon name="regular-times" size="var(--scale-size-16)" decorative />
         </mt-button>
-        <mt-divider class="mt-page__close-divider" orientation="vertical" decorative />
+        <mt-divider class="mt-page__divider" orientation="vertical" decorative />
       </template>
 
       <mt-panel-trigger-button
@@ -60,7 +70,17 @@
           @click="panels.toggle('end')"
         />
 
-        <mt-app-panel-trigger panel="sidebar" />
+        <template v-if="sidebarTrigger">
+          <mt-divider class="mt-page__divider" orientation="vertical" decorative />
+          <mt-panel-trigger-button
+            class="mt-page__app-trigger"
+            :label="sidebarTrigger.label"
+            :icon="sidebarTrigger.icon"
+            :expanded="sidebarTrigger.expanded"
+            :controls="sidebarTrigger.controls"
+            @click="sidebarTrigger.toggle"
+          />
+        </template>
       </div>
     </header>
 
@@ -131,8 +151,7 @@ import MtContainer from "@/components/mt-container/mt-container.vue";
 import MtDivider from "@/components/mt-divider/mt-divider.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtSkeletonBar from "@/components/mt-skeleton-bar/mt-skeleton-bar.vue";
-import MtAppPanelTrigger from "@/components/mt-app/mt-app-panel-trigger.vue";
-import { appContextKey } from "@/components/mt-app/_internal/mt-app-context";
+import { appContextKey, useAppPanelTrigger } from "@/components/mt-app/_internal/mt-app-context";
 import MtPanelRegion from "@/components/_internal/mt-panel-region/mt-panel-region.vue";
 import MtPanelTriggerButton from "@/components/_internal/mt-panel-region/mt-panel-trigger-button.vue";
 import {
@@ -232,6 +251,8 @@ const PANELS = ["start", "end"] as const;
 const COMPACT_WIDTH = 640;
 
 const app = inject(appContextKey, null);
+const navigationTrigger = useAppPanelTrigger(() => "navigation");
+const sidebarTrigger = useAppPanelTrigger(() => "sidebar");
 const instance = getCurrentInstance();
 const goBack = useRouterBack();
 
@@ -287,8 +308,13 @@ function hasTrigger(panel: PagePanel) {
   return hasSlot(panel) && (isNarrow.value || panelSettings(panel).closable);
 }
 
+/**
+ * Whether the header shows a trigger of the shell. They move to the shell's header while a
+ * component there, such as `mt-app-header`, shows them, and step back for an `mt-app-panel-trigger`
+ * that the app places itself.
+ */
 function hasAppTriggers() {
-  return Boolean(app?.panelTrigger("navigation") || app?.panelTrigger("sidebar"));
+  return Boolean(navigationTrigger.value || sidebarTrigger.value);
 }
 
 function hasHeader() {
@@ -458,12 +484,13 @@ provide(pageContextKey, { registerHeading });
 }
 
 .mt-page__close,
-.mt-page__close-divider,
-.mt-page__panel-trigger {
+.mt-page__divider,
+.mt-page__panel-trigger,
+.mt-page__app-trigger {
   flex: none;
 }
 
-.mt-page__close-divider {
+.mt-page__divider {
   height: var(--scale-size-40);
 }
 
@@ -486,13 +513,11 @@ provide(pageContextKey, { registerHeading });
  * After a divider, the title is as far from it as the icon before it, which sits inset in its
  * square button.
  */
-.mt-page__close-divider + .visually-hidden + .mt-page__breadcrumb,
-.mt-app-panel-trigger--navigation + .visually-hidden + .mt-page__breadcrumb {
+.mt-page__divider + .visually-hidden + .mt-page__breadcrumb {
   padding-inline-start: var(--scale-size-12);
 }
 
-.mt-page .mt-page__close-divider + .mt-page__title-skeleton,
-.mt-page .mt-app-panel-trigger--navigation + .mt-page__title-skeleton {
+.mt-page .mt-page__divider + .mt-page__title-skeleton {
   margin-inline-start: var(--scale-size-12);
 }
 

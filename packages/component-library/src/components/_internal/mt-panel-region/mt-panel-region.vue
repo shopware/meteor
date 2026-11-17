@@ -45,24 +45,7 @@
         :title="label"
         @update:open="(open: boolean) => (open ? controller.open(place) : controller.close(place))"
       >
-        <div class="mt-panel-region__drawer-layout">
-          <div
-            class="mt-panel-region__drawer-chrome"
-            :class="`mt-panel-region__drawer-chrome--${side}`"
-          >
-            <mt-button
-              variant="tertiary"
-              size="small"
-              square
-              :aria-label="t('close', { label })"
-              @click="controller.close(place)"
-            >
-              <mt-icon name="regular-times-s" size="var(--scale-size-10)" decorative />
-            </mt-button>
-          </div>
-
-          <div ref="drawerBody" class="mt-panel-region__drawer-body" />
-        </div>
+        <div ref="drawerBody" class="mt-panel-region__drawer-body" />
       </mt-drawer>
     </div>
   </Transition>
@@ -70,9 +53,6 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, provide, ref, useTemplateRef, watch } from "vue";
-import { useI18n } from "vue-i18n";
-import MtButton from "@/components/mt-button/mt-button.vue";
-import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtDrawer from "@/components/_internal/mt-drawer/mt-drawer.vue";
 import {
   PANEL_SLIDE_DURATION,
@@ -112,13 +92,6 @@ const props = defineProps<{
 defineSlots<{
   default?(): unknown;
 }>();
-
-const { t } = useI18n({
-  messages: {
-    en: { close: "Close {label}" },
-    de: { close: "{label} schließen" },
-  },
-});
 
 /** The shortest settle after a drag, so a panel that is nearly there doesn't snap. */
 const SHORTEST_SETTLE_DURATION = 150;
@@ -335,27 +308,10 @@ onBeforeUnmount(() => {
   border-radius: inherit;
 }
 
-.mt-panel-region__drawer-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.mt-panel-region__drawer-chrome {
-  display: flex;
-  align-items: center;
-  min-height: var(--scale-size-48);
-  padding: var(--scale-size-8);
-}
-
-.mt-panel-region__drawer-chrome--end {
-  justify-content: flex-end;
-}
-
 .mt-panel-region__drawer-body {
   display: flex;
-  flex: 1 0 auto;
   flex-direction: column;
+  min-height: 100%;
 }
 
 @media print {

@@ -1,25 +1,65 @@
-import { shallowReactive } from "vue";
+import { computed, shallowReactive } from "vue";
 import type { MtAppPanel } from "./useApp";
 
-/**
- * The panels whose trigger a page shows, such as `mt-page`. The shell's header shows a panel's
- * trigger only while no page shows it.
- */
-export function createAppTriggers() {
-  const registrations = shallowReactive(new Map<symbol, () => MtAppPanel>());
+/** Where a component that shows the panels' triggers sits: in the shell's header, or in a page. */
+export type AppTriggerRegion = "header" | "page";
 
-  function hasPageTrigger(panel: MtAppPanel) {
-    return Array.from(registrations.values()).some((registered) => registered() === panel);
+interface PlacedTrigger {
+  panel: () => MtAppPanel;
+  region: AppTriggerRegion;
+}
+
+/**
+ * Where the shell's own components, such as `mt-page` and `mt-app-header`, show the triggers of its
+ * panels. While the header is shown, a component in it shows a panel's trigger instead of the
+ * pages. A trigger that the app places itself with `mt-app-panel-trigger` always shows, and the
+ * shell's components leave out theirs for that panel. The shell shows no triggers of its own.
+ */
+export function createAppTriggers(isHeaderShown: () => boolean) {
+  const headerTriggers = shallowReactive(new Map<symbol, () => MtAppPanel>());
+  const placedTriggers = shallowReactive(new Map<symbol, PlacedTrigger>());
+
+  function isInHeaderClaim(panel: MtAppPanel) {
+    return Array.from(headerTriggers.values()).some((claimed) => claimed() === panel);
   }
 
-  function registerTrigger(panel: () => MtAppPanel) {
-    const id = Symbol("mt-app-panel-trigger");
-    registrations.set(id, panel);
+  // A placed trigger in a hidden header isn't seen, so it doesn't count.
+  function isPlacedClaim(panel: MtAppPanel) {
+    return Array.from(placedTriggers.values()).some(
+      (placed) => placed.panel() === panel && (placed.region === "page" || isHeaderShown()),
+    );
+  }
+
+  // Computed, so the shell's components only render again when the place of a trigger changes.
+  const isPlaced = {
+    navigation: computed(() => isPlacedClaim("navigation")),
+    sidebar: computed(() => isPlacedClaim("sidebar")),
+  };
+  const isInHeader = {
+    navigation: computed(() => isHeaderShown() && isInHeaderClaim("navigation")),
+    sidebar: computed(() => isHeaderShown() && isInHeaderClaim("sidebar")),
+  };
+
+  /** Whether the shell's component in the region shows the panel's trigger. */
+  function showsTrigger(panel: MtAppPanel, region: AppTriggerRegion) {
+    if (isPlaced[panel].value) return false;
+
+    return region === "header" ? isHeaderShown() : !isInHeader[panel].value;
+  }
+
+  function register<T>(map: Map<symbol, T>, value: T) {
+    const id = Symbol("mt-app-trigger");
+    map.set(id, value);
 
     return () => {
-      registrations.delete(id);
+      map.delete(id);
     };
   }
 
-  return { hasPageTrigger, registerTrigger };
+  return {
+    showsTrigger,
+    registerHeaderTrigger: (panel: () => MtAppPanel) => register(headerTriggers, panel),
+    registerPlacedTrigger: (panel: () => MtAppPanel, region: AppTriggerRegion) =>
+      register(placedTriggers, { panel, region }),
+  };
 }
