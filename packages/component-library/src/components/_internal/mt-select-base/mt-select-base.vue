@@ -19,11 +19,14 @@
     </template>
 
     <!-- eslint-disable-next-line vue/no-template-shadow -->
-    <template #element="{ identification }">
+    <template #element="{ identification, labelId }">
       <div
         ref="selectWrapper"
         class="mt-select__selection"
+        role="combobox"
         tabindex="0"
+        :aria-labelledby="labelId"
+        :aria-expanded="expanded ? 'true' : 'false'"
         @click="expand"
         @focus="expand"
         @keydown.tab="collapse"

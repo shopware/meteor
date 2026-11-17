@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/vue";
+import userEvent from "@testing-library/user-event";
 import { defineComponent } from "vue";
 import { flushPromises, mount } from "@vue/test-utils";
 import MtSelect from "./mt-select.vue";
@@ -66,6 +67,34 @@ describe("mt-select", () => {
     expect(document.activeElement).toBe(wrapper.find("#before").element);
     expect(onClick).not.toHaveBeenCalled();
     wrapper.unmount();
+  });
+
+  it("exposes the tab stop as a combobox named by the label", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: { label: "Manufacturer", options: [{ id: 1, label: "Option Alfred", value: "a" }] },
+    });
+
+    // ACT
+    const combobox = screen.getByRole("combobox", { name: "Manufacturer" });
+
+    // ASSERT
+    expect(combobox).toHaveClass("mt-select__selection");
+    expect(combobox).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("marks the combobox as expanded while the result list is open", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: { label: "Manufacturer", options: [{ id: 1, label: "Option Alfred", value: "a" }] },
+    });
+    const combobox = screen.getByRole("combobox", { name: "Manufacturer" });
+
+    // ACT
+    await userEvent.click(combobox);
+
+    // ASSERT
+    expect(combobox).toHaveAttribute("aria-expanded", "true");
   });
 
   it("should render the select component", async () => {
