@@ -49,16 +49,16 @@ The panels of a page work the same way:
 <template>
   <mt-page :breadcrumb="breadcrumb">
     <template #start>
-      <mt-panel label="Blocks" icon="regular-layout" resizable>
-        <BlockList />
+      <mt-panel label="Filters" resizable>
+        <ProductFilters />
       </mt-panel>
     </template>
 
-    <CmsCanvas />
+    <ProductList />
 
     <template #end>
-      <mt-panel label="Properties" icon="regular-cog" closable>
-        <BlockProperties />
+      <mt-panel label="Details" closable>
+        <ProductDetails />
       </mt-panel>
     </template>
   </mt-page>
@@ -75,7 +75,7 @@ The panels of a page work the same way:
 #do
 
 - Put **Panel** directly into the slot, so the shell and the page know its label, icon and closable setting before anything inside renders.
-- Give the panel a `label` that names its content, such as "Assistant" or "Properties", and use the same name for the `<aside>` of the content.
+- Give the panel a `label` that names its content, and use the same name for the `<aside>` of the content.
 - Keep the default width and limits, and only set `width`, `min-width` and `max-width` when the content needs other ones.
 
 #dont
