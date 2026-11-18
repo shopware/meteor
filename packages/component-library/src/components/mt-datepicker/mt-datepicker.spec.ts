@@ -710,6 +710,75 @@ describe("mt-datepicker", () => {
     const monthLabel = document.querySelector('[data-test-id="month-toggle-overlay-0"]');
     expect(monthLabel).toHaveTextContent("juil.");
   });
+
+  it("shows the same day for a plain date in every time zone", async () => {
+    // ARRANGE - a day stored by a backend comes back as midnight UTC, which is the day before in
+    // America/New_York
+    const { rerender } = render(MtDatepicker, {
+      props: {
+        dateType: "date",
+        plainDate: true,
+        timeZone: "America/New_York",
+        modelValue: "2000-01-15T00:00:00.000Z",
+      },
+    });
+
+    // ASSERT
+    await waitUntil(() => screen.getByRole("textbox").getAttribute("value") !== null);
+    expect(screen.getByRole("textbox")).toHaveValue("2000/01/15");
+
+    // ACT
+    await rerender({ modelValue: "2000-01-16" });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("2000/01/16");
+  });
+
+  it("emits the clicked day as a plain date", async () => {
+    // ARRANGE - Europe/Berlin is ahead of UTC, so midnight of the day would be the day before
+    const handler = vi.fn();
+    render(MtDatepicker, {
+      props: {
+        dateType: "date",
+        plainDate: true,
+        timeZone: "Europe/Berlin",
+        modelValue: "2024-07-10",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await waitUntil(() => document.getElementById("dp-2024-07-15") !== null);
+    await userEvent.click(document.getElementById("dp-2024-07-15") as HTMLElement);
+
+    // ASSERT
+    expect(handler).toHaveBeenLastCalledWith("2024-07-15");
+  });
+
+  it("emits the typed day as a plain date", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtDatepicker, {
+      props: {
+        dateType: "date",
+        plainDate: true,
+        textInput: true,
+        timeZone: "Europe/Berlin",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    const input = screen.getByRole("textbox");
+
+    // ACT
+    await userEvent.clear(input);
+    await userEvent.type(input, "2025/01/01");
+    await userEvent.keyboard("{enter}");
+
+    // ASSERT
+    expect(handler).toHaveBeenLastCalledWith("2025-01-01");
+  });
 });
 
 describe("mt-datepicker conditional hint", () => {
