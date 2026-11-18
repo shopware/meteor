@@ -97,6 +97,12 @@ export const router = createRouter({
       },
     },
     {
+      path: "/components",
+      name: "components",
+      component: () => import("../views/ComponentsView.vue"),
+      meta: { title: "nav.components", icon: "layout" },
+    },
+    {
       path: "/settings",
       name: "settings",
       component: () => import("../views/SettingsView.vue"),
