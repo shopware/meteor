@@ -62,4 +62,5 @@ import { MtBanner } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
+- [**Announcement**](/components/announcement): for a message about the whole application at the top of the screen, such as planned downtime.
 - [**Snackbar**](/components/snackbar): when you need lightweight temporary feedback that appears separately from the page content.

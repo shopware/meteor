@@ -43,6 +43,7 @@ const COMPONENT_SECTIONS: Record<string, string[]> = {
     "url-field",
   ],
   Status: [
+    "announcement",
     "badge",
     "banner",
     "loader",

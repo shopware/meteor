@@ -17,6 +17,21 @@
       </mt-button>
     </div>
 
+    <Transition name="mt-app-announcement-slide" @before-leave="onAnnouncementLeave">
+      <div
+        v-if="hasSlot('announcement')"
+        ref="announcement"
+        class="mt-app__announcement"
+        :hidden="hiddenRegions.announcement || undefined"
+      >
+        <div class="mt-app__announcement-clip">
+          <div class="mt-app__announcement-content">
+            <slot name="announcement" />
+          </div>
+        </div>
+      </div>
+    </Transition>
+
     <header
       v-if="hasSlot('header') || hasHeaderTriggers()"
       class="mt-app__header"
@@ -166,8 +181,8 @@ import type { MtAppContext, MtAppPanel } from "./composables/useApp";
 import type { MtAppRegions } from "./composables/useAppRegions";
 
 /**
- * The root shell of a standalone application: a header, the navigation, the content and a sidebar,
- * whose panels become drawers on small screens. Use one shell per application.
+ * The root shell of a standalone application: an announcement, a header, the navigation, the content
+ * and a sidebar, whose panels become drawers on small screens. Use one shell per application.
  *
  * @experimental The API may still change in a future release.
  */
@@ -212,6 +227,11 @@ type HeaderSlotProps = Omit<MtAppContext, "isMobile"> & { isMobile: boolean };
 
 const slots = defineSlots<{
   /**
+   * A full-width strip above the header for messages about the whole application, such as planned
+   * downtime or an upcoming event. Not for alerts, which belong in the content of their page.
+   */
+  announcement?(): unknown;
+  /**
    * The header bar of the application. While no page shows the triggers of the navigation and the
    * sidebar, they sit at its start and end.
    */
@@ -251,6 +271,7 @@ const { t } = useI18n({
 
 const PANELS = ["navigation", "sidebar"] as const;
 
+const announcementElement = useTemplateRef<HTMLElement>("announcement");
 const headerContentElement = useTemplateRef<HTMLElement>("headerContent");
 const mainElement = useTemplateRef<HTMLElement>("main");
 const panelIds: Record<MtAppPanel, string> = { navigation: useId(), sidebar: useId() };
@@ -297,6 +318,7 @@ const api: MtAppContext = {
 const headerSlotProps = computed<HeaderSlotProps>(() => ({ ...api, isMobile: isMobile.value }));
 
 const renderedSlots = useRenderCache(() => ({
+  announcement: hasSlotContent(slots.announcement),
   header: hasSlotContent(slots.header, headerSlotProps.value),
   default: hasSlotContent(slots.default),
 }));
@@ -305,8 +327,10 @@ const isLoadingBarShown = computed(() => props.loadingBar && isLoading.value);
 // The content is busy for as long as the loading lasts, while the bar may stay a bit longer.
 const isBusy = computed(() => props.loadingBar && isPending.value);
 
-function hasSlot(name: "header" | "default" | MtAppPanel) {
-  return name === "header" || name === "default" ? renderedSlots()[name] : panelSlot(name).isFilled;
+function hasSlot(name: "announcement" | "header" | "default" | MtAppPanel) {
+  return name === "navigation" || name === "sidebar"
+    ? panelSlot(name).isFilled
+    : renderedSlots()[name];
 }
 
 /** Whether the panel can be shown: its slot is filled and no view hides it. */
@@ -353,6 +377,12 @@ function focusContent() {
   mainElement.value?.focus({ preventScroll: true });
 }
 
+/** The closed announcement stays while it slides out, so the content takes over its focus at once. */
+function onAnnouncementLeave(element: Element) {
+  if (element.contains(document.activeElement)) focusContent();
+  (element as HTMLElement).inert = true;
+}
+
 /** Closing the confirmation in any other way than discarding keeps the changes. */
 function onLeaveDialogChange(open: boolean) {
   if (!open) answerLeave(false);
@@ -387,11 +417,13 @@ watch(hiddenRegions, (hidden) => {
 });
 
 watch(
-  () => hiddenRegions.value.header,
-  (hidden) => {
-    if (hidden && headerContentElement.value?.contains(document.activeElement)) {
-      nextTick(focusContent);
-    }
+  () => [hiddenRegions.value.announcement, hiddenRegions.value.header],
+  ([announcementHidden, headerHidden]) => {
+    const isFocusHidden =
+      (announcementHidden && announcementElement.value?.contains(document.activeElement)) ||
+      (headerHidden && headerContentElement.value?.contains(document.activeElement));
+
+    if (isFocusHidden) nextTick(focusContent);
   },
 );
 
@@ -465,6 +497,7 @@ provide(appContextKey, {
     return { label, icon, controls: panelIds[panel] };
   },
   isResizing,
+  focusContent,
 });
 
 useTheme();
@@ -489,6 +522,55 @@ defineExpose(api);
 @supports (height: 1dvh) {
   .mt-app {
     --mt-app-viewport-height: 100dvh;
+  }
+}
+
+.mt-app__announcement {
+  display: grid;
+  grid-template-rows: 1fr;
+  flex: none;
+  min-width: 0;
+}
+
+.mt-app__announcement-clip {
+  min-height: 0;
+}
+
+/* An announcement that arrives after the page has loaded slides down and pushes the header down
+   with it. Closing it slides it up, a bit faster. */
+.mt-app-announcement-slide-enter-active,
+.mt-app-announcement-slide-leave-active {
+  transition: grid-template-rows 200ms cubic-bezier(0.3, 0, 0, 1);
+
+  & .mt-app__announcement-clip {
+    overflow: hidden;
+  }
+
+  & .mt-app__announcement-content {
+    transition: transform 200ms cubic-bezier(0.3, 0, 0, 1);
+  }
+}
+
+.mt-app-announcement-slide-leave-active,
+.mt-app-announcement-slide-leave-active .mt-app__announcement-content {
+  transition-duration: 150ms;
+}
+
+.mt-app-announcement-slide-enter-from,
+.mt-app-announcement-slide-leave-to {
+  grid-template-rows: 0fr;
+
+  & .mt-app__announcement-content {
+    transform: translateY(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-app-announcement-slide-enter-active,
+  .mt-app-announcement-slide-leave-active,
+  .mt-app-announcement-slide-enter-active .mt-app__announcement-content,
+  .mt-app-announcement-slide-leave-active .mt-app__announcement-content {
+    transition: none;
   }
 }
 
@@ -519,6 +601,7 @@ defineExpose(api);
   overflow-x: clip;
 }
 
+.mt-app__announcement[hidden],
 .mt-app__header[hidden],
 .mt-app__header-content[hidden] {
   display: none;
@@ -645,6 +728,7 @@ defineExpose(api);
   }
 
   .mt-app__skip,
+  .mt-app__announcement,
   .mt-app__header,
   .mt-app__loading-bar {
     display: none;

@@ -17,6 +17,15 @@ export const de: Messages = {
     settings: "Einstellungen",
     logout: "Abmelden",
   },
+  announcement: {
+    neutral: "Unser Support-Team ist am 24. und 25. Dezember nicht erreichbar.",
+    info: "Sei bei unserem Live-Produktupdate am Donnerstag, 20. November, um 15:00 Uhr MEZ dabei.",
+    attention:
+      "Geplante Wartung am Sonntag, 16. November, von 2:00 bis 4:00 Uhr MEZ. In dieser Zeit kannst du keine Änderungen speichern.",
+    critical:
+      "Bestellungen können gerade nicht gespeichert werden. Wir arbeiten an einer Lösung.",
+    positive: "Alles funktioniert wieder. Danke für deine Geduld.",
+  },
   sidebar: {
     label: "Assistent",
     user: "Du",
@@ -313,10 +322,19 @@ export const de: Messages = {
     theme: "Design",
     navigationClosable: "Navigation auf dem Desktop ein- und ausblenden",
     sidebarClosable: "Seitenleiste auf dem Desktop ein- und ausblenden",
+    announcementShown: "Ankündigung anzeigen",
+    announcementVariant: "Variante der Ankündigung",
+    announcementVariants: {
+      neutral: "Neutral",
+      info: "Info",
+      attention: "Achtung",
+      critical: "Kritisch",
+      positive: "Positiv",
+    },
     reset: "Einstellungen zurücksetzen",
     resetTitle: "Einstellungen zurücksetzen?",
     resetText:
-      "Sprache, Design und Layout werden auf ihre Standardwerte zurückgesetzt.",
+      "Sprache, Design und Layout werden auf ihre Standardwerte zurückgesetzt, und geschlossene Ankündigungen erscheinen wieder.",
     resetDone: "Einstellungen zurückgesetzt",
   },
 };
