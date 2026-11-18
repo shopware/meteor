@@ -192,7 +192,7 @@
   --color-interaction-primary-disabled: var(--color-brand-600);
   --color-interaction-secondary-default: var(--color-white);
   --color-interaction-secondary-hover: var(--color-neutral-200);
-  --color-interaction-secondary-pressed: var(--color-neutral-400);
+  --color-interaction-secondary-pressed: var(--color-neutral-300);
   --color-interaction-secondary-disabled: var(--color-neutral-100);
   --color-interaction-secondary-dark: var(--color-neutral-200);
   --color-interaction-critical-default: var(--color-red-1000);
@@ -201,12 +201,14 @@
   --color-interaction-critical-disabled: var(--color-red-500);
   --color-elevation-surface-sunken: var(--color-neutral-100);
   --color-elevation-surface-default: var(--color-neutral-50);
-  --color-elevation-surface-selected: var(--color-neutral-400);
-  --color-elevation-surface-hover: var(--color-neutral-300);
+  --color-elevation-surface-selected: var(
+    --color-interaction-secondary-pressed
+  );
+  --color-elevation-surface-hover: var(--color-interaction-secondary-hover);
   --color-elevation-surface-raised: var(--color-white);
-  --color-elevation-surface-overlay: var(--color-white);
-  --color-elevation-surface-frame: var(--color-neutral-50);
-  --color-elevation-surface-backdrop: var(--color-neutral-1800);
+  --color-elevation-surface-overlay: var(--color-elevation-surface-raised);
+  --color-elevation-surface-frame: var(--color-elevation-surface-default);
+  --color-elevation-surface-backdrop: var(--color-elevation-backdrop-default);
   --color-elevation-surface-floating: var(--color-elevation-floating-default);
   --color-elevation-backdrop-default: color-mix(
     in oklch,
@@ -224,11 +226,11 @@
   --color-background-secondary-default: var(--color-neutral-100);
   --color-background-tertiary-default: var(--color-neutral-200);
   --color-background-brand-default: var(--color-brand-200);
-  --color-background-critical-default: var(--color-red-100);
+  --color-background-critical-default: var(--color-red-200);
   --color-background-critical-dark: var(--color-background-critical-default);
-  --color-background-attention-default: var(--color-orange-100);
-  --color-background-positive-default: var(--color-green-100);
-  --color-background-accent-default: var(--color-purple-100);
+  --color-background-attention-default: var(--color-orange-200);
+  --color-background-positive-default: var(--color-green-200);
+  --color-background-accent-default: var(--color-purple-200);
   --color-icon-primary-default: var(--color-neutral-1700);
   --color-icon-primary-disabled: var(--color-neutral-500);
   --color-icon-primary-inverse: var(--color-neutral-300);
@@ -257,7 +259,7 @@
   --color-border-brand-default: var(--color-brand-1000);
   --color-border-brand-disabled: var(--color-brand-600);
   --color-border-critical-default: var(--color-red-1000);
-  --color-border-critical-dark: var(--color-red-1200);
+  --color-border-critical-dark: var(--color-border-critical-default);
   --color-border-critical-disabled: var(--color-red-600);
   --color-border-attention-default: var(--color-orange-300);
   --color-border-positive-default: var(--color-green-300);
@@ -269,9 +271,9 @@
   --color-text-secondary-disabled: var(--color-neutral-500);
   --color-text-secondary-inverse: var(--color-neutral-600);
   --color-text-tertiary-default: var(--color-text-secondary-default);
-  --color-text-brand-default: var(--color-brand-1000);
-  --color-text-brand-hover: var(--color-brand-1100);
-  --color-text-brand-pressed: var(--color-brand-1200);
+  --color-text-brand-default: var(--color-brand-1100);
+  --color-text-brand-hover: var(--color-brand-1200);
+  --color-text-brand-pressed: var(--color-brand-1300);
   --color-text-brand-disabled: var(--color-brand-600);
   --color-text-brand-inverse: var(--color-brand-700);
   --color-text-critical-default: var(--color-red-1000);
@@ -287,6 +289,7 @@
   --color-text-inverse-default: var(--color-text-primary-inverse);
   --color-static-white: var(--color-white);
   --color-static-black: var(--color-neutral-1900);
+  --color-border-control-default: var(--color-neutral-800);
 }
 
 :root[data-proto-colors][data-theme="dark"],
@@ -310,12 +313,14 @@
     var(--color-neutral-1900)
   );
   --color-elevation-surface-default: var(--color-neutral-1800);
-  --color-elevation-surface-selected: var(--color-neutral-1400);
-  --color-elevation-surface-hover: var(--color-neutral-1300);
+  --color-elevation-surface-selected: var(
+    --color-interaction-secondary-pressed
+  );
+  --color-elevation-surface-hover: var(--color-interaction-secondary-hover);
   --color-elevation-surface-raised: var(--color-neutral-1700);
-  --color-elevation-surface-overlay: var(--color-neutral-1500);
-  --color-elevation-surface-frame: var(--color-neutral-1600);
-  --color-elevation-surface-backdrop: var(--color-neutral-1800);
+  --color-elevation-surface-overlay: var(--color-elevation-surface-raised);
+  --color-elevation-surface-frame: var(--color-elevation-surface-default);
+  --color-elevation-surface-backdrop: var(--color-elevation-backdrop-default);
   --color-elevation-surface-floating: var(--color-elevation-floating-default);
   --color-elevation-backdrop-default: color-mix(
     in oklch,
@@ -325,28 +330,28 @@
   --color-elevation-floating-default: var(--color-white);
   --color-elevation-shadow-default: color-mix(
     in oklch,
-    var(--color-neutral-1900) 10%,
+    var(--color-neutral-1900) 40%,
     transparent
   );
   --color-background-primary-default: var(--color-neutral-1600);
   --color-background-primary-disabled: var(--color-background-tertiary-default);
   --color-background-secondary-default: var(--color-neutral-1500);
   --color-background-tertiary-default: var(--color-neutral-1500);
-  --color-background-brand-default: var(--color-brand-1600);
-  --color-background-critical-default: var(--color-red-1600);
+  --color-background-brand-default: var(--color-brand-1400);
+  --color-background-critical-default: var(--color-red-1400);
   --color-background-critical-dark: var(--color-background-critical-default);
-  --color-background-attention-default: var(--color-orange-1600);
-  --color-background-positive-default: var(--color-green-1600);
-  --color-background-accent-default: var(--color-purple-1600);
+  --color-background-attention-default: var(--color-orange-1400);
+  --color-background-positive-default: var(--color-green-1400);
+  --color-background-accent-default: var(--color-purple-1400);
   --color-icon-primary-default: var(--color-neutral-300);
   --color-icon-primary-disabled: var(--color-neutral-1000);
   --color-icon-primary-inverse: var(--color-neutral-1600);
-  --color-icon-secondary-default: var(--color-neutral-800);
+  --color-icon-secondary-default: var(--color-neutral-700);
   --color-icon-secondary-disabled: var(--color-neutral-1000);
   --color-icon-secondary-inverse: var(--color-neutral-1000);
-  --color-icon-brand-default: var(--color-brand-1000);
-  --color-icon-brand-hover: var(--color-brand-1100);
-  --color-icon-brand-pressed: var(--color-brand-1200);
+  --color-icon-brand-default: var(--color-brand-800);
+  --color-icon-brand-hover: var(--color-brand-900);
+  --color-icon-brand-pressed: var(--color-brand-1000);
   --color-icon-brand-disabled: var(--color-brand-1300);
   --color-icon-critical-default: var(--color-red-800);
   --color-icon-critical-hover: var(--color-red-900);
@@ -366,7 +371,7 @@
   --color-border-brand-default: var(--color-brand-800);
   --color-border-brand-disabled: var(--color-brand-1300);
   --color-border-critical-default: var(--color-red-800);
-  --color-border-critical-dark: var(--color-red-1200);
+  --color-border-critical-dark: var(--color-border-critical-default);
   --color-border-critical-disabled: var(--color-red-1300);
   --color-border-attention-default: var(--color-orange-1400);
   --color-border-positive-default: var(--color-green-1400);
@@ -374,7 +379,7 @@
   --color-text-primary-default: var(--color-neutral-300);
   --color-text-primary-disabled: var(--color-neutral-1000);
   --color-text-primary-inverse: var(--color-neutral-1600);
-  --color-text-secondary-default: var(--color-neutral-800);
+  --color-text-secondary-default: var(--color-neutral-700);
   --color-text-secondary-disabled: var(--color-neutral-1000);
   --color-text-secondary-inverse: var(--color-neutral-1000);
   --color-text-tertiary-default: var(--color-text-secondary-default);
@@ -396,4 +401,5 @@
   --color-text-inverse-default: var(--color-text-primary-inverse);
   --color-static-white: var(--color-white);
   --color-static-black: var(--color-neutral-1900);
+  --color-border-control-default: var(--color-neutral-1000);
 }

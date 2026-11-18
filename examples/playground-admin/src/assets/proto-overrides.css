@@ -33,25 +33,24 @@
   }
 }
 
-/* Banners and badges have no border and a tinted background instead: 200 in the light theme and
-   1400 in the dark theme. The border stays transparent, so the size doesn't change. */
+/* Banners, badges and subtle announcements have no border, only a tinted background. The status
+   variants use the status background tokens (200 and 1400). Neutral has no matching token, so it
+   takes neutral 200 and 1400 directly. */
 [data-proto-colors] {
   --proto-tint-neutral: var(--color-neutral-200);
-  --proto-tint-info: var(--color-brand-200);
-  --proto-tint-attention: var(--color-orange-200);
-  --proto-tint-critical: var(--color-red-200);
-  --proto-tint-positive: var(--color-green-200);
-  --proto-tint-accent: var(--color-purple-200);
 }
 
 [data-proto-colors][data-theme="dark"],
 [data-proto-colors] [data-theme="dark"] {
   --proto-tint-neutral: var(--color-neutral-1400);
-  --proto-tint-info: var(--color-brand-1400);
-  --proto-tint-attention: var(--color-orange-1400);
-  --proto-tint-critical: var(--color-red-1400);
-  --proto-tint-positive: var(--color-green-1400);
-  --proto-tint-accent: var(--color-purple-1400);
+}
+
+:is([data-proto-colors], [data-proto-colors] [data-theme]) {
+  --proto-tint-info: var(--color-background-brand-default);
+  --proto-tint-attention: var(--color-background-attention-default);
+  --proto-tint-critical: var(--color-background-critical-default);
+  --proto-tint-positive: var(--color-background-positive-default);
+  --proto-tint-accent: var(--color-background-accent-default);
 }
 
 [data-proto-colors] :is(.mt-banner.mt-banner, .mt-badge.mt-badge) {
@@ -183,4 +182,22 @@
     --mt-announcement-background: var(--proto-tint-positive);
     --mt-announcement-border-color: transparent;
   }
+}
+
+/* Form controls get the proposed `border-control-default` token (neutral 800 and 1000), which keeps
+   3:1 against their surroundings. Focus, error, checked and disabled states keep their own colors. */
+[data-proto-colors]
+  .mt-field:not(.has--error, .has--focus, .is--disabled)
+  .mt-block-field__block,
+[data-proto-colors]
+  .mt-textarea__textarea:not(.mt-textarea__textarea--error, :focus, :disabled),
+[data-proto-colors]
+  .mt-radio-group-indicator__input:not(:checked, :disabled)
+  + .mt-radio-group-indicator__control,
+[data-proto-colors]
+  .mt-field--checkbox:not(.has--error)
+  input[type="checkbox"]:not(:checked, :indeterminate, :disabled)
+  ~ .mt-field__checkbox-state,
+[data-proto-colors] .mt-button.mt-button--secondary:not(:disabled) {
+  border-color: var(--color-border-control-default);
 }

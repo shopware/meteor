@@ -36,43 +36,64 @@ export const neutralTokens = {
 
   // One step darker than the default surface in the light theme, so it stays visible on it, and
   // 1500 in the dark theme, so it stands out on inputs and select lists (1600), for example for
-  // the tags of a multi-select and the active result. Secondary text (800) on it is 4.38:1.
+  // the tags of a multi-select and the active result.
   "background-secondary-default": [100, 1500],
 
   "background-tertiary-default": [200, 1500],
 
   // One step lighter than the secondary border in the dark theme, for its higher emphasis.
   "border-primary-default": [300, 1400],
-  // Open: in the light theme, neutral 200 is too light and 300 too dark. The palette needs a step
-  // in between for this border. The prototype uses 200 for now.
+  // In the light theme, neutral 200 is a bit too light for it; see "Things noticed" in the PR.
   "border-secondary-default": [200, 1600],
 
   // Hover and pressed stand out on every surface they appear on: in the light theme on the app
   // background (sunken, 100), menus and cards; in the dark theme they get lighter than raised
   // (1700) and the resting secondary background (1600), for example on cards and select lists.
   "interaction-secondary-hover": [200, 1500],
-  "interaction-secondary-pressed": [400, 1400],
+  "interaction-secondary-pressed": [300, 1400],
   // Muted next to the resting state, so a disabled button doesn't look hovered or pressed. In the
   // dark theme 1500, like disabled fields (background-tertiary), so it stands out on cards (1700).
   "interaction-secondary-disabled": [100, 1500],
 
   "text-primary-default": [1700, 300],
   "icon-primary-default": [1700, 300],
-  "text-secondary-default": [1000, 800],
-  "icon-secondary-default": [1000, 800],
+  // 700 in the dark theme keeps 4.5:1 on 1500 (background-secondary and -tertiary).
+  "text-secondary-default": [1000, 700],
+  "icon-secondary-default": [1000, 700],
 };
 
 /** Tokens with a literal value, such as a color with transparency, as [light, dark]. */
 export const literalTokens = {
-  // Neutral 1900 with transparency: 40 % in the light theme, 90 % in the dark theme.
+  // Neutral 1900 with transparency. The shadow needs more opacity to show in the dark theme.
   "elevation-shadow-default": [
     "color-mix(in oklch, var(--color-neutral-1900) 10%, transparent)",
-    "color-mix(in oklch, var(--color-neutral-1900) 10%, transparent)",
+    "color-mix(in oklch, var(--color-neutral-1900) 40%, transparent)",
   ],
   "elevation-backdrop-default": [
     "color-mix(in oklch, var(--color-neutral-1900) 40%, transparent)",
     "color-mix(in oklch, var(--color-neutral-1900) 90%, transparent)",
   ],
+};
+
+/**
+ * Deprecated tokens that point at their documented replacement instead of an own value, and
+ * proposed new tokens, as the token they alias or [light, dark] neutral steps.
+ */
+export const aliasTokens = {
+  "elevation-surface-overlay": "elevation-surface-raised",
+  "elevation-surface-backdrop": "elevation-backdrop-default",
+  "elevation-surface-frame": "elevation-surface-default",
+  "elevation-surface-selected": "interaction-secondary-pressed",
+  "elevation-surface-hover": "interaction-secondary-hover",
+  "border-critical-dark": "border-critical-default",
+};
+
+/**
+ * Proposed new tokens, as [light, dark] neutral steps. `border-control-default` gives form
+ * controls (inputs, checkboxes, radios, secondary buttons) 3:1 against their surroundings.
+ */
+export const newTokens = {
+  "border-control-default": [800, 1000],
 };
 
 /** The old palettes and the new palettes that replace them. */
@@ -90,10 +111,10 @@ export const paletteNames = {
  * generator, hover and pressed get darker in both themes, and the borders of attention, positive and
  * accent are subtle (300 and 1400). Brand and critical borders stay strong, because they also mark
  * focus, selection and errors; banners and badges get subtle ones in proto-overrides.css.
- * Status backgrounds are 100 and 1600, where the status text keeps 4.5:1 in every palette.
- * Filled controls such as buttons and checkboxes keep 1000 in the dark theme too, where white on
- * 1000 has enough contrast.
- * Brand 1000 on brand 200 is 4.17:1, a known exception of the main brand color.
+ * Status backgrounds are 200 and 1400. Text on them is primary text, never status text, which is
+ * below 4.5:1 on 1400 in the dark theme.
+ * In the dark theme, 800 is the main color for text and icons, 1000 only for filled controls such
+ * as buttons and checkboxes. Brand text is 1100 in the light theme, so it keeps 4.5:1 on brand 200.
  */
 export const coloredTokens = {
   "interaction-primary-default": ["brand", 1000, 1000],
@@ -106,15 +127,15 @@ export const coloredTokens = {
   "interaction-critical-pressed": ["red", 1200, 1200],
   "interaction-critical-disabled": ["red", 500, 1400],
 
-  "background-brand-default": ["brand", 200, 1600],
-  "background-critical-default": ["red", 100, 1600],
-  "background-attention-default": ["orange", 100, 1600],
-  "background-positive-default": ["green", 100, 1600],
-  "background-accent-default": ["purple", 100, 1600],
+  "background-brand-default": ["brand", 200, 1400],
+  "background-critical-default": ["red", 200, 1400],
+  "background-attention-default": ["orange", 200, 1400],
+  "background-positive-default": ["green", 200, 1400],
+  "background-accent-default": ["purple", 200, 1400],
 
-  "icon-brand-default": ["brand", 1000, 1000],
-  "icon-brand-hover": ["brand", 1100, 1100],
-  "icon-brand-pressed": ["brand", 1200, 1200],
+  "icon-brand-default": ["brand", 1000, 800],
+  "icon-brand-hover": ["brand", 1100, 900],
+  "icon-brand-pressed": ["brand", 1200, 1000],
   "icon-brand-disabled": ["brand", 600, 1300],
   "icon-critical-default": ["red", 1000, 800],
   "icon-critical-hover": ["red", 1100, 900],
@@ -129,15 +150,14 @@ export const coloredTokens = {
   "border-brand-default": ["brand", 1000, 800],
   "border-brand-disabled": ["brand", 600, 1300],
   "border-critical-default": ["red", 1000, 800],
-  "border-critical-dark": ["red", 1200, 1200],
   "border-critical-disabled": ["red", 600, 1300],
   "border-attention-default": ["orange", 300, 1400],
   "border-positive-default": ["green", 300, 1400],
   "border-accent-default": ["purple", 300, 1400],
 
-  "text-brand-default": ["brand", 1000, 800],
-  "text-brand-hover": ["brand", 1100, 900],
-  "text-brand-pressed": ["brand", 1200, 1000],
+  "text-brand-default": ["brand", 1100, 800],
+  "text-brand-hover": ["brand", 1200, 900],
+  "text-brand-pressed": ["brand", 1300, 1000],
   "text-brand-disabled": ["brand", 600, 1300],
   "text-brand-inverse": ["brand", 700, 1000],
   "text-critical-default": ["red", 1000, 800],
@@ -159,13 +179,13 @@ export const contrastPairs = [
   ["text-primary-inverse", "elevation-floating-default", 4.5],
   ["text-brand-default", "elevation-surface-default", 4.5],
   ["text-brand-hover", "elevation-surface-default", 4.5],
-  ["text-brand-default", "background-brand-default", 4.5],
+  ["text-primary-default", "background-brand-default", 4.5],
   ["text-brand-inverse", "elevation-floating-default", 4.5],
   ["text-critical-default", "elevation-surface-default", 4.5],
-  ["text-critical-default", "background-critical-default", 4.5],
-  ["text-attention-default", "background-attention-default", 4.5],
-  ["text-positive-default", "background-positive-default", 4.5],
-  ["text-accent-default", "background-accent-default", 4.5],
+  ["text-primary-default", "background-critical-default", 4.5],
+  ["text-primary-default", "background-attention-default", 4.5],
+  ["text-primary-default", "background-positive-default", 4.5],
+  ["text-primary-default", "background-accent-default", 4.5],
   ["text-static-default", "interaction-primary-default", 4.5],
   ["text-static-default", "interaction-primary-hover", 4.5],
   ["text-static-default", "interaction-critical-default", 4.5],
@@ -178,5 +198,6 @@ export const contrastPairs = [
   ["icon-positive-default", "background-positive-default", 3],
   ["icon-accent-default", "background-accent-default", 3],
   ["border-brand-default", "elevation-surface-default", 3],
-  ["border-primary-default", "elevation-surface-default", 3],
+  ["border-control-default", "elevation-surface-raised", 3],
+  ["border-control-default", "background-primary-default", 3],
 ];

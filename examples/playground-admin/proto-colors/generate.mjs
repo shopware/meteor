@@ -5,10 +5,12 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
+  aliasTokens,
   coloredTokens,
   contrastPairs,
   literalTokens,
   neutralTokens,
+  newTokens,
   paletteNames,
   zincToNeutral,
 } from "./mapping.mjs";
@@ -54,6 +56,9 @@ function mapToken(name, value, theme) {
     return { primitive: [palette, theme === "light" ? light : dark] };
   }
 
+  const aliased = aliasTokens[name];
+  if (aliased) return { alias: aliased };
+
   const literal = literalTokens[name];
   if (literal) return { literal: theme === "light" ? literal[0] : literal[1] };
 
@@ -86,6 +91,10 @@ for (const [theme, dictionary] of Object.entries(themes)) {
       mapToken(name, value, theme),
     ]),
   );
+  // Proposed tokens that don't exist in the dictionaries yet.
+  for (const [name, [light, dark]] of Object.entries(newTokens)) {
+    mapped[theme][name] = neutralEntry(theme === "light" ? light : dark);
+  }
 }
 
 /** A step such as 1850 sits halfway between two palette steps and is mixed in OKLCH. */
@@ -138,6 +147,14 @@ const mixHex = (palette, a, b) => {
   return fromOklab(x.map((value, index) => (value + y[index]) / 2));
 };
 
+/** A declaration, wrapped the way Prettier formats a `var()` that doesn't fit in 80 columns. */
+function declaration(name, value) {
+  const line = `  --color-${name}: ${value};`;
+  const single = /^var\((--[^)]+)\)$/.exec(value);
+  if (line.length <= 80 || !single) return line;
+  return `  --color-${name}: var(\n    ${single[1]}\n  );`;
+}
+
 function cssValue(entry) {
   if (entry.primitive) return `var(${primitive(...entry.primitive)})`;
   if (entry.mix) {
@@ -183,7 +200,7 @@ for (const [palette, colors] of Object.entries(palettes)) {
 }
 lines.push("");
 for (const [name, entry] of Object.entries(mapped.light))
-  lines.push(`  --color-${name}: ${cssValue(entry)};`);
+  lines.push(declaration(name, cssValue(entry)));
 lines.push(
   "}",
   "",
@@ -191,7 +208,7 @@ lines.push(
   '[data-proto-colors] [data-theme="dark"] {',
 );
 for (const [name, entry] of Object.entries(mapped.dark))
-  lines.push(`  --color-${name}: ${cssValue(entry)};`);
+  lines.push(declaration(name, cssValue(entry)));
 lines.push("}", "");
 
 writeFileSync(here("../src/assets/proto-colors.css"), lines.join("\n"));
