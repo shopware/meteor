@@ -66,7 +66,7 @@ Set `plain-date` when the value is a day that does not depend on a place, such a
 - `dateType` controls whether the picker behaves as a date, time, or datetime input.
 - `range` lets one field hold a start and end value.
 - `timeZone` affects how values are interpreted and displayed.
-- `plainDate` turns the value of a date-only picker into the plain day, such as `2000-01-15`. It is the same in every time zone and `timeZone` is ignored. A `Date` is read as its own calendar day, so `new Date(2000, 0, 15)` is January 15.
+- `plainDate` turns the value of a date-only picker into the plain day, such as `2000-01-15`. It is the same in every time zone and `timeZone` is ignored. Pass the value as a `yyyy-MM-dd` string. A `Date` is read as its day on the user's clock, so `new Date("2000-01-15T00:00:00.000Z")` is January 14 for a user in America/Los_Angeles.
 - `helpText`, `required`, `disabled`, `error`, and `size` integrate with the shared field styling.
 
 ## Accessibility

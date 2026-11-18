@@ -713,7 +713,8 @@ describe("mt-datepicker", () => {
 
   it("shows the same day for a plain date in every time zone", async () => {
     // ARRANGE - a day stored by a backend comes back as midnight UTC, which is the day before in
-    // America/New_York
+    // America/New_York and on the user's computer in America/Los_Angeles
+    vi.stubEnv("TZ", "America/Los_Angeles");
     const { rerender } = render(MtDatepicker, {
       props: {
         dateType: "date",
