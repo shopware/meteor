@@ -18,8 +18,6 @@ interface LayoutSettings {
   announcementShown: boolean;
   /** The variant of the announcement above the header. */
   announcementVariant: AnnouncementVariant;
-  /** The appearance of the announcement above the header. */
-  announcementAppearance: "subtle" | "strong";
 }
 
 const defaults: LayoutSettings = {
@@ -27,7 +25,6 @@ const defaults: LayoutSettings = {
   sidebarClosable: true,
   announcementShown: true,
   announcementVariant: "attention",
-  announcementAppearance: "subtle",
 };
 
 const settings = reactive<LayoutSettings>({

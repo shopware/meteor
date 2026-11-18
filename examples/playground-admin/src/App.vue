@@ -28,10 +28,8 @@ const announcementIcons: Record<AnnouncementVariant, string> = {
   positive: "solid-check-circle",
 };
 
-// Changing the variant or the appearance in the settings shows a closed announcement again.
-const announcementId = computed(
-  () => `${layout.announcementVariant}-${layout.announcementAppearance}`,
-);
+// Changing the variant in the settings shows a closed announcement again.
+const announcementId = computed(() => layout.announcementVariant);
 </script>
 
 <template>
@@ -40,7 +38,6 @@ const announcementId = computed(
       <mt-announcement
         v-if="layout.announcementShown && !isClosed(announcementId)"
         :variant="layout.announcementVariant"
-        :appearance="layout.announcementAppearance"
         :icon="announcementIcons[layout.announcementVariant]"
         :closable="layout.announcementVariant !== 'critical'"
         @close="close(announcementId)"

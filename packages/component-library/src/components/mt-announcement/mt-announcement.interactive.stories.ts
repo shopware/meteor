@@ -3,8 +3,6 @@ import { expect, userEvent, within } from "@storybook/test";
 import meta, {
   Closable,
   LongText,
-  Strong,
-  StrongVariants,
   Variants,
   WithLink,
   WithoutIcon,
@@ -28,19 +26,9 @@ export const VisualTestDefault: MtAnnouncementStory = {
   },
 };
 
-export const VisualTestStrong: MtAnnouncementStory = {
-  ...Strong,
-  name: "Render the strong appearance",
-};
-
 export const VisualTestVariants: MtAnnouncementStory = {
   ...Variants,
-  name: "Render every variant in the subtle appearance",
-};
-
-export const VisualTestStrongVariants: MtAnnouncementStory = {
-  ...StrongVariants,
-  name: "Render every variant in the strong appearance",
+  name: "Render every variant",
 };
 
 export const VisualTestWithoutIcon: MtAnnouncementStory = {
