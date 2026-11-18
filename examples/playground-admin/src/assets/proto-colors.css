@@ -289,7 +289,6 @@
   --color-text-inverse-default: var(--color-text-primary-inverse);
   --color-static-white: var(--color-white);
   --color-static-black: var(--color-neutral-1900);
-  --color-border-control-default: var(--color-neutral-800);
 }
 
 :root[data-proto-colors][data-theme="dark"],
@@ -401,5 +400,14 @@
   --color-text-inverse-default: var(--color-text-primary-inverse);
   --color-static-white: var(--color-white);
   --color-static-black: var(--color-neutral-1900);
-  --color-border-control-default: var(--color-neutral-1000);
+}
+
+/* Contrast mode, on top of the new mapping. */
+:root[data-proto-colors="contrast"] {
+  --color-border-primary-default: var(--color-neutral-800);
+}
+
+:root[data-proto-colors="contrast"][data-theme="dark"],
+[data-proto-colors="contrast"] [data-theme="dark"] {
+  --color-border-primary-default: var(--color-neutral-1000);
 }

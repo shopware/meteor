@@ -8,6 +8,7 @@ import {
   aliasTokens,
   coloredTokens,
   contrastPairs,
+  contrastTokens,
   literalTokens,
   neutralTokens,
   newTokens,
@@ -155,6 +156,18 @@ function declaration(name, value) {
   return `  --color-${name}: var(\n    ${single[1]}\n  );`;
 }
 
+const contrastMapped = Object.fromEntries(
+  Object.keys(themes).map((theme) => [
+    theme,
+    Object.fromEntries(
+      Object.entries(contrastTokens).map(([name, [light, dark]]) => [
+        name,
+        neutralEntry(theme === "light" ? light : dark),
+      ]),
+    ),
+  ]),
+);
+
 function cssValue(entry) {
   if (entry.primitive) return `var(${primitive(...entry.primitive)})`;
   if (entry.mix) {
@@ -209,6 +222,22 @@ lines.push(
 );
 for (const [name, entry] of Object.entries(mapped.dark))
   lines.push(declaration(name, cssValue(entry)));
+lines.push(
+  "}",
+  "",
+  "/* Contrast mode, on top of the new mapping. */",
+  ':root[data-proto-colors="contrast"] {',
+);
+for (const [name, entry] of Object.entries(contrastMapped.light))
+  lines.push(declaration(name, cssValue(entry)));
+lines.push(
+  "}",
+  "",
+  ':root[data-proto-colors="contrast"][data-theme="dark"],',
+  '[data-proto-colors="contrast"] [data-theme="dark"] {',
+);
+for (const [name, entry] of Object.entries(contrastMapped.dark))
+  lines.push(declaration(name, cssValue(entry)));
 lines.push("}", "");
 
 writeFileSync(here("../src/assets/proto-colors.css"), lines.join("\n"));
@@ -228,17 +257,28 @@ function contrast(a, b) {
   return (light + 0.05) / (dark + 0.05);
 }
 
-for (const theme of Object.keys(themes)) {
-  console.log(`\n${theme}`);
-  for (const [foreground, background, minimum] of contrastPairs) {
-    const fg = resolveHex(theme, foreground);
-    const bg = resolveHex(theme, background);
-    const ratio = contrast(fg.slice(0, 7), bg.slice(0, 7));
-    const mark = ratio >= minimum ? "ok  " : "FAIL";
-    console.log(
-      `  ${mark} ${ratio.toFixed(2).padStart(5)}  ${foreground} on ${background}`,
-    );
+const contrastVariant = Object.fromEntries(
+  Object.keys(themes).map((theme) => [
+    theme,
+    { ...mapped[theme], ...contrastMapped[theme] },
+  ]),
+);
+
+for (const [label, variant] of [
+  ["new", mapped],
+  ["contrast", contrastVariant],
+])
+  for (const theme of Object.keys(themes)) {
+    console.log(`\n${label}, ${theme}`);
+    for (const [foreground, background, minimum] of contrastPairs) {
+      const fg = resolveHex(theme, foreground, new Set(), variant);
+      const bg = resolveHex(theme, background, new Set(), variant);
+      const ratio = contrast(fg.slice(0, 7), bg.slice(0, 7));
+      const mark = ratio >= minimum ? "ok  " : "FAIL";
+      console.log(
+        `  ${mark} ${ratio.toFixed(2).padStart(5)}  ${foreground} on ${background}`,
+      );
+    }
   }
-}
 
 console.log(`\nPalettes in use: ${Object.values(paletteNames).join(", ")}`);

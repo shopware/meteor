@@ -25,15 +25,15 @@ Issue → recommended change.
 6. **`mt-action-menu` uses `elevation-surface-default`**, though the Elevation docs put dropdowns on `raised`. With distinct surfaces it turns grey in light and darker than cards in dark.
    → Use `elevation-surface-raised`.
 7. **`mt-announcement` has a strong appearance.**
-   → Remove `strong` (TODO in the component). Subtle uses the status backgrounds and no bottom border.
+   → Remove `strong` (TODO in the component). Subtle uses the status backgrounds, with a bottom border one step stronger than the tint (300 / 1300).
 8. **`mt-switch` uses `interaction-secondary-disabled` for the unchecked track**, though the switch isn't disabled; with the muted disabled token the track disappears on cards.
    → Use `border-primary-default` for the track.
 9. **Banners and badges have borders.**
    → Remove the border; the status background (200 / 1400) is enough. Neutral needs a tint: neutral 200 / 1400, or a token for it.
 10. **Links in banners** reach about 4.15:1 in light and 3.6 to 3.9:1 in dark.
-    → Text color with an underline, like in `mt-announcement`.
-11. **Form controls need the proposed `border-control-default`** (neutral 800 / 1000, 3:1 against their surroundings). Today they use `border-primary`, which is 1.22:1 in light.
-    → Add the token and use it for inputs, textareas, checkboxes, radios and secondary buttons. `border-primary` stays for non-interactive lines.
+    → Text color with an underline, like in `mt-announcement`. The contrast mode of the prototype does this already.
+11. **Form controls are below 3:1** (WCAG 1.4.11): `border-primary` is 1.27:1 on white and 1.45:1 on dark cards. A dedicated `border-control-default` at neutral 800 / 1000 (3.47:1 / 3.40:1) was tested in the prototype and looked far too dark.
+    → Keep the default mode light, and offer a contrast mode that raises `border-primary` to neutral 800 / 1000 (3.47:1 on white, 3.40:1 on dark cards, 3.11:1 on dark inputs). The prototype has it as "New + contrast".
 12. **Cards and the `mt-app` frames get their edges from overrides.**
     → Add an `elevation-shadow-raised` token: in light, the 0.5px ring with drop and contact shadow; in dark, a light 10 % ring with a dark shadow. `mt-card` uses it in both themes, the `mt-app` frames in light, and `border-secondary` in dark.
 13. **In `mt-nav`, the hover marker has the same color as the guide lines** (`border-primary`).

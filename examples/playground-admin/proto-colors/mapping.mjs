@@ -88,12 +88,16 @@ export const aliasTokens = {
   "border-critical-dark": "border-critical-default",
 };
 
+/** Proposed new tokens, as [light, dark] neutral steps. */
+export const newTokens = {};
+
 /**
- * Proposed new tokens, as [light, dark] neutral steps. `border-control-default` gives form
- * controls (inputs, checkboxes, radios, secondary buttons) 3:1 against their surroundings.
+ * A contrast mode on top of the new mapping, as [light step, dark step] of neutral. The default
+ * mode stays light; the contrast mode adjusts the tokens that WCAG 2.1 AA asks more of: borders of
+ * form controls and secondary buttons need 3:1 against their surroundings (1.4.11).
  */
-export const newTokens = {
-  "border-control-default": [800, 1000],
+export const contrastTokens = {
+  "border-primary-default": [800, 1000],
 };
 
 /** The old palettes and the new palettes that replace them. */
@@ -198,6 +202,6 @@ export const contrastPairs = [
   ["icon-positive-default", "background-positive-default", 3],
   ["icon-accent-default", "background-accent-default", 3],
   ["border-brand-default", "elevation-surface-default", 3],
-  ["border-control-default", "elevation-surface-raised", 3],
-  ["border-control-default", "background-primary-default", 3],
+  ["border-primary-default", "elevation-surface-raised", 3],
+  ["border-primary-default", "background-primary-default", 3],
 ];

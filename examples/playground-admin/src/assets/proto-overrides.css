@@ -33,9 +33,9 @@
   }
 }
 
-/* Banners, badges and subtle announcements have no border, only a tinted background. The status
-   variants use the status background tokens (200 and 1400). Neutral has no matching token, so it
-   takes neutral 200 and 1400 directly. */
+/* Banners and badges have no border, only a tinted background, which subtle announcements share.
+   The status variants use the status background tokens (200 and 1400). Neutral has no matching
+   token, so it takes neutral 200 and 1400 directly. */
 [data-proto-colors] {
   --proto-tint-neutral: var(--color-neutral-200);
 }
@@ -155,49 +155,76 @@
   background: var(--color-border-primary-default);
 }
 
-/* Subtle announcements take the tints of banners and badges and drop their bottom border. The
-   border stays transparent, so the height doesn't change. */
+/* Subtle announcements take the tints of banners and badges, with a bottom border one step stronger
+   than the tint: 300 in the light theme and 1300 in the dark theme. */
+[data-proto-colors] {
+  --proto-announcement-border-neutral: var(--color-neutral-300);
+  --proto-announcement-border-info: var(--color-brand-300);
+  --proto-announcement-border-attention: var(--color-orange-300);
+  --proto-announcement-border-critical: var(--color-red-300);
+  --proto-announcement-border-positive: var(--color-green-300);
+}
+
+[data-proto-colors][data-theme="dark"],
+[data-proto-colors] [data-theme="dark"] {
+  --proto-announcement-border-neutral: var(--color-neutral-1300);
+  --proto-announcement-border-info: var(--color-brand-1300);
+  --proto-announcement-border-attention: var(--color-orange-1300);
+  --proto-announcement-border-critical: var(--color-red-1300);
+  --proto-announcement-border-positive: var(--color-green-1300);
+}
+
 [data-proto-colors] .mt-announcement.mt-announcement--appearance-subtle {
   &.mt-announcement--variant-neutral {
     --mt-announcement-background: var(--proto-tint-neutral);
-    --mt-announcement-border-color: transparent;
+    --mt-announcement-border-color: var(--proto-announcement-border-neutral);
   }
 
   &.mt-announcement--variant-info {
     --mt-announcement-background: var(--proto-tint-info);
-    --mt-announcement-border-color: transparent;
+    --mt-announcement-border-color: var(--proto-announcement-border-info);
   }
 
   &.mt-announcement--variant-attention {
     --mt-announcement-background: var(--proto-tint-attention);
-    --mt-announcement-border-color: transparent;
+    --mt-announcement-border-color: var(--proto-announcement-border-attention);
   }
 
   &.mt-announcement--variant-critical {
     --mt-announcement-background: var(--proto-tint-critical);
-    --mt-announcement-border-color: transparent;
+    --mt-announcement-border-color: var(--proto-announcement-border-critical);
   }
 
   &.mt-announcement--variant-positive {
     --mt-announcement-background: var(--proto-tint-positive);
-    --mt-announcement-border-color: transparent;
+    --mt-announcement-border-color: var(--proto-announcement-border-positive);
   }
 }
 
-/* Form controls get the proposed `border-control-default` token (neutral 800 and 1000), which keeps
-   3:1 against their surroundings. Focus, error, checked and disabled states keep their own colors. */
-[data-proto-colors]
-  .mt-field:not(.has--error, .has--focus, .is--disabled)
-  .mt-block-field__block,
-[data-proto-colors]
-  .mt-textarea__textarea:not(.mt-textarea__textarea--error, :focus, :disabled),
-[data-proto-colors]
-  .mt-radio-group-indicator__input:not(:checked, :disabled)
-  + .mt-radio-group-indicator__control,
-[data-proto-colors]
-  .mt-field--checkbox:not(.has--error)
-  input[type="checkbox"]:not(:checked, :indeterminate, :disabled)
-  ~ .mt-field__checkbox-state,
-[data-proto-colors] .mt-button.mt-button--secondary:not(:disabled) {
-  border-color: var(--color-border-control-default);
+/* Contrast mode: the guide lines of mt-nav are decorative, so they keep the light look of the
+   default mode instead of the stronger primary border. */
+[data-proto-colors="contrast"] {
+  --proto-nav-guide: var(--color-neutral-300);
+}
+
+[data-proto-colors="contrast"][data-theme="dark"],
+[data-proto-colors="contrast"] [data-theme="dark"] {
+  --proto-nav-guide: var(--color-neutral-1400);
+}
+
+[data-proto-colors="contrast"]
+  .mt-nav__list-item--nested
+  > .mt-nav__sub-list.mt-nav__sub-list::before,
+[data-proto-colors="contrast"]
+  .mt-nav__list-item--nested
+  > .mt-nav__item-row
+  > .mt-nav__link.mt-nav__link::before {
+  background: var(--proto-nav-guide);
+}
+
+/* Contrast mode: links in banners take the text color with an underline, so they keep 4.5:1 on
+   every tint. */
+[data-proto-colors="contrast"] .mt-banner .mt-link.mt-link {
+  color: inherit;
+  text-decoration: underline;
 }

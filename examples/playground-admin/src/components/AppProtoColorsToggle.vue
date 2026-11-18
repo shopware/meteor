@@ -1,15 +1,25 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from "vue";
-import { useProtoColors } from "../composables/useProtoColors";
+import {
+  PROTO_COLORS,
+  useProtoColors,
+  type ProtoColors,
+} from "../composables/useProtoColors";
 import { isTyping } from "../composables/useThemeShortcut";
 
-const isNew = useProtoColors();
+const palette = useProtoColors();
 
-/** `V` switches between the old and the new colors. */
+const labels: Record<ProtoColors, string> = {
+  old: "Old colors",
+  new: "New colors",
+  contrast: "New + contrast",
+};
+
+/** `C` switches between the old and the new colors. From the contrast mode it goes to the old ones. */
 function onKeydown(event: KeyboardEvent) {
   if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return;
-  if (isTyping(event.target) || event.key.toLowerCase() !== "v") return;
-  isNew.value = !isNew.value;
+  if (isTyping(event.target) || event.key.toLowerCase() !== "c") return;
+  palette.value = palette.value === "old" ? "new" : "old";
 }
 
 onMounted(() => window.addEventListener("keydown", onKeydown));
@@ -21,19 +31,22 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
     class="proto-colors-toggle"
     role="group"
     aria-label="Color palettes"
-    title="Press V to switch"
+    title="Press C to switch"
   >
-    <button type="button" :aria-pressed="!isNew" @click="isNew = false">
-      Old colors
-    </button>
-    <button type="button" :aria-pressed="isNew" @click="isNew = true">
-      New colors
+    <button
+      v-for="option in PROTO_COLORS"
+      :key="option"
+      type="button"
+      :aria-pressed="palette === option"
+      @click="palette = option"
+    >
+      {{ labels[option] }}
     </button>
   </div>
 </template>
 
 <style scoped>
-/* Prototype only: switches between the current and the new color palettes. */
+/* Prototype only: switches between the current colors, the new palettes and their contrast mode. */
 .proto-colors-toggle {
   position: fixed;
   z-index: 10000;

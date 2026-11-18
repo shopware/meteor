@@ -9,13 +9,13 @@ export function isTyping(target: EventTarget | null) {
   );
 }
 
-/** `C` switches between the light and the dark theme. */
+/** `D` switches between the light and the dark theme. */
 export function useThemeShortcut() {
   const { resolvedTheme, setTheme } = useTheme();
 
   function onKeydown(event: KeyboardEvent) {
     if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return;
-    if (isTyping(event.target) || event.key.toLowerCase() !== "c") return;
+    if (isTyping(event.target) || event.key.toLowerCase() !== "d") return;
     setTheme(resolvedTheme.value === "dark" ? "light" : "dark");
   }
 
