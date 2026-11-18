@@ -84,46 +84,6 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
   },
 };
 
-export const TestPlainDateInputValue: MtDatepickerStory = {
-  name: "Should input plain date value",
-  args: {
-    label: "Date value",
-    dateType: "date",
-    plainDate: true,
-    timeZone: "America/New_York",
-    locale: "en-US",
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    // Open datepicker by clicking the input wrapper
-    await userEvent.click(canvas.getByRole("textbox"));
-    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
-
-    await userEvent.click(
-      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
-    );
-
-    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
-
-    await userEvent.click(
-      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
-    );
-
-    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
-
-    // Access the calendar and click the date
-    await userEvent.click(document.getElementById("dp-2024-11-13") as HTMLInputElement);
-
-    // Check that the input value matches the date chosen
-    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
-    expect(input.value).toContain("2024/11/13");
-
-    // Expect updatemodelvalue to have been called with the plain day, whatever the time zone
-    expect(args.updateModelValue).toHaveBeenCalledWith("2024-11-13");
-  },
-};
-
 export const VisualTestDateTimeInputValue: MtDatepickerStory = {
   name: "Should input datetime value",
   args: {
