@@ -118,7 +118,6 @@ import { useId } from "vue";
 import { enUS } from "date-fns/locale/en-US";
 import type { Locale } from "date-fns";
 import { importDateFnsLocaleModule } from "./date-fns-locale";
-import { isDateOnlyString, toDateOnlyString, toLocalDateOnlyString } from "./date-only";
 
 // @deprecated tag:v5 remove the `wrapper` class of the root element. Keep `mt-datepicker__wrapper`,
 // which the styles build on.
@@ -128,8 +127,7 @@ interface Time {
   minutes: number;
 }
 
-// With `plainDate` the picker exchanges plain calendar days with the underlying library
-// instead of Date objects. A Date always carries a time of day, and with it a time zone.
+// Lets the library exchange plain days instead of Date objects
 const PLAIN_DATE_MODEL_TYPE = "yyyy-MM-dd";
 
 const props = withDefaults(
@@ -159,15 +157,8 @@ const props = withDefaults(
      */
     timeZone?: string;
     /**
-     * Makes a date-only picker (`dateType="date"`) read and emit the plain calendar day as
-     * "yyyy-MM-dd", for example "2000-01-15". It has no effect on the other date types.
-     *
-     * The day is the same in every time zone and `timeZone` is ignored. Use it for days that do
-     * not depend on a place, such as birthdays. A string with a time is read as the day it falls
-     * on in UTC. A Date object is read as its own calendar day, the one `getDate()` returns, so
-     * `new Date(2000, 0, 15)` is January 15.
-     *
-     * Without it, the picked day is emitted as a UTC ISO string, interpreted in `timeZone`.
+     * With `dateType="date"`, reads and emits a plain day ("yyyy-MM-dd") and ignores `timeZone`.
+     * Use it for days that are the same everywhere, such as birthdays.
      */
     plainDate?: boolean;
     /**
@@ -262,8 +253,7 @@ const props = withDefaults(
     locale: "de",
     format: undefined,
     timeZone: "UTC",
-    // @deprecated tag:v6 - `true` will become the default, so date-only pickers work with plain
-    // calendar days unless `plainDate` is set to `false`.
+    // @deprecated tag:v6 - will default to `true`
     plainDate: false,
     modelValue: null,
     placeholder: "Y-m-d ...",
@@ -382,24 +372,38 @@ const datePickerInputAttrs = computed<
   "aria-describedby": errorMessage.value || props.error ? errorId : undefined,
 }));
 
-// A plain calendar day is the same in every time zone. The picker then reads and emits
-// "yyyy-MM-dd" and does not use the configured time zone.
 const isPlainDate = computed(() => props.dateType === "date" && props.plainDate);
 
-// The plain day a value stands for
+const pad = (value: number, length = 2) => String(value).padStart(length, "0");
+
+// True for a day that exists, such as "2000-01-15"
+const isDateOnlyString = (value: string) => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+
+  const [year, month, day] = match.slice(1).map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  return date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+};
+
+// The plain day a value stands for, or null
 const toPlainDate = (value: string | Date): string | null => {
   if (typeof value === "string" && isDateOnlyString(value)) return value;
 
-  // A Date that stands for a day is mostly built at midnight on the clock of the browser, as
-  // `new Date(2000, 0, 15)` is, so its own calendar day is the day it stands for
-  if (value instanceof Date) return toLocalDateOnlyString(value);
+  // A Date counts as its local day, so `new Date(2000, 0, 15)` is January 15
+  if (value instanceof Date) {
+    if (Number.isNaN(value.getTime())) return null;
 
-  // A date and time is read as the day it is in UTC. That is how a backend returns a stored day.
-  return toDateOnlyString(value, "UTC");
+    return `${pad(value.getFullYear(), 4)}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}`;
+  }
+
+  // A date and time counts as its day in UTC, as backends return stored days
+  const ms = Date.parse(value);
+  return Number.isNaN(ms) ? null : new Date(ms).toISOString().slice(0, 10);
 };
 
-// The library does not get a time zone for plain days, so it reads a limit on the clock of the
-// browser. It is handed over as the plain day it stands for.
+// Without a time zone, the library reads limits as local days
 const toDatePickerLimit = (limit: Date | string | undefined) => {
   if (!isPlainDate.value || limit === undefined) return limit;
 
