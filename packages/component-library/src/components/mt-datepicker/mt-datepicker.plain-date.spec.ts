@@ -24,11 +24,11 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-// With valueFormat="date" a date-only picker works with plain calendar days ("yyyy-MM-dd"). Such a
+// With plainDate a date-only picker works with plain calendar days ("yyyy-MM-dd"). Such a
 // day is the same everywhere, so neither the time zone of the picker nor the browser may
 // influence it.
 describe("mt-datepicker plain date values", () => {
-  const plainDate = { dateType: "date", valueFormat: "date", locale: "en-US" } as const;
+  const plainDate = { dateType: "date", plainDate: true, locale: "en-US" } as const;
 
   // A plain day is read as midnight UTC, so a picker behind UTC is what would move it by mistake
   describe.each([
@@ -187,13 +187,13 @@ describe("mt-datepicker plain date values", () => {
   );
 });
 
-// valueFormat only applies to date-only pickers, so it must not change these values
-describe("mt-datepicker valueFormat with other date types", () => {
+// plainDate only applies to date-only pickers, so it must not change these values
+describe("mt-datepicker plainDate with other date types", () => {
   it.each([
     ["datetime", "2025/01/01, 08:05", "2025-01-01T08:05:00.000Z"],
     ["time", "08:05", "08:05"],
   ] as const)("emits a typed %s as before", async (dateType, typed, emitted) => {
-    const { onUpdate } = renderDatepicker({ dateType, valueFormat: "date", textInput: true });
+    const { onUpdate } = renderDatepicker({ dateType, plainDate: true, textInput: true });
 
     await typeValue(typed);
 

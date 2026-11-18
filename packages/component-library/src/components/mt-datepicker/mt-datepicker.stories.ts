@@ -42,10 +42,6 @@ export default {
       control: { type: "select" },
       options: ["datetime", "date", "time"],
     },
-    valueFormat: {
-      control: { type: "select" },
-      options: ["datetime", "date"],
-    },
     timeZone: {
       control: { type: "select" },
       options: [
@@ -109,12 +105,12 @@ export const DateOnly: MtDatepickerStory = {
   },
 };
 
-export const CalendarDate: MtDatepickerStory = {
-  name: "Calendar date",
+export const PlainDate: MtDatepickerStory = {
+  name: "Plain date",
   args: {
     label: "Birthday",
     dateType: "date",
-    valueFormat: "date",
+    plainDate: true,
     modelValue: "2000-01-15",
   },
   parameters: {
@@ -123,7 +119,7 @@ export const CalendarDate: MtDatepickerStory = {
         code: `<mt-datepicker
   label="Birthday"
   date-type="date"
-  value-format="date"
+  plain-date
   model-value="2000-01-15"
 />`,
       },

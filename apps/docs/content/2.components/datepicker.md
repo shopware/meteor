@@ -21,11 +21,11 @@ import { MtDatepicker } from "@shopware-ag/meteor-component-library";
 ::component-example{name="datepicker-date-only-example" fullWidth}
 ::
 
-### Calendar date
+### Plain date
 
-Set `value-format="date"` when the value is a day that does not depend on a place, such as a birthday. The picker then reads and emits the plain day, for example `2000-01-15`, and ignores the time zone.
+Set `plain-date` when the value is a day that does not depend on a place, such as a birthday. The picker then reads and emits the plain day, for example `2000-01-15`, and ignores the time zone.
 
-::component-example{name="datepicker-calendar-date-example" fullWidth}
+::component-example{name="datepicker-plain-date-example" fullWidth}
 ::
 
 ### Time only
@@ -50,7 +50,7 @@ Set `value-format="date"` when the value is a day that does not depend on a plac
 - Match the `dateType` to the value users actually need, such as `date`, `time`, or `datetime`.
 - Use a clear label so users know what event, deadline, or schedule the value belongs to.
 - Set the timezone intentionally when the chosen value is shared across regions or systems.
-- Use `value-format="date"` for days that are the same everywhere, such as birthdays.
+- Use `plain-date` for days that are the same everywhere, such as birthdays.
 
 #dont
 
@@ -66,7 +66,7 @@ Set `value-format="date"` when the value is a day that does not depend on a plac
 - `dateType` controls whether the picker behaves as a date, time, or datetime input.
 - `range` lets one field hold a start and end value.
 - `timeZone` affects how values are interpreted and displayed.
-- `valueFormat="date"` turns the value of a date-only picker into the plain day, such as `2000-01-15`. It is the same in every time zone and `timeZone` is ignored. A `Date` is read as its own calendar day, so `new Date(2000, 0, 15)` is January 15.
+- `plainDate` turns the value of a date-only picker into the plain day, such as `2000-01-15`. It is the same in every time zone and `timeZone` is ignored. A `Date` is read as its own calendar day, so `new Date(2000, 0, 15)` is January 15.
 - `helpText`, `required`, `disabled`, `error`, and `size` integrate with the shared field styling.
 
 ## Accessibility

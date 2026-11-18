@@ -128,7 +128,7 @@ interface Time {
   minutes: number;
 }
 
-// With valueFormat="date" the picker exchanges plain calendar days with the underlying library
+// With `plainDate` the picker exchanges plain calendar days with the underlying library
 // instead of Date objects. A Date always carries a time of day, and with it a time zone.
 const PLAIN_DATE_MODEL_TYPE = "yyyy-MM-dd";
 
@@ -159,18 +159,17 @@ const props = withDefaults(
      */
     timeZone?: string;
     /**
-     * Defines the value of a date-only picker (`dateType="date"`). It has no effect on the other
-     * date types.
+     * Makes a date-only picker (`dateType="date"`) read and emit the plain calendar day as
+     * "yyyy-MM-dd", for example "2000-01-15". It has no effect on the other date types.
      *
-     * - "datetime": the picked day as a UTC ISO string, interpreted in `timeZone`. This is the
-     *   value the picker has always emitted.
-     * - "date": the picked calendar day as "yyyy-MM-dd", for example "2000-01-15". The day is the
-     *   same in every time zone and `timeZone` is ignored. Use it for days that do not depend on
-     *   a place, such as birthdays. A string with a time is read as the day it falls on in UTC. A
-     *   Date object is read as its own calendar day, the one `getDate()` returns, so
-     *   `new Date(2000, 0, 15)` is January 15.
+     * The day is the same in every time zone and `timeZone` is ignored. Use it for days that do
+     * not depend on a place, such as birthdays. A string with a time is read as the day it falls
+     * on in UTC. A Date object is read as its own calendar day, the one `getDate()` returns, so
+     * `new Date(2000, 0, 15)` is January 15.
+     *
+     * Without it, the picked day is emitted as a UTC ISO string, interpreted in `timeZone`.
      */
-    valueFormat?: "datetime" | "date";
+    plainDate?: boolean;
     /**
      * The value of the date picker. Can be a single string or an array of strings.
      * This represents the currently selected date(s).
@@ -263,9 +262,9 @@ const props = withDefaults(
     locale: "de",
     format: undefined,
     timeZone: "UTC",
-    // @deprecated tag:v6 - "date" will become the default, so date-only pickers work with plain
-    // calendar days unless "datetime" is requested.
-    valueFormat: "datetime",
+    // @deprecated tag:v6 - `true` will become the default, so date-only pickers work with plain
+    // calendar days unless `plainDate` is set to `false`.
+    plainDate: false,
     modelValue: null,
     placeholder: "Y-m-d ...",
     is24: true,
@@ -385,7 +384,7 @@ const datePickerInputAttrs = computed<
 
 // A plain calendar day is the same in every time zone. The picker then reads and emits
 // "yyyy-MM-dd" and does not use the configured time zone.
-const isPlainDate = computed(() => props.dateType === "date" && props.valueFormat === "date");
+const isPlainDate = computed(() => props.dateType === "date" && props.plainDate);
 
 // The plain day a value stands for
 const toPlainDate = (value: string | Date): string | null => {

@@ -1,5 +1,5 @@
 /**
- * Helpers for the plain calendar days of mt-datepicker (`valueFormat="date"`).
+ * Helpers for the plain calendar days of mt-datepicker (`plainDate`).
  *
  * A plain day ("yyyy-MM-dd") has no time and no place, so it is the same day in every time zone.
  * These helpers find the day a value stands for and check whether a value is such a day.

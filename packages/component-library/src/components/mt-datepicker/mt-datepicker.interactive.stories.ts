@@ -84,12 +84,12 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
   },
 };
 
-export const TestCalendarDateInputValue: MtDatepickerStory = {
-  name: "Should input calendar date value",
+export const TestPlainDateInputValue: MtDatepickerStory = {
+  name: "Should input plain date value",
   args: {
     label: "Date value",
     dateType: "date",
-    valueFormat: "date",
+    plainDate: true,
     timeZone: "America/New_York",
     locale: "en-US",
   },
