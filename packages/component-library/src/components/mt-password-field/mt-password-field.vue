@@ -1,29 +1,45 @@
 <template>
-  <mt-base-field
-    class="mt-password-field"
-    :disabled="disabled"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-    :size="size"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
+  <div
+    :class="[
+      'mt-password-field',
+      `mt-password-field--${size}`,
+      {
+        'mt-password-field--error': hasError,
+        'mt-password-field--disabled': disabled,
+        'mt-password-field--inherited': isInherited,
+        'mt-password-field--focus': hasFocus,
+      },
+    ]"
   >
-    <template #label>
+    <mt-field-label
+      v-if="label"
+      class="mt-password-field__label"
+      :for="identification"
+      :required="required"
+      :has-error="hasError"
+      :disabled="disableInheritanceToggle"
+      :inheritance="inheritanceState"
+      :style="labelStyle"
+      @update:inheritance="onInheritanceUpdate"
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #field-prefix>
-      <slot name="prefix" />
-    </template>
+    <mt-help-text
+      v-if="helpText"
+      class="mt-password-field__help-text"
+      :text="helpText"
+      placement="right"
+      :style="{ gridArea: 'help-text' }"
+    />
 
-    <template #element="{ identification }">
+    <div class="mt-password-field__block">
+      <mt-field-affix v-if="$slots.prefix" type="prefix" :has-error="hasError">
+        <slot name="prefix" />
+      </mt-field-affix>
+
       <input
-        :id="createInputId(identification)"
+        :id="inputId"
         :type="showPassword ? 'text' : 'password'"
         :name="identification"
         :autocomplete="autocomplete"
@@ -53,31 +69,34 @@
           aria-hidden="true"
         />
       </button>
-    </template>
 
-    <template #field-suffix>
-      <slot name="suffix" />
-    </template>
+      <mt-field-affix v-if="$slots.suffix" :has-error="hasError">
+        <slot name="suffix" />
+      </mt-field-affix>
+    </div>
 
-    <template #error>
-      <mt-field-error v-if="!!error" :error="error" />
-    </template>
+    <mt-field-error v-if="!!error" :error="error" :style="{ gridArea: 'error' }" />
 
-    <template #field-hint>
-      <mt-field-hint v-if="showFieldHint()" :hide-icon="!!$slots.hint">
-        <slot name="hint">
-          {{ hint }}
-        </slot>
-      </mt-field-hint>
-    </template>
-  </mt-base-field>
+    <div v-if="showFieldHint()" class="mt-password-field__hint-row">
+      <div class="mt-password-field__hint">
+        <mt-field-hint :hide-icon="!!$slots.hint">
+          <slot name="hint">
+            {{ hint }}
+          </slot>
+        </mt-field-hint>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, useSlots } from "vue";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
+import { ref, computed, onMounted, useSlots, type CSSProperties } from "vue";
+import { createId } from "../../utils/id";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import { useI18n } from "vue-i18n";
 
@@ -101,6 +120,10 @@ const props = withDefaults(
     isInheritanceField?: boolean;
     disableInheritanceToggle?: boolean;
     idSuffix?: string;
+    /**
+     * Validation rules for the field, kept for API compatibility with the other fields.
+     */
+    validation?: string | string[] | boolean | Record<string, unknown> | null;
   }>(),
   {
     label: null,
@@ -117,10 +140,39 @@ const props = withDefaults(
     disableInheritanceToggle: false,
     idSuffix: "",
     name: undefined,
+    validation: null,
   },
 );
 
 const slots = useSlots();
+
+const id = ref<string | undefined>(undefined);
+
+onMounted(() => {
+  id.value = createId();
+});
+
+const identification = computed(() => props.name ?? `mt-field--${id.value}`);
+
+const inputId = computed(() =>
+  props.idSuffix && props.idSuffix.length > 0
+    ? `${identification.value}-${props.idSuffix}`
+    : identification.value,
+);
+
+const hasError = computed(() => !!props.error);
+
+const inheritanceState = computed<"linked" | "unlinked" | "none">(() => {
+  if (!props.isInheritanceField) return "none";
+
+  return props.isInherited ? "linked" : "unlinked";
+});
+
+const labelStyle = computed<CSSProperties>(() => ({
+  gridArea: "label",
+  marginBottom: "var(--scale-size-2)",
+  lineHeight: "var(--font-line-height-xs)",
+}));
 
 const showFieldHint = () =>
   !!slots.hint || (props.hint != null && String(props.hint).trim() !== "");
@@ -128,8 +180,8 @@ const showFieldHint = () =>
 const emit = defineEmits<{
   (e: "change", value: string | undefined): void;
   (e: "submit"): void;
-  (e: "inheritance-restore", value: unknown): void;
-  (e: "inheritance-remove", value: unknown): void;
+  (e: "inheritance-restore", value?: unknown): void;
+  (e: "inheritance-remove", value?: unknown): void;
   (e: "update:modelValue", value: string | undefined): void;
 }>();
 
@@ -152,19 +204,20 @@ function onChange(event: Event) {
   emit("change", target?.value);
 }
 
+function onInheritanceUpdate(value: "linked" | "unlinked") {
+  if (value === "unlinked") {
+    emit("inheritance-remove");
+  } else {
+    emit("inheritance-restore");
+  }
+}
+
 function setFocus() {
   hasFocus.value = true;
 }
 
 function removeFocus() {
   hasFocus.value = false;
-}
-
-function createInputId(identification: string): string {
-  if (!props.idSuffix || props.idSuffix.length <= 0) {
-    return identification;
-  }
-  return `${identification}-${props.idSuffix}`;
 }
 
 const { t } = useI18n({
@@ -182,16 +235,85 @@ const { t } = useI18n({
 </script>
 
 <style scoped>
-.mt-password-field :deep(.mt-block-field__block) {
-  background-color: var(--color-background-primary-default);
-
-  &:has(input:disabled) {
-    background-color: var(--color-background-tertiary-default);
-  }
+.mt-password-field {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label help-text"
+    "input input"
+    "error error"
+    "hint hint";
+  width: 100%;
 }
 
-.mt-password-field.has--error :deep(.mt-block-field__block) {
+.mt-password-field--disabled {
+  cursor: not-allowed;
+}
+
+.mt-password-field__block {
+  grid-area: input;
+  display: flex;
+  min-height: var(--scale-size-48);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  overflow: hidden;
+  background-color: var(--color-background-primary-default);
+}
+
+.mt-password-field--small .mt-password-field__block {
+  min-height: var(--scale-size-32);
+}
+
+.mt-password-field__block:has(input:disabled) {
+  background-color: var(--color-background-tertiary-default);
+}
+
+.mt-password-field--focus .mt-password-field__block {
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  outline-offset: var(--scale-size-2);
+}
+
+.mt-password-field--error .mt-password-field__block {
   background-color: var(--color-background-critical-default);
+  border-color: var(--color-border-critical-default);
+}
+
+.mt-password-field__input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 13px var(--scale-size-16);
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-body);
+  line-height: 1;
+  color: var(--color-text-primary-default);
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.mt-password-field--small .mt-password-field__input {
+  padding: var(--scale-size-4) var(--scale-size-16);
+}
+
+.mt-password-field__input::placeholder {
+  color: var(--color-text-secondary-default);
+}
+
+.mt-password-field__input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-background-primary-default) inset;
+  -webkit-text-fill-color: var(--color-text-primary-default);
+  caret-color: var(--color-text-primary-default);
+}
+
+.mt-password-field--error .mt-password-field__input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-background-critical-default) inset;
+}
+
+.mt-password-field__input:disabled {
+  cursor: default;
 }
 
 .mt-password-field__visibility-toggle {
@@ -210,5 +332,32 @@ const { t } = useI18n({
   &:focus-visible {
     outline: 2px solid var(--color-border-brand-default);
   }
+}
+
+/* Fits inside the 30px between the small field's borders, so the field stays 32px. */
+.mt-password-field--small .mt-password-field__visibility-toggle {
+  height: var(--scale-size-24);
+  width: var(--scale-size-24);
+}
+
+.mt-password-field__hint-row {
+  grid-area: hint;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mt-password-field__hint {
+  margin-top: var(--scale-size-4);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  color: var(--color-text-secondary-default);
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
+}
+
+.mt-password-field__hint:empty {
+  display: none;
 }
 </style>

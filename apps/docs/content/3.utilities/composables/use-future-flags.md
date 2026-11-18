@@ -27,8 +27,7 @@ const hasDefaultMargin = computed(() => !futureFlags.removeDefaultMargin);
 | Flag | Type | Default | Description |
 | --- | --- | --- | --- |
 | `removeCardWidth` | `boolean` | `false` | Removes the maximum width constraint from `mt-card`. |
-| `removeDefaultMargin` | `boolean` | `false` | Removes the default outer margin from components such as cards, tabs, checkboxes, switches, and text fields. |
-| `removeSwitchMinHeight` | `boolean` | `false` | Removes the minimum height from a non-bordered `mt-switch`. |
+| `removeDefaultMargin` | `boolean` | `false` | Removes the default outer margin from `mt-card`, `mt-banner` and `mt-tabs`. Form fields have no outer margin. |
 | `bannerFullWidth` | `boolean` | `false` | Makes `mt-banner` span the full width of its container. |
 
 ## Related

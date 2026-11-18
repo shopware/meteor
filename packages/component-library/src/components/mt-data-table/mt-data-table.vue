@@ -153,7 +153,9 @@
                 class="mt-data-table__table-selection-head"
                 scope="col"
               >
-                <mt-checkbox :checked="somethingSelected" @change="handleSelectAll" />
+                <div class="mt-data-table__selection-checkbox">
+                  <mt-checkbox :checked="somethingSelected" @change="handleSelectAll" />
+                </div>
               </th>
 
               <template v-for="column in sortedColumns">
@@ -399,11 +401,13 @@
                 </td>
 
                 <td v-if="allowRowSelection" v-stickyColumn class="mt-data-table__table-select-row">
-                  <mt-checkbox
-                    :checked="getSelectionValue(data.id)"
-                    :disabled="disableRowSelect.includes(data.id)"
-                    @change="onRowSelect(data.id)"
-                  />
+                  <div class="mt-data-table__selection-checkbox">
+                    <mt-checkbox
+                      :checked="getSelectionValue(data.id)"
+                      :disabled="disableRowSelect.includes(data.id)"
+                      @change="onRowSelect(data.id)"
+                    />
+                  </div>
                 </td>
 
                 <template v-for="column in sortedColumns">
@@ -559,14 +563,16 @@
     <template #footer>
       <mt-inset class="mt-data-table__footer-inset">
         <div class="mt-data-table__footer-left">
-          <mt-select
-            small
-            hide-clearable-button
-            :options="paginationOptionsConverted"
-            :model-value="paginationLimit"
-            :aria-label="t('itemsPerPage')"
-            @change="emitPaginationLimitChange"
-          />
+          <div class="mt-data-table__pagination-select">
+            <mt-select
+              small
+              hide-clearable-button
+              :options="paginationOptionsConverted"
+              :model-value="paginationLimit"
+              :aria-label="t('itemsPerPage')"
+              @change="emitPaginationLimitChange"
+            />
+          </div>
           <span class="mt-data-table__pagination-info-text">
             {{ t("itemsPerPage") }}
           </span>
@@ -2083,12 +2089,6 @@ export default defineComponent({
   padding: 0;
   overflow: hidden;
 }
-.mt-data-table .mt-search .mt-field__label {
-  display: none;
-}
-.mt-data-table .mt-search .mt-field__hint:empty {
-  display: none;
-}
 .mt-data-table .mt-data-table__toolbar {
   width: 100%;
   display: flex;
@@ -2335,22 +2335,10 @@ export default defineComponent({
   border-left: 0px;
   padding-left: var(--scale-size-8);
 }
-.mt-data-table .mt-data-table__table-select-row .mt-field--checkbox,
-.mt-data-table .mt-data-table__table-selection-head .mt-field--checkbox {
-  margin-bottom: 0;
-}
-.mt-data-table .mt-data-table__table-select-row .mt-field--checkbox .mt-field--checkbox__content,
-.mt-data-table
-  .mt-data-table__table-selection-head
-  .mt-field--checkbox
-  .mt-field--checkbox__content {
+.mt-data-table .mt-data-table__selection-checkbox {
   display: flex;
   justify-content: center;
   margin-top: var(--scale-size-2);
-}
-.mt-data-table .mt-data-table__table-select-row .mt-field--checkbox .mt-field,
-.mt-data-table .mt-data-table__table-selection-head .mt-field--checkbox .mt-field {
-  display: none;
 }
 .mt-data-table .mt-data-table__table-selection-bulk-edit {
   background-color: var(--color-elevation-surface-sunken);
@@ -2472,11 +2460,7 @@ export default defineComponent({
   flex-wrap: nowrap;
   align-items: center;
 }
-.mt-data-table__footer-left .mt-field__label {
-  display: none;
-}
-.mt-data-table__footer-left .mt-select {
-  margin-bottom: 0;
+.mt-data-table__pagination-select {
   width: 100px;
 }
 .mt-data-table__footer-inset {

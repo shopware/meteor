@@ -1,25 +1,43 @@
 <template>
-  <mt-base-field
-    :class="mtFieldClasses"
-    v-bind="$attrs"
-    :disabled="disabled"
-    :has-focus="expanded"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
+  <div
+    :class="[
+      'mt-select',
+      `mt-select--${size}`,
+      {
+        'mt-select--focus': expanded,
+        'mt-select--error': !!error,
+        'mt-select--disabled': disabled,
+        'mt-select--inherited': isInherited,
+      },
+    ]"
   >
-    <template #label>
+    <mt-field-label
+      v-if="label"
+      class="mt-select__label"
+      :for="identification"
+      :required="required"
+      :has-error="!!error"
+      :disabled="disableInheritanceToggle"
+      :inheritance="inheritanceState"
+      :style="labelStyle"
+      @update:inheritance="onInheritanceUpdate"
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #field-prefix>
-      <slot name="mt-select-prefix" />
-    </template>
+    <mt-help-text
+      v-if="helpText"
+      class="mt-select__help-text"
+      :text="helpText"
+      placement="right"
+      :style="{ gridArea: 'help-text' }"
+    />
 
-    <!-- eslint-disable-next-line vue/no-template-shadow -->
-    <template #element="{ identification }">
+    <div class="mt-select__block">
+      <mt-field-affix type="prefix" class="mt-select__prefix" :has-error="!!error">
+        <slot name="mt-select-prefix" />
+      </mt-field-affix>
+
       <div
         ref="selectWrapper"
         class="mt-select__selection"
@@ -72,37 +90,48 @@
           <slot name="results-list" v-bind="{ collapse }" />
         </transition>
       </template>
-    </template>
 
-    <template #field-suffix>
-      <slot name="mt-select-suffix" />
-    </template>
+      <mt-field-affix v-if="copyable" class="mt-select__suffix" :has-error="!!error">
+        <mt-field-copyable :copyable-text="copyableText" :tooltip="copyableTooltip" />
+      </mt-field-affix>
 
-    <template #field-hint>
-      <slot name="mt-select-hint" />
-    </template>
+      <mt-field-affix v-else class="mt-select__suffix" :has-error="!!error">
+        <slot name="mt-select-suffix" />
+      </mt-field-affix>
+    </div>
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
-  </mt-base-field>
+    <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />
+
+    <div class="mt-select__hint-row">
+      <div class="mt-select__hint">
+        <slot name="mt-select-hint" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import MtBaseField from "../mt-base-field/mt-base-field.vue";
+import { defineComponent, type CSSProperties, type PropType } from "vue";
+import { createId } from "../../../utils/id";
 import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtLoader from "../../mt-loader/mt-loader.vue";
 import MtFieldError from "../mt-field-error/mt-field-error.vue";
+import MtFieldLabel from "../mt-field-label/mt-field-label.vue";
+import MtFieldAffix from "../mt-field-affix/mt-field-affix.vue";
+import MtFieldCopyable from "../mt-field-copyable/mt-field-copyable.vue";
+import MtHelpText from "../../mt-help-text/mt-help-text.vue";
 
 export default defineComponent({
   name: "MtSelectBase",
 
   components: {
-    "mt-base-field": MtBaseField,
     "mt-icon": MtIcon,
     "mt-loader": MtLoader,
     "mt-field-error": MtFieldError,
+    "mt-field-label": MtFieldLabel,
+    "mt-field-affix": MtFieldAffix,
+    "mt-field-copyable": MtFieldCopyable,
+    "mt-help-text": MtHelpText,
   },
 
   props: {
@@ -130,6 +159,51 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
+    },
+
+    /**
+     * Determines if the field is required.
+     */
+    required: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * A text that helps the user to understand what this field does.
+     */
+    helpText: {
+      type: String,
+      required: false,
+      default: "",
+    },
+
+    /**
+     * Toggles the copy function of the select field.
+     */
+    copyable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * If set to true the tooltip will change on successful copy.
+     */
+    copyableTooltip: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * The text that gets copied to the clipboard.
+     */
+    copyableText: {
+      type: String,
+      required: false,
+      default: "",
     },
 
     /**
@@ -187,18 +261,56 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
+    /**
+     * The size of the select field.
+     *
+     * @values small, default
+     */
+    size: {
+      type: String as PropType<"small" | "default">,
+      required: false,
+      default: "default",
+      validator(value: string) {
+        return ["small", "default"].includes(value);
+      },
+    },
+
+    /**
+     * @ignore
+     */
+    name: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
 
   data() {
     return {
       expanded: false,
       suffixWidth: 0,
+      id: undefined as string | undefined,
     };
   },
 
   computed: {
-    mtFieldClasses(): { "has--focus": boolean } {
-      return { "has--focus": this.expanded };
+    identification(): string {
+      return this.name ?? `mt-field--${this.id}`;
+    },
+
+    inheritanceState(): "linked" | "unlinked" | "none" {
+      if (!this.isInheritanceField) return "none";
+
+      return this.isInherited ? "linked" : "unlinked";
+    },
+
+    labelStyle(): CSSProperties {
+      return {
+        gridArea: "label",
+        marginBottom: "var(--scale-size-2)",
+        lineHeight: "var(--font-line-height-xs)",
+      };
     },
 
     selectionIndicatorsRight(): string {
@@ -209,6 +321,8 @@ export default defineComponent({
   },
 
   mounted() {
+    this.id = createId();
+
     this.$nextTick(() => this.updateSuffixWidth());
     window.addEventListener("resize", this.updateSuffixWidth, { passive: true });
   },
@@ -228,9 +342,7 @@ export default defineComponent({
   methods: {
     updateSuffixWidth() {
       // Find the suffix container to get the width
-      const suffixElement = this.$el?.querySelector(
-        ".mt-block-field__block > .mt-field__addition:not(.is--prefix)",
-      );
+      const suffixElement = this.$el?.querySelector(".mt-select__block > .mt-select__suffix");
 
       if (!suffixElement) {
         this.suffixWidth = 0;
@@ -238,6 +350,14 @@ export default defineComponent({
       }
 
       this.suffixWidth = suffixElement.offsetWidth;
+    },
+
+    onInheritanceUpdate(value: "linked" | "unlinked") {
+      if (value === "unlinked") {
+        this.$emit("inheritance-remove");
+      } else {
+        this.$emit("inheritance-restore");
+      }
     },
 
     toggleExpand() {
@@ -353,16 +473,73 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .mt-select {
   position: relative;
   min-width: 100px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label help-text"
+    "input input"
+    "error error"
+    "hint hint";
+  width: 100%;
 }
 
-.mt-select .mt-block-field__block {
+.mt-select--disabled {
+  cursor: not-allowed;
+}
+
+.mt-select .mt-select__block {
+  grid-area: input;
+  display: flex;
+  min-height: var(--scale-size-48);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
   background-color: var(--color-background-primary-default);
   position: relative;
   overflow: hidden;
+}
+
+.mt-select--small .mt-select__block {
+  min-height: var(--scale-size-32);
+}
+
+.mt-select--focus .mt-select__block {
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  outline-offset: var(--scale-size-2);
+}
+
+.mt-select--error .mt-select__block {
+  background-color: var(--color-background-critical-default);
+  border-color: var(--color-border-critical-default);
+}
+
+.mt-select--error .mt-select__selection :deep(input:-webkit-autofill) {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-background-critical-default) inset;
+}
+
+.mt-select .mt-select__hint-row {
+  grid-area: hint;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mt-select .mt-select__hint {
+  margin-top: var(--scale-size-4);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  color: var(--color-text-secondary-default);
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
+}
+
+.mt-select .mt-select__hint:empty,
+.mt-select .mt-select__hint-row:has(> .mt-select__hint:empty) {
+  display: none;
 }
 
 .mt-select .mt-select__selection {
@@ -399,7 +576,7 @@ export default defineComponent({
   top: -4px;
 }
 
-.mt-select .mt-select__selection-indicators .mt-loader .mt-loader__container {
+.mt-select .mt-select__selection-indicators .mt-loader :deep(.mt-loader__container) {
   transform: none;
   left: 0;
   top: 0;
@@ -450,40 +627,21 @@ export default defineComponent({
 }
 
 .mt-select:hover .mt-select__select-indicator-clear,
-.mt-select.has--focus .mt-select__select-indicator-clear {
+.mt-select--focus .mt-select__select-indicator-clear {
   opacity: 1;
   pointer-events: all;
   cursor: pointer;
 }
 
-.mt-select.mt-select--small .mt-select__selection {
+.mt-select--small .mt-select__selection {
   padding: 0 var(--scale-size-6);
 }
 
-.mt-select.is--disabled .mt-block-field__block,
-.mt-select.is--disabled .mt-label,
-.mt-select.is--disabled input {
+.mt-select--disabled .mt-select__block {
   background-color: var(--color-background-tertiary-default);
 }
 
 .mt-select--small {
   cursor: pointer;
-}
-
-.mt-select.mt-select--small .mt-block-field__block {
-  min-height: var(--scale-size-32);
-}
-
-/* Vue.js transitions */
-.mt-select-result-list-fade-down-enter-active,
-.mt-select-result-list-fade-down-leave-active {
-  transition: all ease-in-out 0.2s;
-  transform: translateY(0);
-}
-
-.mt-select-result-list-fade-down-enter-from,
-.mt-select-result-list-fade-down-leave-to {
-  transform: translateY(-10px);
-  opacity: 0;
 }
 </style>

@@ -8,6 +8,11 @@
     v-bind="$attrs"
     :error="error"
     :disabled="disabled"
+    :required="required"
+    :help-text="helpText"
+    :copyable="copyable"
+    :copyable-tooltip="copyableTooltip"
+    :copyable-text="copyableText"
     :show-clearable-button="!hideClearableButton"
     :is-inherited="isInherited"
     :is-inheritance-field="isInheritanceField"
@@ -144,6 +149,7 @@ import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-resu
 import MtSelectSelectionList from "../_internal/mt-select-base/_internal/mt-select-selection-list.vue";
 import MtHighlightText from "../_internal/mt-highlight-text.vue";
 import { useI18n } from "vue-i18n";
+import MtValidationMixin from "../../mixins/validation.mixin";
 
 export default defineComponent({
   name: "MtSelect",
@@ -156,6 +162,8 @@ export default defineComponent({
     "mt-highlight-text": MtHighlightText,
     "mt-select-result": MtSelectResult,
   },
+
+  mixins: [MtValidationMixin],
 
   inheritAttrs: false,
 
@@ -387,6 +395,42 @@ export default defineComponent({
       required: false,
       default: null,
     },
+
+    /**
+     * Determines if the field is required.
+     */
+    required: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * A text that helps the user to understand what this field does.
+     */
+    helpText: {
+      type: String,
+      required: false,
+      default: "",
+    },
+
+    /**
+     * Toggles a button that copies the labels of the selected options to the clipboard.
+     */
+    copyable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * If set to true the tooltip will change on successful copy.
+     */
+    copyableTooltip: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   emits: [
@@ -429,6 +473,13 @@ export default defineComponent({
   },
 
   computed: {
+    copyableText(): string {
+      return this.visibleValues
+        .map((item) => this.getKey(item, this.labelProperty))
+        .filter((label) => label !== undefined && label !== null && label !== "")
+        .join(", ");
+    },
+
     visibleValues(): any[] {
       if (
         typeof this.currentValue === "string" ||
@@ -520,7 +571,7 @@ export default defineComponent({
     },
 
     /**
-     * `size="small"` passed as an attribute reaches mt-base-field through $attrs;
+     * `size="small"` passed as an attribute reaches mt-select-base through $attrs;
      * treat it like the `small` prop so both render the same small select.
      */
     isSmall(): boolean {

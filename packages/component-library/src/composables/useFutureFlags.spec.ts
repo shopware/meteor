@@ -13,9 +13,7 @@ describe("useFutureFlags", () => {
       expect(result).toEqual({
         removeCardWidth: false,
         removeDefaultMargin: false,
-        removeSwitchMinHeight: false,
         bannerFullWidth: false,
-        consistentLabelLineHeight: false,
       });
     });
 
@@ -26,7 +24,6 @@ describe("useFutureFlags", () => {
       // ASSERT
       expect(result.removeCardWidth).toBe(true);
       expect(result.removeDefaultMargin).toBe(false);
-      expect(result.removeSwitchMinHeight).toBe(false);
       expect(result.bannerFullWidth).toBe(false);
     });
 
@@ -38,9 +35,7 @@ describe("useFutureFlags", () => {
       expect(result).toEqual({
         removeCardWidth: true,
         removeDefaultMargin: true,
-        removeSwitchMinHeight: true,
         bannerFullWidth: true,
-        consistentLabelLineHeight: true,
       });
     });
 
@@ -51,7 +46,6 @@ describe("useFutureFlags", () => {
       // ASSERT
       expect(result.removeCardWidth).toBe(false);
       expect(result.removeDefaultMargin).toBe(true);
-      expect(result.removeSwitchMinHeight).toBe(true);
       expect(result.bannerFullWidth).toBe(true);
     });
 
@@ -92,9 +86,7 @@ describe("useFutureFlags", () => {
       expect(JSON.parse(output)).toEqual({
         removeCardWidth: false,
         removeDefaultMargin: true,
-        removeSwitchMinHeight: true,
         bannerFullWidth: true,
-        consistentLabelLineHeight: true,
       });
     });
   });
