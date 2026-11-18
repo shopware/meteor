@@ -323,7 +323,6 @@ export const en = {
       critical: "Critical",
       positive: "Positive",
     },
-    announcementStrong: "Strong announcement",
     reset: "Reset settings",
     resetTitle: "Reset settings?",
     resetText:

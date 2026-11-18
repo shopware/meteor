@@ -47,7 +47,6 @@ const meta: MtAnnouncementMeta = {
   },
   args: {
     variant: "attention",
-    appearance: "subtle",
     icon: "solid-tools",
     closable: false,
     default:
@@ -58,10 +57,6 @@ const meta: MtAnnouncementMeta = {
     variant: {
       control: { type: "select" },
       options: ["neutral", "info", "attention", "critical", "positive"],
-    },
-    appearance: {
-      control: { type: "select" },
-      options: ["subtle", "strong"],
     },
     icon: {
       control: { type: "text" },
@@ -76,7 +71,6 @@ const meta: MtAnnouncementMeta = {
     template: `
       <mt-announcement
         :variant="args.variant"
-        :appearance="args.appearance"
         :icon="args.icon"
         :closable="args.closable"
         @close="args.close"
@@ -91,37 +85,22 @@ export type MtAnnouncementStory = StoryObj<MtAnnouncementMeta>;
 
 export const Default: MtAnnouncementStory = {};
 
-export const Strong: MtAnnouncementStory = {
-  args: {
-    appearance: "strong",
-  },
-};
-
-const variantsRender =
-  (appearance: "subtle" | "strong"): MtAnnouncementStory["render"] =>
-  () => ({
-    components: { MtAnnouncement },
-    setup: () => ({ variants: VARIANTS, appearance }),
-    template: `
-      <div style="display: grid; gap: var(--scale-size-8);">
-        <mt-announcement
-          v-for="item in variants"
-          :key="item.variant"
-          :variant="item.variant"
-          :appearance="appearance"
-          :icon="item.icon"
-        >
-          {{ item.text }}
-        </mt-announcement>
-      </div>`,
-  });
-
 export const Variants: MtAnnouncementStory = {
-  render: variantsRender("subtle"),
-};
-
-export const StrongVariants: MtAnnouncementStory = {
-  render: variantsRender("strong"),
+  render: () => ({
+    components: { MtAnnouncement },
+    setup: () => ({ variants: VARIANTS }),
+    template: `
+    <div style="display: grid; gap: var(--scale-size-8);">
+      <mt-announcement
+        v-for="item in variants"
+        :key="item.variant"
+        :variant="item.variant"
+        :icon="item.icon"
+      >
+        {{ item.text }}
+      </mt-announcement>
+    </div>`,
+  }),
 };
 
 export const Closable: MtAnnouncementStory = {
@@ -142,7 +121,6 @@ export const WithLink: MtAnnouncementStory = {
     template: `
       <mt-announcement
         :variant="args.variant"
-        :appearance="args.appearance"
         :icon="args.icon"
         :closable="args.closable"
         @close="args.close"
@@ -166,8 +144,7 @@ export const LongText: MtAnnouncementStory = {
       <div style="max-width: 720px;">
         <mt-announcement
           :variant="args.variant"
-          :appearance="args.appearance"
-          :icon="args.icon"
+            :icon="args.icon"
           :closable="args.closable"
           @close="args.close"
         >

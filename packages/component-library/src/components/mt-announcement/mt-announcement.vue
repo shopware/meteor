@@ -2,11 +2,7 @@
   <div
     ref="root"
     class="mt-announcement"
-    :class="[
-      `mt-announcement--variant-${variant}`,
-      `mt-announcement--appearance-${appearance}`,
-      { 'mt-announcement--closable': closable },
-    ]"
+    :class="[`mt-announcement--variant-${variant}`, { 'mt-announcement--closable': closable }]"
   >
     <div class="mt-announcement__message">
       <span v-if="icon" class="mt-announcement__icon">
@@ -48,13 +44,6 @@ withDefaults(
      * @values neutral, info, attention, critical, positive
      */
     variant?: "neutral" | "info" | "attention" | "critical" | "positive";
-    /**
-     * How strongly the announcement stands out: `subtle` tints the background, `strong` fills it
-     * with the color of the variant.
-     *
-     * @values subtle, strong
-     */
-    appearance?: "subtle" | "strong";
     /** An icon at the start of the message, such as `solid-tools` for planned maintenance. */
     icon?: string;
     /** Shows a close button. The announcement doesn't hide itself: remove it on `close`. */
@@ -62,7 +51,6 @@ withDefaults(
   }>(),
   {
     variant: "neutral",
-    appearance: "subtle",
     icon: undefined,
     closable: false,
   },
@@ -95,7 +83,11 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+/* The variants tint the background, keep the regular text color and draw a light line in their
+   color along the bottom edge. */
 .mt-announcement {
+  --mt-announcement-color: var(--color-text-primary-default);
+
   display: flex;
   align-items: flex-start;
   gap: var(--scale-size-8);
@@ -106,6 +98,7 @@ onBeforeUnmount(() => {
   line-height: var(--font-line-height-xs);
   color: var(--mt-announcement-color);
   background-color: var(--mt-announcement-background);
+  border-block-end: 1px solid var(--mt-announcement-border-color);
 }
 
 .mt-announcement__message {
@@ -200,19 +193,13 @@ onBeforeUnmount(() => {
   outline-color: currentColor;
 }
 
-.mt-announcement--appearance-subtle {
-  --mt-announcement-color: var(--color-text-primary-default);
-
-  border-block-end: 1px solid var(--mt-announcement-border-color);
-}
-
-.mt-announcement--appearance-subtle.mt-announcement--variant-neutral {
+.mt-announcement--variant-neutral {
   --mt-announcement-background: var(--color-background-secondary-default);
   --mt-announcement-icon-color: var(--color-icon-primary-default);
   --mt-announcement-border-color: var(--color-border-secondary-default);
 }
 
-.mt-announcement--appearance-subtle.mt-announcement--variant-info {
+.mt-announcement--variant-info {
   --mt-announcement-background: var(--color-background-brand-default);
   --mt-announcement-icon-color: var(--color-icon-brand-default);
   --mt-announcement-border-color: color-mix(
@@ -222,7 +209,7 @@ onBeforeUnmount(() => {
   );
 }
 
-.mt-announcement--appearance-subtle.mt-announcement--variant-attention {
+.mt-announcement--variant-attention {
   --mt-announcement-background: var(--color-background-attention-default);
   --mt-announcement-icon-color: var(--color-icon-attention-default);
   --mt-announcement-border-color: color-mix(
@@ -232,7 +219,7 @@ onBeforeUnmount(() => {
   );
 }
 
-.mt-announcement--appearance-subtle.mt-announcement--variant-critical {
+.mt-announcement--variant-critical {
   --mt-announcement-background: var(--color-background-critical-default);
   --mt-announcement-icon-color: var(--color-icon-critical-default);
   --mt-announcement-border-color: color-mix(
@@ -242,7 +229,7 @@ onBeforeUnmount(() => {
   );
 }
 
-.mt-announcement--appearance-subtle.mt-announcement--variant-positive {
+.mt-announcement--variant-positive {
   --mt-announcement-background: var(--color-background-positive-default);
   --mt-announcement-icon-color: var(--color-icon-positive-default);
   --mt-announcement-border-color: color-mix(
@@ -250,36 +237,5 @@ onBeforeUnmount(() => {
     var(--color-border-positive-default) 20%,
     transparent
   );
-}
-
-.mt-announcement--appearance-strong {
-  --mt-announcement-icon-color: var(--mt-announcement-color);
-}
-
-.mt-announcement--appearance-strong.mt-announcement--variant-neutral {
-  --mt-announcement-background: var(--color-elevation-surface-floating);
-  --mt-announcement-color: var(--color-text-primary-inverse);
-}
-
-.mt-announcement--appearance-strong.mt-announcement--variant-info {
-  --mt-announcement-background: var(--color-interaction-primary-default);
-  --mt-announcement-color: var(--color-static-white);
-}
-
-/* TODO: Replace the icon tokens of attention and positive with strong background tokens once
-   they exist (#1507). */
-.mt-announcement--appearance-strong.mt-announcement--variant-attention {
-  --mt-announcement-background: var(--color-icon-attention-default);
-  --mt-announcement-color: var(--color-static-black);
-}
-
-.mt-announcement--appearance-strong.mt-announcement--variant-critical {
-  --mt-announcement-background: var(--color-interaction-critical-default);
-  --mt-announcement-color: var(--color-static-white);
-}
-
-.mt-announcement--appearance-strong.mt-announcement--variant-positive {
-  --mt-announcement-background: var(--color-icon-positive-default);
-  --mt-announcement-color: var(--color-static-black);
 }
 </style>

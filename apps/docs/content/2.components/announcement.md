@@ -7,7 +7,7 @@ description: A full-width message at the top of an application, such as planned 
 **Experimental.** The API may still change in a future release.
 ::
 
-::component-example{name="announcement-basic-example"}
+::component-example{name="announcement-basic-example" fullWidth}
 ::
 
 ## Usage
@@ -22,30 +22,23 @@ import { MtAnnouncement } from "@shopware-ag/meteor-component-library";
 
 ### Variants
 
-Pick the variant by how urgent the message is.
+Pick the variant by how urgent the message is. Each variant tints the background, keeps the regular text color and draws a light line in its color along the bottom edge.
 
-::component-example{name="announcement-variants-example"}
-::
-
-### Appearances
-
-`subtle`, the default, tints the background, keeps the regular text color and draws a light line in the color of the variant along the bottom edge. `strong` fills the background with the color of the variant, for messages that nobody should miss.
-
-::component-example{name="announcement-appearances-example"}
+::component-example{name="announcement-variants-example" fullWidth}
 ::
 
 ### Links
 
 Links in the message take its text color and wrap with the text, so they stay readable on every variant.
 
-::component-example{name="announcement-links-example"}
+::component-example{name="announcement-links-example" fullWidth}
 ::
 
 ### Closable
 
 With `closable`, the announcement shows a close button and emits `close` when it is clicked. It doesn't hide itself: remove it.
 
-::component-example{name="announcement-closable-example"}
+::component-example{name="announcement-closable-example" fullWidth}
 ::
 
 ### Keep it closed
@@ -100,7 +93,6 @@ function close() {
 - Keep the message to one or two sentences.
 - Say in the text what the message is about, so its meaning doesn't depend on the color.
 - Pick the variant by urgency: `critical` for an ongoing outage, `attention` for planned downtime, `info` or `neutral` for news and events, and `positive` for good news, such as a fixed outage.
-- Use the `subtle` appearance by default. Save `strong` for messages that nobody should miss, such as an ongoing outage.
 - Show one announcement at a time.
 - Make an announcement closable when people can work without it, and keep it closed once they close it.
 
@@ -119,7 +111,7 @@ function close() {
 - Long text wraps onto more lines and is never cut off. Long words and links break instead of making the page wider.
 - On wide screens, the text is centered. Below 640px of viewport width, it is aligned to the start, so wrapped lines are easier to read.
 - The icon is part of the first line and stays there when the text wraps.
-- With `subtle`, the icon takes the color of the variant. With `strong`, it takes the text color.
+- The icon takes the color of the variant.
 - Links take the text color, keep their underline, and show a focus ring in the text color.
 - With `closable`, a close button sits at the end of the first line, and the text stays centered on the whole width. The announcement doesn't hide itself when it is closed.
 

@@ -331,7 +331,6 @@ export const de: Messages = {
       critical: "Kritisch",
       positive: "Positiv",
     },
-    announcementStrong: "Kräftige Ankündigung",
     reset: "Einstellungen zurücksetzen",
     resetTitle: "Einstellungen zurücksetzen?",
     resetText:

@@ -110,13 +110,6 @@ function reset(close: () => void) {
           :enable-search="false"
           hide-clearable-button
         />
-        <mt-switch
-          :model-value="layout.announcementAppearance === 'strong'"
-          :label="t('settings.announcementStrong')"
-          @update:model-value="
-            layout.announcementAppearance = $event ? 'strong' : 'subtle'
-          "
-        />
       </div>
     </mt-card>
   </mt-page>
