@@ -176,8 +176,8 @@ useRouteChange({
   align-items: center;
   gap: var(--scale-size-12);
   min-width: 0;
-  min-height: var(--scale-size-64);
-  padding-inline: var(--scale-size-10);
+  min-height: var(--scale-size-56);
+  padding-inline: var(--scale-size-8);
 }
 
 .mt-app-header__start,
@@ -189,8 +189,7 @@ useRouteChange({
 }
 
 .mt-app-header__start {
-  padding-inline-end: var(--scale-size-24);
-  border-inline-end: 1px solid var(--color-border-secondary-default);
+  margin-inline-end: var(--scale-size-32);
 }
 
 .mt-app-header__nav {
