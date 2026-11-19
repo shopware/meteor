@@ -8,8 +8,8 @@ export type MtAppHeaderMeta = Meta<typeof MtAppHeader>;
 
 const headerTemplate = `
 <mt-app-header v-bind="args">
-  <template #start="{ isMobile }">
-    <mt-brand title="Demo shop" subtitle="Shopware" :size="isMobile ? 's' : 'xs'" />
+  <template #start>
+    <mt-brand title="Demo shop" subtitle="Shopware" />
   </template>
 
   <template #actions>

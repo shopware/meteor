@@ -73,12 +73,8 @@ const sections = computed<NavSection[]>(() => [
   <mt-app loading-bar>
     <template v-if="layout.header !== 'off'" #header>
       <mt-app-header v-if="layout.header === 'app-header'" :sections="sections">
-        <template #start="{ isMobile }">
-          <mt-brand
-            title="Playground"
-            subtitle="Shopware"
-            :size="isMobile ? 's' : 'xs'"
-          />
+        <template #start>
+          <mt-brand title="Playground" subtitle="Shopware" />
         </template>
 
         <template #actions>
@@ -133,7 +129,7 @@ const sections = computed<NavSection[]>(() => [
           v-if="layout.customHeaderNavigationTrigger"
           panel="navigation"
         />
-        <mt-brand title="Playground" subtitle="Shopware" size="xs" />
+        <mt-brand title="Playground" subtitle="Shopware" />
         <mt-scroll-area orientation="horizontal" class="custom-header__nav">
           <mt-nav orientation="horizontal" :sections="sections" />
         </mt-scroll-area>

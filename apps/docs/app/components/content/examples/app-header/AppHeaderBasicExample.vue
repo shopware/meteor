@@ -32,8 +32,8 @@ const sections: NavSection[] = [
 <template>
   <div style="background-color: var(--color-elevation-surface-sunken)">
     <mt-app-header :sections="sections">
-      <template #start="{ isMobile }">
-        <mt-brand title="Demo shop" subtitle="Shopware" :size="isMobile ? 's' : 'xs'" />
+      <template #start>
+        <mt-brand title="Demo shop" subtitle="Shopware" />
       </template>
 
       <template #actions>

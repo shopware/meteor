@@ -18,7 +18,7 @@ description: A logo with the name of the shop or app next to it, and an optional
 import { MtBrand } from "@shopware-ag/meteor-component-library";
 ```
 
-The default logo is the Shopware logo. The `variant` prop shows the logo of another Shopware product instead: `copilot`, `intelligence`, `nexus` or `payments`. The `appearance` prop sets its colors: `dark`, the default, shows a white mark on a blue box, and `light` shows a blue mark on a white box. The `compact` prop shows only the logo, for example in a collapsed sidebar. The `size` prop sets the size of the title: `s`, the default, for a sidebar, and `xs` for a header bar. The `logo` slot replaces the logo as a whole, including its box.
+The default logo is the Shopware logo. The `variant` prop shows the logo of another Shopware product instead: `copilot`, `intelligence`, `nexus` or `payments`. The `appearance` prop sets its colors: `dark`, the default, shows a white mark on a blue box, and `light` shows a blue mark on a white box. The `compact` prop shows only the logo, for example in a collapsed sidebar. The `logo` slot replaces the logo as a whole, including its box.
 
 ## Examples
 

@@ -26,17 +26,13 @@ When the header is narrower than `breakpoint` (1024px by default), it switches t
 
 ### Adapt the slots to the drawer
 
-Each slot receives `isMobile`, which is `true` in the mobile layout. Use it to show the content differently in the drawer, for example a smaller brand title and a compact user menu in the header, and the full ones in the drawer:
+Each slot receives `isMobile`, which is `true` in the mobile layout. Use it to show the content differently in the drawer, for example a compact user menu in the header and the full one in the drawer:
 
 ```vue
 <template>
   <mt-app-header :sections="sections">
-    <template #start="{ isMobile }">
-      <mt-brand
-        title="Demo shop"
-        subtitle="Shopware"
-        :size="isMobile ? 's' : 'xs'"
-      />
+    <template #start>
+      <mt-brand title="Demo shop" subtitle="Shopware" />
     </template>
 
     <template #end="{ isMobile }">

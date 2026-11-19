@@ -7,7 +7,7 @@
     </slot>
 
     <div class="mt-brand__text" :class="{ 'visually-hidden': compact }">
-      <mt-text as="div" :size="size" weight="semibold" class="mt-brand__title">
+      <mt-text as="div" size="xs" weight="semibold" class="mt-brand__title">
         {{ title }}
       </mt-text>
       <mt-text v-if="subtitle" as="div" size="2xs" class="mt-brand__subtitle">
@@ -45,15 +45,12 @@ withDefaults(
     appearance?: "dark" | "light";
     /** Shows only the logo. The title and the subtitle stay available to assistive technology. */
     compact?: boolean;
-    /** Size of the title. `xs` fits a bar such as `mt-app-header`. */
-    size?: "xs" | "s";
   }>(),
   {
     subtitle: undefined,
     variant: "shopware",
     appearance: "dark",
     compact: false,
-    size: "s",
   },
 );
 
@@ -76,7 +73,7 @@ const productLogos = {
 .mt-brand {
   display: flex;
   align-items: center;
-  gap: var(--scale-size-12);
+  gap: var(--scale-size-8);
   min-width: 0;
 }
 
@@ -85,9 +82,9 @@ const productLogos = {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: var(--scale-size-40);
-  height: var(--scale-size-40);
-  border-radius: 29%;
+  width: var(--scale-size-36);
+  height: var(--scale-size-36);
+  border-radius: 25%;
 }
 
 .mt-brand__image--dark {
