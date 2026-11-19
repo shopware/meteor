@@ -87,9 +87,7 @@ defineSlots<{
   color: inherit;
   text-align: start;
   cursor: pointer;
-  transition-property: background-color, box-shadow;
-  transition-duration: 0.15s;
-  transition-timing-function: ease-out;
+  transition: background-color 0.15s ease-out;
 }
 
 .mt-user-menu__trigger:hover,
@@ -109,7 +107,13 @@ defineSlots<{
 
 .mt-user-menu--compact .mt-user-menu__trigger:hover,
 .mt-user-menu--compact .mt-user-menu__trigger[data-state="open"] {
-  box-shadow: 0 0 0 var(--scale-size-4) var(--color-border-primary-default);
+  background: transparent;
+}
+
+/* In compact mode, only the avatar is visible. */
+.mt-user-menu--compact .mt-user-menu__trigger:hover .mt-user-menu__user,
+.mt-user-menu--compact .mt-user-menu__trigger[data-state="open"] .mt-user-menu__user {
+  opacity: 0.8;
 }
 
 .mt-user-menu--compact .mt-user-menu__trigger:focus-visible {
@@ -118,6 +122,7 @@ defineSlots<{
 
 .mt-user-menu__user {
   flex: 1 1 auto;
+  transition: opacity 0.15s ease-out;
 }
 
 .mt-user-menu__chevrons {
