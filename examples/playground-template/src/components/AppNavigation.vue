@@ -44,5 +44,6 @@ function isActive(item: NavItem) {
   flex: 1;
   width: 15rem;
   min-height: 0;
+  padding-block: var(--scale-size-20);
 }
 </style>

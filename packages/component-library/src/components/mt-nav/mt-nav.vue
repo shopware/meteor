@@ -274,12 +274,10 @@ function onNavigationKeydown(event: KeyboardEvent) {
   display: flex;
   flex-direction: column;
   gap: var(--scale-size-16);
-  padding: var(--scale-size-20) 0;
 }
 
 .mt-nav--horizontal .mt-nav__body {
   flex-direction: row;
   align-items: center;
-  padding: 0;
 }
 </style>

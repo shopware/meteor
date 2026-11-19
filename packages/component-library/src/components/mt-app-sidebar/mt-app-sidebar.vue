@@ -8,8 +8,8 @@
       <slot name="actions" />
     </div>
 
-    <mt-scroll-area class="mt-app-sidebar__body">
-      <mt-nav :sections="sections" />
+    <mt-scroll-area class="mt-app-sidebar__body" :fade-size="20">
+      <mt-nav class="mt-app-sidebar__nav" :sections="sections" />
     </mt-scroll-area>
 
     <footer v-if="hasSlotContent($slots.end)" class="mt-app-sidebar__end">
@@ -54,7 +54,7 @@ defineSlots<{
   max-width: 100%;
   height: 100%;
   min-height: 0;
-  padding: var(--scale-size-24) var(--scale-size-12) var(--scale-size-8);
+  padding: var(--scale-size-16) var(--scale-size-8) var(--scale-size-8);
   color: var(--color-text-primary-default);
 }
 
@@ -66,6 +66,9 @@ defineSlots<{
 
 .mt-app-sidebar__start {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--scale-size-12);
   min-width: 0;
   padding-inline-start: var(--scale-size-10);
 }
@@ -79,5 +82,10 @@ defineSlots<{
 .mt-app-sidebar__body {
   flex: 1 1 0;
   min-height: 0;
+}
+
+/* Matches the fade of the scroll area, so the items at rest stay fully visible. */
+.mt-app-sidebar__nav {
+  padding-block: var(--scale-size-20);
 }
 </style>
