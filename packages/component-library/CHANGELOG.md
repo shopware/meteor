@@ -1,5 +1,20 @@
 # Changelog
 
+## 5.12.0
+
+### Minor Changes
+
+- [#1481](https://github.com/shopware/meteor/pull/1481) [`fdfe795`](https://github.com/shopware/meteor/commit/fdfe7955ab08cea34e7b4b023b6185408735313d) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Add the `mt-scroll-area` component, a scroll container that fades its content out at the edges while there is more to scroll, with the scrollbar hidden by default and the native scrollbar available through the `scrollbar` prop
+
+- [#1470](https://github.com/shopware/meteor/pull/1470) [`666c171`](https://github.com/shopware/meteor/commit/666c17172be5c34f21003c8f83fb83a47b02f721) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Deprecate `mt-toast` and its `Toast` type. They will be removed in the next major version. Use `mt-snackbar` with the `useSnackbar` composable instead. The Toast docs page lists how each Toast field maps to a Snackbar option.
+
+### Patch Changes
+
+- [#1492](https://github.com/shopware/meteor/pull/1492) [`6be2a64`](https://github.com/shopware/meteor/commit/6be2a6402453a42e4650a1983b45975e2349c86d) Thanks [@gweiermann](https://github.com/gweiermann)! - Fix `mt-tabs` throwing a render error when the active item is added to `items` after mount, for example when a tab only appears once the page data has loaded.
+
+- Updated dependencies [[`eb75f0c`](https://github.com/shopware/meteor/commit/eb75f0c58705eb18fb30d19990ab8f1cf626c1ce)]:
+  - @shopware-ag/meteor-admin-sdk@6.19.0
+
 ## 5.11.0
 
 ### Minor Changes
