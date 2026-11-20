@@ -16,26 +16,50 @@ export type NavLinkTarget = string | object;
 export type NavActiveMatcher = (item: NavItem) => boolean;
 
 /**
- * One row of the navigation. Rows nest through `children`, up to three levels deep in total.
+ * Direction the top-level rows run in. Horizontal rows open their nested rows in a floating panel.
  */
-export interface NavItem {
+export type NavOrientation = "vertical" | "horizontal";
+
+interface NavItemBase {
   /** Stable identifier of the row. Siblings need distinct ids; without one, the label is used. */
   id?: string;
   /** Translated label of the row. */
   label: string;
   /** Icon name of the meteor icon kit, e.g. `regular-products`. Shown on top-level rows only. */
   icon?: string;
+  /** Whether the row is the current page. Its ancestors open and highlight accordingly. Alternative to `isActive` on `mt-nav`. */
+  active?: boolean;
+}
+
+/**
+ * A row linking to a page, or a row with only a label.
+ */
+interface NavLinkItem extends NavItemBase {
   /** Route location handed to the link component as `to`. */
   to?: NavLinkTarget;
   /** External URL, rendered as a plain anchor when no `to` is set. */
   href?: string;
   /** Anchor target for `href`. */
   target?: string;
-  /** Whether the row is the current page. Its ancestors open and highlight accordingly. Alternative to `isActive` on `mt-nav`. */
-  active?: boolean;
-  /** Nested rows. A row with nested rows and no `to` renders as a button toggling them. */
-  children?: NavItem[];
+  children?: never;
 }
+
+/**
+ * A row holding nested rows, which it opens and closes. It isn't a link itself.
+ */
+interface NavGroupItem extends NavItemBase {
+  /** Nested rows. */
+  children: NavItem[];
+  to?: never;
+  href?: never;
+  target?: never;
+}
+
+/**
+ * One row of the navigation: either a link or a group of nested rows, never both. Rows nest up to
+ * three levels deep in total.
+ */
+export type NavItem = NavLinkItem | NavGroupItem;
 
 /**
  * A group of rows below an optional header.
@@ -91,6 +115,7 @@ export interface NavSlots {
  */
 export interface NavContext {
   linkComponent: ComputedRef<NavLinkComponent>;
+  orientation: ComputedRef<NavOrientation>;
   /** Tells whether the row itself is active. */
   isRowActive: (item: NavItem) => boolean;
   /** Tells whether the row itself or one of its descendants is active. */
@@ -101,6 +126,12 @@ export interface NavContext {
   isBranchExpanded: (key: string) => boolean;
   /** Reports the user toggling a top-level row. */
   onBranchToggle: (key: string, open: boolean) => void;
+  /** Whether the floating panel of the top-level row with the given key is open. Only one is open at a time. */
+  isFlyoutOpen: (key: string) => boolean;
+  /** Opens or closes the floating panel of a top-level row. Opening one closes any other. */
+  onFlyoutToggle: (key: string, open: boolean) => void;
+  /** Whether the open floating panel replaced another one, so it slides in sideways instead. */
+  flyoutSwitched: ComputedRef<boolean>;
   onNavigate: (item: NavItem) => void;
 }
 

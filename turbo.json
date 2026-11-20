@@ -26,6 +26,14 @@
     "lint:types": {
       "outputs": []
     },
+    "playground-admin#lint:types": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "playground-admin#dev": {
+      "cache": false,
+      "persistent": true
+    },
     "lint:eslint": {
       "outputs": []
     },

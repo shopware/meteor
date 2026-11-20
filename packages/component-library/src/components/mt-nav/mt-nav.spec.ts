@@ -13,8 +13,8 @@ RouterLinkStub.props = { to: { type: Object, required: true } };
 /**
  * A row navigating to the named route, active when it is the current one.
  */
-function route(label: string, name: string, current?: string, children?: NavItem[]): NavItem {
-  return { label, to: { name }, active: name === current, children };
+function route(label: string, name: string, current?: string): NavItem {
+  return { label, to: { name }, active: name === current };
 }
 
 /**
@@ -27,11 +27,13 @@ function sampleItems(current?: string): NavItem[] {
       label: "Products",
       icon: "regular-products",
       children: [
-        route("Overview", "sw.product.index", current, [
-          route("Reviews", "sw.review.index", current, [
-            route("Too deep", "sw.deep.index", current),
-          ]),
-        ]),
+        {
+          label: "Overview",
+          children: [
+            route("All products", "sw.product.index", current),
+            { label: "Reviews", children: [route("Too deep", "sw.deep.index", current)] },
+          ],
+        },
         route("Categories", "sw.category.index", current),
       ],
     },
@@ -82,7 +84,7 @@ describe("mt-nav", () => {
     it("renders the top level rows", () => {
       renderNav();
 
-      const navigation = screen.getByRole("navigation", { name: "Main navigation" });
+      const navigation = screen.getByRole("navigation", { name: "Main" });
 
       expect(getRowLabel("Dashboard", navigation)).toBeVisible();
       expect(getRowLabel("Products", navigation)).toBeVisible();
@@ -122,7 +124,7 @@ describe("mt-nav", () => {
     });
 
     it("drops rows nested deeper than three levels", () => {
-      renderNav({ sections: sampleSections("sw.review.index") });
+      renderNav({ sections: sampleSections("sw.product.index") });
 
       expect(getRowLabel("Reviews")).toBeInTheDocument();
       expect(queryRowLabel("Too deep")).toBeNull();
@@ -130,12 +132,24 @@ describe("mt-nav", () => {
     });
 
     it("renders a row with an empty children list as a leaf", () => {
-      renderNav({
-        sections: [{ items: [{ label: "Empty", to: { name: "sw.empty" }, children: [] }] }],
-      });
+      renderNav({ sections: [{ items: [{ label: "Empty", children: [] }] }] });
 
-      expect(getRowLabel("Empty").closest("a")).not.toHaveAttribute("aria-expanded");
+      expect(getRowLabel("Empty").closest(".mt-nav__link")).not.toHaveAttribute("aria-expanded");
       expect(screen.queryByRole("button")).toBeNull();
+    });
+
+    it("renders a row with both a link and nested rows as a group", () => {
+      // @ts-expect-error A row either links to a page or holds nested rows
+      const item: NavItem = {
+        label: "Products",
+        to: "/products",
+        children: [{ label: "Overview" }],
+      };
+
+      renderNav({ sections: [{ items: [item] }] });
+
+      expect(screen.getByRole("button", { name: "Products" })).toBeInTheDocument();
+      expect(console.error).toHaveBeenCalledWith(expect.stringContaining('"Products"'));
     });
 
     it("expands a branch when its row is clicked", async () => {
@@ -192,22 +206,6 @@ describe("mt-nav", () => {
       await userEvent.click(screen.getByRole("button", { name: "Products" }));
 
       expect(emitted().navigate).toBeUndefined();
-    });
-
-    it("toggles the nested rows of a link and stands in for the active row it hides", async () => {
-      renderNav({ sections: sampleSections("sw.review.index") });
-
-      await waitFor(() => expect(getRowLabel("Reviews")).toBeVisible());
-
-      await userEvent.click(getRowLabel("Overview"));
-
-      await waitFor(() => expect(getRowLabel("Reviews")).not.toBeVisible());
-      expect(getRowLabel("Overview").closest("a")).toHaveAttribute("aria-current", "true");
-
-      await userEvent.click(getRowLabel("Overview"));
-
-      await waitFor(() => expect(getRowLabel("Reviews")).toBeVisible());
-      expect(getRowLabel("Overview").closest("a")).not.toHaveAttribute("aria-current");
     });
 
     it("renders the suffix slot after the label of each row", () => {
@@ -346,12 +344,12 @@ describe("mt-nav", () => {
     it("marks only the deepest matching row as the current page", async () => {
       renderNav({
         isActive: (item: NavItem) =>
-          ["sw.product.index", "sw.review.index"].includes(routeName(item) ?? ""),
+          item.label === "Overview" || routeName(item) === "sw.product.index",
       });
 
-      await waitFor(() => expect(getRowLabel("Reviews")).toBeVisible());
+      await waitFor(() => expect(getRowLabel("All products")).toBeVisible());
 
-      expect(getRowLabel("Reviews").closest(".mt-nav__link")).toHaveAttribute(
+      expect(getRowLabel("All products").closest(".mt-nav__link")).toHaveAttribute(
         "aria-current",
         "page",
       );
@@ -468,6 +466,105 @@ describe("mt-nav", () => {
       await userEvent.keyboard("{ArrowUp}");
 
       expect(suffixButton).toHaveFocus();
+    });
+  });
+
+  describe("horizontal", () => {
+    const sections: NavSection[] = [
+      {
+        items: [
+          route("Dashboard", "sw.dashboard.index"),
+          {
+            label: "Products",
+            children: [
+              route("Overview", "sw.product.index"),
+              route("Categories", "sw.category.index"),
+            ],
+          },
+          { label: "Help", children: [route("FAQ", "sw.faq.index")] },
+        ],
+      },
+    ];
+
+    function renderHorizontal() {
+      return renderNav({ orientation: "horizontal", sections });
+    }
+
+    function getLink(text: string) {
+      return getRowLabel(text).closest("a") as HTMLElement;
+    }
+
+    it("opens the panel of a row on hover or click, one at a time", async () => {
+      renderHorizontal();
+
+      const products = screen.getByRole("button", { name: "Products" });
+      const help = screen.getByRole("button", { name: "Help" });
+
+      await userEvent.hover(products);
+
+      expect(products).toHaveAttribute("aria-expanded", "true");
+      expect(products).toHaveAttribute(
+        "aria-controls",
+        getLink("Overview").closest(".mt-nav__flyout")?.id,
+      );
+
+      await userEvent.hover(help);
+
+      expect(help).toHaveAttribute("aria-expanded", "true");
+      expect(products).toHaveAttribute("aria-expanded", "false");
+      expect(products).not.toHaveAttribute("aria-controls");
+
+      products.focus();
+      await userEvent.keyboard("{Enter}");
+
+      expect(products).toHaveAttribute("aria-expanded", "true");
+      expect(help).toHaveAttribute("aria-expanded", "false");
+    });
+
+    it("moves Tab through the open panel as if it followed its row", async () => {
+      renderHorizontal();
+
+      const products = screen.getByRole("button", { name: "Products" });
+
+      products.focus();
+      await userEvent.keyboard("{Enter}");
+
+      await userEvent.tab();
+      expect(getLink("Overview")).toHaveFocus();
+
+      await userEvent.tab({ shift: true });
+      expect(products).toHaveFocus();
+
+      await userEvent.tab();
+      await userEvent.tab();
+      expect(getLink("Categories")).toHaveFocus();
+
+      await userEvent.tab();
+      expect(screen.getByRole("button", { name: "Help" })).toHaveFocus();
+      expect(products).toHaveAttribute("aria-expanded", "false");
+    });
+
+    it("closes the panel with Escape, on navigation and when the focus leaves", async () => {
+      const { emitted } = renderHorizontal();
+
+      const products = screen.getByRole("button", { name: "Products" });
+
+      products.focus();
+      await userEvent.keyboard("{Enter}{Tab}{Escape}");
+
+      expect(products).toHaveAttribute("aria-expanded", "false");
+      await waitFor(() => expect(products).toHaveFocus());
+
+      await userEvent.keyboard("{Enter}{Tab}{Enter}");
+
+      expect(emitted().navigate).toEqual([[expect.objectContaining({ label: "Overview" })]]);
+      expect(products).toHaveAttribute("aria-expanded", "false");
+      await waitFor(() => expect(products).toHaveFocus());
+
+      await userEvent.keyboard("{Enter}");
+      getLink("Dashboard").focus();
+
+      await waitFor(() => expect(products).toHaveAttribute("aria-expanded", "false"));
     });
   });
 

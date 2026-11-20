@@ -8,6 +8,8 @@ export function ThemeProvider(Story) {
     const body = document.querySelector("body");
     if (!body) throw new Error("Failed to render story: Root element not found");
     body.setAttribute("data-theme", theme);
+    // useTheme(), as in mt-app, writes the theme to the root element, which the body can't override.
+    document.documentElement.setAttribute("data-theme", theme);
     body.style.backgroundColor = "var(--color-elevation-surface-default)";
   }, [theme]);
 

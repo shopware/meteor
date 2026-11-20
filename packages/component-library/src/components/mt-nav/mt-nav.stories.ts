@@ -18,11 +18,8 @@ const shopItems: NavItem[] = [
     label: "Products",
     icon: "regular-products",
     children: [
-      {
-        label: "Overview",
-        to: { name: "product.index" },
-        children: [{ label: "Reviews", to: { name: "review.index" } }],
-      },
+      { label: "Overview", to: { name: "product.index" } },
+      { label: "Reviews", to: { name: "review.index" } },
       { label: "Categories", to: { name: "category.index" } },
       { label: "Manufacturers", to: { name: "manufacturer.index" } },
     ],
@@ -70,14 +67,18 @@ const nestedItems: NavItem[] = [
     icon: "regular-products",
     children: [
       {
-        label: "Overview",
-        to: { name: "product.index" },
-        children: [{ label: "Reviews", to: { name: "review.index" } }],
+        label: "Catalogue",
+        children: [
+          { label: "Overview", to: { name: "product.index" } },
+          { label: "Reviews", to: { name: "review.index" } },
+        ],
       },
       {
         label: "Categories",
-        to: { name: "category.index" },
-        children: [{ label: "Dynamic product groups", to: { name: "product-stream.index" } }],
+        children: [
+          { label: "All categories", to: { name: "category.index" } },
+          { label: "Dynamic product groups", to: { name: "product-stream.index" } },
+        ],
       },
       { label: "Manufacturers", to: { name: "manufacturer.index" } },
     ],
@@ -190,11 +191,8 @@ const sections: NavSection[] = [
         label: "Products",
         icon: "regular-products",
         children: [
-          {
-            label: "Overview",
-            to: { name: "product.index" },
-            children: [{ label: "Reviews", to: { name: "review.index" } }],
-          },
+          { label: "Overview", to: { name: "product.index" } },
+          { label: "Reviews", to: { name: "review.index" } },
           { label: "Categories", to: { name: "category.index" } },
         ],
       },
@@ -321,6 +319,10 @@ const meta: MtNavMeta = {
     sections: { control: false },
     linkComponent: { control: false },
     isActive: { control: false },
+    orientation: {
+      control: { type: "inline-radio" },
+      options: ["vertical", "horizontal"],
+    },
   },
   ...createStory([{ items: [...shopItems, ...systemItems] }], defaultSource),
 };
@@ -367,8 +369,8 @@ export const Badges: MtNavStory = createStory(
 );
 
 /**
- * Submenus can hold submenus of their own, up to three levels in total. A nested row without a
- * `to` only toggles its rows; one with a `to` is a link and opens its rows when clicked.
+ * Submenus can hold submenus of their own, up to three levels in total. A row with nested rows
+ * opens and closes them and isn't a link itself.
  */
 export const NestedSubmenus: MtNavStory = createStory(
   [{ items: nestedItems }],
@@ -376,3 +378,63 @@ export const NestedSubmenus: MtNavStory = createStory(
   "",
   "language.index",
 );
+
+const horizontalSource = `
+<mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" @navigate="onNavigate" />`;
+
+/**
+ * The shop navigation, ending in an external link.
+ */
+const flatShopItems: NavItem[] = [
+  ...shopItems,
+  { label: "Docs", icon: "regular-books", href: "https://docs.shopware.com", target: "_blank" },
+];
+
+/**
+ * With `orientation="horizontal"` the top-level rows run in a line. A row with nested rows opens
+ * them in a floating panel when hovered, or when clicked with the keyboard or touch.
+ */
+export const Horizontal: MtNavStory = {
+  ...createStory([{ items: flatShopItems }], horizontalSource),
+  args: {
+    orientation: "horizontal",
+  },
+};
+
+/**
+ * Submenus inside the floating panel open and close inline, up to three levels in total.
+ */
+export const HorizontalNestedSubmenus: MtNavStory = {
+  ...createStory([{ items: nestedItems }], horizontalSource, "", "language.index"),
+  args: {
+    orientation: "horizontal",
+  },
+};
+
+const horizontalBadgesSource = `
+<mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" @navigate="onNavigate">
+  <template #suffix="{ item }">
+    <mt-badge v-if="badges[item.label]" :variant="badges[item.label].variant">
+      {{ badges[item.label].text }}
+    </mt-badge>
+  </template>
+</mt-nav>`;
+
+/**
+ * The `suffix` slot works the same in a horizontal navigation, on the top-level rows and on the
+ * rows inside their floating panels.
+ */
+export const HorizontalBadges: MtNavStory = {
+  ...createStory(
+    [{ items: shopItems }],
+    horizontalBadgesSource,
+    `<template #suffix="{ item }">
+    <mt-badge v-if="badges[item.label]" :variant="badges[item.label].variant">
+      {{ badges[item.label].text }}
+    </mt-badge>
+  </template>`,
+  ),
+  args: {
+    orientation: "horizontal",
+  },
+};

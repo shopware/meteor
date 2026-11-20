@@ -4,7 +4,7 @@ description: An experimental floating surface that reveals contextual settings a
 ---
 
 ::warning
-**Experimental.** The API may still change. Prefer [**Action Menu**](/components/action-menu) or [**Floating UI**](/components/floating-ui) when they fit your use case.
+**Experimental:** This component is in a testing phase, and its API and behavior are not stable yet. Props, events, slots, visual behavior, or accessibility details may change without notice, and the component may be removed at any time. Prefer [**Action Menu**](/components/action-menu) or [**Floating UI**](/components/floating-ui) when they fit your use case.
 ::
 
 ::component-example{name="popover-basic-example"}
