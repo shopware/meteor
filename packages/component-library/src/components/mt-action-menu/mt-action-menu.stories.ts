@@ -48,7 +48,7 @@ const defaultTemplate = `
   <mt-dropdown-menu-portal>
     <mt-action-menu>
       <mt-action-menu-item icon="file-text">Documentation</mt-action-menu-item>
-      <mt-action-menu-item icon="solid-duplicate">Duplicate</mt-action-menu-item>
+      <mt-action-menu-item icon="duplicate">Duplicate</mt-action-menu-item>
       <mt-action-menu-item icon="copy">Copy</mt-action-menu-item>
       <mt-action-menu-item icon="download">Download</mt-action-menu-item>
     </mt-action-menu>
@@ -83,7 +83,7 @@ const groupedItemsTemplate = `
     <mt-action-menu>
       <mt-action-menu-group>
         <mt-action-menu-item icon="file-text">Documentation</mt-action-menu-item>
-        <mt-action-menu-item icon="solid-duplicate">Duplicate</mt-action-menu-item>
+        <mt-action-menu-item icon="duplicate">Duplicate</mt-action-menu-item>
       </mt-action-menu-group>
 
       <mt-action-menu-group>
@@ -104,7 +104,7 @@ const keyboardShortcutsTemplate = `
   <mt-dropdown-menu-portal>
     <mt-action-menu>
       <mt-action-menu-item
-        icon="solid-duplicate"
+        icon="duplicate"
         :shortcut="{ modifiers: ['mod'], key: 'd' }"
       >
         Duplicate
@@ -215,7 +215,7 @@ const matchTriggerWidthTemplate = `
   <mt-dropdown-menu-portal>
     <mt-action-menu match-trigger-width>
       <mt-action-menu-item icon="file-text">Documentation</mt-action-menu-item>
-      <mt-action-menu-item icon="solid-duplicate">Duplicate</mt-action-menu-item>
+      <mt-action-menu-item icon="duplicate">Duplicate</mt-action-menu-item>
       <mt-action-menu-item icon="trash" variant="critical">Delete</mt-action-menu-item>
     </mt-action-menu>
   </mt-dropdown-menu-portal>

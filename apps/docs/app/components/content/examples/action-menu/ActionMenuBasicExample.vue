@@ -18,7 +18,7 @@ import MtActionMenuItem from "@shopware-ag/meteor-component-library/MtActionMenu
     <mt-dropdown-menu-portal>
       <mt-action-menu>
         <mt-action-menu-item icon="file-text">Documentation</mt-action-menu-item>
-        <mt-action-menu-item icon="solid-duplicate">Duplicate</mt-action-menu-item>
+        <mt-action-menu-item icon="duplicate">Duplicate</mt-action-menu-item>
         <mt-action-menu-item icon="copy">Copy</mt-action-menu-item>
         <mt-action-menu-item icon="download">Download</mt-action-menu-item>
       </mt-action-menu>

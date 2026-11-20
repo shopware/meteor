@@ -47,6 +47,7 @@ Add a link and a button so users can recover from the empty state.
 ## Behavior
 
 - **Empty State** combines an icon, headline, description, and optional recovery action in one surface.
+- The icon always shows in the regular style. Pass the name without a style, such as `chart-line-arrow`. A name with a style, such as `solid-chart-line-arrow`, still works and shows as `regular-chart-line-arrow`.
 - A text link and a button can be shown when users should navigate or create something from the empty state.
 - The `button` slot can replace the default action button when a custom button is needed.
 

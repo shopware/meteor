@@ -20,7 +20,7 @@ import MtActionMenuGroup from "@shopware-ag/meteor-component-library/MtActionMen
       <mt-action-menu>
         <mt-action-menu-group>
           <mt-action-menu-item icon="file-text">Documentation</mt-action-menu-item>
-          <mt-action-menu-item icon="solid-duplicate">Duplicate</mt-action-menu-item>
+          <mt-action-menu-item icon="duplicate">Duplicate</mt-action-menu-item>
         </mt-action-menu-group>
 
         <mt-action-menu-group>

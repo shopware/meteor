@@ -52,6 +52,10 @@ import { MtBanner } from "@shopware-ag/meteor-component-library";
 
 ::
 
+## Behavior
+
+- The icon always shows in the solid style. Pass the name without a style, such as `cog`. A name with a style, such as `regular-cog`, still works and shows as `solid-cog`.
+
 ## Accessibility
 
 - **Banner** content should remain understandable without depending on the icon alone.

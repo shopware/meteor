@@ -20,6 +20,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch, type CSSProperties } from "vue";
+import { parseIconName } from "@/utils/icon";
 
 const props = withDefaults(
   defineProps<{
@@ -59,21 +60,7 @@ const styles = computed(() => {
   return styles;
 });
 
-const iconInformation = computed(() => {
-  const isModeInNameIncluded = props.name.startsWith("solid-") || props.name.startsWith("regular-");
-
-  if (isModeInNameIncluded) {
-    return {
-      mode: props.name.split("-")[0] as "solid" | "regular",
-      name: props.name.split("-").slice(1).join("-"),
-    };
-  }
-
-  return {
-    mode: props.mode,
-    name: props.name,
-  };
-});
+const iconInformation = computed(() => parseIconName(props.name, props.mode));
 
 function handleFailedImport(detail: string = "") {
   console.error(

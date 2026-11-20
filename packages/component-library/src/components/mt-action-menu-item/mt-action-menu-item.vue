@@ -10,7 +10,7 @@
     :data-has-icon="!!icon || undefined"
     :aria-keyshortcuts="ariaKeyShortcuts"
   >
-    <mt-icon v-if="!!icon" :name="icon" size="14" mode="solid" />
+    <mt-icon v-if="!!icon" :name="resolveIconName(icon, 'regular')" size="14" />
 
     <slot name="default" />
 
@@ -48,6 +48,7 @@
 <script setup lang="ts">
 import { DropdownMenuItem, DropdownMenuSubTrigger } from "reka-ui";
 import MtIcon from "../mt-icon/mt-icon.vue";
+import { resolveIconName } from "@/utils/icon";
 import { computed, inject, onMounted, type Component } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -164,6 +165,7 @@ const { t } = useI18n({
 const props = withDefaults(
   defineProps<{
     variant?: "default" | "critical";
+    /** The icon in front of the label, always in the regular style, such as `cog`. */
     icon?: string;
     disabled?: boolean;
     shortcut?: ShortcutDefinition;
