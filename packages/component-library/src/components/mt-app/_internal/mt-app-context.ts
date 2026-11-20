@@ -37,9 +37,10 @@ export interface AppContext extends MtAppContext {
   registerHeaderTrigger(panel: () => MtAppPanel): () => void;
   /**
    * Reports a trigger that the app placed itself with `mt-app-panel-trigger`, so the shell's own
-   * components leave out theirs for the panel, until the returned function is called.
+   * components leave out theirs for the panel, until the returned function is called. A trigger
+   * inside its own panel reports `undefined`, as it stands in for no other trigger.
    */
-  registerPlacedTrigger(panel: () => MtAppPanel, region: AppTriggerRegion): () => void;
+  registerPlacedTrigger(panel: () => MtAppPanel | undefined, region: AppTriggerRegion): () => void;
   /** The label, the icon and the controlled element of the panel's trigger. Read while rendering. */
   triggerOf(panel: MtAppPanel): AppPanelTrigger;
   /**

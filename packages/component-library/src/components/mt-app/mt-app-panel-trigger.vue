@@ -20,13 +20,15 @@ import {
   useAppRegistration,
   type AppPanelTrigger,
 } from "./_internal/mt-app-context";
+import { panelContextKey } from "@/components/mt-panel/panel-settings";
 import type { MtAppPanel } from "./composables/useApp";
 
 /**
  * A button that shows and hides a panel of the surrounding `mt-app`, for placing the trigger
  * yourself, for example in a custom header. It always shows inside `mt-app`, as often as it is
  * placed, and renders only the button. While it is placed, `mt-page` and `mt-app-header` leave out
- * their own trigger for the panel.
+ * their own trigger for the panel, unless it is placed inside that panel, which hides it when it
+ * closes.
  *
  * @experimental The API may still change in a future release.
  */
@@ -37,6 +39,7 @@ const props = defineProps<{
 
 const app = inject(appContextKey, null);
 const region = inject(appTriggerRegionKey, "page");
+const panelContext = inject(panelContextKey, null);
 const button = useTemplateRef<{ $el: HTMLElement }>("button");
 
 const trigger = computed<AppPanelTrigger>(
@@ -44,9 +47,13 @@ const trigger = computed<AppPanelTrigger>(
 );
 
 // A view that leaves with a transition keeps the trigger until the transition ends, so the shell's
-// components don't show theirs in the meantime.
+// components don't show theirs in the meantime. A trigger inside its own panel is hidden with it,
+// so it doesn't stand in for theirs.
 useAppRegistration((app) => {
-  const release = app.registerPlacedTrigger(() => props.panel, region);
+  const release = app.registerPlacedTrigger(
+    () => (panelContext?.place === props.panel ? undefined : props.panel),
+    region,
+  );
 
   return () => releaseWhenDetached(button.value?.$el ?? null, release);
 });

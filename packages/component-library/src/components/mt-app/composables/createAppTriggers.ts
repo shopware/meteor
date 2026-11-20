@@ -5,7 +5,8 @@ import type { MtAppPanel } from "./useApp";
 export type AppTriggerRegion = "header" | "page";
 
 interface PlacedTrigger {
-  panel: () => MtAppPanel;
+  /** The panel that the trigger stands in for, or `undefined` while it is inside its own panel. */
+  panel: () => MtAppPanel | undefined;
   region: AppTriggerRegion;
 }
 
@@ -13,7 +14,8 @@ interface PlacedTrigger {
  * Where the shell's own components, such as `mt-page` and `mt-app-header`, show the triggers of its
  * panels. While the header is shown, a component in it shows a panel's trigger instead of the
  * pages. A trigger that the app places itself with `mt-app-panel-trigger` always shows, and the
- * shell's components leave out theirs for that panel. The shell shows no triggers of its own.
+ * shell's components leave out theirs for that panel, unless it is placed inside that panel. The
+ * shell shows no triggers of its own.
  */
 export function createAppTriggers(isHeaderShown: () => boolean) {
   const headerTriggers = shallowReactive(new Map<symbol, () => MtAppPanel>());
@@ -59,7 +61,7 @@ export function createAppTriggers(isHeaderShown: () => boolean) {
   return {
     showsTrigger,
     registerHeaderTrigger: (panel: () => MtAppPanel) => register(headerTriggers, panel),
-    registerPlacedTrigger: (panel: () => MtAppPanel, region: AppTriggerRegion) =>
+    registerPlacedTrigger: (panel: () => MtAppPanel | undefined, region: AppTriggerRegion) =>
       register(placedTriggers, { panel, region }),
   };
 }

@@ -11,7 +11,7 @@ import {
   Transition,
   type Component,
 } from "vue";
-import { render, screen, waitFor } from "@testing-library/vue";
+import { render, screen, waitFor, within } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtApp from "./mt-app.vue";
 import MtAppPanelTrigger from "./mt-app-panel-trigger.vue";
@@ -349,6 +349,32 @@ describe("mt-app", () => {
       expect(document.querySelector(".mt-page__header")).not.toContainElement(
         screen.getByRole("button", { name: sidebarTriggerName }),
       );
+    });
+
+    it("keeps the page's trigger for a panel that holds its own placed trigger", async () => {
+      // ARRANGE
+      await renderApp({
+        slots: {
+          default: allSlots.default,
+          sidebar: () =>
+            h(MtPanel, { closable: true }, () =>
+              h("aside", { "aria-label": "Details" }, [h(MtAppPanelTrigger, { panel: "sidebar" })]),
+            ),
+        },
+      });
+      const details = screen.getByRole("complementary", { name: "Details" });
+
+      // ACT
+      await userEvent.click(within(details).getByRole("button", { name: sidebarTriggerName }));
+
+      // ASSERT
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: sidebarTriggerName }));
+
+      // ASSERT
+      expect(screen.getByRole("complementary", { name: "Details" })).toBeInTheDocument();
     });
 
     it("gives the triggers back to the page while a view hides the header with the placed triggers", async () => {
