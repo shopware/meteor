@@ -70,6 +70,10 @@ defineSlots<{
   justify-content: space-between;
   gap: var(--scale-size-12);
   min-width: 0;
+}
+
+/* Lines the logo up with the icons of the navigation. */
+.mt-app-sidebar__start :deep(.mt-brand) {
   padding-inline-start: var(--scale-size-10);
 }
 
