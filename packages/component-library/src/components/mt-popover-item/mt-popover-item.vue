@@ -388,10 +388,6 @@ export default defineComponent({
 
 .mt-popover-item__checkbox {
   margin-block-start: var(--scale-size-4);
-
-  .mt-field--checkbox {
-    margin: 0;
-  }
 }
 
 .mt-popover-item__icon {

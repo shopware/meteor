@@ -1,7 +1,10 @@
 <template>
   <ul
-    class="mt-select-selection-list"
-    :class="{ 'mt-select-selection-list--small': size === 'small' }"
+    :class="[
+      'mt-select-selection-list',
+      `mt-select-selection-list--${size ?? 'default'}`,
+      { 'mt-select-selection-list--disabled': disabled },
+    ]"
   >
     <!-- eslint-disable vue/no-use-v-if-with-v-for -->
     <template v-for="(selection, index) in selections" :key="selection[valueProperty]">
@@ -319,7 +322,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .mt-select-selection-list {
   display: flex;
   flex-wrap: wrap;
@@ -346,18 +349,42 @@ export default defineComponent({
   }
 
   .mt-select-selection-list__input {
+    width: 100%;
+    min-width: 0;
     min-height: var(--scale-size-32);
     padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
+    border: none;
+    background: transparent;
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family-body);
+    line-height: 1;
+    color: var(--color-text-primary-default);
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 
     &::placeholder {
       color: var(--color-text-secondary-default);
       white-space: break-spaces;
+    }
+
+    &:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px var(--color-background-primary-default) inset;
+      -webkit-text-fill-color: var(--color-text-primary-default);
+      caret-color: var(--color-text-primary-default);
     }
   }
 
   .mt-select-selection-list__input-wrapper--small .mt-select-selection-list__input {
     min-height: var(--scale-size-20);
     padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-2) var(--scale-size-8);
+  }
+}
+
+.mt-select-selection-list--disabled {
+  .mt-label,
+  input {
+    background-color: var(--color-background-tertiary-default);
   }
 }
 

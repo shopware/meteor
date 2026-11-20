@@ -1,28 +1,36 @@
 <template>
-  <mt-base-field
-    class="mt-slider"
-    :class="$attrs.class"
-    :disabled="disabled"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :copyable="copyable"
-    :copyable-tooltip="copyableTooltip"
-    :copyable-text="stringRepresentation"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-    :size="size"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
+  <div
+    :class="[
+      'mt-slider',
+      `mt-slider--${size}`,
+      {
+        'mt-slider--disabled': disabled,
+        'mt-slider--inherited': isInherited,
+      },
+    ]"
   >
-    <template #label>
+    <mt-field-label
+      v-if="label"
+      class="mt-slider__label"
+      :for="identification"
+      :required="required"
+      :disabled="disableInheritanceToggle"
+      :inheritance="inheritanceState"
+      :style="labelStyle"
+      @update:inheritance="onInheritanceUpdate"
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #element="{ identification }">
-      <!-- @vue-ignore -->
+    <mt-help-text
+      v-if="helpText"
+      class="mt-slider__help-text"
+      :text="helpText"
+      placement="right"
+      :style="{ gridArea: 'help-text' }"
+    />
+
+    <div class="mt-slider__block">
       <mt-number-field
         v-model="rangeLeftValue as any"
         v-if="isRange"
@@ -32,6 +40,7 @@
         :disabled="disabled"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
         :show-controls="false"
+        class="mt-slider__number-field"
         data-testid="left-number-field"
       />
       <div class="mt-slider__slider">
@@ -94,27 +103,39 @@
         :disabled="disabled"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
         :show-controls="false"
+        class="mt-slider__number-field"
         data-testid="right-number-field"
       />
-    </template>
 
-    <template #field-hint>
-      <mt-field-hint v-if="showFieldHint()" :hide-icon="!!$slots.hint">
-        <slot name="hint">
-          {{ hint }}
-        </slot>
-      </mt-field-hint>
-    </template>
-  </mt-base-field>
+      <mt-field-affix v-if="copyable">
+        <mt-field-copyable :copyable-text="stringRepresentation" :tooltip="copyableTooltip" />
+      </mt-field-affix>
+    </div>
+
+    <div v-if="showFieldHint()" class="mt-slider__hint-row">
+      <div class="mt-slider__hint">
+        <mt-field-hint :hide-icon="!!$slots.hint">
+          <slot name="hint">
+            {{ hint }}
+          </slot>
+        </mt-field-hint>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import type { PropType } from "vue";
+import type { CSSProperties, PropType } from "vue";
 import { defineComponent } from "vue";
-import MtBaseField from "@/components/_internal/mt-base-field/mt-base-field.vue";
+import { createId } from "@/utils/id";
 import MtNumberField from "@/components/mt-number-field/mt-number-field.vue";
 import MtFieldHint from "@/components/_internal/mt-field-hint/mt-field-hint.vue";
+import MtFieldLabel from "@/components/_internal/mt-field-label/mt-field-label.vue";
+import MtFieldAffix from "@/components/_internal/mt-field-affix/mt-field-affix.vue";
+import MtFieldCopyable from "@/components/_internal/mt-field-copyable/mt-field-copyable.vue";
+import MtHelpText from "@/components/mt-help-text/mt-help-text.vue";
 import MtTooltipDirective from "@/directives/tooltip.directive";
+import MtValidationMixin from "../../mixins/validation.mixin";
 
 export default defineComponent({
   name: "MtSlider",
@@ -123,11 +144,123 @@ export default defineComponent({
     tooltip: MtTooltipDirective,
   },
 
-  components: { MtNumberField, MtBaseField, MtFieldHint },
+  components: {
+    MtNumberField,
+    MtFieldHint,
+    MtFieldLabel,
+    MtFieldAffix,
+    MtFieldCopyable,
+    MtHelpText,
+  },
 
-  extends: MtBaseField,
+  mixins: [MtValidationMixin],
 
   props: {
+    /**
+     * Determines if the field is disabled.
+     */
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Determines if the field is required.
+     */
+    required: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Toggles the inheritance visualization.
+     */
+    isInherited: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Determines if the field is inheritable.
+     */
+    isInheritanceField: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Determines the active state of the inheritance toggle.
+     */
+    disableInheritanceToggle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Toggles the copy function of the slider.
+     */
+    copyable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * If set to true the tooltip will change on successful copy.
+     */
+    copyableTooltip: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * A text that helps the user to understand what this field does.
+     */
+    helpText: {
+      type: String,
+      required: false,
+      default: "",
+    },
+
+    /**
+     * The size of the slider.
+     *
+     * @values small, default
+     */
+    size: {
+      type: String as PropType<"small" | "default">,
+      required: false,
+      default: "default",
+      validator(value: string) {
+        return ["small", "default"].includes(value);
+      },
+    },
+
+    /**
+     * @ignore
+     * @deprecated tag:v5 - Focus is tracked by the field itself; this prop has no effect.
+     */
+    hasFocus: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * @ignore
+     */
+    name: {
+      type: String,
+      required: false,
+      default: null,
+    },
+
     /**
      * Defines the label of the slider
      */
@@ -218,12 +351,19 @@ export default defineComponent({
     },
   },
 
+  emits: ["update:modelValue", "inheritance-restore", "inheritance-remove"],
+
   data() {
     return {
       rangeRightValue: 0 as number,
       rangeLeftValue: 0 as number,
       activeSlider: null as null | "left" | "right",
+      id: undefined as string | undefined,
     };
+  },
+
+  mounted() {
+    this.id = createId();
   },
 
   watch: {
@@ -335,6 +475,24 @@ export default defineComponent({
   },
 
   computed: {
+    identification(): string {
+      return this.name ?? `mt-field--${this.id}`;
+    },
+
+    inheritanceState(): "linked" | "unlinked" | "none" {
+      if (!this.isInheritanceField) return "none";
+
+      return this.isInherited ? "linked" : "unlinked";
+    },
+
+    labelStyle(): CSSProperties {
+      return {
+        gridArea: "label",
+        marginBottom: "var(--scale-size-8)",
+        lineHeight: "var(--font-line-height-xs)",
+      };
+    },
+
     stringRepresentation(): string {
       return this.modelValue.toString();
     },
@@ -403,45 +561,67 @@ export default defineComponent({
     isArray(value: number | number[] | { target: number | number[] }): value is number[] {
       return Array.isArray(value) || (typeof value !== "number" && Array.isArray(value.target));
     },
+
+    onInheritanceUpdate(value: "linked" | "unlinked"): void {
+      if (value === "unlinked") {
+        this.$emit("inheritance-remove");
+      } else {
+        this.$emit("inheritance-restore");
+      }
+    },
   },
 });
 </script>
 
-<style>
+<style scoped>
 .mt-slider {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label help-text"
+    "input input"
+    "hint hint";
   width: 100%;
 }
 
-.mt-slider > .mt-block-field__block {
-  border: none;
+.mt-slider > .mt-slider__block {
+  grid-area: input;
+  display: flex;
+  min-height: var(--scale-size-48);
   padding: var(--scale-size-4) var(--scale-size-4) calc(20px / 2);
   gap: var(--scale-size-16);
   overflow: visible;
 }
 
-.mt-slider .mt-field--default {
+.mt-slider .mt-slider__hint-row {
+  grid-area: hint;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mt-slider .mt-slider__hint {
+  margin-top: var(--scale-size-4);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  color: var(--color-text-secondary-default);
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
+}
+
+/* The two nested number fields are laid out as compact value boxes next to the bar. */
+.mt-slider__number-field {
   width: 5ch;
   flex-grow: 0;
   flex-shrink: 0;
-  margin-bottom: 0;
 }
 
-.mt-slider .mt-field--default > .mt-field__label {
-  margin-bottom: 0;
-}
-
-.mt-slider .mt-number-field__controls {
-  flex-shrink: 1;
-}
-
-.mt-slider .mt-field--default input {
+.mt-slider__number-field :deep(.mt-number-field__input) {
+  min-width: 0;
   text-align: center;
   padding-left: var(--scale-size-4);
   padding-right: var(--scale-size-4);
-}
-
-.mt-slider .mt-field--default.mt-number-field input {
-  min-width: 0;
 }
 
 .mt-slider .mt-slider__slider {
@@ -502,10 +682,13 @@ export default defineComponent({
 .mt-slider .mt-slider__slider .mt-slider__input-slider {
   -webkit-appearance: none;
   position: relative;
+  display: block;
+  width: 100%;
   padding: 0;
   height: 8px;
   margin-top: -8px;
   background: transparent;
+  outline: none;
 }
 
 .mt-slider .mt-slider__slider .mt-slider__input-slider__double {

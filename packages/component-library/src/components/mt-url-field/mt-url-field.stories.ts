@@ -1,5 +1,5 @@
 import MtUrlField from "./mt-url-field.vue";
-import { hintArgTypes } from "../_internal/mt-base-field/arg-types";
+import { hintArgTypes } from "../_internal/form-field/arg-types";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 

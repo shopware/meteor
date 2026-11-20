@@ -77,7 +77,7 @@ export const colorButton: CustomButton = {
     height: var(--scale-size-14);
   }
 
-  :deep(.mt-block-field__block) {
+  :deep(.mt-colorpicker__block) {
     min-height: unset;
   }
 

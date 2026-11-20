@@ -1,5 +1,5 @@
 import MtEmailField from "./mt-email-field.vue";
-import baseFieldArgTypes from "../_internal/mt-base-field/arg-types";
+import baseFieldArgTypes from "../_internal/form-field/arg-types";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { MtTextField } from "@/index";

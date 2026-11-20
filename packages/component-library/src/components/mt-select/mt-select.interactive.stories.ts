@@ -993,6 +993,38 @@ export const VisualTestHintSlot: MtSelectStory = {
   },
 };
 
+export const VisualTestFieldIsRequired: MtSelectStory = {
+  name: "Should display an indicator that the field is required",
+  args: {
+    required: true,
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-field-label")).toHaveClass(
+      "mt-field-label--is-required",
+    );
+  },
+};
+
+export const VisualTestHelpText: MtSelectStory = {
+  name: "Should display a help text icon next to the label",
+  args: {
+    helpText: "Text for helping you",
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-select__help-text")).toBeInTheDocument();
+  },
+};
+
+export const VisualTestCopyable: MtSelectStory = {
+  name: "Should display a copy button",
+  args: {
+    copyable: true,
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-field-copyable")).toBeInTheDocument();
+  },
+};
+
 const clickBefore = fn();
 const clickAfter = fn();
 
@@ -1032,8 +1064,8 @@ export const TestKeyboardNavigationBothDirections: MtSelectStory = {
 
     async function expectFocus(element: Element | null, openSelect?: HTMLElement) {
       await waitFor(() => expect(element).toHaveFocus());
-      expect(first.classList.contains("has--focus")).toBe(openSelect === first);
-      expect(second.classList.contains("has--focus")).toBe(openSelect === second);
+      expect(first.classList.contains("mt-select--focus")).toBe(openSelect === first);
+      expect(second.classList.contains("mt-select--focus")).toBe(openSelect === second);
     }
 
     before.focus();
