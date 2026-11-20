@@ -8,8 +8,8 @@
       <slot name="actions" />
     </div>
 
-    <mt-scroll-area class="mt-app-sidebar__body" :fade-size="20">
-      <mt-nav class="mt-app-sidebar__nav" :sections="sections" />
+    <mt-scroll-area class="mt-app-sidebar__body" :fade-size="48">
+      <mt-nav :sections="sections" />
     </mt-scroll-area>
 
     <footer v-if="hasSlotContent($slots.end)" class="mt-app-sidebar__end">
@@ -49,12 +49,13 @@ defineSlots<{
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  gap: var(--scale-size-8);
   /* Fills an mt-panel that sets a width, and is 300px wide otherwise. */
   width: var(--mt-panel-width, 300px);
   max-width: 100%;
   height: 100%;
   min-height: 0;
-  padding: var(--scale-size-16) var(--scale-size-8) var(--scale-size-8);
+  padding: var(--scale-size-8);
   color: var(--color-text-primary-default);
 }
 
@@ -75,21 +76,16 @@ defineSlots<{
 /* Lines the logo up with the icons of the navigation. */
 .mt-app-sidebar__start :deep(.mt-brand) {
   padding-inline-start: var(--scale-size-10);
+  padding-top: var(--scale-size-8);
 }
 
 .mt-app-sidebar__actions {
   display: flex;
   gap: var(--scale-size-8);
-  padding-block-start: var(--scale-size-16);
 }
 
 .mt-app-sidebar__body {
   flex: 1 1 0;
   min-height: 0;
-}
-
-/* Matches the fade of the scroll area, so the items at rest stay fully visible. */
-.mt-app-sidebar__nav {
-  padding-block: var(--scale-size-20);
 }
 </style>
