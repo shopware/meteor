@@ -520,7 +520,7 @@ defineExpose(api);
 .mt-app__body > .mt-panel-region--bordered {
   background-color: var(--color-elevation-surface-default);
   border: 1px solid var(--color-border-secondary-default);
-  border-radius: var(--border-radius-card);
+  border-radius: var(--border-radius-m);
 }
 
 /*

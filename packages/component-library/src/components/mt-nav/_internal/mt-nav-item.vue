@@ -643,7 +643,7 @@ function onFlyoutFocusOut(event: FocusEvent) {
   white-space: nowrap;
   background: var(--color-elevation-surface-raised);
   border: var(--scale-size-1) solid var(--color-border-secondary-default);
-  border-radius: var(--border-radius-card);
+  border-radius: var(--border-radius-m);
   box-shadow: 0 var(--scale-size-8) var(--scale-size-20) 0 var(--color-elevation-shadow-default);
   animation: mt-nav-flyout-in 0.3s cubic-bezier(0.32, 0.72, 0, 1);
 }

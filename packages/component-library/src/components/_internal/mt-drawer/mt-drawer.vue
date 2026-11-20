@@ -149,7 +149,7 @@ useModalLayer({
 
   position: fixed;
   z-index: 900;
-  inset-block: var(--scale-size-8);
+  inset-block: var(--scale-size-4);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -158,7 +158,7 @@ useModalLayer({
   background-color: var(--color-elevation-surface-raised);
   color: var(--color-text-primary-default);
   border: 1px solid var(--color-border-secondary-default);
-  border-radius: var(--border-radius-card);
+  border-radius: var(--border-radius-m);
   outline: none;
   transform: translate(var(--drawer-swipe-movement-x, 0px), var(--drawer-swipe-movement-y, 0px));
   transition: transform 200ms cubic-bezier(0.05, 0.7, 0.1, 1);
@@ -173,11 +173,11 @@ useModalLayer({
 }
 
 .mt-drawer--start {
-  inset-inline-start: var(--scale-size-8);
+  inset-inline-start: var(--scale-size-4);
 }
 
 .mt-drawer--end {
-  inset-inline-end: var(--scale-size-8);
+  inset-inline-end: var(--scale-size-4);
 }
 
 .mt-drawer-slide-leave-active {
@@ -186,12 +186,12 @@ useModalLayer({
 
 .mt-drawer--start.mt-drawer-slide-enter-from,
 .mt-drawer--start.mt-drawer-slide-leave-to {
-  transform: translateX(calc((-100% - var(--scale-size-8)) * var(--mt-drawer-direction)));
+  transform: translateX(calc((-100% - var(--scale-size-4)) * var(--mt-drawer-direction)));
 }
 
 .mt-drawer--end.mt-drawer-slide-enter-from,
 .mt-drawer--end.mt-drawer-slide-leave-to {
-  transform: translateX(calc((100% + var(--scale-size-8)) * var(--mt-drawer-direction)));
+  transform: translateX(calc((100% + var(--scale-size-4)) * var(--mt-drawer-direction)));
 }
 
 .mt-drawer__backdrop {
