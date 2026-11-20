@@ -184,9 +184,9 @@ export default defineComponent({
         return 0;
       }
 
-      // Handle the case when the active item is hidden
-      if (!this.activeDomItem && this.$refs["more-items-button"]) {
-        return (this.$refs["more-items-button"] as any).$el?.offsetLeft;
+      // The active item is hidden behind the "more" button, or not rendered yet
+      if (!this.activeDomItem) {
+        return (this.$refs["more-items-button"] as any)?.$el?.offsetLeft ?? 0;
       }
 
       const leftPaddingOfActiveDomItem = parseFloat(
@@ -206,9 +206,9 @@ export default defineComponent({
         return 0;
       }
 
-      // Handle the case when the active item is hidden
-      if (!this.activeDomItem && this.$refs["more-items-button"]) {
-        return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
+      // The active item is hidden behind the "more" button, or not rendered yet
+      if (!this.activeDomItem) {
+        return (this.$refs["more-items-button"] as any)?.$el?.offsetWidth ?? 0;
       }
 
       if (this.activeItem?.hidden && this.$refs["more-items-button"]) {

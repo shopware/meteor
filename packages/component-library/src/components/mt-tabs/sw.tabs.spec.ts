@@ -1,4 +1,4 @@
-import { mount } from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
 import MtTabs from "./mt-tabs.vue";
 
 async function createWrapper(customOptions = {}, props = {}) {
@@ -113,5 +113,28 @@ describe("src/app/component/navigation/mt-tabs", () => {
         "mt-tabs__item--active",
       );
     });
+  });
+
+  it("should render when the active item is added after mount", async () => {
+    wrapper = await createWrapper(undefined, {
+      defaultItem: "baz",
+    });
+
+    await wrapper.setProps({
+      items: [
+        { name: "foo", label: "Foo" },
+        { name: "baz", label: "Baz" },
+      ],
+    });
+
+    expect(wrapper.find('.mt-tabs__item[data-item-name="baz"]').classes()).toContain(
+      "mt-tabs__item--active",
+    );
+
+    await flushPromises();
+
+    expect(wrapper.vm.activeDomItem).toBe(
+      wrapper.find('.mt-tabs__item[data-item-name="baz"]').element,
+    );
   });
 });
