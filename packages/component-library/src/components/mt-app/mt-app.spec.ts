@@ -665,6 +665,32 @@ describe("mt-app", () => {
       expect(mounted).toHaveBeenCalledTimes(1);
     });
 
+    it("shows the trigger of a sidebar that appears later", async () => {
+      // ARRANGE
+      const Wrapper = defineComponent({
+        components: { MtApp, MtPage },
+        props: { showEnd: Boolean },
+        template: `
+          <mt-app :breakpoint="99999">
+            <template #default><mt-page><p>Main content</p></mt-page></template>
+            <template #navigation><a href="/">Start nav</a></template>
+            <template v-if="showEnd" #sidebar><div>End tools</div></template>
+          </mt-app>
+        `,
+      });
+      const { rerender } = render(Wrapper, { props: { showEnd: false } });
+      await nextTick();
+
+      // ASSERT
+      expect(screen.queryByRole("button", { name: sidebarTriggerName })).not.toBeInTheDocument();
+
+      // ACT
+      await rerender({ showEnd: true });
+
+      // ASSERT
+      expect(await screen.findByRole("button", { name: sidebarTriggerName })).toBeInTheDocument();
+    });
+
     it("removes the trigger and closes the drawer when the open sidebar disappears", async () => {
       // ARRANGE
       const Wrapper = defineComponent({

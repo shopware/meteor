@@ -438,6 +438,9 @@ provide(appContextKey, {
   registerPlacedTrigger,
   triggerOf,
   panelTrigger(panel, region) {
+    // Read first, so a component that shows no trigger yet still renders again when a panel slot
+    // changes.
+    void panelSlotChanges.value;
     if (!hasTrigger(panel) || !showsTrigger(panel, region)) return undefined;
 
     return triggerOf(panel);
