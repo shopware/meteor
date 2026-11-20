@@ -72,7 +72,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 </template>
 ```
 
-**App Panel Trigger** always shows, wherever and as often as you place it, even while its panel is empty or hidden. So render it only where it makes sense. While it is shown, Page and App Header leave out their own trigger for that panel. The exception is a trigger inside the panel it controls, for example as a close button: it hides with the panel, so Page and App Header keep theirs.
+**App Panel Trigger** always shows, wherever and as often as you place it, even while its panel is empty or hidden. So render it only where it makes sense. While it is shown, Page and App Header leave out their own trigger for that panel. The exception is a trigger inside the panel it controls: it hides with the panel, so Page and App Header keep theirs. For a close button inside a panel, prefer a [**Button**](/components/button) that calls `close()` from [`useApp()`](/utilities/composables/use-app), so it says what it does.
 
 ::warning
 **App doesn't show the triggers itself.** App Header and Page show them for you. If you use neither, add the triggers yourself with **App Panel Trigger**. Otherwise the navigation and the sidebar can't be opened once they are closed or turned into drawers.

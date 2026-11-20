@@ -717,6 +717,29 @@ describe("mt-app", () => {
       expect(await screen.findByRole("button", { name: sidebarTriggerName })).toBeInTheDocument();
     });
 
+    it("shows the trigger of a sidebar that becomes closable later", async () => {
+      // ARRANGE
+      const closable = ref(false);
+      await renderApp({
+        slots: {
+          default: allSlots.default,
+          sidebar: () =>
+            h(MtPanel, { closable: closable.value }, () =>
+              h("aside", { "aria-label": "Details" }, "Tools"),
+            ),
+        },
+      });
+
+      // ASSERT
+      expect(screen.queryByRole("button", { name: sidebarTriggerName })).not.toBeInTheDocument();
+
+      // ACT
+      closable.value = true;
+
+      // ASSERT
+      expect(await screen.findByRole("button", { name: sidebarTriggerName })).toBeInTheDocument();
+    });
+
     it("removes the trigger and closes the drawer when the open sidebar disappears", async () => {
       // ARRANGE
       const Wrapper = defineComponent({
