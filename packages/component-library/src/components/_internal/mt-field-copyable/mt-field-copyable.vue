@@ -83,9 +83,14 @@ export default defineComponent({
       wasCopied.value ? t("tooltip.wasCopied") : t("tooltip.canCopy"),
     );
 
-    function copyToClipboard() {
+    async function copyToClipboard() {
       if (!props.copyableText) return;
-      copyToClipboardUtil(props.copyableText);
+
+      try {
+        await copyToClipboardUtil(props.copyableText);
+      } catch {
+        return;
+      }
 
       if (props.tooltip) {
         wasCopied.value = true;
