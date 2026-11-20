@@ -161,7 +161,7 @@ describe("mt-panel", () => {
 
       // ASSERT
       const [navigation, sidebar] = document.querySelectorAll<HTMLElement>(".mt-panel");
-      expect(navigation.style.getPropertyValue("--mt-panel-width")).toBe("240px");
+      expect(navigation.style.getPropertyValue("--mt-panel-width")).toBe("280px");
       expect(navigation.style.getPropertyValue("--mt-panel-min-width")).toBe("200px");
       expect(navigation.style.getPropertyValue("--mt-panel-max-width")).toBe("400px");
       expect(sidebar.style.getPropertyValue("--mt-panel-width")).toBe("320px");

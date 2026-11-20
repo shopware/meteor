@@ -54,7 +54,7 @@ const meta: MtAppMeta = {
         :loading-bar="args.loadingBar"
       >
         <template #navigation>
-          <mt-panel :width="240">
+          <mt-panel>
             <mt-nav :sections="sections" :link-component="linkComponent" />
           </mt-panel>
         </template>

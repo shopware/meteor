@@ -87,7 +87,7 @@ The panels of a page work the same way:
 
 ## Behavior
 
-- By default, the navigation and the start panel are 240px wide, at least 200px and at most 400px. The sidebar and the end panel are 320px wide, at least 240px and at most 480px. `width`, `min-width` and `max-width` change this. Next to the content, a panel never takes more than half of the layout: of the page in **Page**, of the viewport in **App**.
+- By default, the navigation is 280px wide and the start panel 240px, both at least 200px and at most 400px. The sidebar and the end panel are 320px wide, at least 240px and at most 480px. `width`, `min-width` and `max-width` change this. Next to the content, a panel never takes more than half of the layout: of the page in **Page**, of the viewport in **App**.
 - `closable` shows the panel's trigger also on desktop, where it shows and hides the panel. On small screens, panels are drawers that always have a trigger.
 - On desktop, the panel slides in and out over its outer edge when it opens or closes.
 - `appearance` sets the panel off from the content. `bordered` draws a frame in **App**, where the panel sits on the app's background next to the content, and a line on the panel's inner edge in **Page**, where it sits inside the content's frame. `plain` draws no border. The navigation is `plain` by default, the other panels are `bordered`. Drawers on small screens have no border.
