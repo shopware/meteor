@@ -11,7 +11,7 @@ const RouterLinkStub: FunctionalComponent<{ to: { name: string } }> = (props, { 
 RouterLinkStub.props = { to: { type: Object, required: true } };
 
 /**
- * A row navigating to the named route, active when it is the current one.
+ * An item navigating to the named route, active when it is the current one.
  */
 function route(label: string, name: string, current?: string): NavItem {
   return { label, to: { name }, active: name === current };
@@ -57,7 +57,7 @@ function renderNav(props: Record<string, unknown> = {}, slots: Record<string, un
 }
 
 /**
- * The label of a navigation row. Section headers may repeat a row label, so match the label element.
+ * The label of a navigation item. Section headers may repeat an item label, so match the label element.
  */
 function getRowLabel(text: string, container: HTMLElement = document.body) {
   return within(container).getByText(text, { selector: ".mt-nav__link-label" });
@@ -139,7 +139,7 @@ describe("mt-nav", () => {
     });
 
     it("renders a row with both a link and nested rows as a group", () => {
-      // @ts-expect-error A row either links to a page or holds nested rows
+      // @ts-expect-error An item either links to a page or holds nested items
       const item: NavItem = {
         label: "Products",
         to: "/products",
@@ -403,7 +403,7 @@ describe("mt-nav", () => {
       await userEvent.keyboard("{ArrowUp}");
       expect(dashboard).toHaveFocus();
 
-      // The closed branch hides its rows, so the next link is the external one
+      // The closed branch hides its items, so the next link is the external one
       await userEvent.keyboard("{ArrowDown}{ArrowDown}");
       expect(docs).toHaveFocus();
 

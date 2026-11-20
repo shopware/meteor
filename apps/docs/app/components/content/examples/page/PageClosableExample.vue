@@ -9,7 +9,7 @@ const isOpen = ref(true);
   <div style="height: 320px">
     <mt-page
       v-if="isOpen"
-      :breadcrumb="[{ label: 'Shopping Experiences', icon: 'image-text' }]"
+      :breadcrumb="[{ label: 'Products', icon: 'products' }]"
       closable
       @close="isOpen = false"
     >

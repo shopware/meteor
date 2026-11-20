@@ -1,5 +1,5 @@
 <template>
-  <span class="mt-user" :title="compact ? name : undefined">
+  <span class="mt-user">
     <mt-avatar
       class="mt-user__avatar"
       :first-name="nameParts.first"
@@ -45,10 +45,7 @@ const props = withDefaults(
     subtitle?: string;
     /** An image for the avatar instead of the initials. */
     imageUrl?: string;
-    /**
-     * Shows only the avatar. The name and the subtitle stay available to assistive technology, and
-     * the name shows on hover.
-     */
+    /** Shows only the avatar. The name and the subtitle stay available to assistive technology. */
     compact?: boolean;
   }>(),
   {

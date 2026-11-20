@@ -120,9 +120,9 @@ const props = withDefaults(
 );
 
 /**
- * The width in pixels. Defaults to 240 for the navigation and the start panel, and to 320 for the
- * sidebar and the end panel. It changes when the user resizes the panel: at the end of a drag, on a
- * key press, or when the handle resets it.
+ * The width in pixels. Defaults to 280 for the navigation, to 240 for the start panel, and to 320
+ * for the sidebar and the end panel. It changes when the user resizes the panel: at the end of a
+ * drag, on a key press, or when the handle resets it.
  */
 const width = defineModel<number>("width");
 

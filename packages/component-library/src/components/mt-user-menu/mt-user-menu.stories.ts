@@ -96,7 +96,7 @@ export const Compact: MtUserMenuStory = {
   parameters: {
     docs: {
       description: {
-        story: "Shows only the avatar. The name shows on hover, and the menu keeps its own width.",
+        story: "Shows only the avatar, and the menu keeps its own width.",
       },
     },
   },

@@ -49,16 +49,16 @@ The panels of a page work the same way:
 <template>
   <mt-page :breadcrumb="breadcrumb">
     <template #start>
-      <mt-panel label="Blocks" icon="regular-layout" resizable>
-        <BlockList />
+      <mt-panel label="Filters" resizable>
+        <ProductFilters />
       </mt-panel>
     </template>
 
-    <CmsCanvas />
+    <ProductList />
 
     <template #end>
-      <mt-panel label="Properties" icon="regular-cog" closable>
-        <BlockProperties />
+      <mt-panel label="Details" closable>
+        <ProductDetails />
       </mt-panel>
     </template>
   </mt-page>
@@ -75,7 +75,7 @@ The panels of a page work the same way:
 #do
 
 - Put **Panel** directly into the slot, so the shell and the page know its label, icon and closable setting before anything inside renders.
-- Give the panel a `label` that names its content, such as "Assistant" or "Properties", and use the same name for the `<aside>` of the content.
+- Give the panel a `label` that names its content, and use the same name for the `<aside>` of the content.
 - Keep the default width and limits, and only set `width`, `min-width` and `max-width` when the content needs other ones.
 
 #dont
@@ -87,7 +87,7 @@ The panels of a page work the same way:
 
 ## Behavior
 
-- By default, the navigation and the start panel are 240px wide, at least 200px and at most 400px. The sidebar and the end panel are 320px wide, at least 240px and at most 480px. `width`, `min-width` and `max-width` change this. Next to the content, a panel never takes more than half of the layout: of the page in **Page**, of the viewport in **App**.
+- By default, the navigation is 280px wide and the start panel 240px, both at least 200px and at most 400px. The sidebar and the end panel are 320px wide, at least 240px and at most 480px. `width`, `min-width` and `max-width` change this. Next to the content, a panel never takes more than half of the layout: of the page in **Page**, of the viewport in **App**.
 - `closable` shows the panel's trigger also on desktop, where it shows and hides the panel. On small screens, panels are drawers that always have a trigger.
 - On desktop, the panel slides in and out over its outer edge when it opens or closes.
 - `appearance` sets the panel off from the content. `bordered` draws a frame in **App**, where the panel sits on the app's background next to the content, and a line on the panel's inner edge in **Page**, where it sits inside the content's frame. `plain` draws no border. The navigation is `plain` by default, the other panels are `bordered`. Drawers on small screens have no border.
@@ -113,4 +113,4 @@ The panels of a page work the same way:
 
 - [**App**](/components/app): for the shell with the navigation and the sidebar.
 - [**Page**](/components/page): for the frame of a page with its start and end panels.
-- [**Sidebar**](/components/sidebar): for the frame of the main navigation, which fills its panel.
+- [**App Sidebar**](/components/app-sidebar): for the main navigation in a sidebar, which fills its panel.

@@ -88,7 +88,7 @@ const leadingPanelSize: PanelSize = { width: 240, minWidth: 200, maxWidth: 400 }
 const trailingPanelSize: PanelSize = { width: 320, minWidth: 240, maxWidth: 480 };
 
 export const defaultPanelSizes: Record<PanelPlace, PanelSize> = {
-  navigation: leadingPanelSize,
+  navigation: { ...leadingPanelSize, width: 280 },
   start: leadingPanelSize,
   sidebar: trailingPanelSize,
   end: trailingPanelSize,

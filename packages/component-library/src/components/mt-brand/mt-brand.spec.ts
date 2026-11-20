@@ -9,13 +9,12 @@ function renderBrand(props: Record<string, unknown> = {}, slots: Record<string, 
 }
 
 describe("mt-brand", () => {
-  it("renders the title, with the full title on hover, as it is cut off when too long", () => {
+  it("renders the title", () => {
     // ACT
     renderBrand();
 
     // ASSERT
     expect(screen.getByText("Demo shop")).toBeVisible();
-    expect(screen.getByText("Demo shop")).toHaveAttribute("title", "Demo shop");
   });
 
   it("renders the subtitle below the title", () => {
@@ -70,7 +69,7 @@ describe("mt-brand", () => {
     );
   });
 
-  it("hides the title and subtitle visually when compact, and shows the title on hover", () => {
+  it("hides the title and subtitle visually when compact", () => {
     // ACT
     const { container } = renderBrand({ compact: true, subtitle: "Shopware" });
 
@@ -78,7 +77,6 @@ describe("mt-brand", () => {
     expect(container.querySelector(".mt-brand__text")).toHaveClass("visually-hidden");
     expect(screen.getByText("Demo shop")).toBeInTheDocument();
     expect(screen.getByText("Shopware")).toBeInTheDocument();
-    expect(container.querySelector(".mt-brand")).toHaveAttribute("title", "Demo shop");
   });
 
   it("doesn't hide the title and subtitle by default", () => {
@@ -87,7 +85,6 @@ describe("mt-brand", () => {
 
     // ASSERT
     expect(container.querySelector(".mt-brand__text")).not.toHaveClass("visually-hidden");
-    expect(container.querySelector(".mt-brand")).not.toHaveAttribute("title");
   });
 
   it("replaces the whole default logo with the logo slot", () => {
