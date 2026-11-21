@@ -56,7 +56,11 @@ import { MtDatepicker } from "@shopware-ag/meteor-component-library";
 
 - `dateType` controls whether the picker behaves as a date, time, or datetime input.
 - `range` lets one field hold a start and end value.
-- `timeZone` affects how values are interpreted and displayed.
+- `timeZone` affects how values are interpreted and displayed. A time zone the browser does not know is treated as `UTC`, with a warning in the console.
+- With `dateType="date"`, the value is midnight of the picked day in `timeZone` as a UTC date and time, so the same day is a different value in each time zone. January 15 in `Europe/Berlin` is `2000-01-14T23:00:00.000Z`. A plain day given as the value, such as `2000-01-15`, is shown as that day.
+- `textInput` lets users type a value. It is saved when they press Enter or Tab, or leave the field, not while they are typing.
+- `is24` set to `false` shows a 12-hour clock in the time picker and in the input. A custom `format` takes precedence in the input.
+- `required` shows the error "This field is required" while the value is empty. This built-in error is deprecated and will be removed in the next major version. `required` will then only mark the input as required, so show your own message with `error` instead.
 - `helpText`, `required`, `disabled`, `error`, and `size` integrate with the shared field styling.
 
 ## Accessibility
