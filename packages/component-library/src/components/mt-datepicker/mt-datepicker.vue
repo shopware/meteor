@@ -3,13 +3,14 @@
     class="mt-datepicker__wrapper wrapper"
     :class="{
       'mt-datepicker__wrapper--small': size === 'small',
-      'has-error': error,
+      'mt-datepicker__wrapper--disabled': isDisabled,
+      'has-error': !!error,
     }"
   >
     <mt-field-label
       class="mt-datepicker__label"
-      for="field-id"
-      :has-error="!!error || !!errorMessage"
+      :for="inputId"
+      :has-error="hasError"
       :required="required"
       :inheritance="isInheritanceField ? (isInherited ? 'linked' : 'unlinked') : 'none'"
       :disabled="disableInheritanceToggle"
@@ -21,60 +22,87 @@
 
     <mt-help-text v-if="!!helpText" :text="helpText" :style="{ gridArea: 'help-text' }" />
 
-    <VueDatePicker
-      :model-value="dateValue"
-      class="date-picker"
-      :style="{ gridArea: 'input' }"
-      :floating="datePickerFloating"
-      :placeholder="placeholder"
-      :disabled="disabled || isInherited"
-      :locale="datePickerLocale"
-      :timezone="timeZone"
-      :teleport="true"
-      :action-row="{ showCancel: true }"
-      :auto-apply="true"
-      :text-input="textInput"
-      :range="range"
-      :formats="datePickerFormats"
-      :input-attrs="datePickerInputAttrs"
-      :time-config="datePickerTimeConfig"
-      :is-24="is24"
-      :time-picker="dateType === 'time'"
-      :min-date="minDate"
-      :max-date="maxDate"
-      @update:model-value="onDateValueChange"
-      @closed="onDatepickerClosed"
-    >
-      <template #clear-icon="{ clear }">
-        <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
-          <mt-icon name="regular-times-s" size="var(--scale-size-10)" aria-hidden="true" />
-        </button>
-      </template>
+    <PopoverRoot v-model:open="isOpen">
+      <PopoverAnchor as-child>
+        <div class="mt-datepicker__field" :style="{ gridArea: 'input' }">
+          <input
+            :id="inputId"
+            ref="input"
+            class="mt-datepicker__input"
+            type="text"
+            autocomplete="off"
+            aria-haspopup="dialog"
+            :aria-expanded="isOpen"
+            :aria-invalid="hasError ? 'true' : undefined"
+            :aria-describedby="hasError ? errorId : undefined"
+            :value="shownText"
+            :placeholder="placeholder"
+            :required="required"
+            :disabled="isDisabled"
+            :readonly="!textInput"
+            @click="open"
+            @input="onTextInput"
+            @keydown="onInputKeydown"
+            @focusout="onInputFocusOut"
+          />
 
-      <template #input-icon>
-        <mt-icon name="regular-calendar" class="regular-calendar" />
-      </template>
+          <button
+            v-if="hasValue && !isDisabled"
+            type="button"
+            class="mt-datepicker__clear-button"
+            aria-label="Clear value"
+            @pointerdown="onClearPointerDown"
+            @click="onClearClick"
+          >
+            <mt-icon name="regular-times-s" size="var(--scale-size-10)" aria-hidden="true" />
+          </button>
 
-      <template #calendar-icon>
-        <mt-icon name="regular-calendar" class="regular-calendar" />
-      </template>
+          <span class="mt-datepicker__icon" aria-hidden="true" @click="open">
+            <mt-icon :name="dateType === 'time' ? 'regular-clock' : 'regular-calendar'" />
+          </span>
+        </div>
+      </PopoverAnchor>
 
-      <template #tp-inline-arrow-up>
-        <mt-icon name="regular-chevron-up-s" class="time-arrow-up-down" />
-      </template>
+      <PopoverPortal>
+        <PopoverContent
+          class="mt-datepicker__menu"
+          side="bottom"
+          align="start"
+          :side-offset="4"
+          :aria-label="label || undefined"
+          @open-auto-focus.prevent
+          @close-auto-focus.prevent
+          @pointer-down-outside="onPointerDownOutside"
+          @escape-key-down="onEscape"
+        >
+          <mt-datepicker-calendar
+            v-if="dateType !== 'time'"
+            v-model:view-day="viewDay"
+            :range="range"
+            :model-value="calendarValue"
+            :today="today"
+            :min-day="minDay"
+            :max-day="maxDay"
+            :locale="datePickerLocale"
+            :locale-tag="localeTag"
+            @select="onSelectDay"
+            @select-range="onSelectRange"
+          />
 
-      <template #tp-inline-arrow-down>
-        <mt-icon name="regular-chevron-down-s" class="time-arrow-up-down" />
-      </template>
-
-      <template #arrow-left>
-        <mt-icon name="regular-chevron-left-xs" class="month-control-arrow" />
-      </template>
-
-      <template #arrow-right>
-        <mt-icon name="regular-chevron-right-xs" class="month-control-arrow" />
-      </template>
-    </VueDatePicker>
+          <div v-if="dateType !== 'date'" class="mt-datepicker__times">
+            <mt-datepicker-time
+              v-for="(time, index) in shownTimes"
+              :key="index"
+              :model-value="time"
+              :is24="is24"
+              :hour-increment="hourIncrement"
+              :minute-increment="minuteIncrement"
+              @update:model-value="onTimeChange(index, $event)"
+            />
+          </div>
+        </PopoverContent>
+      </PopoverPortal>
+    </PopoverRoot>
 
     <mt-field-error
       v-if="error || errorMessage"
@@ -93,38 +121,54 @@
       :data-testid="showFieldHint() ? undefined : 'time-zone-hint'"
       :style="{ gridArea: 'hint' }"
     >
-      <slot name="hint">{{ showFieldHint() ? hint : timeZone || "UTC" }}</slot>
+      <slot name="hint">{{ showFieldHint() ? hint : resolvedTimeZone }}</slot>
     </mt-field-hint>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, useId, watch } from "vue";
+import { PopoverAnchor, PopoverContent, PopoverPortal, PopoverRoot } from "reka-ui";
+import { TZDate, tz } from "@date-fns/tz";
+import { format as formatDate, isValid, parse, type Locale } from "date-fns";
+import { enUS } from "date-fns/locale/en-US";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
-import {
-  VueDatePicker,
-  type FloatingConfig,
-  type FormatsConfig,
-  type InputAttributesConfig,
-  type TimeConfig,
-} from "@vuepic/vue-datepicker";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
-import "@vuepic/vue-datepicker/dist/main.css";
-import { useId } from "vue";
-import { enUS } from "date-fns/locale/en-US";
-import type { Locale } from "date-fns";
+import MtDatepickerCalendar from "./mt-datepicker-calendar.vue";
+import MtDatepickerTime from "./mt-datepicker-time.vue";
 import { importDateFnsLocaleModule } from "./date-fns-locale";
+import {
+  dateOnlyStringToUtcIso,
+  isDateOnlyString,
+  resolveTimeZone,
+  toDateOnlyString,
+  toLocalDateOnlyString,
+} from "./date-only";
+import { useConfirmedEmit } from "./use-confirmed-emit";
 
 // @deprecated tag:v5 remove the `wrapper` class of the root element. Keep `mt-datepicker__wrapper`,
 // which the styles build on.
+
+type DatepickerFormat = string | ((date: Date) => string) | ((dates: Date[]) => string);
 
 interface Time {
   hours: number;
   minutes: number;
 }
+
+/** A value as the user sees it: a calendar day and a time on the clock of the picker */
+interface Shown extends Time {
+  /** "yyyy-MM-dd". Empty for a time-only picker. */
+  day: string;
+}
+
+type EmittedValue = string | Array<string | null> | null;
+
+const REQUIRED_ERROR = "This field is required";
+const RANGE_SEPARATOR = " - ";
 
 const props = withDefaults(
   defineProps<{
@@ -146,12 +190,29 @@ const props = withDefaults(
      * The format of the date picker.
      * You can use a string or a function to format the date.
      */
-    format?: FormatsConfig["input"];
+    format?: DatepickerFormat;
     /**
      * Defines the time zone for the date picker.
      * Useful for adjusting date and time according to a specific timezone.
+     * A time zone the browser does not know is treated as "UTC".
      */
     timeZone?: string;
+    /**
+     * Defines the value of a date-only picker (`dateType="date"`). It has no effect on the other
+     * date types.
+     *
+     * - "datetime": midnight of the picked day in `timeZone` as a UTC ISO string. January 15 in
+     *   Europe/Berlin is "2000-01-14T23:00:00.000Z". Use it when the day depends on where the
+     *   user is, for example in a filter for orders of a day.
+     * - "date": the picked calendar day as "yyyy-MM-dd", for example "2000-01-15". The day is the
+     *   same in every time zone and `timeZone` is ignored. Use it for days that do not depend on
+     *   a place, such as birthdays. A string with a time is read as the day it falls on in UTC. A
+     *   Date object is read as its own calendar day, the one `getDate()` returns, so
+     *   `new Date(2000, 0, 15)` is January 15.
+     *
+     * With either format, a value that is a plain day such as "2000-01-15" is shown as that day.
+     */
+    valueFormat?: "datetime" | "date";
     /**
      * The value of the date picker. Can be a single string or an array of strings.
      * This represents the currently selected date(s).
@@ -162,12 +223,17 @@ const props = withDefaults(
      */
     placeholder?: string;
     /**
-     * Determines if the timepicker is in 24 or 12 hour format
+     * Determines if the time picker uses a 24 or a 12 hour clock. The input shows the same clock,
+     * unless a custom `format` is set.
      */
     is24?: boolean;
     /**
      * Determines if the date picker field is required.
-     * If true, the user must select a value before submitting the form.
+     * If true, the user must select a value before submitting the form. The picker shows the
+     * error "This field is required" while the value is empty.
+     *
+     * @deprecated tag:v6 - the built-in error will be removed, and `required` will only mark the
+     * input as required. Show your own message with `error` instead.
      */
     required?: boolean;
     /**
@@ -203,7 +269,6 @@ const props = withDefaults(
     /**
      * The minimum selectable date. Can be a Date object or an ISO string.
      * Any date before this will be disabled in the calendar.
-     * For example: "today"
      */
     minDate?: Date | string;
     /**
@@ -217,7 +282,8 @@ const props = withDefaults(
      */
     minuteIncrement?: number;
     /**
-     * Enables typing directly into the input field.
+     * Enables typing directly into the input field. A typed value is emitted when the user
+     * presses Enter or Tab, or leaves the field.
      */
     textInput?: boolean;
     /**
@@ -244,6 +310,9 @@ const props = withDefaults(
     locale: "de",
     format: undefined,
     timeZone: "UTC",
+    // @deprecated tag:v6 - "date" will become the default, so date-only pickers work with plain
+    // calendar days unless "datetime" is requested.
+    valueFormat: "datetime",
     modelValue: null,
     placeholder: "Y-m-d ...",
     is24: true,
@@ -287,9 +356,61 @@ const onInheritanceChange = (inheritance: "linked" | "unlinked") => {
   emit("inheritance-remove");
 };
 
+// @deprecated tag:v6 - give every picker an id of its own with `useId()`. All pickers share this
+// id, so the label of a second picker on a page points at the input of the first one. It is kept
+// until then because tests and styles select the input by `#field-id`.
+const inputId = "field-id";
 const errorId = useId();
+const input = ref<HTMLInputElement | null>(null);
+
+const isDisabled = computed(() => props.disabled || props.isInherited);
+const isTimeHintVisible = computed(() => props.dateType === "datetime");
+
+/* Time zone */
+
+const resolvedTimeZone = computed(() => resolveTimeZone(props.timeZone));
+
+// A misspelled time zone would otherwise save UTC values without anybody noticing
+watch(
+  () => props.timeZone,
+  (timeZone) => {
+    if (timeZone && resolveTimeZone(timeZone) !== timeZone) {
+      console.warn(
+        `[MtDatepicker] The time zone "${timeZone}" is unknown to the browser. The picker uses "UTC" instead.`,
+      );
+    }
+  },
+  { immediate: true },
+);
+
+// A plain calendar day is the same in every time zone. The picker then reads and emits
+// "yyyy-MM-dd" and does not use the configured time zone.
+const isPlainDate = computed(() => props.dateType === "date" && props.valueFormat === "date");
+
+// The time zone in which a date-only picker looks up the calendar day of a value
+const dateOnlyTimeZone = computed(() => (isPlainDate.value ? "UTC" : resolvedTimeZone.value));
+
+// The clock on which the picker shows and reads a value. Only a date and time depends on a place.
+const clockTimeZone = computed(() =>
+  props.dateType === "datetime" ? resolvedTimeZone.value : "UTC",
+);
+
+/* Required error */
+
+// @deprecated tag:v6 - remove the built-in required error. `required` will then only mark the
+// input as required, and the parent shows its own message through `error`, as with other fields.
 const errorMessage = ref<{ detail: string } | undefined>(undefined);
-const isTimeHintVisible = ref(true);
+
+const checkValidity = () => {
+  errorMessage.value = props.required && !props.modelValue ? { detail: REQUIRED_ERROR } : undefined;
+};
+
+watch(() => props.modelValue, checkValidity, { immediate: true });
+
+const hasError = computed(() => !!(errorMessage.value || props.error));
+
+/* Language */
+
 const datePickerLocale = ref<Locale>(enUS);
 let localeLoadId = 0;
 
@@ -321,199 +442,433 @@ watch(
   { immediate: true },
 );
 
-const datePickerFormats = computed<Partial<FormatsConfig>>(() => {
-  const input =
-    props.format ??
-    (props.dateType === "date"
-      ? "yyyy/MM/dd"
-      : props.dateType === "time"
-        ? "HH:mm"
-        : "yyyy/MM/dd, HH:mm");
-  return { input };
+// The calendar names days for assistive technology with the browser, which needs a valid tag
+const localeTag = computed(() => {
+  try {
+    return Intl.getCanonicalLocales(props.locale.replace(/_/g, "-").trim() || "en-US")[0];
+  } catch {
+    return "en-US";
+  }
 });
 
-const datePickerTimeConfig = computed<Partial<TimeConfig>>(() => ({
-  enableTimePicker: props.dateType !== "date",
-  is24: props.is24,
-  noHoursOverlay: props.dateType === "time",
-  noMinutesOverlay: props.dateType === "time",
-  hoursGridIncrement: props.hourIncrement,
-  minutesGridIncrement: props.minuteIncrement,
-  timePickerInline: true,
-}));
+/* From the value to what the user sees, and back */
 
-const datePickerFloating = computed<Partial<FloatingConfig>>(() => ({
-  placement: "bottom-start",
-  arrow: true,
-  offset: 3,
-}));
+const pad = (value: number, length = 2) => String(value).padStart(length, "0");
 
-const datePickerInputAttrs = computed<
-  Partial<InputAttributesConfig> & {
-    "aria-invalid"?: boolean | "true" | "false";
-    "aria-describedby"?: string;
+const dayOf = (date: Date) =>
+  `${pad(date.getFullYear(), 4)}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+
+// The calendar day a date-only picker shows for a value
+const toPickerDay = (value: string | Date): string | null => {
+  // A plain day has no time and no place, so it is the same day in every time zone
+  if (typeof value === "string" && isDateOnlyString(value)) return value;
+
+  // A Date that stands for a day is mostly built at midnight on the clock of the browser, as
+  // `new Date(2000, 0, 15)` is, so its own calendar day is the day it stands for
+  if (isPlainDate.value && value instanceof Date) return toLocalDateOnlyString(value);
+
+  return toDateOnlyString(value, dateOnlyTimeZone.value);
+};
+
+const toTime = (value: string): Time | null => {
+  const timePart = value.includes("T") ? value.split("T")[1].split(/[Z.+-]/)[0] : value;
+  const [hours, minutes] = timePart.split(":").map(Number);
+
+  if (!Number.isInteger(hours) || !Number.isInteger(minutes)) return null;
+  if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
+
+  return { hours, minutes };
+};
+
+const toShown = (value: string | Date | null | undefined): Shown | null => {
+  if (value === null || value === undefined || value === "") return null;
+
+  if (props.dateType === "date") {
+    const day = toPickerDay(value);
+    return day ? { day, hours: 0, minutes: 0 } : null;
   }
->(() => ({
-  id: "field-id",
-  required: props.required,
-  clearable: true,
-  "aria-invalid": !!(errorMessage.value || props.error),
-  "aria-describedby": errorMessage.value || props.error ? errorId : undefined,
-}));
-
-const dateValue = computed<Date | Date[] | Time | null>(() => {
-  if (!props.modelValue) return null;
 
   if (props.dateType === "time") {
-    if (
-      typeof props.modelValue === "object" &&
-      !Array.isArray(props.modelValue) &&
-      "hours" in props.modelValue &&
-      "minutes" in props.modelValue
-    ) {
-      return props.modelValue as Time;
-    }
-
-    const timePart =
-      typeof props.modelValue === "string" && props.modelValue.includes("T")
-        ? props.modelValue.split("T")[1].split(/[Z.+-]/)[0]
-        : (props.modelValue as string);
-
-    const [hours, minutes] = timePart.split(":").map(Number);
-    return { hours, minutes };
+    const time = typeof value === "string" ? toTime(value) : null;
+    return time ? { day: "", ...time } : null;
   }
 
-  if (Array.isArray(props.modelValue)) {
-    return props.modelValue
-      .filter((value): value is string | Date => value !== null)
-      .map((value) => new Date(value));
+  const ms = typeof value === "string" ? Date.parse(value) : value.getTime();
+  if (Number.isNaN(ms)) return null;
+
+  const onClock = new TZDate(ms, clockTimeZone.value);
+  return { day: dayOf(onClock), hours: onClock.getHours(), minutes: onClock.getMinutes() };
+};
+
+const toEmitted = (shown: Shown): string | null => {
+  if (props.dateType === "time") return `${pad(shown.hours)}:${pad(shown.minutes)}`;
+  if (isPlainDate.value) return shown.day;
+  if (props.dateType === "date") return dateOnlyStringToUtcIso(shown.day, resolvedTimeZone.value);
+
+  const [year, month, day] = shown.day.split("-").map(Number);
+  const moment = new TZDate(
+    year,
+    month - 1,
+    day,
+    shown.hours,
+    shown.minutes,
+    resolvedTimeZone.value,
+  );
+  return new Date(moment.getTime()).toISOString();
+};
+
+// A range keeps the position of each end, so a range without a start does not show its end as
+// the start
+const shownValue = computed<Array<Shown | null>>(() => {
+  const value = props.modelValue;
+
+  if (props.range) {
+    const [start, end] = Array.isArray(value) ? value : [value, null];
+    return [toShown(start), toShown(end)];
   }
 
-  return new Date(props.modelValue);
+  return [toShown(Array.isArray(value) ? value[0] : value)];
 });
 
-const updateOpacitySettings = () => {
-  document.documentElement.style.setProperty(
-    "--menu-border-opacity",
-    props.dateType === "datetime" ? "1" : "0",
-  );
-  document.documentElement.style.setProperty(
-    "--time-inc-dec-opacity",
-    props.dateType === "time" ? "1" : "0",
-  );
+const hasValue = computed(() => shownValue.value.some((shown) => shown !== null));
+
+/* The text in the input */
+
+const timePattern = computed(() => (!props.is24 && !props.format ? "hh:mm aa" : "HH:mm"));
+
+const pattern = computed(() => {
+  if (typeof props.format === "string") return props.format;
+  if (props.dateType === "date") return "yyyy/MM/dd";
+  if (props.dateType === "time") return timePattern.value;
+  return `yyyy/MM/dd, ${timePattern.value}`;
+});
+
+// A custom format function gets a Date that is on the clock of the picker
+const toClockDate = (shown: Shown) => {
+  const [year, month, day] = (shown.day || dayOf(new Date())).split("-").map(Number);
+  return new TZDate(year, month - 1, day, shown.hours, shown.minutes, clockTimeZone.value);
 };
 
-const checkValidity = () => {
-  if (!props.required) {
-    errorMessage.value = undefined;
-    return;
-  }
+const formatShown = (shown: Shown | null) => {
+  if (!shown) return "";
 
-  if (!props.modelValue) {
-    errorMessage.value = { detail: "This field is required" };
-    return;
-  }
+  const date = toClockDate(shown);
+  if (typeof props.format === "function") return (props.format as (date: Date) => string)(date);
 
-  errorMessage.value = undefined;
+  return formatDate(date, pattern.value, { locale: datePickerLocale.value });
 };
 
-const onDatepickerClosed = () => {
-  checkValidity();
-};
+const formattedValue = computed(() => {
+  if (!hasValue.value) return "";
 
-const onDateValueChange = (
-  newValue: Date | [Date, Date] | Time | string | string[] | Array<Date | string | null> | null,
-) => {
-  if (!newValue) {
-    emit("update:modelValue", null);
-    return;
+  if (props.range && typeof props.format === "function") {
+    const dates = shownValue.value.flatMap((shown) => (shown ? [toClockDate(shown)] : []));
+    return (props.format as (dates: Date[]) => string)(dates);
   }
 
-  if (typeof newValue === "object" && !Array.isArray(newValue) && "hours" in newValue) {
-    const hours = String(newValue.hours).padStart(2, "0");
-    const minutes = String(newValue.minutes).padStart(2, "0");
-    emit("update:modelValue", `${hours}:${minutes}`);
-    return;
-  }
+  return shownValue.value.map(formatShown).join(RANGE_SEPARATOR);
+});
 
-  const toUtcIso = (value: Date | string | null) => {
-    if (value === null) return null;
-    const ms = typeof value === "string" ? Date.parse(value) : value.getTime();
-    if (Number.isNaN(ms)) return null;
-    return new Date(ms).toISOString();
+/** What the user typed and has not confirmed or thrown away yet */
+const typedText = ref<string | null>(null);
+
+const shownText = computed(() => typedText.value ?? formattedValue.value);
+
+const parseOne = (text: string): Shown | null => {
+  // A custom format function cannot be read back, so typed text is read in the default format
+  const parsePattern = typeof props.format === "string" ? props.format : pattern.value;
+  const parsed = parse(text.trim(), parsePattern, new TZDate(Date.now(), clockTimeZone.value), {
+    locale: datePickerLocale.value,
+    in: tz(clockTimeZone.value),
+  });
+  if (!isValid(parsed)) return null;
+
+  const shown = {
+    day: props.dateType === "time" ? "" : dayOf(parsed),
+    hours: parsed.getHours(),
+    minutes: parsed.getMinutes(),
   };
 
-  if (Array.isArray(newValue)) {
-    emit(
-      "update:modelValue",
-      newValue.map((value) => toUtcIso(value)),
-    );
+  return isWithinLimits(shown.day) ? shown : null;
+};
+
+/** Reads typed text. Returns null for an empty text and undefined for one that is no value. */
+const parseText = (text: string): Array<Shown | null> | null | undefined => {
+  if (text.trim() === "") return null;
+
+  const parts = props.range ? text.split(RANGE_SEPARATOR) : [text];
+  const shown = parts.map(parseOne);
+  if (shown.some((part) => part === null)) return undefined;
+
+  return shown;
+};
+
+/* Limits */
+
+const toLimitDay = (limit: Date | string | undefined) =>
+  limit === undefined || props.dateType === "time" ? null : toPickerDay(limit);
+
+const minDay = computed(() => toLimitDay(props.minDate));
+const maxDay = computed(() => toLimitDay(props.maxDate));
+
+// Days written as "yyyy-MM-dd" compare like their text
+const isWithinLimits = (day: string) =>
+  !day || ((!minDay.value || day >= minDay.value) && (!maxDay.value || day <= maxDay.value));
+
+/* Emitting */
+
+// Brings a value into a form in which two values can be compared, however they are written
+const toComparable = (value: unknown): string => {
+  const normalize = (item: unknown) => {
+    if (item === null || item === undefined || item === "") return null;
+    if (item instanceof Date && Number.isNaN(item.getTime())) return null;
+
+    // A date-only picker shows days, so two of its values are equal when they are the same day
+    if (props.dateType === "date" && (typeof item === "string" || item instanceof Date)) {
+      return toPickerDay(item) ?? item;
+    }
+
+    if (item instanceof Date) return item.toISOString();
+    if (typeof item !== "string" || isDateOnlyString(item)) return item;
+
+    const ms = Date.parse(item);
+    return Number.isNaN(ms) ? item : new Date(ms).toISOString();
+  };
+
+  return JSON.stringify(Array.isArray(value) ? value.map(normalize) : normalize(value));
+};
+
+// What the user types counts once they confirm it with Enter or Tab, or leave the field. Only a
+// value that differs from the current one is passed on.
+const { emitValue, startTyping, confirmTyping, discardTyping } = useConfirmedEmit<EmittedValue>({
+  modelValue: () => props.modelValue,
+  toComparable,
+  emit: (value) => emit("update:modelValue", value),
+});
+
+const emitShown = (shown: Array<Shown | null>) => {
+  const values = shown.map((part) => (part ? toEmitted(part) : null));
+  emitValue(props.range ? values : values[0]);
+};
+
+/* The popup */
+
+const isOpen = ref(false);
+
+// @deprecated tag:v6 - remove together with the built-in required error
+watch(isOpen, (isNowOpen) => {
+  if (!isNowOpen) checkValidity();
+});
+
+/** A day in the month the calendar shows */
+const viewDay = ref("");
+/** The day the calendar marks as today */
+const today = ref("");
+/** The times the time picker shows, one for each end of a range */
+const draftTimes = ref<Time[]>([]);
+
+const getToday = () =>
+  isPlainDate.value
+    ? dayOf(new Date())
+    : toDateOnlyString(new Date(), resolvedTimeZone.value) ?? dayOf(new Date());
+
+const getCurrentTime = (): Time => {
+  const now = new TZDate(Date.now(), clockTimeZone.value);
+  return { hours: now.getHours(), minutes: now.getMinutes() };
+};
+
+// The time picker shows the time of the value, or the current time for an end without a value.
+// While the popup is open, a time the user chose for an end without a day yet is kept.
+const syncDraftTimes = ({ keepChosen }: { keepChosen: boolean }) => {
+  draftTimes.value = shownValue.value.map((shown, index) => {
+    if (shown) return { hours: shown.hours, minutes: shown.minutes };
+
+    return (keepChosen && draftTimes.value[index]) || getCurrentTime();
+  });
+};
+
+watch(shownValue, () => {
+  if (isOpen.value) syncDraftTimes({ keepChosen: true });
+});
+
+const shownTimes = computed(() =>
+  draftTimes.value.map(({ hours, minutes }) => ({ hours, minutes })),
+);
+
+const calendarValue = computed(() => {
+  const days = shownValue.value.map((shown) => shown?.day || null);
+  return props.range ? ([days[0], days[1]] as [string | null, string | null]) : days[0];
+});
+
+const open = () => {
+  if (isDisabled.value || isOpen.value) return;
+
+  today.value = getToday();
+  viewDay.value = shownValue.value.find((shown) => shown?.day)?.day ?? today.value;
+  syncDraftTimes({ keepChosen: false });
+  isOpen.value = true;
+};
+
+const close = () => {
+  isOpen.value = false;
+};
+
+// The popup closes when the user presses somewhere else. The field it belongs to is not
+// somewhere else: pressing the input keeps the popup open.
+const onPointerDownOutside = (event: Event) => {
+  const target = event.target;
+  if (target instanceof Node && input.value?.contains(target)) event.preventDefault();
+};
+
+const onEscape = () => {
+  discardTyping();
+  typedText.value = null;
+};
+
+/* Picking in the popup */
+
+const onSelectDay = (day: string) => {
+  discardTyping();
+  typedText.value = null;
+  emitShown([{ ...draftTimes.value[0], day }]);
+  close();
+};
+
+const onSelectRange = ([start, end]: [string, string | null]) => {
+  discardTyping();
+  typedText.value = null;
+  emitShown([
+    { ...draftTimes.value[0], day: start },
+    end ? { ...draftTimes.value[1], day: end } : null,
+  ]);
+
+  if (end) close();
+};
+
+const onTimeChange = (index: number, time: Time) => {
+  draftTimes.value = draftTimes.value.map((draft, i) => (i === index ? time : draft));
+
+  if (props.dateType === "time") {
+    emitShown([{ day: "", ...time }]);
     return;
   }
 
-  emit("update:modelValue", toUtcIso(newValue));
+  // A time without a day is not a value yet. It is used once a day is picked.
+  if (!shownValue.value[index]) return;
+
+  emitShown(
+    shownValue.value.map((shown, i) => (shown && i === index ? { ...shown, ...time } : shown)),
+  );
 };
 
-watch(
-  () => props.dateType,
-  () => {
-    isTimeHintVisible.value = props.dateType === "datetime";
-    updateOpacitySettings();
-  },
-  { immediate: true },
-);
+/* Typing */
 
-watch(
-  () => props.modelValue,
-  () => {
-    checkValidity();
-  },
-  { immediate: true },
-);
+const onTextInput = (event: Event) => {
+  const text = (event.target as HTMLInputElement).value;
+  typedText.value = text;
+  startTyping();
 
-onMounted(() => {
-  isTimeHintVisible.value = props.dateType === "datetime";
-  updateOpacitySettings();
-});
+  const shown = parseText(text);
+  if (shown === undefined) return;
+
+  if (shown === null) {
+    emitValue(null);
+    return;
+  }
+
+  emitShown(shown);
+
+  // The calendar follows what is typed
+  const day = shown.find((part) => part?.day)?.day;
+  if (day) viewDay.value = day;
+};
+
+/** Passes on what was typed. Text that is no value stays, so the user can correct it. */
+const confirmText = () => {
+  const isValue = typedText.value !== null && parseText(typedText.value) !== undefined;
+  confirmTyping();
+
+  if (isValue) typedText.value = null;
+};
+
+const onInputKeydown = (event: KeyboardEvent) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+
+    if (typedText.value !== null) {
+      confirmText();
+      close();
+    } else if (isOpen.value) {
+      close();
+    } else {
+      open();
+    }
+    return;
+  }
+
+  if (event.key === "Tab") {
+    confirmText();
+    return;
+  }
+
+  if (event.key === "Escape") {
+    onEscape();
+    return;
+  }
+
+  // The arrow key takes the user into the calendar
+  if (event.key === "ArrowDown" && isOpen.value) {
+    const menu = document.querySelector(".mt-datepicker__menu");
+    const day = menu?.querySelector<HTMLElement>(
+      "[data-selected], [data-mt-today], .mt-datepicker-calendar__day, button",
+    );
+    if (day) {
+      event.preventDefault();
+      day.focus();
+    }
+  }
+};
+
+// Pressing the clear button takes the focus off the input before the click arrives, and leaving
+// the input confirms what was typed. The press is noticed first, so that what was typed is thrown
+// away instead. The flag is reset once the press is over, also when it ends somewhere else.
+let isClearing = false;
+
+const onClearPointerDown = () => {
+  isClearing = true;
+  window.addEventListener(
+    "pointerup",
+    () => {
+      setTimeout(() => {
+        isClearing = false;
+      });
+    },
+    { once: true },
+  );
+};
+
+const onClearClick = () => {
+  isClearing = false;
+  discardTyping();
+  typedText.value = null;
+  emitValue(null);
+  close();
+};
+
+const onInputFocusOut = (event: FocusEvent) => {
+  // Moving on into the popup is not leaving the picker. What was typed counts only when the user
+  // confirms it in the field, a day picked in the calendar replaces it.
+  const next = event.relatedTarget;
+  if (isClearing || (next instanceof Element && next.closest(".mt-datepicker__menu"))) {
+    discardTyping();
+    return;
+  }
+
+  confirmText();
+};
 </script>
 
 <style lang="css">
-:root {
-  --menu-border-opacity: 1;
-  --time-inc-dec-opacity: 0;
-}
-
-/* || Datepicker theme  */
-.dp__theme_light {
-  --dp-background-color: var(--color-background-primary-default);
-  --dp-text-color: var(--color-text-primary-default);
-  --dp-hover-color: var(--color-interaction-secondary-hover);
-  --dp-hover-text-color: var(--color-text-primary-default);
-  --dp-hover-icon-color: #959595;
-  --dp-primary-color: var(--color-interaction-primary-default);
-  --dp-primary-disabled-color: var(--color-background-critical-default);
-  --dp-primary-text-color: var(--color-static-white);
-  --dp-secondary-color: var(--color-text-primary-disabled);
-  --dp-border-color: var(--color-border-primary-default);
-  --dp-menu-border-color: var(--color-border-secondary-default);
-  --dp-border-color-hover: var(--color-border-primary-default);
-  --dp-border-color-focus: var(--color-border-primary-default);
-  --dp-disabled-color: var(--color-background-tertiary-default);
-  --dp-scroll-bar-background: var(--color-background-primary-default);
-  --dp-scroll-bar-color: var(--color-border-secondary-default);
-  --dp-success-color: #76d275;
-  --dp-success-color-disabled: #a3d9b1;
-  --dp-icon-color: var(--color-icon-primary-default);
-  --dp-danger-color: var(--color-border-critical-default);
-  --dp-marker-color: var(--color-border-critical-default);
-  --dp-tooltip-color: #fafafa;
-  --dp-disabled-color-text: #8e8e8e;
-  --dp-highlight-color: rgba(210, 25, 189, 0.867);
-  --dp-range-between-dates-background-color: var(--color-background-brand-default);
-  --dp-range-between-dates-text-color: var(--color-text-primary-default);
-  --dp-range-between-border-color: var(--color-background-brand-default);
-}
-
 .mt-datepicker__wrapper {
   display: grid;
   grid-template-areas:
@@ -531,264 +886,65 @@ onMounted(() => {
   font-size: var(--font-size-xs);
 }
 
-.dp__main {
-  font-family: var(--font-family-body) !important;
-}
-
-.dp__input_wrap {
-  font: inherit;
-  font-weight: var(--font-weight-regular) !important;
-  font-size: var(--font-size-xs) !important;
-}
-
-.dp__input {
-  min-height: var(--scale-size-48);
-  height: 1px;
-  padding-left: var(--scale-size-16) !important;
-  border-radius: var(--border-radius-xs);
-  font: inherit;
-  color: var(--color-text-secondary-default);
-  background: var(--color-background-primary-default);
-  color: var(--color-text-primary-default);
-
-  &::placeholder {
-    color: var(--color-text-secondary-default);
-    opacity: 1 !important;
-  }
-}
-
-.mt-datepicker__wrapper--small .dp__input {
-  min-height: var(--scale-size-32);
-}
-
-.dp__input_icon {
-  position: absolute;
-  width: var(--scale-size-48);
-  height: 96%;
-  left: auto;
-  right: 1px;
-  text-align: center;
-  border-radius: 0 3px 3px 0;
-  padding: var(--scale-size-12);
-  border-left: 1px solid var(--color-border-primary-default);
-  background: var(--color-background-tertiary-default);
-}
-
-.dp__input_icon #meteor-icon-kit__regular-calendar {
-  color: var(--color-icon-primary-default);
-  width: 16.5px;
-  height: var(--scale-size-18);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.dp__input_focus {
-  outline: var(--scale-size-2) solid var(--color-border-brand-default);
-  outline-offset: var(--scale-size-2);
-}
-
-.dp__disabled {
-  background: var(--color-background-tertiary-default);
-}
-
-.dp--menu-wrapper {
-  border-radius: var(--border-radius-s) !important;
-  font-family: inherit;
-  font-weight: inherit;
-  filter: drop-shadow(0px 1px 3px #0000000f);
-  filter: drop-shadow(0px 1px 3px #0000001a);
-  left: 0 !important;
-  overflow: visible !important;
-}
-
-.dp__calendar {
-  padding-bottom: var(--scale-size-4);
-}
-
-.dp__menu {
-  overflow: visible !important;
-}
-
-.dp__menu_inner,
-.dp__menu_content_wrapper {
-  overflow: visible !important;
-}
-
-.dp__menu::before {
-  content: "";
-  position: absolute;
-  top: -5px;
-  left: var(--scale-size-24);
-  width: var(--scale-size-10);
-  height: var(--scale-size-10);
-  transform: rotate(45deg);
-  border-top: 1px solid var(--color-border-secondary-default);
-  border-left: 1px solid var(--color-border-secondary-default);
-  background: var(--color-background-primary-default);
-  border-top-right-radius: 3px;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.dp__instance_calendar {
-  padding: var(--scale-size-8) !important;
-}
-
-.dp__menu_inner {
-  padding: 0px;
-}
-
-.no-border-bottom {
-  padding-bottom: 0 !important;
-}
-
-.dp--header-wrap {
-  font: inherit;
-  font-weight: var(--font-weight-semibold) !important;
-  font-size: var(--font-size-xs) !important;
-}
-
-.dp__month_year_select {
-  color: var(--color-text-primary-default);
-}
-
-.month-control-arrow {
-  color: var(--color-icon-primary-default);
-}
-
-.dp__overlay {
-  border-radius: var(--border-radius-m);
-  font-family: inherit;
-  font-weight: var(--font-weight-regular) !important;
-  font-size: var(--font-size-xs) !important;
-}
-
-.back-to-calendar svg {
-  width: 1.2rem !important;
-  color: var(--color-text-primary-default);
-}
-
-.dp__calendar_header {
-  font: inherit;
-  color: var(--color-text-primary-default);
-  font-weight: var(--font-weight-medium) !important;
-  font-size: var(--font-size-xs) !important;
-}
-
-.dp__calendar_header_separator {
-  display: none;
-}
-
-.dp__cell_inner {
-  font: inherit;
-  font-size: var(--font-size-xs) !important;
-  font-weight: var(--font-weight-regular) !important;
-}
-
-.dp__cell_inner:hover {
-  background: var(--color-interaction-secondary-hover);
-  color: var(--color-text-primary-default);
-}
-
-.dp__today {
-  border: 1px solid var(--color-border-primary-default);
-}
-
-.dp--overlay-relative {
-  height: auto !important;
-}
-
-.dp__menu_inner::after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 0px;
-  border-top: 1px solid var(--color-border-primary-default);
-  opacity: var(--menu-border-opacity);
-}
-
-.dp__flex {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: var(--scale-size-2);
-}
-
-.dp__time_input {
-  width: 100%;
-  justify-content: space-between;
-  padding-left: 35px;
-  padding-right: 35px;
-}
-
-.dp__time_display {
-  font-family: var(--font-family-body) !important;
-  font-weight: var(--font-weight-regular) !important;
-  font-size: var(--font-size-xs) !important;
-}
-
-.dp__inc_dec_button_inline {
-  opacity: var(--time-inc-dec-opacity, 1);
-  color: var(--color-border-primary-default);
-  justify-content: center;
-}
-
-.dp__inc_dec_button_inline:hover {
-  opacity: 1;
-  color: var(--color-icon-primary-default);
-}
-
-.dp__overlay {
-  font-family: var(--font-family-body) !important;
-  font-weight: var(--font-weight-regular) !important;
-  font-size: var(--font-size-xs) !important;
-}
-
-.dp__overlay_container {
-  font: inherit;
-}
-
-.dp--overlay-relative {
+.mt-datepicker__field {
   position: relative;
   display: flex;
   align-items: center;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
 }
 
-.dp__button.dp__overlay_action {
-  position: absolute;
-  bottom: 0;
-}
-
-.dp__button.dp__overlay_action span {
-  display: none;
-}
-
-.dp__icon {
-  display: none;
-}
-
-.dp__button.dp__overlay_action::before {
-  content: "+";
+.mt-datepicker__input {
+  width: 100%;
+  min-height: var(--scale-size-48);
+  padding-inline: var(--scale-size-16) var(--scale-size-88);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
   font: inherit;
-  font-weight: var(--font-weight-light) !important;
-  font-size: var(--font-size-xl) !important;
-  transform: rotate(45deg);
-  color: var(--color-text-secondary-default);
+  color: var(--color-text-primary-default);
+  background: var(--color-background-primary-default);
+  outline: none;
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+    opacity: 1;
+  }
+
+  &:focus-visible,
+  &[aria-expanded="true"] {
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+    outline-offset: var(--scale-size-2);
+  }
+
+  &:disabled {
+    background: var(--color-background-tertiary-default);
+    color: var(--color-text-primary-disabled);
+    cursor: default;
+  }
+
+  &:read-only:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
-.dp--clear-btn {
-  padding-right: var(--scale-size-56);
+.mt-datepicker__wrapper--small .mt-datepicker__input {
+  min-height: var(--scale-size-32);
+}
+
+.mt-datepicker__wrapper.has-error .mt-datepicker__input {
+  border-color: var(--color-border-critical-default);
+  background: var(--color-background-critical-dark);
 }
 
 .mt-datepicker__clear-button {
+  position: absolute;
+  right: var(--scale-size-56);
   display: grid;
   place-items: center;
   height: var(--scale-size-32);
   aspect-ratio: 1/1;
   border-radius: var(--border-radius-button);
+  color: var(--color-icon-primary-default);
   outline-color: var(--color-border-brand-default);
   transition: background 0.2s cubic-bezier(0.23, 1, 0.32, 1);
 
@@ -798,12 +954,54 @@ onMounted(() => {
   }
 }
 
-.mt-datepicker__hint {
-  margin-top: var(--scale-size-4);
+.mt-datepicker__wrapper--small .mt-datepicker__clear-button {
+  height: var(--scale-size-24);
 }
 
-.mt-datepicker__wrapper.has-error .dp__input {
-  border: 1px solid var(--color-border-critical-default);
-  background: var(--color-background-critical-dark);
+.mt-datepicker__icon {
+  position: absolute;
+  inset-block: var(--scale-size-1);
+  right: var(--scale-size-1);
+  display: grid;
+  place-items: center;
+  width: var(--scale-size-48);
+  border-left: 1px solid var(--color-border-primary-default);
+  border-start-end-radius: var(--border-radius-xs);
+  border-end-end-radius: var(--border-radius-xs);
+  background: var(--color-background-tertiary-default);
+  color: var(--color-icon-primary-default);
+  cursor: pointer;
+}
+
+.mt-datepicker__wrapper--disabled .mt-datepicker__icon {
+  cursor: default;
+}
+
+.mt-datepicker__menu {
+  z-index: var(--z-index-popover, 1000);
+  display: grid;
+  gap: var(--scale-size-8);
+  padding: var(--scale-size-8);
+  border: 1px solid var(--color-border-secondary-default);
+  border-radius: var(--border-radius-s);
+  background: var(--color-elevation-surface-overlay, var(--color-background-primary-default));
+  color: var(--color-text-primary-default);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  filter: drop-shadow(0px 1px 3px #0000001a);
+}
+
+.mt-datepicker__times {
+  display: grid;
+  gap: var(--scale-size-8);
+}
+
+.mt-datepicker-calendar + .mt-datepicker__times {
+  padding-top: var(--scale-size-8);
+  border-top: 1px solid var(--color-border-primary-default);
+}
+
+.mt-datepicker__hint {
+  margin-top: var(--scale-size-4);
 }
 </style>
