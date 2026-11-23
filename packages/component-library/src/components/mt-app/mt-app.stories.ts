@@ -94,7 +94,7 @@ export const WithAnnouncement: MtAppStory = {
           <mt-announcement
             v-if="isOpen"
             variant="attention"
-            icon="solid-tools"
+            icon="tools"
             closable
             @close="isOpen = false"
           >

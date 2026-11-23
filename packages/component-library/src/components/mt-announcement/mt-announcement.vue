@@ -6,8 +6,7 @@
   >
     <div class="mt-announcement__message">
       <span v-if="icon" class="mt-announcement__icon">
-        <!-- TODO: Always show the icon in the solid style with resolveIconName(icon, "solid") once #1500 is merged. -->
-        <mt-icon :name="icon" size="var(--scale-size-16)" decorative />
+        <mt-icon :name="resolveIconName(icon, 'solid')" size="var(--scale-size-16)" decorative />
       </span>
       <slot />
     </div>
@@ -29,6 +28,7 @@ import { inject, onBeforeUnmount, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import { appContextKey } from "@/components/mt-app/_internal/mt-app-context";
+import { resolveIconName } from "@/utils/icon";
 
 /**
  * A full-width message at the top of an application, such as planned downtime or an upcoming
@@ -44,7 +44,7 @@ withDefaults(
      * @values neutral, info, attention, critical, positive
      */
     variant?: "neutral" | "info" | "attention" | "critical" | "positive";
-    /** An icon at the start of the message. */
+    /** An icon at the start of the message, always in the solid style. */
     icon?: string;
     /** Shows a close button. */
     closable?: boolean;

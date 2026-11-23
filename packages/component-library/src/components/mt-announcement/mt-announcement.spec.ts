@@ -18,4 +18,18 @@ describe("mt-announcement", () => {
     // ASSERT
     expect(onClose).toHaveBeenCalledOnce();
   });
+
+  it.each(["tools", "regular-tools", "solid-tools"])(
+    "shows the icon %s in the solid style",
+    (icon) => {
+      // ARRANGE
+      render(MtAnnouncement, {
+        props: { icon },
+        slots: { default: "Planned maintenance on Sunday" },
+      });
+
+      // ASSERT
+      expect(screen.getByTestId("mt-icon__solid-tools")).toBeInTheDocument();
+    },
+  );
 });

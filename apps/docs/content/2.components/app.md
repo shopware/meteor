@@ -67,7 +67,7 @@ import { MtAnnouncement, MtApp } from "@shopware-ag/meteor-component-library";
 <template>
   <mt-app>
     <template #announcement>
-      <mt-announcement variant="attention" icon="solid-tools">
+      <mt-announcement variant="attention" icon="tools">
         Planned maintenance on Sunday, November 16, from 2:00 to 4:00 AM CET.
       </mt-announcement>
     </template>

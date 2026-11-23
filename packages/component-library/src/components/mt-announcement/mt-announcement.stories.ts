@@ -10,27 +10,27 @@ export type MtAnnouncementMeta = SlottedMeta<typeof MtAnnouncement, "default" | 
 const VARIANTS = [
   {
     variant: "neutral",
-    icon: "solid-calendar",
+    icon: "calendar",
     text: "Our support team is away on December 24 and 25.",
   },
   {
     variant: "info",
-    icon: "solid-megaphone",
+    icon: "megaphone",
     text: "Join our live product update on Thursday, November 20, at 3:00 PM CET.",
   },
   {
     variant: "attention",
-    icon: "solid-tools",
+    icon: "tools",
     text: "Planned maintenance on Sunday, November 16, from 2:00 to 4:00 AM CET.",
   },
   {
     variant: "critical",
-    icon: "solid-exclamation-circle",
+    icon: "exclamation-circle",
     text: "Orders can't be saved right now. We are working on a fix.",
   },
   {
     variant: "positive",
-    icon: "solid-check-circle",
+    icon: "check-circle",
     text: "Everything works again. Thanks for your patience.",
   },
 ];
@@ -47,7 +47,7 @@ const meta: MtAnnouncementMeta = {
   },
   args: {
     variant: "attention",
-    icon: "solid-tools",
+    icon: "tools",
     closable: false,
     default:
       "Planned maintenance on Sunday, November 16, from 2:00 to 4:00 AM CET. You can't save changes during this time.",
@@ -112,7 +112,7 @@ export const Closable: MtAnnouncementStory = {
 export const WithLink: MtAnnouncementStory = {
   args: {
     variant: "info",
-    icon: "solid-megaphone",
+    icon: "megaphone",
     closable: true,
   },
   render: (args) => ({

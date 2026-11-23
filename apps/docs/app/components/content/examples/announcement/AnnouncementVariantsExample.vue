@@ -4,23 +4,23 @@ import { MtAnnouncement } from "@shopware-ag/meteor-component-library";
 
 <template>
   <div style="display: grid; gap: var(--scale-size-8)">
-    <mt-announcement variant="neutral" icon="solid-calendar">
+    <mt-announcement variant="neutral" icon="calendar">
       Our support team is away on December 24 and 25.
     </mt-announcement>
 
-    <mt-announcement variant="info" icon="solid-megaphone">
+    <mt-announcement variant="info" icon="megaphone">
       Join our live product update on Thursday, November 20, at 3:00 PM CET.
     </mt-announcement>
 
-    <mt-announcement variant="attention" icon="solid-tools">
+    <mt-announcement variant="attention" icon="tools">
       Planned maintenance on Sunday, November 16, from 2:00 to 4:00 AM CET.
     </mt-announcement>
 
-    <mt-announcement variant="critical" icon="solid-exclamation-circle">
+    <mt-announcement variant="critical" icon="exclamation-circle">
       Orders can't be saved right now. We are working on a fix.
     </mt-announcement>
 
-    <mt-announcement variant="positive" icon="solid-check-circle">
+    <mt-announcement variant="positive" icon="check-circle">
       Everything works again. Thanks for your patience.
     </mt-announcement>
   </div>

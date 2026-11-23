@@ -68,7 +68,7 @@ function close() {
       <mt-announcement
         v-if="!isClosed"
         variant="attention"
-        icon="solid-tools"
+        icon="tools"
         closable
         @close="close"
       >
@@ -112,6 +112,7 @@ function close() {
 - On wide screens, the text is centered. Below 640px of viewport width, it is aligned to the start, so wrapped lines are easier to read.
 - The icon is part of the first line and stays there when the text wraps.
 - The icon takes the color of the variant.
+- The icon always shows in the solid style. Pass the name without a style, such as `tools`. A name with a style, such as `regular-tools`, still works and shows as `solid-tools`.
 - Links take the text color and keep their underline.
 - With `closable`, a close button sits at the end of the first line, and the text stays centered on the whole width. The announcement doesn't hide itself when it is closed.
 
