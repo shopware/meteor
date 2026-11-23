@@ -72,7 +72,7 @@ describe("router", () => {
       // ASSERT
       expect(options.onStart).toHaveBeenCalledTimes(1);
       expect(options.onEnd).toHaveBeenCalledTimes(4);
-      expect(logError).toHaveBeenCalledWith(error);
+      expect(logError).toHaveBeenCalledWith("[Meteor] router: A navigation failed.", error);
 
       logError.mockRestore();
       expect(options.onNavigate).toHaveBeenCalledTimes(2);
