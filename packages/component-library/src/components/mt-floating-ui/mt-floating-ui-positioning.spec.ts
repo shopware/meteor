@@ -175,13 +175,19 @@ describe("mt-floating-ui positioning config", () => {
     await wrapper.setProps({ isOpened: true });
     await flushPromises();
 
-    const middleware = computePositionMock.mock.calls[0][2].middleware;
-    expect(middleware?.find(({ name }) => name === "flip")?.options).toMatchObject({
+    const middleware = computePositionMock.mock.calls[0]?.[2]?.middleware ?? [];
+    const middlewareOptions = (name: string) =>
+      middleware.find(
+        (entry): entry is Middleware =>
+          entry !== false && entry != null && typeof entry === "object" && entry.name === name,
+      )?.options;
+
+    expect(middlewareOptions("flip")).toMatchObject({
       boundary: [],
       rootBoundary: "viewport",
       padding: 16,
     });
-    expect(middleware?.find(({ name }) => name === "shift")?.options).toMatchObject({
+    expect(middlewareOptions("shift")).toMatchObject({
       boundary: [],
       rootBoundary: "viewport",
       padding: 16,
