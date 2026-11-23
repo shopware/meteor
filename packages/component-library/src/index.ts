@@ -99,6 +99,23 @@ import MtActionMenuGroup from "./components/mt-action-menu-group/mt-action-menu-
 import MtCollapsible from "./components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "./components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "./components/mt-collapsible/mt-collapsible-content.vue";
+import MtTable from "./components/mt-table/mt-table.vue";
+import MtTableCaption from "./components/mt-table/mt-table-caption.vue";
+import MtTableHeader from "./components/mt-table/mt-table-header.vue";
+import MtTableBody from "./components/mt-table/mt-table-body.vue";
+import MtTableFooter from "./components/mt-table/mt-table-footer.vue";
+import MtTableRow from "./components/mt-table/mt-table-row.vue";
+import MtTableHeaderCell from "./components/mt-table/mt-table-header-cell.vue";
+import MtTableCell from "./components/mt-table/mt-table-cell.vue";
+import MtDataTableNext from "./components/mt-data-table-next/mt-data-table-next.vue";
+import type {
+  MtDataTableNextColumn,
+  MtDataTableNextColumnMeta,
+  MtDataTableNextColumnSort,
+  MtDataTableNextPaginationState,
+  MtDataTableNextRowSelectionState,
+  MtDataTableNextSortingState,
+} from "./components/mt-data-table-next/_internal/mt-data-table-next-features";
 import {
   DropdownMenuRoot,
   DropdownMenuPortal,
@@ -215,6 +232,21 @@ export {
   MtCollapsible,
   MtCollapsibleTrigger,
   MtCollapsibleContent,
+  MtTable,
+  MtTableCaption,
+  MtTableHeader,
+  MtTableBody,
+  MtTableFooter,
+  MtTableRow,
+  MtTableHeaderCell,
+  MtTableCell,
+  MtDataTableNext,
+  type MtDataTableNextColumn,
+  type MtDataTableNextColumnMeta,
+  type MtDataTableNextColumnSort,
+  type MtDataTableNextPaginationState,
+  type MtDataTableNextRowSelectionState,
+  type MtDataTableNextSortingState,
   DropdownMenuRoot as MtDropdownMenuRoot,
   DropdownMenuPortal as MtDropdownMenuPortal,
   DropdownMenuTrigger as MtDropdownMenuTrigger,

@@ -18,6 +18,7 @@
             :disabled="isDisabled"
             :indeterminate.prop="partial"
             :required="required"
+            :aria-label="ariaLabel"
             @change.stop="onChange"
           />
           <div class="mt-field__checkbox-state">
@@ -83,6 +84,15 @@ export default defineComponent({
      * A label for the checkbox.
      */
     label: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+
+    /**
+     * Accessible name of the checkbox when it has no visible label, e.g. a row checkbox in a table.
+     */
+    ariaLabel: {
       type: String,
       required: false,
       default: undefined,
