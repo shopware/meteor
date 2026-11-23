@@ -112,7 +112,7 @@ function close() {
 - On wide screens, the text is centered. Below 640px of viewport width, it is aligned to the start, so wrapped lines are easier to read.
 - The icon is part of the first line and stays there when the text wraps.
 - The icon takes the color of the variant.
-- Links take the text color, keep their underline, and show a focus ring in the text color.
+- Links take the text color and keep their underline.
 - With `closable`, a close button sits at the end of the first line, and the text stays centered on the whole width. The announcement doesn't hide itself when it is closed.
 
 ## Accessibility

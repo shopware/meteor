@@ -39,14 +39,14 @@ import { appContextKey } from "@/components/mt-app/_internal/mt-app-context";
 withDefaults(
   defineProps<{
     /**
-     * The color of the announcement, chosen by how urgent the message is.
+     * The meaning and color of the announcement.
      *
      * @values neutral, info, attention, critical, positive
      */
     variant?: "neutral" | "info" | "attention" | "critical" | "positive";
-    /** An icon at the start of the message, such as `solid-tools` for planned maintenance. */
+    /** An icon at the start of the message. */
     icon?: string;
-    /** Shows a close button. The announcement doesn't hide itself: remove it on `close`. */
+    /** Shows a close button. */
     closable?: boolean;
   }>(),
   {
@@ -173,7 +173,7 @@ onBeforeUnmount(() => {
 }
 
 .mt-announcement__close:focus-visible {
-  outline: var(--scale-size-2) solid currentColor;
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
   outline-offset: var(--scale-size-2);
 }
 
@@ -190,7 +190,7 @@ onBeforeUnmount(() => {
 }
 
 .mt-announcement :deep(a:focus-visible) {
-  outline-color: currentColor;
+  outline-color: var(--color-border-brand-default);
 }
 
 .mt-announcement--variant-neutral {
