@@ -73,8 +73,9 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref, watch, type PropType } from "vue";
+import { nextTick, onMounted, onUnmounted, provide, ref, watch, type PropType } from "vue";
 import { useModalContext } from "./composables/useModalContext";
+import { ModalFocusTrapContainers } from "./composables/useModalFocusTrapContainer";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtModalClose from "./sub-components/mt-modal-close.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
@@ -142,6 +143,30 @@ onUnmounted(() => {
 const modalRef = ref<HTMLElement | null>(null);
 let trap: ReturnType<typeof focusTrap.createFocusTrap> | undefined;
 
+// Content of descendants that is teleported out of the modal, e.g. an open mt-floating-ui
+const teleportedContainers = new Set<HTMLElement>();
+const trapContainers = () =>
+  [modalRef.value, ...teleportedContainers].filter((element): element is HTMLElement => !!element);
+
+function updateTrapContainers() {
+  // While the modal unmounts, its descendants deregister after the dialog has left the DOM;
+  // focus-trap would then throw for lack of tabbable nodes.
+  if (!trap?.active || !modalRef.value?.isConnected) return;
+
+  trap.updateContainerElements(trapContainers());
+}
+
+provide(ModalFocusTrapContainers, {
+  add(element) {
+    teleportedContainers.add(element);
+    updateTrapContainers();
+  },
+  remove(element) {
+    teleportedContainers.delete(element);
+    updateTrapContainers();
+  },
+});
+
 watch(
   isOpen,
   async () => {
@@ -150,7 +175,7 @@ watch(
 
     if (!modalRef.value) return;
     if (isModalOpen) {
-      trap = focusTrap.createFocusTrap(modalRef.value as HTMLElement, {
+      trap = focusTrap.createFocusTrap(trapContainers(), {
         tabbableOptions: { displayCheck: "none" },
         allowOutsideClick: true,
         // Focus the dialog itself instead of the first tabbable element so
