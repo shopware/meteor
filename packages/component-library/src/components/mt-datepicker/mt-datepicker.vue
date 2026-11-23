@@ -88,7 +88,7 @@
       v-if="showFieldHint() || isTimeHintVisible"
       class="mt-datepicker__hint"
       :class="{ 'field-hint': !showFieldHint() }"
-      :icon="showFieldHint() ? 'solid-info-circle' : 'solid-clock'"
+      :icon="showFieldHint() ? 'info-circle' : 'clock'"
       :hide-icon="!!slots.hint"
       :data-testid="showFieldHint() ? undefined : 'time-zone-hint'"
       :style="{ gridArea: 'hint' }"

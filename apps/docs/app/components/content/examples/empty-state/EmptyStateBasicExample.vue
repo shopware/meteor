@@ -4,7 +4,7 @@ import MtEmptyState from "@shopware-ag/meteor-component-library/MtEmptyState";
 
 <template>
   <mt-empty-state
-    icon="solid-chart-line-arrow"
+    icon="chart-line-arrow"
     headline="Default Headline"
     description="Default Description"
   />

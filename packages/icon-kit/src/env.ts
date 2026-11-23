@@ -4,7 +4,7 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     FIGMA_FILE: z.string(),
-    FIGMA_TOKEN: z.string().startsWith("figd_"),
+    FIGMA_TOKEN: z.string().min(1),
   },
 
   /**

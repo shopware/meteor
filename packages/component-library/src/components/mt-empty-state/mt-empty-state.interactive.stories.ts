@@ -31,7 +31,7 @@ VisualTestExtendedPage.args = {
 VisualTestExtendedPage.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
-  expect(canvas.getByTestId("mt-icon__solid-chart-line-arrow")).toBeVisible();
+  expect(canvas.getByTestId("mt-icon__regular-chart-line-arrow")).toBeVisible();
   expect(canvas.getByText(Extended.args?.headline)).toBeVisible();
   expect(canvas.getByText(Extended.args?.description)).toBeVisible();
 
@@ -57,7 +57,7 @@ export const VisualTestExtendedWithSlot: StoryObj<typeof MtEmptyState> = {
     components: { MtEmptyState, MtButton },
     template: `
       <mt-empty-state
-        icon="solid-chart-line-arrow"
+        icon="chart-line-arrow"
         headline="Hello, world"
         description="This is some custom description"
       >

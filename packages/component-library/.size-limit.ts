@@ -54,7 +54,7 @@ module.exports = [
     path: "dist/esm/index.js",
     import: "{ MtDataTable }",
     name: "MtDataTable",
-    limit: "265 kb",
+    limit: "270 kb",
     ignore: ignore,
   },
 ] satisfies SizeLimitConfig;

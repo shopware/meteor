@@ -64,6 +64,7 @@ import { MtBadge } from "@shopware-ag/meteor-component-library";
 - **Badge** is presentational and non-interactive. If users need to click, open, or trigger something, use a more appropriate interactive component around it.
 - The component stays intentionally compact, so it works best with a short label and a single supporting visual treatment.
 - The status indicator and icon are optional enhancements, not a replacement for a clear text label.
+- The icon always shows in the solid style. Pass the name without a style, such as `check-circle`. A name with a style, such as `regular-check-circle`, still works and shows as `solid-check-circle`.
 
 ## Accessibility
 
