@@ -36,7 +36,7 @@ export const categoryIcons: Record<MtFileIconCategory, { icon: string; align?: "
 export const fileIconCategories = Object.keys(categoryIcons) as MtFileIconCategory[];
 
 /** The extensions of each category. `markup` covers markup, data and source code files. */
-const extensions: Record<MtFileIconCategory, string[]> = {
+export const fileIconFormats: Record<MtFileIconCategory, string[]> = {
   document: ["txt", "pdf", "doc", "docx", "odt", "rtf", "pages", "epub", "log"],
   presentation: ["ppt", "pptx", "pps", "ppsx", "key", "odp"],
   vector: ["svg", "eps", "ai", "cdr", "sketch", "fig"],
@@ -260,7 +260,7 @@ const mimeTypePrefixes: Record<string, MtFileIconCategory> = {
 
 const extensionCategories = new Map<string, MtFileIconCategory>(
   fileIconCategories.flatMap((category) =>
-    extensions[category].map((extension) => [extension, category] as const),
+    fileIconFormats[category].map((extension) => [extension, category] as const),
   ),
 );
 

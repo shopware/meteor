@@ -25,7 +25,7 @@ The icon shows as much as it knows about the file. A known format shows its icon
 
 ### Categories
 
-Set `category` to show the icon of a category without a format label, or to override the category derived from the file.
+Set `category` to show the icon of a category without a format label, or to override the category derived from the file. The categories are `document`, `presentation`, `vector`, `archive`, `table`, `image`, `video`, `audio`, `subtitle`, `3d`, `markup`, `font`, and `executable`.
 
 ::component-example{name="file-icon-categories-example"}
 ::
@@ -35,6 +35,13 @@ Set `category` to show the icon of a category without a format label, or to over
 Set `format` to show a format label, with or without a leading dot. PDF, Word, and Excel formats show their label in the color of their brand, adjusted for dark mode.
 
 ::component-example{name="file-icon-formats-example"}
+::
+
+### Supported formats
+
+These are all formats the component knows, grouped by their category. Open the code to see each extension, since longer labels are cut off.
+
+::component-example{name="file-icon-all-formats-example" class="flex-col items-start!"}
 ::
 
 ### Custom icon and format

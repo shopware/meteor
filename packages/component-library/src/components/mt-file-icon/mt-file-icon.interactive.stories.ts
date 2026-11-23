@@ -1,7 +1,6 @@
 import meta, {
   Categories,
   Fluid,
-  Formats,
   Sizes,
   Variants,
   type MtFileIconMeta,
@@ -24,13 +23,23 @@ export const VisualTestCategories: MtFileIconStory = {
   name: "Render categories",
 };
 
+// A fixed set with every label color, so adding a format does not change the snapshots
 export const VisualTestFormats: MtFileIconStory = {
-  ...Formats,
   name: "Render formats",
+  render: () => ({
+    components: { MtFileIcon: meta.component! },
+    setup() {
+      return { formats: ["txt", "pdf", "doc", "docx", "xls", "xlsx", "mov", "zip", "rar"] };
+    },
+    template: `
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <mt-file-icon v-for="format in formats" :key="format" :format="format" />
+      </div>`,
+  }),
 };
 
 export const VisualTestFormatsDark: MtFileIconStory = {
-  ...Formats,
+  ...VisualTestFormats,
   name: "Render formats in dark mode",
   globals: { theme: "dark" },
 };

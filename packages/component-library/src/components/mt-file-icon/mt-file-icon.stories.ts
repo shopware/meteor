@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import MtFileIcon from "./mt-file-icon.vue";
-import { fileIconCategories } from "./mt-file-icon-formats";
+import { fileIconCategories, fileIconFormats } from "./mt-file-icon-formats";
 
 export type MtFileIconMeta = Meta<typeof MtFileIcon>;
 
 const sizes = [24, 32, 40, 48, 56, 64, 72, 80, 96] as const;
-const formats = ["txt", "pdf", "doc", "docx", "xls", "xlsx", "mov", "zip", "rar"] as const;
 
 const meta: MtFileIconMeta = {
   title: "Components/File Icon",
@@ -113,18 +112,37 @@ export const Formats: MtFileIconStory = {
     docs: {
       source: {
         language: "html",
-        code: formats.map((format) => `<mt-file-icon format="${format}" />`).join("\n"),
+        code: fileIconCategories
+          .map((category) =>
+            [
+              `<!-- ${category} -->`,
+              ...fileIconFormats[category].map((format) => `<mt-file-icon format="${format}" />`),
+            ].join("\n"),
+          )
+          .join("\n\n"),
       },
     },
   },
   render: () => ({
     components: { MtFileIcon },
     setup() {
-      return { formats };
+      return { categories: fileIconCategories, formats: fileIconFormats };
     },
     template: `
-      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-        <mt-file-icon v-for="format in formats" :key="format" :format="format" />
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div v-for="category in categories" :key="category">
+          <div style="margin-bottom: 4px; color: var(--color-text-secondary-default); font-family: var(--font-family-body); font-size: var(--font-size-2xs);">
+            {{ category }}
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <mt-file-icon
+              v-for="format in formats[category]"
+              :key="format"
+              :format="format"
+              :title="format"
+            />
+          </div>
+        </div>
       </div>`,
   }),
 };
