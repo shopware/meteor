@@ -89,10 +89,10 @@ export const TestIconVisibility: MtBadgeStory = {
   name: "Icon is visible when provided",
   args: {
     default: "Test Icon",
-    icon: "regular-party-horn",
+    icon: "party-horn",
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByTestId("mt-icon__regular-party-horn")).toBeVisible();
+    expect(canvas.getByTestId("mt-icon__solid-party-horn")).toBeVisible();
   },
 };

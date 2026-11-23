@@ -44,7 +44,22 @@ describe("mt-field-hint", () => {
     // ARRANGE
     render(MtFieldHint, {
       props: {
-        icon: "solid-clock",
+        icon: "clock",
+      },
+      slots: {
+        default: "Some hint",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("mt-icon__solid-clock")).toBeInTheDocument();
+  });
+
+  it("shows the icon in the solid style when the name asks for another one", () => {
+    // ARRANGE
+    render(MtFieldHint, {
+      props: {
+        icon: "regular-clock",
       },
       slots: {
         default: "Some hint",

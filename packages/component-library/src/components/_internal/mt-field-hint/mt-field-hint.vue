@@ -3,7 +3,7 @@
     <span v-if="!hideIcon" class="mt-field-hint__icon-wrapper">
       <mt-icon
         class="mt-field-hint__icon"
-        :name="icon"
+        :name="resolveIconName(icon, 'solid')"
         size="var(--scale-size-12)"
         color="var(--color-icon-secondary-default)"
         decorative
@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
+import { resolveIconName } from "@/utils/icon";
 
 withDefaults(
   defineProps<{
@@ -26,13 +27,13 @@ withDefaults(
      */
     hideIcon?: boolean;
     /**
-     * Icon shown in front of the hint text.
+     * Icon shown in front of the hint text, always in the solid style.
      */
     icon?: string;
   }>(),
   {
     hideIcon: false,
-    icon: "solid-info-circle",
+    icon: "info-circle",
   },
 );
 </script>
