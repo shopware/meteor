@@ -44,6 +44,11 @@ export const de: Messages = {
     active: "Aktiv",
     inactive: "Inaktiv",
     required: "Dieses Feld ist ein Pflichtfeld.",
+    edit: "Bearbeiten",
+    actions: "Aktionen",
+    rowActions: "Aktionen für {name}",
+    selected: "{n} ausgewählt",
+    clearSelection: "Auswahl aufheben",
   },
   dashboard: {
     greeting: {

@@ -3,21 +3,31 @@ import { computed, shallowRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import {
+  MtActionMenu,
+  MtActionMenuItem,
+  MtBadge,
   MtButton,
-  MtDataTable,
+  MtDataTableNext,
+  MtDropdownMenuPortal,
+  MtDropdownMenuRoot,
+  MtDropdownMenuTrigger,
   MtEmptyState,
+  MtIcon,
+  MtLink,
   MtPage,
+  MtSearch,
+  MtSelect,
   MtStatusDot,
   MtText,
   useSnackbar,
-  type Filter,
+  type MtDataTableNextColumn,
 } from "@shopware-ag/meteor-component-library";
 import type { Manufacturer, Product } from "../../shared/types";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useConfirm } from "../composables/useConfirm";
 import { useDuplicateProduct } from "../composables/useDuplicateProduct";
 import { useFormat } from "../composables/useFormat";
-import { useListing, type DataTableColumn } from "../composables/useListing";
+import { useListing } from "../composables/useListing";
 import { useRepository } from "../composables/useRepository";
 import { useStockStatus } from "../composables/useStockStatus";
 
@@ -36,18 +46,15 @@ const {
   items,
   total,
   isLoading,
-  page,
-  limit,
   term,
-  sortBy,
-  sortDirection,
-  appliedFilters,
-  selection,
+  sorting,
+  pagination,
+  filterValues,
+  rowSelection,
+  selectedIds,
   isFiltered,
   load,
-  onSortChange,
-  onSelectionChange,
-  onMultipleSelectionChange,
+  deselect,
 } = useListing("product", { sortBy: "createdAt", sortDirection: "DESC" });
 
 const manufacturers = shallowRef<Manufacturer[]>([]);
@@ -56,105 +63,47 @@ manufacturerRepository
   .search({ page: 1, limit: 100, sortBy: "name" })
   .then((result) => (manufacturers.value = result.data));
 
-const columns = computed<DataTableColumn[]>(() => [
+const columns = computed<MtDataTableNextColumn<Product>[]>(() => [
+  { accessorKey: "name", header: t("products.columns.name") },
+  { accessorKey: "productNumber", header: t("products.columns.productNumber") },
   {
-    label: t("products.columns.name"),
-    property: "name",
-    renderer: "text",
-    position: 100,
-    clickable: true,
-    width: 280,
+    accessorKey: "manufacturerName",
+    header: t("products.columns.manufacturer"),
   },
+  { accessorKey: "active", header: t("products.columns.active") },
   {
-    label: t("products.columns.productNumber"),
-    property: "productNumber",
-    renderer: "text",
-    position: 200,
+    accessorKey: "price.gross",
+    header: t("products.columns.price"),
+    meta: { align: "end" },
   },
+  { accessorKey: "stock", header: t("products.columns.stock") },
   {
-    label: t("products.columns.manufacturer"),
-    property: "manufacturerName",
-    renderer: "text",
-    position: 300,
+    accessorKey: "availableStock",
+    header: t("products.columns.availableStock"),
+    meta: { align: "end" },
   },
-  {
-    label: t("products.columns.active"),
-    property: "active",
-    renderer: "badge",
-    position: 400,
-    rendererOptions: {
-      renderItemBadge: (data: Product) =>
-        data.active
-          ? { label: t("common.active"), variant: "positive" }
-          : { label: t("common.inactive"), variant: "default" },
-    },
-  },
-  {
-    label: t("products.columns.price"),
-    property: "price.gross",
-    renderer: "number",
-    position: 500,
-  },
-  {
-    label: t("products.columns.stock"),
-    property: "stock",
-    renderer: "number",
-    position: 600,
-  },
-  {
-    label: t("products.columns.availableStock"),
-    property: "availableStock",
-    renderer: "number",
-    position: 700,
-  },
-  {
-    label: t("products.columns.createdAt"),
-    property: "createdAt",
-    renderer: "text",
-    position: 800,
-    visible: false,
-  },
+  { id: "actions", header: t("common.actions"), enableSorting: false },
 ]);
 
-const filters = computed<Filter[]>(() => [
-  {
-    id: "active",
-    label: t("products.columns.active"),
-    type: {
-      id: "options",
-      options: [
-        { id: "true", label: t("common.active") },
-        { id: "false", label: t("common.inactive") },
-      ],
-    },
-  },
-  {
-    id: "manufacturerId",
-    label: t("products.columns.manufacturer"),
-    type: {
-      id: "options",
-      options: manufacturers.value.map((manufacturer) => ({
-        id: manufacturer.id,
-        label: manufacturer.name,
-      })),
-    },
-  },
+const activeOptions = computed(() => [
+  { label: t("common.active"), value: "true" },
+  { label: t("common.inactive"), value: "false" },
 ]);
 
-/** The property contains a dot, which a static slot name would read as a modifier. */
-const priceSlot = "column-price.gross";
+const manufacturerOptions = computed(() =>
+  manufacturers.value.map((manufacturer) => ({
+    label: manufacturer.name,
+    value: manufacturer.id,
+  })),
+);
 
 function openProduct(product: Product) {
   router.push({ name: "product-detail", params: { id: product.id } });
 }
 
-function onContextSelect({ key, data }: { key: string; data: Product }) {
-  if (key === "duplicate") duplicateProduct(data);
-}
-
 function deleteSelectedProducts() {
   deleteProducts(
-    items.value.filter((product) => selection.value.includes(product.id)),
+    items.value.filter((product) => selectedIds.value.includes(product.id)),
   );
 }
 
@@ -175,7 +124,7 @@ async function deleteProducts(products: Product[]) {
   const ids = products.map((product) => product.id);
   await productRepository.remove(ids);
 
-  selection.value = selection.value.filter((id) => !ids.includes(id));
+  deselect(ids);
   addSnackbar({
     message: t("products.deleted", ids.length),
     variant: "success",
@@ -196,68 +145,139 @@ async function deleteProducts(products: Product[]) {
       </mt-button>
     </template>
 
-    <mt-data-table
-      :caption="t('products.title')"
-      layout="full"
-      :data-source="items"
-      :columns="columns"
-      :is-loading="isLoading"
-      :current-page="page"
-      :pagination-limit="limit"
-      :pagination-total-items="total"
-      :sort-by="sortBy"
-      :sort-direction="sortDirection"
-      :search-value="term"
-      :filters="filters"
-      v-model:applied-filters="appliedFilters"
-      :number-of-results="total"
-      :selected-rows="selection"
-      :additional-context-buttons="[
-        { key: 'duplicate', label: t('common.duplicate') },
-      ]"
-      allow-row-selection
-      allow-bulk-delete
-      @pagination-current-page-change="page = $event"
-      @pagination-limit-change="limit = $event"
-      @search-value-change="term = $event"
-      @sort-change="onSortChange"
-      @selection-change="onSelectionChange"
-      @multiple-selection-change="onMultipleSelectionChange"
-      @open-details="openProduct"
-      @context-select="onContextSelect"
-      @item-delete="deleteProducts([$event])"
-      @bulk-delete="deleteSelectedProducts"
-    >
-      <template #[priceSlot]="{ data }">
-        <mt-text size="xs">{{ format.currency(data.price.gross) }}</mt-text>
-      </template>
+    <div class="stack">
+      <!-- While rows are selected, their actions take the place of search and filters -->
+      <div v-if="selectedIds.length > 0" class="cluster">
+        <mt-text size="xs" color="color-text-secondary-default">
+          {{ t("common.selected", { n: selectedIds.length }) }}
+        </mt-text>
 
-      <template #column-stock="{ data }">
-        <div class="cluster">
-          <mt-status-dot :variant="stock.variant(data.stock)" />
-          <mt-text size="xs">{{ format.number(data.stock) }}</mt-text>
-        </div>
-      </template>
+        <mt-button variant="critical" size="small" @click="deleteSelectedProducts">
+          {{ t("common.delete") }}
+        </mt-button>
 
-      <template #column-createdAt="{ data }">
-        <mt-text size="xs">{{ format.relativeTime(data.createdAt) }}</mt-text>
-      </template>
+        <mt-button variant="tertiary" size="small" @click="rowSelection = {}">
+          {{ t("common.clearSelection") }}
+        </mt-button>
+      </div>
 
-      <template #empty-state>
-        <mt-empty-state
-          icon="regular-products"
-          :headline="
-            isFiltered
-              ? t('products.empty.filteredHeadline')
-              : t('products.empty.headline')
-          "
-          :description="
-            isFiltered
-              ? t('products.empty.filteredDescription')
-              : t('products.empty.description')
-          "
+      <div v-else class="grid" style="--grid-min: 12rem">
+        <mt-search v-model="term" size="small" />
+
+        <mt-select
+          v-model="filterValues.active"
+          :options="activeOptions"
+          :placeholder="t('products.columns.active')"
+          :aria-label="t('products.columns.active')"
+          enable-multi-selection
+          small
         />
-      </template>
-    </mt-data-table>
+
+        <mt-select
+          v-model="filterValues.manufacturerId"
+          :options="manufacturerOptions"
+          :placeholder="t('products.columns.manufacturer')"
+          :aria-label="t('products.columns.manufacturer')"
+          enable-multi-selection
+          small
+        />
+      </div>
+
+      <mt-data-table-next
+        v-model:sorting="sorting"
+        v-model:pagination="pagination"
+        v-model:row-selection="rowSelection"
+        manual
+        :aria-label="t('products.title')"
+        :data="items"
+        :columns="columns"
+        :row-count="total"
+        :loading="isLoading"
+      >
+        <template #cell-name="{ row }">
+          <mt-link
+            :to="{ name: 'product-detail', params: { id: row.original.id } }"
+          >
+            {{ row.original.name }}
+          </mt-link>
+        </template>
+
+        <template #cell-active="{ row }">
+          <mt-badge :variant="row.original.active ? 'positive' : 'neutral'">
+            {{ row.original.active ? t("common.active") : t("common.inactive") }}
+          </mt-badge>
+        </template>
+
+        <template #cell-price_gross="{ row }">
+          {{ format.currency(row.original.price.gross) }}
+        </template>
+
+        <template #cell-stock="{ row }">
+          <div class="cluster">
+            <mt-status-dot :variant="stock.variant(row.original.stock)" />
+            <mt-text size="xs">{{ format.number(row.original.stock) }}</mt-text>
+          </div>
+        </template>
+
+        <template #header-actions>
+          <span class="visually-hidden">{{ t("common.actions") }}</span>
+        </template>
+
+        <template #cell-actions="{ row }">
+          <mt-dropdown-menu-root>
+            <mt-dropdown-menu-trigger as-child>
+              <mt-button
+                variant="tertiary"
+                size="small"
+                square
+                :aria-label="t('common.rowActions', { name: row.original.name })"
+              >
+                <mt-icon name="regular-ellipsis-h-s" size="var(--scale-size-12)" />
+              </mt-button>
+            </mt-dropdown-menu-trigger>
+
+            <mt-dropdown-menu-portal>
+              <mt-action-menu>
+                <mt-action-menu-item
+                  icon="pencil-s"
+                  @select="openProduct(row.original)"
+                >
+                  {{ t("common.edit") }}
+                </mt-action-menu-item>
+                <mt-action-menu-item
+                  icon="duplicate"
+                  @select="duplicateProduct(row.original)"
+                >
+                  {{ t("common.duplicate") }}
+                </mt-action-menu-item>
+                <mt-action-menu-item
+                  icon="trash"
+                  variant="critical"
+                  @select="deleteProducts([row.original])"
+                >
+                  {{ t("common.delete") }}
+                </mt-action-menu-item>
+              </mt-action-menu>
+            </mt-dropdown-menu-portal>
+          </mt-dropdown-menu-root>
+        </template>
+
+        <template #empty>
+          <mt-empty-state
+            icon="regular-products"
+            :headline="
+              isFiltered
+                ? t('products.empty.filteredHeadline')
+                : t('products.empty.headline')
+            "
+            :description="
+              isFiltered
+                ? t('products.empty.filteredDescription')
+                : t('products.empty.description')
+            "
+          />
+        </template>
+      </mt-data-table-next>
+    </div>
   </mt-page>
 </template>

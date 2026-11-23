@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { computed, ref, shallowRef, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
 import {
   MtCard,
   MtChart,
-  MtDataTable,
+  MtDataTableNext,
   MtEmptyState,
   MtHelpText,
+  MtLink,
   MtPage,
   MtSelect,
   MtText,
   type ChartOptions,
+  type MtDataTableNextColumn,
 } from "@shopware-ag/meteor-component-library";
 import type { Order, OrderStatistics } from "../../shared/types";
 import { orderStatistics } from "../../server/repository";
@@ -19,12 +20,10 @@ import OrderStatus from "../components/OrderStatus.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useCurrentUser } from "../composables/useCurrentUser";
 import { useFormat } from "../composables/useFormat";
-import type { DataTableColumn } from "../composables/useListing";
 import { useRepository } from "../composables/useRepository";
 import { useRequest } from "../composables/useRequest";
 
 const { t } = useI18n();
-const router = useRouter();
 const format = useFormat();
 const { request } = useRequest();
 const orderRepository = useRepository("order");
@@ -65,48 +64,17 @@ async function load() {
 
 load();
 
-const orderColumns = computed<DataTableColumn[]>(() => [
+const orderColumns = computed<MtDataTableNextColumn<Order>[]>(() => [
+  { accessorKey: "orderNumber", header: t("dashboard.columns.orderNumber") },
+  { accessorKey: "orderDateTime", header: t("dashboard.columns.time") },
+  { accessorKey: "customerName", header: t("dashboard.columns.customer") },
+  { accessorKey: "state", header: t("dashboard.columns.state") },
   {
-    label: t("dashboard.columns.orderNumber"),
-    property: "orderNumber",
-    renderer: "text",
-    position: 100,
-    clickable: true,
-    sortable: false,
-  },
-  {
-    label: t("dashboard.columns.time"),
-    property: "orderDateTime",
-    renderer: "text",
-    position: 200,
-    sortable: false,
-  },
-  {
-    label: t("dashboard.columns.customer"),
-    property: "customerName",
-    renderer: "text",
-    position: 300,
-    sortable: false,
-  },
-  {
-    label: t("dashboard.columns.state"),
-    property: "state",
-    renderer: "text",
-    position: 400,
-    sortable: false,
-  },
-  {
-    label: t("dashboard.columns.total"),
-    property: "amountTotal",
-    renderer: "number",
-    position: 500,
-    sortable: false,
+    accessorKey: "amountTotal",
+    header: t("dashboard.columns.total"),
+    meta: { align: "end" },
   },
 ]);
-
-function openOrder(order: Order) {
-  router.push({ name: "order-detail", params: { id: order.id } });
-}
 
 const rangeOptions = computed(() =>
   [30, 14, 7].map((days) => ({
@@ -199,42 +167,44 @@ const turnoverOptions = computed<ChartOptions>(() => ({
         </mt-card>
       </div>
 
-      <mt-data-table
-        :title="t('dashboard.todaysOrders')"
-        :caption="t('dashboard.todaysOrders')"
-        layout="full"
-        :data-source="todaysOrders"
-        :columns="orderColumns"
-        :is-loading="isLoading"
-        :current-page="1"
-        :pagination-limit="10"
-        :pagination-options="[10]"
-        :pagination-total-items="todaysOrders.length"
-        disable-search
-        disable-settings-table
-        disable-delete
-        @open-details="openOrder"
-      >
-        <template #column-orderDateTime="{ data }">
-          <mt-text size="xs">{{ format.time(data.orderDateTime) }}</mt-text>
-        </template>
+      <mt-card :title="t('dashboard.todaysOrders')">
+        <template #grid>
+          <mt-data-table-next
+            :aria-label="t('dashboard.todaysOrders')"
+            :data="todaysOrders"
+            :columns="orderColumns"
+            :loading="isLoading"
+          >
+            <template #cell-orderNumber="{ row }">
+              <mt-link
+                :to="{ name: 'order-detail', params: { id: row.original.id } }"
+              >
+                {{ row.original.orderNumber }}
+              </mt-link>
+            </template>
 
-        <template #column-state="{ data }">
-          <order-status machine="order" :state="data.state" />
-        </template>
+            <template #cell-orderDateTime="{ row }">
+              {{ format.time(row.original.orderDateTime) }}
+            </template>
 
-        <template #column-amountTotal="{ data }">
-          <mt-text size="xs">{{ format.currency(data.amountTotal) }}</mt-text>
-        </template>
+            <template #cell-state="{ row }">
+              <order-status machine="order" :state="row.original.state" />
+            </template>
 
-        <template #empty-state>
-          <mt-empty-state
-            icon="regular-shopping-bag"
-            :headline="t('dashboard.noOrders')"
-            :description="t('dashboard.noOrdersDescription')"
-          />
+            <template #cell-amountTotal="{ row }">
+              {{ format.currency(row.original.amountTotal) }}
+            </template>
+
+            <template #empty>
+              <mt-empty-state
+                icon="regular-shopping-bag"
+                :headline="t('dashboard.noOrders')"
+                :description="t('dashboard.noOrdersDescription')"
+              />
+            </template>
+          </mt-data-table-next>
         </template>
-      </mt-data-table>
+      </mt-card>
 
       <div class="grid" style="--grid-min: 20rem">
         <mt-card

@@ -42,6 +42,11 @@ export const en = {
     active: "Active",
     inactive: "Inactive",
     required: "This field is required.",
+    edit: "Edit",
+    actions: "Actions",
+    rowActions: "Actions for {name}",
+    selected: "{n} selected",
+    clearSelection: "Clear selection",
   },
   dashboard: {
     greeting: {

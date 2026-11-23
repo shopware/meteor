@@ -6,16 +6,18 @@ import {
   MtButton,
   MtCard,
   MtContentHeader,
-  MtDataTable,
+  MtDataTableNext,
   MtEmptyState,
   MtLink,
   MtPage,
+  MtSearch,
   MtText,
+  type MtDataTableNextColumn,
 } from "@shopware-ag/meteor-component-library";
 import type { Category, Product } from "../../shared/types";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useFormat } from "../composables/useFormat";
-import { useListing, type DataTableColumn } from "../composables/useListing";
+import { useListing } from "../composables/useListing";
 import { useRepository } from "../composables/useRepository";
 
 const { t } = useI18n();
@@ -96,51 +98,28 @@ const {
   items: products,
   total,
   isLoading: isLoadingProducts,
-  page,
-  limit,
   term,
-  sortBy,
-  sortDirection,
-  onSortChange,
+  sorting,
+  pagination,
 } = useListing("product", {
   sortBy: "name",
   filters: () => ({ categoryIds: categoryIds.value }),
 });
 
-const columns = computed<DataTableColumn[]>(() => [
+const columns = computed<MtDataTableNextColumn<Product>[]>(() => [
+  { accessorKey: "name", header: t("products.columns.name") },
+  { accessorKey: "productNumber", header: t("products.columns.productNumber") },
   {
-    label: t("products.columns.name"),
-    property: "name",
-    renderer: "text",
-    position: 100,
-    clickable: true,
+    accessorKey: "price.gross",
+    header: t("products.columns.price"),
+    meta: { align: "end" },
   },
   {
-    label: t("products.columns.productNumber"),
-    property: "productNumber",
-    renderer: "text",
-    position: 200,
-  },
-  {
-    label: t("products.columns.price"),
-    property: "price.gross",
-    renderer: "number",
-    position: 300,
-  },
-  {
-    label: t("products.columns.stock"),
-    property: "stock",
-    renderer: "number",
-    position: 400,
+    accessorKey: "stock",
+    header: t("products.columns.stock"),
+    meta: { align: "end" },
   },
 ]);
-
-/** The property contains a dot, which a static slot name would read as a modifier. */
-const priceSlot = "column-price.gross";
-
-function openProduct(product: Product) {
-  router.push({ name: "product-detail", params: { id: product.id } });
-}
 </script>
 
 <template>
@@ -193,40 +172,47 @@ function openProduct(product: Product) {
         </ul>
       </mt-card>
 
-      <mt-data-table
-        v-if="categoryId"
-        :title="t('categories.products')"
-        :caption="t('categories.products')"
-        layout="full"
-        :data-source="products"
-        :columns="columns"
-        :is-loading="isLoadingProducts"
-        :current-page="page"
-        :pagination-limit="limit"
-        :pagination-total-items="total"
-        :sort-by="sortBy"
-        :sort-direction="sortDirection"
-        :search-value="term"
-        disable-settings-table
-        disable-delete
-        @pagination-current-page-change="page = $event"
-        @pagination-limit-change="limit = $event"
-        @search-value-change="term = $event"
-        @sort-change="onSortChange"
-        @open-details="openProduct"
-      >
-        <template #[priceSlot]="{ data }">
-          <mt-text size="xs">{{ format.currency(data.price.gross) }}</mt-text>
+      <mt-card v-if="categoryId" :title="t('categories.products')">
+        <template #toolbar>
+          <mt-search v-model="term" size="small" />
         </template>
 
-        <template #empty-state>
-          <mt-empty-state
-            icon="regular-products"
-            :headline="t('categories.noProducts.headline')"
-            :description="t('categories.noProducts.description')"
-          />
+        <template #grid>
+          <mt-data-table-next
+            v-model:sorting="sorting"
+            v-model:pagination="pagination"
+            manual
+            :aria-label="t('categories.products')"
+            :data="products"
+            :columns="columns"
+            :row-count="total"
+            :loading="isLoadingProducts"
+          >
+            <template #cell-name="{ row }">
+              <mt-link
+                :to="{
+                  name: 'product-detail',
+                  params: { id: row.original.id },
+                }"
+              >
+                {{ row.original.name }}
+              </mt-link>
+            </template>
+
+            <template #cell-price_gross="{ row }">
+              {{ format.currency(row.original.price.gross) }}
+            </template>
+
+            <template #empty>
+              <mt-empty-state
+                icon="regular-products"
+                :headline="t('categories.noProducts.headline')"
+                :description="t('categories.noProducts.description')"
+              />
+            </template>
+          </mt-data-table-next>
         </template>
-      </mt-data-table>
+      </mt-card>
     </div>
   </mt-page>
 </template>
