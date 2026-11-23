@@ -137,13 +137,13 @@ export const WithIcon: MtBadgeStory = {
   args: {
     default: "Successful",
     variant: "positive",
-    icon: "solid-check-circle",
+    icon: "check-circle",
   },
   parameters: {
     docs: {
       source: {
         language: "html",
-        code: `<mt-badge variant="positive" icon="solid-check-circle">
+        code: `<mt-badge variant="positive" icon="check-circle">
   Successful
 </mt-badge>`,
       },

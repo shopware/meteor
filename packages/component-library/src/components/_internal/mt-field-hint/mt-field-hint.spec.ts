@@ -44,7 +44,7 @@ describe("mt-field-hint", () => {
     // ARRANGE
     render(MtFieldHint, {
       props: {
-        icon: "solid-clock",
+        icon: "clock",
       },
       slots: {
         default: "Some hint",

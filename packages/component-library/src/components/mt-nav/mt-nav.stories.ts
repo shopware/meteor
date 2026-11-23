@@ -13,10 +13,10 @@ export type MtNavMeta = SlottedMeta<typeof MtNav, "_storybook_internal_show_expe
  * Sample navigation resembling a shop administration.
  */
 const shopItems: NavItem[] = [
-  { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" } },
+  { label: "Dashboard", icon: "home", to: { name: "dashboard.index" } },
   {
     label: "Products",
-    icon: "regular-products",
+    icon: "products",
     children: [
       {
         label: "Overview",
@@ -27,11 +27,11 @@ const shopItems: NavItem[] = [
       { label: "Manufacturers", to: { name: "manufacturer.index" } },
     ],
   },
-  { label: "Orders", icon: "regular-shopping-bag", to: { name: "order.index" } },
-  { label: "Customers", icon: "regular-users", to: { name: "customer.index" } },
+  { label: "Orders", icon: "shopping-bag", to: { name: "order.index" } },
+  { label: "Customers", icon: "users", to: { name: "customer.index" } },
   {
     label: "Content",
-    icon: "regular-content",
+    icon: "content",
     children: [
       { label: "Shopping Experiences", to: { name: "cms.index" } },
       { label: "Media", to: { name: "media.index" } },
@@ -39,7 +39,7 @@ const shopItems: NavItem[] = [
   },
   {
     label: "Marketing",
-    icon: "regular-megaphone",
+    icon: "megaphone",
     children: [
       { label: "Promotions", to: { name: "promotion.index" } },
       { label: "Newsletter recipients", to: { name: "newsletter.index" } },
@@ -50,13 +50,13 @@ const shopItems: NavItem[] = [
 const systemItems: NavItem[] = [
   {
     label: "Extensions",
-    icon: "regular-plug",
+    icon: "plug",
     children: [
       { label: "My extensions", to: { name: "extension.my-extensions" } },
       { label: "Store", to: { name: "extension.store" } },
     ],
   },
-  { label: "Settings", icon: "regular-cog", to: { name: "settings.index" } },
+  { label: "Settings", icon: "cog", to: { name: "settings.index" } },
   { label: "Docs", href: "https://docs.shopware.com", target: "_blank" },
 ];
 
@@ -64,10 +64,10 @@ const systemItems: NavItem[] = [
  * Sample navigation whose submenus hold submenus of their own, using all three levels.
  */
 const nestedItems: NavItem[] = [
-  { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" } },
+  { label: "Dashboard", icon: "home", to: { name: "dashboard.index" } },
   {
     label: "Products",
-    icon: "regular-products",
+    icon: "products",
     children: [
       {
         label: "Overview",
@@ -84,7 +84,7 @@ const nestedItems: NavItem[] = [
   },
   {
     label: "Settings",
-    icon: "regular-cog",
+    icon: "cog",
     children: [
       {
         label: "Shop",
@@ -185,10 +185,10 @@ function isActive(item: NavItem) {
 const sections: NavSection[] = [
   {
     items: [
-      { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" } },
+      { label: "Dashboard", icon: "home", to: { name: "dashboard.index" } },
       {
         label: "Products",
-        icon: "regular-products",
+        icon: "products",
         children: [
           {
             label: "Overview",
@@ -221,14 +221,14 @@ const sections: NavSection[] = [
   {
     header: "Shop",
     items: [
-      { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" } },
-      { label: "Orders", icon: "regular-shopping-bag", to: { name: "order.index" } },
+      { label: "Dashboard", icon: "home", to: { name: "dashboard.index" } },
+      { label: "Orders", icon: "shopping-bag", to: { name: "order.index" } },
     ],
   },
   {
     header: "System",
     items: [
-      { label: "Settings", icon: "regular-cog", to: { name: "settings.index" } },
+      { label: "Settings", icon: "cog", to: { name: "settings.index" } },
     ],
   },
 ];
@@ -252,7 +252,7 @@ const sections: NavSection[] = [
     items: [
       {
         label: "Settings",
-        icon: "regular-cog",
+        icon: "cog",
         children: [
           {
             label: "Shop",

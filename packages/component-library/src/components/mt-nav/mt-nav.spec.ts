@@ -25,7 +25,7 @@ function sampleItems(current?: string): NavItem[] {
     route("Dashboard", "sw.dashboard.index", current),
     {
       label: "Products",
-      icon: "regular-products",
+      icon: "products",
       children: [
         route("Overview", "sw.product.index", current, [
           route("Reviews", "sw.review.index", current, [
