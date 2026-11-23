@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
-import { markRaw, ref } from "vue";
+import { markRaw } from "vue";
 import MtApp from "./mt-app.vue";
-import MtAnnouncement from "../mt-announcement/mt-announcement.vue";
 import MtNav, { type NavSection } from "../mt-nav/mt-nav.vue";
 import MtPage from "../mt-page/mt-page.vue";
 import MtPanel from "../mt-panel/mt-panel.vue";
@@ -79,38 +78,3 @@ export default meta;
 export type MtAppStory = StoryObj<MtAppMeta>;
 
 export const Default: MtAppStory = {};
-
-export const WithAnnouncement: MtAppStory = {
-  render: (args, { globals }) => ({
-    components: { MtAnnouncement, MtApp, MtNav, MtPage, MtPanel, MtText },
-    setup() {
-      useTheme().setTheme(globals.theme ?? "light");
-
-      return { args, sections, linkComponent: markRaw(StoryLink), isOpen: ref(true) };
-    },
-    template: `
-      <mt-app :breakpoint="args.breakpoint" :loading-bar="args.loadingBar">
-        <template #announcement>
-          <mt-announcement
-            v-if="isOpen"
-            variant="attention"
-            icon="tools"
-            closable
-            @close="isOpen = false"
-          >
-            Planned maintenance on Sunday, November 16, from 2:00 to 4:00 AM CET.
-          </mt-announcement>
-        </template>
-
-        <template #navigation>
-          <mt-panel :width="240">
-            <mt-nav :sections="sections" :link-component="linkComponent" />
-          </mt-panel>
-        </template>
-
-        <mt-page :breadcrumb="[{ label: 'Products', icon: 'products' }]">
-          <mt-text size="xs">The content of the current page.</mt-text>
-        </mt-page>
-      </mt-app>`,
-  }),
-};
