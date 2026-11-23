@@ -56,6 +56,7 @@ import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFormFieldMixin from "../../mixins/form-field.mixin";
 import { createId } from "../../utils/id";
+import { deprecate } from "@/utils/log";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
@@ -305,9 +306,7 @@ export default defineComponent({
 
     if (this.checked !== undefined) {
       // @deprecated - Will be removed. Use `v-model` (modelValue / update:modelValue) instead.
-      console.warn(
-        "[MtCheckbox] The `checked` prop is deprecated and will be removed. Please use v-model (modelValue/update:modelValue) instead.",
-      );
+      deprecate("mt-checkbox", "The `checked` prop", "`v-model` (modelValue / update:modelValue)");
     }
   },
 

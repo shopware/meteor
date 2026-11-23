@@ -37,6 +37,7 @@
 import { ref, onMounted } from "vue";
 import type { PropType } from "vue";
 import MtSelect from "@/components/mt-select/mt-select.vue";
+import { logError } from "@/utils/log";
 import type Repository from "@shopware-ag/meteor-admin-sdk/es/data/repository";
 import Criteria from "@shopware-ag/meteor-admin-sdk/es/data/Criteria";
 import { useRepository } from "@shopware-ag/meteor-admin-sdk/es/data/composables/useRepository";
@@ -98,7 +99,7 @@ const getPage = async (page: number, term?: string) => {
       return [...result];
     }
   } catch (e) {
-    console.error(`Could not fetch data for entity ${props.entity}`, e);
+    logError("mt-entity-select", `Could not load the entities of "${props.entity}".`, e);
   }
   return [];
 };
@@ -145,7 +146,7 @@ const fetchSelectedEntities = async () => {
     const result = await repo.value.search(criteria);
     return result ? [...result] : [];
   } catch (e) {
-    console.error("Could not fetch selected entities", e);
+    logError("mt-entity-select", "Could not load the selected entities.", e);
     return [];
   }
 };

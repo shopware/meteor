@@ -132,6 +132,7 @@ import { usePanelSlots } from "@/components/_internal/mt-panel-region/usePanelSl
 import { provideFutureFlags, type FutureFlagsInput } from "@/composables/useFutureFlags";
 import { useTheme } from "@/composables/useTheme";
 import { scrollToRoute, useMatchedRouteMeta, useRouteChange, useRouteGuard } from "@/utils/router";
+import { warn } from "@/utils/log";
 import { hasSlotContent, useRenderCache } from "@/utils/slot";
 import { appContextKey } from "./_internal/mt-app-context";
 import MtAppHeaderRegion from "./_internal/mt-app-header-region.vue";
@@ -362,17 +363,11 @@ function trackPanelSlots() {
 onMounted(trackPanelSlots);
 onUpdated(trackPanelSlots);
 
-// An app has either a header or a navigation. With both, the shell still renders both and warns once.
-let hasWarnedAboutHeaderAndNavigation = false;
-
+// An app has either a header or a navigation. With both, the shell still renders both and warns.
 function warnAboutHeaderAndNavigation() {
-  if (hasWarnedAboutHeaderAndNavigation || !hasSlot("header") || !hasSlot("navigation")) return;
+  if (!hasSlot("header") || !hasSlot("navigation")) return;
 
-  hasWarnedAboutHeaderAndNavigation = true;
-  console.warn(
-    "[mt-app] The header and navigation slots are both filled. " +
-      "An app uses either the header or the navigation, not both.",
-  );
+  warn("mt-app", "The header and navigation slots are both filled. Use either one, not both.");
 }
 
 onMounted(warnAboutHeaderAndNavigation);

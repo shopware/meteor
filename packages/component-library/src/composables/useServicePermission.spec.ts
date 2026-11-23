@@ -259,7 +259,7 @@ describe("useServicePermission", () => {
     await expect(api.grant()).rejects.toThrow("Grant failed");
 
     expect(consoleError).toHaveBeenCalledWith(
-      "Error granting permission:",
+      "[Meteor] useServicePermission: Could not grant the permission.",
       new Error("Grant failed"),
     );
     expect(api.isGranting.value).toBe(false);
@@ -278,7 +278,7 @@ describe("useServicePermission", () => {
     await expect(api.grant()).rejects.toThrow("Route unavailable");
 
     expect(consoleError).toHaveBeenCalledWith(
-      "Error granting permission:",
+      "[Meteor] useServicePermission: Could not grant the permission.",
       new Error("Route unavailable"),
     );
 

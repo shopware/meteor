@@ -1,4 +1,5 @@
 import type { Extension } from "@tiptap/core";
+import { logError } from "@/utils/log";
 
 /**
  * Enhances TipTap extensions to preserve custom HTML attributes like class and style
@@ -64,7 +65,11 @@ export function enhanceExtensionsWithAttributes(extensions: Extension[]): Extens
       });
     } catch (error) {
       // If extending fails for any reason, return the original extension
-      console.warn(`Failed to enhance extension ${extensionName} with attributes:`, error);
+      logError(
+        "mt-text-editor",
+        `Could not add the attributes to the extension "${extensionName}", so it keeps its own.`,
+        error,
+      );
       return extension;
     }
   });
