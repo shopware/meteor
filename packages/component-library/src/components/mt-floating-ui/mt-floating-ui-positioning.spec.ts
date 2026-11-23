@@ -145,6 +145,60 @@ describe("mt-floating-ui positioning config", () => {
     wrapper.unmount();
   });
 
+  it("positions and sizes constrained content against the viewport", async () => {
+    const { computePosition, platform } =
+      await vi.importActual<typeof import("@floating-ui/dom")>("@floating-ui/dom");
+    const wrapper = createWrapper({ constrainToViewport: true });
+    const reference = wrapper.get(".mt-floating-ui__trigger").element;
+
+    computePositionMock.mockImplementationOnce((anchor, floating, config) =>
+      computePosition(anchor as HTMLElement, floating as HTMLElement, {
+        ...config,
+        platform: {
+          ...platform,
+          convertOffsetParentRelativeRectToViewportRelativeRect: ({ rect }) => rect,
+          getElementRects: () => ({
+            reference: { x: 220, y: 180, width: 40, height: 20 },
+            floating: { x: 0, y: 0, width: 320, height: 160 },
+          }),
+          getClippingRect: ({ element, boundary }) =>
+            Array.isArray(boundary) && boundary.length === 0
+              ? { x: 0, y: 0, width: 800, height: 600 }
+              : element === reference
+                ? { x: 50, y: 40, width: 240, height: 180 }
+                : { x: 0, y: 0, width: 800, height: 600 },
+          getDimensions: () => ({ width: 320, height: 160 }),
+        },
+      }),
+    );
+
+    await wrapper.setProps({ isOpened: true });
+    await flushPromises();
+
+    const middleware = computePositionMock.mock.calls[0][2].middleware;
+    expect(middleware?.find(({ name }) => name === "flip")?.options).toMatchObject({
+      boundary: [],
+      rootBoundary: "viewport",
+      padding: 16,
+    });
+    expect(middleware?.find(({ name }) => name === "shift")?.options).toMatchObject({
+      boundary: [],
+      rootBoundary: "viewport",
+      padding: 16,
+    });
+
+    const content = document.querySelector<HTMLElement>(".mt-floating-ui__content")!;
+    expect(content.classList.contains("mt-floating-ui--top")).toBe(true);
+    expect(content.style.left).toBe("220px");
+    expect(content.style.getPropertyValue("--mt-floating-ui-max-width")).toBe("768px");
+    expect(content.style.getPropertyValue("--mt-floating-ui-max-height")).toBe("378px");
+    expect(
+      content.querySelector(".mt-floating-ui__scroll-content #defaultSlotContent"),
+    ).not.toBeNull();
+
+    wrapper.unmount();
+  });
+
   it("hides the content when the reference is fully clipped", async () => {
     computePositionMock.mockResolvedValue({
       x: 10,

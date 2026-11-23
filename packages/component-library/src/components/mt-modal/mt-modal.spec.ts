@@ -3,7 +3,9 @@ import MtModalRoot from "./sub-components/mt-modal-root.vue";
 import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtModalAction from "./sub-components/mt-modal-action.vue";
 import { render, screen, fireEvent, waitFor } from "@testing-library/vue";
-import { ref } from "vue";
+import { userEvent } from "@testing-library/user-event";
+import { nextTick, ref } from "vue";
+import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
 
 describe("mt-modal", () => {
   it("the modal is hidden by default", () => {
@@ -81,6 +83,58 @@ describe("mt-modal", () => {
     await waitFor(() => {
       expect(screen.getByRole("dialog")).toHaveFocus();
     });
+  });
+
+  it("keeps teleported picker content in the modal focus trap", async () => {
+    const user = userEvent.setup();
+    const isOpen = ref(false);
+    const isPickerOpen = ref(false);
+    const anchor = ref<HTMLElement | null>(null);
+
+    render({
+      components: { MtModal, MtModalRoot, MtFloatingUi },
+      setup() {
+        return { isOpen, isPickerOpen, anchor };
+      },
+      template: `
+<button>Outside modal</button>
+<mt-modal-root :isOpen="isOpen" :closable="false">
+  <mt-modal title="Media picker" hide-header>
+    <button ref="anchor">Open media picker</button>
+    <mt-floating-ui
+      v-if="isPickerOpen"
+      :is-opened="isPickerOpen"
+      detached
+      :anchor-element="anchor"
+      teleport-target=".mt-modal"
+    >
+      <input aria-label="Search media" />
+    </mt-floating-ui>
+    <button>After media picker</button>
+  </mt-modal>
+</mt-modal-root>`,
+    });
+
+    isOpen.value = true;
+    await nextTick();
+
+    const modal = screen.getByRole("dialog");
+    await waitFor(() => expect(modal).toHaveFocus());
+
+    isPickerOpen.value = true;
+    await nextTick();
+
+    const search = screen.getByRole("textbox", { name: "Search media" });
+    expect(modal.contains(search)).toBe(true);
+
+    for (let tab = 0; tab < 8 && document.activeElement !== search; tab += 1) {
+      await user.tab();
+      expect(modal.contains(document.activeElement)).toBe(true);
+    }
+
+    expect(search).toHaveFocus();
+    await user.type(search, "media");
+    expect(search).toHaveValue("media");
   });
 
   it("opens the modal when clicking the trigger when 'isOpen' gets changed", async () => {

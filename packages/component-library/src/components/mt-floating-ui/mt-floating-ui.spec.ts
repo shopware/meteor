@@ -120,6 +120,29 @@ describe("mt-floating-ui", () => {
     expect(floatingUiContent!.parentElement!.tagName).toBe("BODY");
   });
 
+  it("should mount the floating content to a custom teleport target", async () => {
+    const modal = document.createElement("div");
+    modal.className = "mt-modal";
+    document.body.appendChild(modal);
+
+    wrapper = mount(MtFloatingUi, {
+      attachTo: document.getElementById("appWrapper")!,
+      slots: {
+        trigger: `<div>Trigger</div>`,
+        default: `<div id="customTargetContent">Picker content</div>`,
+      },
+      props: {
+        isOpened: true,
+        teleportTarget: ".mt-modal",
+      },
+    });
+
+    await flushPromises();
+
+    const floatingUiContent = document.querySelector("#customTargetContent");
+    expect(modal.contains(floatingUiContent)).toBe(true);
+  });
+
   it("should unmount the floating ui to the document body", async () => {
     wrapper = createWrapper();
 
