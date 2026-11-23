@@ -11,6 +11,9 @@ export const de: Messages = {
     releaseNotes: "Versionshinweise",
     settings: "Einstellungen",
     logout: "Abmelden",
+    notifications: "Benachrichtigungen",
+    help: "Hilfe",
+    navigation: "Navigation",
   },
   editor: {
     title: "Editor",
@@ -58,6 +61,26 @@ export const de: Messages = {
       general: "Allgemein",
       account: "Konto",
       notifications: "Benachrichtigungen",
+      layout: "Layout",
+    },
+    layout: {
+      shell: "Shell",
+      header: "Kopfzeile",
+      customHeader: "Eigene Kopfzeile",
+      customHeaderNavigationTrigger:
+        "Navigations-Trigger in der eigenen Kopfzeile",
+      customHeaderSidebarTrigger:
+        "Seitenleisten-Trigger in der eigenen Kopfzeile",
+      navigation: "Navigation",
+      sidebar: "Seitenleiste",
+      off: "Aus",
+      open: "Auf dem Desktop immer offen",
+      closable: "Auf dem Desktop schließbar",
+      thisPage: "Diese Seite",
+      thisPageHint: "Gilt, solange die Einstellungen offen sind.",
+      inPage: "mt-page verwenden",
+      panelTriggers: "Trigger mit mt-app-panel-trigger anzeigen",
+      hideHeader: "Kopfzeile ausblenden",
     },
     notifications: {
       orders: "Bestellupdates",

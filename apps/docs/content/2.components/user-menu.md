@@ -12,7 +12,7 @@ description: The logged-in user as a button with avatar, name and subtitle, whic
 
 ## Usage
 
-**User Menu** shows who is logged in and opens a menu with what concerns their account, such as the profile, the settings and the logout. It is made for the `footer` slot of [**Sidebar**](/components/sidebar) and fills the width of its container.
+**User Menu** shows who is logged in and opens a menu with what concerns their account, such as the profile, the settings and the logout. It is made for the `end` slot of [**App Sidebar**](/components/app-sidebar) and [**App Header**](/components/app-header) and fills the width of its container.
 
 ```ts
 import { MtUserMenu } from "@shopware-ag/meteor-component-library";
@@ -20,7 +20,7 @@ import { MtUserMenu } from "@shopware-ag/meteor-component-library";
 
 Put the entries into the default slot, built from `mt-action-menu-group` and `mt-action-menu-item` as in an [**Action Menu**](/components/action-menu). The component adds no entries of its own, so the logout is one of your entries.
 
-The `compact` prop shows only the avatar. The name shows on hover.
+The `compact` prop shows only the avatar.
 
 ## Examples
 

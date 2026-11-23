@@ -69,7 +69,7 @@ export const LongTitle: MtBrandStory = {
   parameters: {
     docs: {
       description: {
-        story: "A title that does not fit is cut off with an ellipsis and shown in full on hover.",
+        story: "A title that does not fit is cut off with an ellipsis.",
       },
     },
   },
@@ -142,8 +142,7 @@ export const Compact: MtBrandStory = {
   parameters: {
     docs: {
       description: {
-        story:
-          "Shows only the logo. The title shows on hover and stays available to screen readers.",
+        story: "Shows only the logo. The title stays available to screen readers.",
       },
       source: {
         language: "html",

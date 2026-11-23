@@ -1,7 +1,8 @@
 import { getTabbables } from "@/utils/focus";
 
 export function focusableLinks(container: HTMLElement): HTMLElement[] {
-  // Lists the visible links in the container; label-only rows render as a span and can't take focus
+  // Lists the visible links in the container; label-only items render as a span and can't take
+  // focus
   return Array.from(container.querySelectorAll<HTMLElement>(".mt-nav__link")).filter(
     (link) => link.tabIndex >= 0 && !link.closest("[hidden]"),
   );

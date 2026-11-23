@@ -153,7 +153,13 @@ export function useModalLayer(options: UseModalLayerOptions): void {
     const target = previousFocus;
     previousFocus = null;
 
-    if (target?.isConnected) target.focus({ preventScroll: true });
+    // Only while the focus is still in the panel or lost, not after it moved on, for example to the
+    // content when the panel disappeared.
+    const active = document.activeElement;
+    const isFocusInLayer =
+      !active || active === document.body || Boolean(options.panel.value?.contains(active));
+
+    if (target?.isConnected && isFocusInLayer) target.focus({ preventScroll: true });
   }
 
   // Focusing an element that is still inert or hidden has no effect.

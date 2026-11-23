@@ -267,11 +267,10 @@ describe("mt-page", () => {
       // ASSERT
       const header = pageHeader();
       const headerEnd = header.lastElementChild;
-      expect(header.firstElementChild).toContainElement(navigationTrigger);
-      expect(header.firstElementChild?.lastElementChild).toHaveClass("mt-divider");
-      expect(headerEnd?.lastElementChild).toContainElement(sidebarTrigger);
-      expect(headerEnd?.lastElementChild?.firstElementChild).toHaveClass("mt-divider");
-      expect(document.querySelector(".mt-app__header")).not.toBeInTheDocument();
+      expect(header.firstElementChild).toBe(navigationTrigger);
+      expect(navigationTrigger.nextElementSibling).toHaveClass("mt-divider");
+      expect(headerEnd?.lastElementChild).toBe(sidebarTrigger);
+      expect(sidebarTrigger.previousElementSibling).toHaveClass("mt-divider");
     });
 
     it("puts the close button after the navigation trigger", async () => {
@@ -281,8 +280,8 @@ describe("mt-page", () => {
 
       // ASSERT
       const header = pageHeader();
-      expect(header.firstElementChild).toContainElement(navigationTrigger);
-      expect(header.children[1]).toBe(screen.getByRole("button", { name: "Close" }));
+      expect(header.firstElementChild).toBe(navigationTrigger);
+      expect(header.children[2]).toBe(screen.getByRole("button", { name: "Close" }));
     });
 
     it("shows no triggers for panels that the view hides", async () => {

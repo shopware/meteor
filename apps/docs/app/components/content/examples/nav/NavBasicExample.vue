@@ -37,7 +37,7 @@ const sections: NavSection[] = [
   },
 ];
 
-// The current route of the example, which follows the clicked row.
+// The current route of the example, which follows the clicked item.
 const currentPath = ref("/products");
 
 function isActive(item: NavItem) {

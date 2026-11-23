@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-brand" :title="compact ? title : undefined">
+  <div class="mt-brand">
     <slot name="logo">
       <div class="mt-brand__image" :class="`mt-brand__image--${appearance}`">
         <mt-icon :name="productLogos[variant].icon" :size="productLogos[variant].size" decorative />
@@ -7,7 +7,7 @@
     </slot>
 
     <div class="mt-brand__text" :class="{ 'visually-hidden': compact }">
-      <mt-text as="div" size="s" weight="semibold" class="mt-brand__title" :title="title">
+      <mt-text as="div" size="xs" weight="semibold" class="mt-brand__title">
         {{ title }}
       </mt-text>
       <mt-text v-if="subtitle" as="div" size="2xs" class="mt-brand__subtitle">
@@ -22,8 +22,8 @@ import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 
 /**
- * A logo with a title and an optional subtitle, for example the name of the shop in the header of
- * `mt-sidebar`.
+ * A logo with a title and an optional subtitle, for example the name of the shop at the start of
+ * `mt-app-sidebar`.
  *
  * @experimental The API may still change in a future release.
  */
@@ -43,10 +43,7 @@ withDefaults(
      * Colors of the logo. `dark` shows a white mark on a brand box, `light` a brand mark on a white box.
      */
     appearance?: "dark" | "light";
-    /**
-     * Shows only the logo. The title and subtitle stay available to screen readers, and the title
-     * shows on hover.
-     */
+    /** Shows only the logo. The title and the subtitle stay available to assistive technology. */
     compact?: boolean;
   }>(),
   {
@@ -76,7 +73,7 @@ const productLogos = {
 .mt-brand {
   display: flex;
   align-items: center;
-  gap: var(--scale-size-12);
+  gap: var(--scale-size-8);
   min-width: 0;
 }
 
@@ -85,9 +82,9 @@ const productLogos = {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: var(--scale-size-40);
-  height: var(--scale-size-40);
-  border-radius: 29%;
+  width: var(--scale-size-36);
+  height: var(--scale-size-36);
+  border-radius: 25%;
 }
 
 .mt-brand__image--dark {
