@@ -1,32 +1,36 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import {
+  MtActionMenuGroup,
+  MtActionMenuItem,
   MtApp,
+  MtAppSidebar,
   MtBadge,
+  MtBrand,
   MtButton,
   MtCard,
   MtContentHeader,
   MtLayout,
-  MtNav,
   MtNumberField,
   MtPage,
+  MtPanel,
   MtSelect,
-  MtSwitch,
   MtTabs,
   MtText,
   MtTextField,
   MtTextarea,
+  MtUserMenu,
   useUnsavedChanges,
   type BreadcrumbItem,
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
 
-// The main navigation of the application. Mark the current page as active, or
-// pass `is-active` to mt-nav to compare the rows with the current route.
-const navigation: NavSection[] = [
+// The main navigation of the application. Mark the current page with `active`.
+const sections: NavSection[] = [
   {
     items: [
-      { label: "Dashboard", icon: "regular-home", to: "/" },
+      { label: "Dashboard", icon: "regular-dashboard", to: "/" },
+      { label: "Orders", icon: "regular-shopping-bag", to: "/orders" },
       {
         label: "Products",
         icon: "regular-products",
@@ -35,7 +39,7 @@ const navigation: NavSection[] = [
           { label: "Categories", to: "/categories" },
         ],
       },
-      { label: "Orders", icon: "regular-shopping-bag", to: "/orders" },
+      { label: "Customers", icon: "regular-users", to: "/customers" },
       { label: "Settings", icon: "regular-cog", to: "/settings" },
     ],
   },
@@ -59,9 +63,6 @@ const savedProduct = {
   stock: 318,
   minPurchase: 1,
   active: true,
-  salesChannels: ["storefront"],
-  categories: ["running", "shoes"],
-  ean: "4006381333931",
   metaTitle: "Running shoe Aero",
   metaDescription: "",
 };
@@ -83,18 +84,6 @@ const manufacturerOptions = [
 const taxOptions = [
   { value: "standard", label: "Standard rate (19%)" },
   { value: "reduced", label: "Reduced rate (7%)" },
-];
-
-const salesChannelOptions = [
-  { value: "storefront", label: "Storefront" },
-  { value: "headless", label: "Headless" },
-  { value: "b2b", label: "B2B shop" },
-];
-
-const categoryOptions = [
-  { value: "running", label: "Running" },
-  { value: "shoes", label: "Shoes" },
-  { value: "sale", label: "Sale" },
 ];
 
 const tabs = [
@@ -121,9 +110,26 @@ function save() {
 <template>
   <mt-app>
     <template #navigation>
-      <mt-nav class="navigation" :sections="navigation" />
+      <mt-panel label="Navigation" resizable :min-width="200" :max-width="320">
+        <mt-app-sidebar :sections="sections">
+          <template #start>
+            <mt-brand title="Shopware" subtitle="Meteor" />
+          </template>
+
+          <template #end>
+            <mt-user-menu name="Max Mustermann" subtitle="Administrator">
+              <mt-action-menu-group>
+                <mt-action-menu-item icon="regular-sign-out" variant="critical">
+                  Log out
+                </mt-action-menu-item>
+              </mt-action-menu-group>
+            </mt-user-menu>
+          </template>
+        </mt-app-sidebar>
+      </mt-panel>
     </template>
 
+    <!-- The page: copy it into a route of your application, without the shell around it. -->
     <mt-page width="l" :breadcrumb="breadcrumb">
       <template #actions>
         <mt-button variant="secondary" size="default" :disabled="!isDirty" @click="discard">
@@ -197,27 +203,7 @@ function save() {
           </mt-card>
 
           <template #end>
-            <mt-card title="Visibility">
-              <div class="stack">
-                <mt-switch v-model="product.active" label="Active" />
-                <mt-select
-                  v-model="product.salesChannels"
-                  label="Sales channels"
-                  :options="salesChannelOptions"
-                  enable-multi-selection
-                />
-                <mt-select
-                  v-model="product.categories"
-                  label="Categories"
-                  :options="categoryOptions"
-                  enable-multi-selection
-                />
-              </div>
-            </mt-card>
-
-            <mt-card title="Labelling">
-              <mt-text-field v-model="product.ean" label="EAN" />
-            </mt-card>
+            <placeholder-slot style="height: 16rem" />
           </template>
         </mt-layout>
 
@@ -235,10 +221,6 @@ function save() {
 </template>
 
 <style scoped>
-.navigation {
-  width: 15rem;
-}
-
 .stack {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
