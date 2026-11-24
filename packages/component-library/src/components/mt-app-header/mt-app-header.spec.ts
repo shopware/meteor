@@ -57,6 +57,40 @@ describe("mt-app-header", () => {
     expect(drawer).not.toContainElement(screen.getByRole("button", { name: "Notifications true" }));
   });
 
+  it.each([
+    ["the header", 1200],
+    ["the drawer", 800],
+  ])("marks the item that isActive matches as the current page in %s", async (_, width) => {
+    // ARRANGE
+    stubResizeObserver(width);
+    renderHeader({
+      sections: [
+        {
+          items: [
+            { label: "Dashboard", href: "#dashboard" },
+            { label: "Orders", href: "#orders" },
+          ],
+        },
+      ],
+      isActive: (item: { label: string }) => item.label === "Orders",
+    });
+
+    // ACT
+    if (width < 1024) {
+      await userEvent.click(await screen.findByRole("button", { name: "Toggle Navigation" }));
+    }
+
+    // ASSERT
+    const navigation = await screen.findByRole("navigation", { name: "Main" });
+    expect(within(navigation).getByRole("link", { name: "Orders" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(within(navigation).getByRole("link", { name: "Dashboard" })).not.toHaveAttribute(
+      "aria-current",
+    );
+  });
+
   it("shows the triggers of the shell's panels at its start and after the actions, instead of the page", async () => {
     // ARRANGE
     stubResizeObserver(1200);

@@ -25,7 +25,7 @@
         side="start"
         :title="t('navigation')"
       >
-        <mt-app-sidebar :sections="sections">
+        <mt-app-sidebar :sections="sections" :is-active="isActive">
           <template #start>
             <slot name="start" :is-mobile="isMobile" />
           </template>
@@ -43,7 +43,7 @@
       </div>
 
       <mt-scroll-area orientation="horizontal" class="mt-app-header__nav">
-        <mt-nav orientation="horizontal" :sections="sections" />
+        <mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" />
       </mt-scroll-area>
     </template>
 
@@ -74,7 +74,7 @@ import { computed, ref, shallowRef, useId, useTemplateRef, watch } from "vue";
 import { useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import MtAppSidebar from "@/components/mt-app-sidebar/mt-app-sidebar.vue";
-import MtNav, { type NavSection } from "@/components/mt-nav/mt-nav.vue";
+import MtNav, { type NavActiveMatcher, type NavSection } from "@/components/mt-nav/mt-nav.vue";
 import MtScrollArea from "@/components/mt-scroll-area/mt-scroll-area.vue";
 import MtDrawer from "@/components/_internal/mt-drawer/mt-drawer.vue";
 import MtPanelTriggerButton from "@/components/_internal/mt-panel-region/mt-panel-trigger-button.vue";
@@ -96,12 +96,18 @@ const props = withDefaults(
     /** The sections of the navigation, each holding its items, as for `mt-nav`. */
     sections: NavSection[];
     /**
+     * Tells whether an item is the current page, e.g. by comparing its route with the current
+     * route. Lets the sections stay static instead of setting `active` on every route change.
+     */
+    isActive?: NavActiveMatcher;
+    /**
      * The header width in pixels below which the start, the navigation and the end move into a
      * drawer. `0` keeps them in the header.
      */
     breakpoint?: number;
   }>(),
   {
+    isActive: undefined,
     breakpoint: 1024,
   },
 );
