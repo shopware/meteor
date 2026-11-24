@@ -244,14 +244,14 @@ const iconStyle = computed(() => {
 }
 
 /*
- * Starts right below the outline at the top of the page, with or without a format label, and sits 2
+ * Starts right below the outline at the top of the page, with or without a format label, and sits 3
  * of 48 pixels left of the center to keep its distance from the folded corner
  */
 .mt-file-icon .mt-file-icon__icon--top {
   --mt-file-icon-icon-box: 17;
   --mt-file-icon-icon-top: 10.42%;
 
-  left: 45.83%;
+  left: 43.75%;
   align-items: flex-start;
 }
 
