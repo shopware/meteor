@@ -214,7 +214,7 @@ const iconStyle = computed(() => {
 /* Positions the icon by its center, or by its top edge, at a point of the 48 by 48 design */
 .mt-file-icon__icon {
   /* The size of the 24 pixel icon grid in the design, and where the icon sits as a share of the height */
-  --mt-file-icon-icon-box: 16;
+  --mt-file-icon-icon-box: 15;
   --mt-file-icon-icon-top: 56.25%;
   /* One pixel of the icon grid, which the icon size is multiplied with */
   --mt-file-icon-icon-unit: calc(100cqw * var(--mt-file-icon-icon-box) / 1152);
@@ -235,7 +235,7 @@ const iconStyle = computed(() => {
 }
 
 .mt-file-icon--format .mt-file-icon__icon {
-  --mt-file-icon-icon-box: 14;
+  --mt-file-icon-icon-box: 13;
   --mt-file-icon-icon-top: 45.83%;
 }
 
@@ -246,11 +246,15 @@ const iconStyle = computed(() => {
   color: var(--color-icon-critical-default);
 }
 
-/* Starts right below the outline at the top of the page, with or without a format label */
+/*
+ * Starts right below the outline at the top of the page, with or without a format label, and sits 2
+ * of 48 pixels left of the center to keep its distance from the folded corner
+ */
 .mt-file-icon .mt-file-icon__icon--top {
-  --mt-file-icon-icon-box: 18;
+  --mt-file-icon-icon-box: 17;
   --mt-file-icon-icon-top: 10.42%;
 
+  left: 45.83%;
   align-items: flex-start;
 }
 
@@ -296,7 +300,7 @@ const iconStyle = computed(() => {
   }
 
   .mt-file-icon--format .mt-file-icon__icon:not(.mt-file-icon__icon--top) {
-    --mt-file-icon-icon-box: 16;
+    --mt-file-icon-icon-box: 15;
     --mt-file-icon-icon-top: 56.25%;
 
     align-items: center;
