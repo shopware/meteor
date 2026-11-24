@@ -18,11 +18,6 @@ describe("resolveFileIcon", () => {
     ["xlsx", "excel"],
     ["xlsm", "excel"],
     ["ods", "excel"],
-    ["ppt", "powerpoint"],
-    ["pptx", "powerpoint"],
-    ["pps", "powerpoint"],
-    ["ppsx", "powerpoint"],
-    ["odp", "powerpoint"],
   ])("resolves the brand of the format %s", (format, brand) => {
     expect(resolveFileIcon({ format }).brand).toBe(brand);
   });
@@ -34,6 +29,11 @@ describe("resolveFileIcon", () => {
     "numbers",
     "key",
     "pages",
+    "ppt",
+    "pptx",
+    "pps",
+    "ppsx",
+    "odp",
     "svg",
     "fig",
     "ai",

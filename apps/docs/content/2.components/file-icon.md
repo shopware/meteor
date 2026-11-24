@@ -32,7 +32,7 @@ Set `category` to show the icon of a category without a format label, or to over
 
 ### Formats
 
-Set `format` to show a format label, with or without a leading dot. PDF, Word, Excel, and PowerPoint formats show their label in the color of their brand, adjusted for dark mode. OpenDocument formats use the color of their Office counterpart.
+Set `format` to show a format label, with or without a leading dot. PDF, Word, and Excel formats show their label in the color of their brand, adjusted for dark mode. OpenDocument formats use the color of their Office counterpart.
 
 ::component-example{name="file-icon-formats-example"}
 ::
