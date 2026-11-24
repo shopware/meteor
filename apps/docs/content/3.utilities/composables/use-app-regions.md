@@ -9,7 +9,7 @@ description: A composable that hides regions of the surrounding App shell while 
 
 ## Usage
 
-`useAppRegions` lets a view inside [**App**](/components/app) hide the header, the navigation or the sidebar, for example an editor with a focus mode. Call it in the view, with a ref or a getter to toggle the regions while the view stays shown. The regions come back as soon as the view unmounts.
+`useAppRegions` lets a view inside [**App**](/components/app) hide the announcement, the header, the navigation or the sidebar, for example an editor with a focus mode. Call it in the view, with a ref or a getter to toggle the regions while the view stays shown. The regions come back as soon as the view unmounts.
 
 ```ts
 import { ref } from "vue";
@@ -48,10 +48,11 @@ The parts of the shell that a view can hide: its regions and the frame around th
 
 | Property | Type | Description |
 | --- | --- | --- |
+| `announcement` | `boolean` | The announcement above the header. |
 | `header` | `boolean` | The header bar. |
 | `navigation` | `boolean` | The navigation, and its drawer in the mobile layout. |
 | `sidebar` | `boolean` | The sidebar, and its drawer in the mobile layout. |
-| `contentFrame` | `boolean` | `false` removes the frame around the content while no other region is visible. |
+| `contentFrame` | `boolean` | `false` removes the frame around the content while no header, navigation or sidebar is visible. |
 
 ## Behavior
 
@@ -59,7 +60,7 @@ The parts of the shell that a view can hide: its regions and the frame around th
 - Nested routes combine their `mtAppRegions`: a child route overrides the regions it names and keeps the others of its parents.
 - Hidden regions stay mounted, so their state, such as the open items of a navigation, survives.
 - A view that `<KeepAlive>` keeps gives the regions back while it isn't shown.
-- Hiding a panel closes its open drawer, and when a hidden region held the focus, the focus moves to the content.
+- Hiding a panel closes its open drawer, and when a hidden region held the focus, the focus moves to the content. From the announcement, it moves to the header while one shows.
 - Hiding the header also hides the triggers of the navigation and the sidebar in it. [**Page**](/components/page) then shows them, and a view without Page needs [**App Panel Trigger**](/components/app#triggers-in-a-custom-header).
 - Outside of a shell, the call does nothing.
 
