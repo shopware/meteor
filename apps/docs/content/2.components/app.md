@@ -136,7 +136,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 - Below `breakpoint` (1280px of viewport width by default), the navigation and the sidebar become drawers that open from their triggers and close with Escape, by clicking next to them or by swiping them out. In the mobile layout, at most one drawer is open, and switching the layout closes it.
 - In the desktop layout, `v-model:navigation-open` and `v-model:sidebar-open` show and hide the panels. A [**Panel**](/components/panel) with `closable` also shows its trigger in the desktop layout.
 - In the desktop layout, a panel slides in and out over its outer edge when it opens or closes, also when a view hides or shows it, while the content grows into its place. Switching between the desktop and the mobile layout doesn't slide. With reduced motion, the panels show and hide at once.
-- An announcement that appears after the page has loaded slides down from the top edge and pushes the header down. When it is removed, for example after it was closed, it slides back up and the content takes over its focus. An announcement that is there when the page loads, or that a view hides or shows, doesn't slide. With reduced motion, it shows and hides at once.
+- An announcement that appears after the page has loaded slides down from the top edge and pushes the header down. When it is removed, for example after it was closed, it slides back up and the header takes over its focus, or the content when no header shows. An announcement that is there when the page loads, or that a view hides or shows, doesn't slide. With reduced motion, it shows and hides at once.
 - Views can hide the announcement, the header, the navigation and the sidebar with [**useAppRegions**](/utilities/composables/use-app-regions). The announcement and the header are not printed.
 - **App** applies the stored theme preference, enables all future flags for the components inside, and mounts the [**Snackbar**](/components/snackbar) host.
 - With Vue Router installed, a navigation closes the open drawer and shows the new page from its top, or from the element of its URL hash.
@@ -148,7 +148,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 - The announcement comes before the header in the reading order and adds no landmark of its own.
 - The header is a `<header>` landmark and the content a `<main>` landmark. The navigation and the sidebar add no landmark of their own, so their content brings one, such as the `<nav>` of [**Nav**](/components/nav) or an `<aside>` named after its content.
 - The first focusable element of the shell is a "Skip to content" button. It becomes visible when it receives the focus and moves the focus to the content.
-- When a region hides or unmounts while it holds the focus, the focus moves to the content.
+- When a region hides or unmounts while it holds the focus, the focus moves to the content. From the announcement, it moves to the header while one shows.
 - After a navigation, screen readers announce the new document title, as after a full page load.
 - The drawers and their triggers are named by the `label` of their [**Panel**](/components/panel), or "Navigation" and "Sidebar". These defaults and the other texts of the shell are translated for English and German.
 - A trigger is named "Toggle" and the label of its panel, and tells whether its panel is open.

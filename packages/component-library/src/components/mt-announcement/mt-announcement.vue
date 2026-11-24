@@ -1,6 +1,5 @@
 <template>
   <div
-    ref="root"
     class="mt-announcement"
     :class="[`mt-announcement--variant-${variant}`, { 'mt-announcement--closable': closable }]"
   >
@@ -24,10 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onBeforeUnmount, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
-import { appContextKey } from "@/components/mt-app/_internal/mt-app-context";
 import { resolveIconName } from "@/utils/icon";
 
 /**
@@ -71,14 +68,6 @@ const { t } = useI18n({
     en: { close: "Close announcement" },
     de: { close: "Ankündigung schließen" },
   },
-});
-
-const app = inject(appContextKey, null);
-const root = useTemplateRef<HTMLElement>("root");
-
-// Closing removes the button that holds the focus. Inside mt-app, the content takes it over.
-onBeforeUnmount(() => {
-  if (root.value?.contains(document.activeElement)) app?.focusContent();
 });
 </script>
 

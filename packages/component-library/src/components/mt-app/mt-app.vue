@@ -36,6 +36,7 @@
       v-if="hasSlot('header')"
       ref="header"
       class="mt-app__header"
+      tabindex="-1"
       :hidden="hiddenRegions.header || undefined"
     >
       <div class="mt-app__header-content">
@@ -355,9 +356,18 @@ function focusContent() {
   mainElement.value?.focus({ preventScroll: true });
 }
 
-/** The closed announcement stays while it slides out, so the content takes over its focus at once. */
+/** Moves the focus to the region below the announcement: the header while it shows, or the content. */
+function focusBelowAnnouncement() {
+  if (headerElement.value && !hiddenRegions.value.header) {
+    headerElement.value.focus({ preventScroll: true });
+  } else {
+    focusContent();
+  }
+}
+
+/** The closed announcement stays while it slides out, so the region below takes over its focus at once. */
 function onAnnouncementLeave(element: Element) {
-  if (element.contains(document.activeElement)) focusContent();
+  if (element.contains(document.activeElement)) focusBelowAnnouncement();
   (element as HTMLElement).inert = true;
 }
 
@@ -397,11 +407,13 @@ watch(hiddenRegions, (hidden) => {
 watch(
   () => [hiddenRegions.value.announcement, hiddenRegions.value.header],
   ([announcementHidden, headerHidden]) => {
-    const isFocusHidden =
-      (announcementHidden && announcementElement.value?.contains(document.activeElement)) ||
-      (headerHidden && headerElement.value?.contains(document.activeElement));
+    const active = document.activeElement;
 
-    if (isFocusHidden) nextTick(focusContent);
+    if (headerHidden && headerElement.value?.contains(active)) {
+      nextTick(focusContent);
+    } else if (announcementHidden && announcementElement.value?.contains(active)) {
+      nextTick(focusBelowAnnouncement);
+    }
   },
 );
 
@@ -478,7 +490,6 @@ provide(appContextKey, {
     return triggerOf(panel);
   },
   isResizing,
-  focusContent,
 });
 
 useTheme();
@@ -561,6 +572,7 @@ defineExpose(api);
   align-items: center;
   min-width: 0;
   padding-inline: var(--scale-size-4);
+  outline: none;
 }
 
 /* Centered rather than stretched, so the content keeps its own height, also with `height: 100%`. */

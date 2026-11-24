@@ -121,7 +121,7 @@ function close() {
 - **Announcement** has no role and no live region. Screen readers read it in the order of the page, before the header when it sits in the `announcement` slot of [**App**](/components/app).
 - The icon is decorative and hidden from screen readers, so the text has to carry the whole message.
 - The close button is named "Close announcement" ("Ankündigung schließen" in German).
-- Inside [**App**](/components/app), the focus moves to the content when the announcement goes away while it holds the focus.
+- The announcement doesn't move the focus when it goes away. When the `announcement` slot of [**App**](/components/app) empties while it holds the focus, the shell hands the focus to the header, or to the content when no header shows. Anywhere else, the next Tab continues from where the announcement was.
 
 ## Related components
 

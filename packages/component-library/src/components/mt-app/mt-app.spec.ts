@@ -203,24 +203,67 @@ describe("mt-app", () => {
       expect(announcement.compareDocumentPosition(header)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     });
 
-    it("moves the focus to the content when an announcement that holds it closes", async () => {
-      // ARRANGE
-      const Announcement = defineComponent({
-        components: { MtAnnouncement },
-        setup: () => ({ isOpen: ref(true) }),
-        template: `
-          <mt-announcement v-if="isOpen" closable @close="isOpen = false">
-            Planned maintenance
-          </mt-announcement>
-        `,
+    describe("an announcement that holds the focus", () => {
+      /** A closable announcement that empties its slot when it is closed. */
+      function closableAnnouncement() {
+        const isOpen = ref(true);
+
+        return () =>
+          isOpen.value
+            ? h(MtAnnouncement, { closable: true, onClose: () => (isOpen.value = false) }, () => [
+                "Planned maintenance",
+              ])
+            : null;
+      }
+
+      // The shell moves the focus when the region starts to leave, which a stubbed transition never
+      // does.
+      const stubs = { transition: false };
+
+      it("hands the focus to the header when it closes", async () => {
+        // ARRANGE
+        await renderApp({ stubs, slots: { ...allSlots, announcement: closableAnnouncement() } });
+
+        // ACT
+        await userEvent.click(screen.getByRole("button", { name: "Close announcement" }));
+
+        // ASSERT
+        await waitFor(() => expect(screen.getByRole("banner")).toHaveFocus());
       });
-      await renderApp({ slots: { ...allSlots, announcement: () => h(Announcement) } });
 
-      // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Close announcement" }));
+      it("hands the focus to the content when it closes and there is no header", async () => {
+        // ARRANGE
+        await renderApp({
+          stubs,
+          slots: { default: allSlots.default, announcement: closableAnnouncement() },
+        });
 
-      // ASSERT
-      await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
+        // ACT
+        await userEvent.click(screen.getByRole("button", { name: "Close announcement" }));
+
+        // ASSERT
+        await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
+      });
+
+      it("leaves the focus alone when it closes in a panel that keeps other content", async () => {
+        // ARRANGE
+        const announcement = closableAnnouncement();
+        await renderApp({
+          stubs,
+          slots: { ...allSlots, sidebar: () => [announcement(), h("button", "End action")] },
+        });
+
+        // ACT
+        await userEvent.click(screen.getByRole("button", { name: "Close announcement" }));
+
+        // ASSERT
+        await waitFor(() =>
+          expect(
+            screen.queryByRole("button", { name: "Close announcement" }),
+          ).not.toBeInTheDocument(),
+        );
+        expect(document.body).toHaveFocus();
+      });
     });
 
     it("adds no landmark around the sidebar content", async () => {
@@ -1036,6 +1079,32 @@ describe("mt-app", () => {
       expect(screen.getByText("Planned maintenance")).toBeVisible();
       expect(screen.getByRole("banner")).toHaveTextContent("Header content");
     });
+
+    it.each<[string, MtAppRegions, string]>([
+      ["header", { announcement: false }, "banner"],
+      ["content when the header is hidden too", { announcement: false, header: false }, "main"],
+    ])(
+      "moves the focus to the %s when a view hides the announcement that holds it",
+      async (_, regions, role) => {
+        // ARRANGE
+        const View = createView(regions);
+        const showView = ref(false);
+        await renderApp({
+          slots: {
+            ...allSlots,
+            announcement: "<button>Read more</button>",
+            default: () => [showView.value ? h(View) : h("p", "Page")],
+          },
+        });
+        screen.getByRole("button", { name: "Read more" }).focus();
+
+        // ACT
+        showView.value = true;
+
+        // ASSERT
+        await waitFor(() => expect(screen.getByRole(role)).toHaveFocus());
+      },
+    );
 
     it("keeps a hidden navigation mounted and removes its drawer trigger", async () => {
       // ARRANGE

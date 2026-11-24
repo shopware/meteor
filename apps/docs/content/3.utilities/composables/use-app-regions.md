@@ -60,7 +60,7 @@ The parts of the shell that a view can hide: its regions and the frame around th
 - Nested routes combine their `mtAppRegions`: a child route overrides the regions it names and keeps the others of its parents.
 - Hidden regions stay mounted, so their state, such as the open items of a navigation, survives.
 - A view that `<KeepAlive>` keeps gives the regions back while it isn't shown.
-- Hiding a panel closes its open drawer, and when a hidden region held the focus, the focus moves to the content.
+- Hiding a panel closes its open drawer, and when a hidden region held the focus, the focus moves to the content. From the announcement, it moves to the header while one shows.
 - Hiding the header also hides the triggers of the navigation and the sidebar in it. [**Page**](/components/page) then shows them, and a view without Page needs [**App Panel Trigger**](/components/app#triggers-in-a-custom-header).
 - Outside of a shell, the call does nothing.
 
