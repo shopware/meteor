@@ -54,7 +54,7 @@ defineSlots<{
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  gap: var(--scale-size-8);
+  gap: var(--scale-size-16);
   /* Fills an mt-panel that sets a width, and is 300px wide otherwise. */
   width: var(--mt-panel-width, 300px);
   max-width: 100%;
