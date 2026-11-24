@@ -3,7 +3,6 @@ export const en = {
     title: "Shopware Administration",
   },
   nav: {
-    search: "Search",
     label: "Main navigation",
     administration: "Administration",
     administrator: "Administrator",
@@ -76,10 +75,7 @@ export const en = {
   },
   grid: {
     pagination: "Pagination",
-    columnActions: "Actions for the column {column}",
-    hideColumn: "Hide column",
     settings: "List settings",
-    showAllColumns: "Show all columns",
     actions: "Actions",
     rowActions: "Row actions",
     perPage: "Items per page:",

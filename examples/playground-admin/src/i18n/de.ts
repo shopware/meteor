@@ -5,7 +5,6 @@ export const de: Messages = {
     title: "Shopware Administration",
   },
   nav: {
-    search: "Suchen",
     label: "Hauptnavigation",
     administration: "Administration",
     administrator: "Administrator",
@@ -78,10 +77,7 @@ export const de: Messages = {
   },
   grid: {
     pagination: "Seitennavigation",
-    columnActions: "Aktionen für die Spalte {column}",
-    hideColumn: "Spalte ausblenden",
     settings: "Listeneinstellungen",
-    showAllColumns: "Alle Spalten anzeigen",
     actions: "Aktionen",
     rowActions: "Zeilenaktionen",
     perPage: "Einträge pro Seite:",

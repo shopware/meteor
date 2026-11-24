@@ -1,15 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  MtActionMenu,
-  MtActionMenuItem,
-  MtButton,
-  MtDropdownMenuPortal,
-  MtDropdownMenuRoot,
-  MtDropdownMenuTrigger,
-  MtIcon,
-} from "@shopware-ag/meteor-component-library";
+import { MtButton, MtIcon } from "@shopware-ag/meteor-component-library";
 
 export interface GridColumn {
   /** Identifies the column. */
@@ -39,7 +31,7 @@ const props = withDefaults(
     actions?: boolean;
     /** The number of skeleton rows while loading. */
     skeletonRows?: number;
-    /** Leaves out the column menus and the settings button, for small grids inside cards. */
+    /** Leaves out the settings button and uses a lower header, for small grids inside cards. */
     plain?: boolean;
   }>(),
   {
@@ -56,13 +48,6 @@ defineSlots<{
 }>();
 
 const { t } = useI18n();
-
-/** The columns the user hid with the column menu. */
-const hiddenColumns = ref<string[]>([]);
-
-const visibleColumns = computed(() =>
-  props.columns.filter((column) => !hiddenColumns.value.includes(column.key)),
-);
 
 const rowCount = computed(() =>
   props.isLoading ? props.skeletonRows : props.rows.length,
@@ -84,7 +69,7 @@ function barWidth(row: number, column: number) {
       <colgroup>
         <col v-if="selectable" class="app-grid__col-fixed" />
         <col
-          v-for="column in visibleColumns"
+          v-for="column in columns"
           :key="column.key"
           :style="column.width ? { width: column.width } : undefined"
         />
@@ -98,67 +83,24 @@ function barWidth(row: number, column: number) {
           </th>
 
           <th
-            v-for="(column, index) in visibleColumns"
+            v-for="column in columns"
             :key="column.key"
             scope="col"
             :class="`app-grid__cell--${column.align ?? 'start'}`"
           >
-            <div class="app-grid__header">
-              <span>{{ column.label }}</span>
-
-              <mt-dropdown-menu-root v-if="!plain">
-                <mt-dropdown-menu-trigger as-child>
-                  <button
-                    type="button"
-                    class="app-grid__column-menu"
-                    :aria-label="t('grid.columnActions', { column: column.label })"
-                  >
-                    <mt-icon
-                      name="solid-ellipsis-h-s"
-                      size="var(--scale-size-10)"
-                      decorative
-                    />
-                  </button>
-                </mt-dropdown-menu-trigger>
-                <mt-dropdown-menu-portal>
-                  <mt-action-menu>
-                    <mt-action-menu-item
-                      icon="regular-eye-slash"
-                      :disabled="index === 0"
-                      @select="hiddenColumns = [...hiddenColumns, column.key]"
-                    >
-                      {{ t("grid.hideColumn") }}
-                    </mt-action-menu-item>
-                  </mt-action-menu>
-                </mt-dropdown-menu-portal>
-              </mt-dropdown-menu-root>
-            </div>
+            {{ column.label }}
           </th>
 
           <th v-if="actions" class="app-grid__fixed" scope="col">
-            <mt-dropdown-menu-root v-if="!plain">
-              <mt-dropdown-menu-trigger as-child>
-                <mt-button
-                  variant="secondary"
-                  size="x-small"
-                  square
-                  :aria-label="t('grid.settings')"
-                >
-                  <mt-icon name="regular-bars-s" size="var(--scale-size-12)" decorative />
-                </mt-button>
-              </mt-dropdown-menu-trigger>
-              <mt-dropdown-menu-portal>
-                <mt-action-menu>
-                  <mt-action-menu-item
-                    icon="regular-eye"
-                    :disabled="hiddenColumns.length === 0"
-                    @select="hiddenColumns = []"
-                  >
-                    {{ t("grid.showAllColumns") }}
-                  </mt-action-menu-item>
-                </mt-action-menu>
-              </mt-dropdown-menu-portal>
-            </mt-dropdown-menu-root>
+            <mt-button
+              v-if="!plain"
+              variant="secondary"
+              size="x-small"
+              square
+              :aria-label="t('grid.settings')"
+            >
+              <mt-icon name="regular-bars-s" size="var(--scale-size-12)" decorative />
+            </mt-button>
             <span v-else class="visually-hidden">{{ t("grid.actions") }}</span>
           </th>
         </tr>
@@ -170,7 +112,7 @@ function barWidth(row: number, column: number) {
             <span class="app-grid__checkbox" />
           </td>
           <td
-            v-for="(column, index) in visibleColumns"
+            v-for="(column, index) in columns"
             :key="column.key"
             :class="`app-grid__cell--${column.align ?? 'start'}`"
           >
@@ -228,6 +170,14 @@ td:last-child {
   border-inline-end: 0;
 }
 
+.app-grid__cell--end {
+  text-align: end;
+}
+
+.app-grid__cell--center {
+  text-align: center;
+}
+
 th {
   position: sticky;
   inset-block-start: 0;
@@ -239,43 +189,6 @@ th {
 
 .app-grid--plain th {
   height: var(--scale-size-48);
-}
-
-/* The label and the column menu: the menu after a label at the start, before one at the end. */
-.app-grid__header {
-  display: flex;
-  align-items: center;
-  gap: var(--scale-size-12);
-}
-
-.app-grid__cell--end .app-grid__header {
-  flex-direction: row-reverse;
-}
-
-.app-grid__cell--center .app-grid__header {
-  justify-content: center;
-}
-
-.app-grid__column-menu {
-  display: inline-grid;
-  place-items: center;
-  width: var(--scale-size-24);
-  height: var(--scale-size-24);
-  padding: 0;
-  color: var(--color-icon-secondary-default);
-  background: none;
-  border: 0;
-  border-radius: var(--border-radius-xs);
-  cursor: pointer;
-}
-
-.app-grid__column-menu:hover {
-  background-color: var(--color-interaction-secondary-hover);
-}
-
-.app-grid__column-menu:focus-visible {
-  outline: var(--scale-size-2) solid var(--color-border-brand-default);
-  outline-offset: var(--scale-size-2);
 }
 
 .app-grid__fixed {
