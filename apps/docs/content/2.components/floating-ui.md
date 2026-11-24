@@ -47,11 +47,13 @@ Use `detached` mode together with `anchorElement` to share one floating surface 
 
 ## Behavior
 
-- **Floating UI** teleports its content to `body`, so the floating surface can escape clipping and stacking issues in the local layout.
+- **Floating UI** teleports its content to `body` by default, so the floating surface can escape clipping and stacking issues in the local layout. Set `teleportTarget` to a CSS selector or DOM element when the content must stay inside a container such as a modal focus boundary.
 - It uses Floating UI middleware to offset, flip, and measure the floating surface automatically.
 - `showArrow` adds an arrow element, but the slotted content still needs to provide the actual surface styling.
 - The default slot receives `referenceElementWidth` and `referenceElementHeight`, which help when the floating content needs to size itself relative to the trigger.
 - `matchReferenceWidth` sets the floating container width to the trigger width automatically.
+- `constrainToViewport` defaults to `false`. When enabled, the floating content stays within the viewport, even when its trigger is inside a short scrollable page column. Oversized content scrolls internally, and the content hides when its trigger is fully clipped. It also works with an external `anchorElement`.
+- `viewportPadding` sets the minimum distance from the viewport edges for constrained content. It defaults to `16` pixels.
 
 ## Accessibility
 

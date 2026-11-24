@@ -3,12 +3,13 @@
     <div v-if="!detached" ref="floatingUiTrigger" class="mt-floating-ui__trigger">
       <slot name="trigger" />
     </div>
-    <Teleport to="body">
+    <Teleport :to="teleportTarget ?? 'body'">
       <div
         v-if="isOpened"
         ref="floatingUiContent"
         v-on-click-outside="onClickOutside"
         class="mt-floating-ui__content"
+        :class="{ 'mt-floating-ui__content--constrained': constrainToViewport }"
         :data-show="isOpened"
         tabindex="0"
         :style="contentStyles"
@@ -21,7 +22,13 @@
         />
 
         <transition name="popoverTransition">
-          <template v-if="isOpened">
+          <div v-if="constrainToViewport" class="mt-floating-ui__scroll-content">
+            <slot
+              :reference-element-width="referenceElementWidth"
+              :reference-element-height="referenceElementHeight"
+            />
+          </div>
+          <template v-else>
             <slot
               :reference-element-width="referenceElementWidth"
               :reference-element-height="referenceElementHeight"
@@ -42,6 +49,7 @@ import {
   offset as floatingUiOffset,
   arrow,
   flip,
+  shift,
   size,
   hide,
 } from "@floating-ui/dom";
@@ -58,6 +66,16 @@ export type MtFloatingUiProps = {
    */
   matchReferenceWidth?: boolean;
   /**
+   * Keep the floating content within the viewport, hide it when the reference
+   * is fully clipped, and allow oversized content to be scrolled. Defaults to false.
+   */
+  constrainToViewport?: boolean;
+  /**
+   * Minimum distance between constrained content and the viewport edges.
+   * Defaults to 16 pixels.
+   */
+  viewportPadding?: number;
+  /**
    * An external DOM element to anchor the floating content to, instead of the
    * built-in trigger slot wrapper
    */
@@ -67,6 +85,11 @@ export type MtFloatingUiProps = {
    * Use with `anchorElement`.
    */
   detached?: boolean;
+  /**
+   * CSS selector or DOM element target for the floating content. Defaults to `body`.
+   * Use a container target when the floating content must stay inside a focus boundary.
+   */
+  teleportTarget?: string | HTMLElement;
 };
 
 const props = defineProps<MtFloatingUiProps>();
@@ -121,26 +144,49 @@ const createFloatingUi = () => {
         return;
       }
 
+      const constrain = props.constrainToViewport;
+      const viewportPadding = Math.max(0, props.viewportPadding ?? 16);
+      const viewportBoundaryOptions = {
+        boundary: [] as Element[],
+        rootBoundary: "viewport" as const,
+        padding: viewportPadding,
+      };
+      // The content is teleported, so constrain its position and size to the
+      // viewport instead of the reference's scroll containers.
+      const arrowMiddleware =
+        props.showArrow && floatingUiArrow.value ? [arrow({ element: floatingUiArrow.value })] : [];
+
       computePosition(referenceEl, floatingUiContent.value as HTMLElement, {
         placement: "bottom-start",
         strategy: "fixed",
         ...consumerOptions,
         middleware: [
           floatingUiOffset(props.offset ?? 6),
-          ...(() => {
-            if (props.showArrow && floatingUiArrow.value) {
-              return [arrow({ element: floatingUiArrow.value as HTMLElement })];
-            }
-            return [];
-          })(),
-          flip(),
+          ...(constrain ? [] : arrowMiddleware),
+          flip(constrain ? { crossAxis: false, ...viewportBoundaryOptions } : undefined),
+          ...(constrain ? [shift(viewportBoundaryOptions)] : []),
           ...(consumerMiddleware ?? []),
           size({
-            apply({ rects }) {
+            // The content is teleported, so use the viewport instead of the
+            // reference's scroll containers to determine the available size.
+            ...(constrain ? viewportBoundaryOptions : {}),
+            apply({ rects, availableWidth, availableHeight, elements }) {
               referenceElementWidth.value = rects.reference.width ?? 0;
               referenceElementHeight.value = rects.reference.height ?? 0;
+
+              if (constrain) {
+                elements.floating.style.setProperty(
+                  "--mt-floating-ui-max-width",
+                  `${Math.max(0, availableWidth)}px`,
+                );
+                elements.floating.style.setProperty(
+                  "--mt-floating-ui-max-height",
+                  `${Math.max(0, availableHeight)}px`,
+                );
+              }
             },
           }),
+          ...(constrain ? arrowMiddleware : []),
           hide(),
         ],
       }).then(({ x, y, middlewareData, placement, strategy }) => {
@@ -283,6 +329,20 @@ onBeforeUnmount(() => {
 
   &[data-show] {
     display: block;
+  }
+
+  &[data-show].mt-floating-ui__content--constrained {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+    box-sizing: border-box;
+    max-width: var(--mt-floating-ui-max-width, none);
+    max-height: var(--mt-floating-ui-max-height, none);
+  }
+
+  .mt-floating-ui__scroll-content {
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
   }
 
   /***
