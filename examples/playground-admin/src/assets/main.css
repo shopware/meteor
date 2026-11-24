@@ -31,3 +31,138 @@
   justify-content: flex-end;
   gap: var(--scale-size-8);
 }
+
+/* A list page: a toolbar, the grid, and the pagination stuck to the bottom of the page. */
+.listing {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.listing > .app-grid {
+  flex: 1 0 auto;
+}
+
+/* A grid cell with an image or icon in front of its text. */
+.cell-media {
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-12);
+}
+
+/* A primary button with a menu button attached, like "Save" and "Save and duplicate". */
+.split-button {
+  display: inline-flex;
+}
+
+.split-button > :first-child {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.split-button > :last-child {
+  margin-inline-start: 1px;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+/* A label and a value per row, as in the Administration's detail cards. */
+.description-list {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) 1fr;
+  align-content: start;
+  gap: var(--scale-size-12) var(--scale-size-24);
+  margin: 0;
+  font-size: var(--font-size-xs);
+}
+
+.description-list dt {
+  color: var(--color-text-secondary-default);
+}
+
+.description-list dd {
+  margin: 0;
+  color: var(--color-text-primary-default);
+}
+
+/* A short paragraph that explains a card or a group of fields. */
+.card-text {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-secondary-default);
+}
+
+/* The bold heading of a group of fields inside a card. */
+.card-heading {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary-default);
+}
+
+/* Fields side by side in fixed proportions, as in the Administration's forms. One column on
+   narrow screens. */
+.form-row {
+  display: grid;
+  grid-template-columns: var(--form-row-columns, 1fr 1fr);
+  gap: var(--scale-size-16) var(--scale-size-24);
+  align-items: start;
+}
+
+.form-row > * {
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The fields of a form keep their spacing in the gaps of the layout classes. */
+.stack .mt-field,
+.grid .mt-field,
+.form-row .mt-field {
+  margin-block-end: 0;
+}
+
+/* The top bar and the page below it fill the shell's content. */
+.app-frame {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
+}
+
+/*
+ * The header of a page lines up with the content column, like the Administration's smart bar:
+ * the title at the start of the column, the actions at its end.
+ */
+.app-frame .mt-page__header {
+  height: var(--scale-size-72);
+  padding-inline: max(var(--scale-size-8), calc((100% - 60rem) / 2 - var(--scale-size-8)));
+}
+
+.app-frame .mt-page__header .mt-breadcrumb {
+  font-size: var(--font-size-m);
+  line-height: var(--font-line-height-m);
+}
+
+/* The top bar has the shell's panel buttons, so the page headers leave them out. */
+.app-frame .mt-page__header .mt-app-panel-trigger {
+  display: none;
+}
+
+/* A page without a title or actions, such as the dashboard, has no header, as in the Administration. */
+.app-frame
+  .mt-page__header:not(
+    :has(
+      .mt-page__breadcrumb,
+      .mt-page__actions,
+      .mt-page__close,
+      .mt-page__title-skeleton,
+      .mt-page__panel-trigger
+    )
+  ) {
+  display: none;
+}

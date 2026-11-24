@@ -15,7 +15,7 @@ import {
   tags,
   taxes,
 } from "./catalog";
-import { calculateOrder, orders } from "./orders";
+import { calculateOrder, customerAccounts, orders } from "./orders";
 import { createRandom } from "./random";
 
 /**
@@ -25,6 +25,7 @@ import { createRandom } from "./random";
 const store: { [Name in EntityName]: Entities[Name][] } = {
   product: products,
   order: orders,
+  customer: customerAccounts,
   manufacturer: manufacturers,
   category: categories,
   salesChannel: salesChannels,
@@ -37,6 +38,7 @@ const store: { [Name in EntityName]: Entities[Name][] } = {
 const searchableProperties: { [Name in EntityName]: string[] } = {
   product: ["name", "productNumber", "manufacturerName", "ean"],
   order: ["orderNumber", "customerName", "customer.email", "customer.company"],
+  customer: ["firstName", "lastName", "email", "customerNumber", "company"],
   manufacturer: ["name"],
   category: ["name"],
   salesChannel: ["name"],

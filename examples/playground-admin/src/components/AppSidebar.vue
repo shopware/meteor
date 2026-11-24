@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { MtText } from "@shopware-ag/meteor-component-library";
+import { onMounted } from "vue";
+import { MtText, useApp } from "@shopware-ag/meteor-component-library";
+import { useLayoutSettings } from "../composables/useLayoutSettings";
 
 const { t } = useI18n();
+const app = useApp();
+const layout = useLayoutSettings();
+
+// The Administration has no sidebar open by default, so it starts closed when it can be reopened.
+onMounted(() => {
+  if (layout.sidebarClosable && !app.isMobile.value) app.close("sidebar");
+});
 
 // Example content: a conversation with an assistant.
 const messages = [

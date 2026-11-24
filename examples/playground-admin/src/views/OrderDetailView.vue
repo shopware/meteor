@@ -5,28 +5,31 @@ import { useRoute, useRouter } from "vue-router";
 import {
   MtActionMenu,
   MtActionMenuItem,
-  MtBadge,
-  MtBanner,
   MtButton,
   MtCard,
-  MtContentHeader,
   MtDivider,
   MtDropdownMenuPortal,
   MtDropdownMenuRoot,
   MtDropdownMenuTrigger,
+  MtEmailField,
   MtEmptyState,
   MtIcon,
   MtLink,
+  MtNumberField,
   MtPage,
-  MtPanel,
+  MtSearch,
   MtSelect,
   MtSkeletonBar,
+  MtStatusDot,
   MtTabs,
   MtText,
+  MtTextField,
   MtTextarea,
   useSnackbar,
 } from "@shopware-ag/meteor-component-library";
 import type { Address, Order, OrderDocument } from "../../shared/types";
+import AppGrid, { type GridColumn } from "../components/AppGrid.vue";
+import LanguageSwitch from "../components/LanguageSwitch.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useFormat } from "../composables/useFormat";
 import { useOrderStates } from "../composables/useOrderStates";
@@ -94,34 +97,90 @@ const breadcrumb = useBreadcrumb(() => title.value);
 
 const activeTab = ref("general");
 
+/** Discards the changes, or goes back to the list when there are none, as in the Administration. */
+function cancel() {
+  if (isDirty.value) discard();
+  else router.push({ name: "order-list" });
+}
+
 const tabs = computed(() => [
   { name: "general", label: t("orders.tabs.general") },
+  { name: "details", label: t("orders.tabs.details") },
   { name: "documents", label: t("orders.tabs.documents") },
 ]);
 
-function addressLines(address: Address) {
+/** The state selects of the info card, in the order of the Administration. */
+const stateFields = [
+  { property: "paymentState", machine: "payment" },
+  { property: "deliveryState", machine: "delivery" },
+  { property: "state", machine: "order" },
+] as const;
+
+/** "Street, Zip City, Country" in one line, as the address selects show it. */
+function addressLine(address: Address) {
   return [
     `${address.firstName} ${address.lastName}`,
     address.company,
     address.street,
     `${address.zipcode} ${address.city}`,
     address.country,
-  ].filter((line): line is string => Boolean(line));
+  ]
+    .filter(Boolean)
+    .join(", ");
 }
 
-/** Most orders ship to the billing address, which the panel then doesn't repeat. */
-const shipsToBillingAddress = computed(
-  () =>
-    !!order.value &&
-    addressLines(order.value.shippingAddress).join() ===
-      addressLines(order.value.billingAddress).join(),
-);
+const itemSearch = ref("");
 
-function documentName(document: OrderDocument) {
-  return t("orders.documents.name", {
-    type: t(`orders.documents.types.${document.type}`),
-    number: document.number,
-  });
+const lineItems = computed(() => {
+  const term = itemSearch.value.trim().toLowerCase();
+  const items = order.value?.lineItems ?? [];
+
+  return term
+    ? items.filter((item) => item.label.toLowerCase().includes(term))
+    : items;
+});
+
+const itemColumns = computed<GridColumn[]>(() => [
+  {
+    key: "quantity",
+    label: t("orders.items.quantity"),
+    align: "end",
+    width: "6rem",
+  },
+  { key: "label", label: t("orders.items.name") },
+  {
+    key: "unitPrice",
+    label: t("orders.items.unitPrice"),
+    align: "end",
+    width: "9rem",
+  },
+  { key: "taxRate", label: t("orders.items.tax"), align: "end", width: "6rem" },
+  {
+    key: "totalPrice",
+    label: t("orders.items.total"),
+    align: "end",
+    width: "9rem",
+  },
+]);
+
+const documentColumns = computed<GridColumn[]>(() => [
+  { key: "createdAt", label: t("orders.documents.columns.date") },
+  { key: "number", label: t("orders.documents.columns.number") },
+  { key: "type", label: t("orders.documents.columns.type") },
+  { key: "formats", label: t("orders.documents.columns.formats") },
+  {
+    key: "sent",
+    label: t("orders.documents.columns.sent"),
+    align: "center",
+  },
+]);
+
+function removeItem(id: string) {
+  if (!order.value) return;
+
+  order.value.lineItems = order.value.lineItems.filter(
+    (item) => item.id !== id,
+  );
 }
 
 function toggleSent(document: OrderDocument) {
@@ -140,18 +199,14 @@ function removeDocument(document: OrderDocument) {
 <template>
   <mt-page width="m" :is-loading="isLoading" :breadcrumb="breadcrumb">
     <template #actions>
-      <mt-button
-        variant="secondary"
-        size="default"
-        :disabled="!isDirty"
-        @click="discard"
-      >
+      <language-switch />
+      <mt-button variant="secondary" size="default" @click="cancel">
         {{ t("common.cancel") }}
       </mt-button>
       <mt-button
         variant="primary"
         size="default"
-        :disabled="!isDirty"
+        :disabled="!order"
         :is-loading="isSaving"
         @click="save"
       >
@@ -184,22 +239,6 @@ function removeDocument(document: OrderDocument) {
       </mt-empty-state>
 
       <template v-else>
-        <mt-content-header :title="title">
-          <div class="cluster">
-            <mt-text size="xs" color="color-text-secondary-default">
-              {{
-                t("orders.info.placed", {
-                  time: format.relativeTime(order.orderDateTime),
-                  salesChannel: order.salesChannel,
-                })
-              }}
-            </mt-text>
-            <mt-text size="xs" weight="semibold">
-              {{ format.currency(order.amountTotal) }}
-            </mt-text>
-          </div>
-        </mt-content-header>
-
         <mt-tabs
           :items="tabs"
           :default-item="activeTab"
@@ -208,364 +247,546 @@ function removeDocument(document: OrderDocument) {
 
         <template v-if="activeTab === 'general'">
           <mt-card :title="t('orders.info.title')">
-            <div class="grid" style="--grid-min: 10rem">
+            <div class="stack">
+              <div class="order-detail__summary">
+                <mt-text size="s" weight="semibold">
+                  {{ order.orderNumber }} -
+                  <mt-link
+                    :to="{
+                      name: 'customer-detail',
+                      params: { id: order.customer.id },
+                    }"
+                  >
+                    {{ order.customer.firstName }} {{ order.customer.lastName
+                    }}<template v-if="order.customer.company">
+                      - {{ order.customer.company }}</template
+                    >
+                  </mt-link>
+                  <span class="order-detail__email">
+                    ({{ order.customer.email }})
+                  </span>
+                </mt-text>
+                <mt-text size="l" weight="semibold">
+                  {{ format.currency(order.amountTotal) }}
+                </mt-text>
+              </div>
+
+              <mt-text size="xs" color="color-text-secondary-default">
+                {{
+                  t("orders.info.placed", {
+                    time: format.relativeTime(order.orderDateTime),
+                    payment: order.paymentMethod,
+                    shipping: order.shippingMethod,
+                  })
+                }}
+              </mt-text>
+
+              <mt-divider />
+
+              <div class="grid" style="--grid-min: 10rem">
+                <mt-select
+                  v-for="field in stateFields"
+                  :key="field.property"
+                  v-model="order[field.property]"
+                  :label="t(`orders.columns.${field.property}`)"
+                  :options="states.options(field.machine)"
+                  :enable-search="false"
+                  hide-clearable-button
+                >
+                  <template #prefix>
+                    <mt-status-dot
+                      :variant="
+                        states.variant(field.machine, order[field.property])
+                      "
+                    />
+                  </template>
+                </mt-select>
+              </div>
+
               <mt-select
-                v-model="order.state"
-                :label="t('orders.fields.state')"
-                :options="states.options('order')"
-                :enable-search="false"
-                hide-clearable-button
-              />
-              <mt-select
-                v-model="order.paymentState"
-                :label="t('orders.fields.paymentState')"
-                :options="states.options('payment')"
-                :enable-search="false"
-                hide-clearable-button
-              />
-              <mt-select
-                v-model="order.deliveryState"
-                :label="t('orders.fields.deliveryState')"
-                :options="states.options('delivery')"
-                :enable-search="false"
-                hide-clearable-button
+                v-model="order.tags"
+                :aria-label="t('orders.fields.tags')"
+                :placeholder="t('orders.fields.tagsPlaceholder')"
+                :options="tagOptions"
+                enable-multi-selection
               />
             </div>
           </mt-card>
 
           <mt-card :title="t('orders.items.title')">
-            <div class="stack">
-              <ul class="order-detail__items">
-                <li v-for="item in order.lineItems" :key="item.id">
-                  <div>
-                    <mt-link
-                      v-if="item.productId"
-                      :to="{
+            <template #grid>
+              <div class="order-detail__toolbar">
+                <mt-search
+                  v-model="itemSearch"
+                  size="small"
+                  :placeholder="t('orders.items.search')"
+                />
+
+                <div class="split-button">
+                  <mt-button variant="secondary" size="small">
+                    {{ t("orders.items.addProduct") }}
+                  </mt-button>
+                  <mt-dropdown-menu-root>
+                    <mt-dropdown-menu-trigger as-child>
+                      <mt-button
+                        variant="secondary"
+                        size="small"
+                        square
+                        :aria-label="t('common.moreActions')"
+                      >
+                        <mt-icon
+                          name="regular-chevron-down-xs"
+                          size="var(--scale-size-12)"
+                          decorative
+                        />
+                      </mt-button>
+                    </mt-dropdown-menu-trigger>
+                    <mt-dropdown-menu-portal>
+                      <mt-action-menu>
+                        <mt-action-menu-item>
+                          {{ t("orders.items.addCustom") }}
+                        </mt-action-menu-item>
+                        <mt-action-menu-item>
+                          {{ t("orders.items.addCredit") }}
+                        </mt-action-menu-item>
+                      </mt-action-menu>
+                    </mt-dropdown-menu-portal>
+                  </mt-dropdown-menu-root>
+                </div>
+              </div>
+
+              <app-grid
+
+                plain
+                :caption="t('orders.items.title')"
+                :columns="itemColumns"
+                :rows="lineItems"
+              >
+                <template #cell-quantity="{ row }">
+                  {{ t("orders.items.quantityValue", { n: row.quantity }) }}
+                </template>
+
+                <template #cell-label="{ row }">
+                  <mt-link
+                    v-if="row.productId"
+                    :to="{
+                      name: 'product-detail',
+                      params: { id: row.productId },
+                    }"
+                  >
+                    {{ row.label }}
+                  </mt-link>
+                  <template v-else>{{ row.label }}</template>
+                </template>
+
+                <template #cell-unitPrice="{ row }">
+                  {{ format.currency(row.unitPrice) }}
+                </template>
+
+                <template #cell-taxRate="{ row }">
+                  {{ format.percent(row.taxRate) }}
+                </template>
+
+                <template #cell-totalPrice="{ row }">
+                  {{ format.currency(row.totalPrice) }}
+                </template>
+
+                <template #actions="{ row }">
+                  <mt-action-menu-item
+                    v-if="row.productId"
+                    icon="regular-products"
+                    @select="
+                      router.push({
                         name: 'product-detail',
-                        params: { id: item.productId },
-                      }"
-                    >
-                      {{ item.label }}
-                    </mt-link>
-                    <mt-text v-else size="xs">{{ item.label }}</mt-text>
-                    <mt-text size="xs" color="color-text-secondary-default">
-                      {{
-                        t("orders.items.details", {
-                          number: item.productNumber,
-                          rate: format.percent(item.taxRate),
-                        })
-                      }}
-                    </mt-text>
-                  </div>
-                  <mt-text size="xs" color="color-text-secondary-default">
-                    {{
-                      t("orders.items.price", {
-                        quantity: format.number(item.quantity),
-                        price: format.currency(item.unitPrice),
+                        params: { id: row.productId },
                       })
-                    }}
-                  </mt-text>
-                  <mt-text size="xs">{{
-                    format.currency(item.totalPrice)
-                  }}</mt-text>
-                </li>
-              </ul>
+                    "
+                  >
+                    {{ t("orders.items.showProduct") }}
+                  </mt-action-menu-item>
+                  <mt-action-menu-item
+                    icon="regular-trash"
+                    variant="critical"
+                    @select="removeItem(row.id)"
+                  >
+                    {{ t("orders.items.remove") }}
+                  </mt-action-menu-item>
+                </template>
+              </app-grid>
 
-              <mt-divider />
+              <dl class="order-detail__totals">
+                <dt>{{ t("orders.summary.subtotal") }}</dt>
+                <dd>{{ format.currency(order.positionPrice) }}</dd>
 
-              <dl class="order-detail__values">
-                <mt-text as="dt" size="xs">{{
-                  t("orders.summary.subtotal")
-                }}</mt-text>
-                <mt-text as="dd" size="xs">{{
-                  format.currency(order.positionPrice)
-                }}</mt-text>
+                <dt>{{ t("orders.summary.shipping") }}</dt>
+                <dd>{{ format.currency(order.shippingCosts) }}</dd>
 
-                <mt-text as="dt" size="xs">{{
-                  t("orders.summary.shipping")
-                }}</mt-text>
-                <mt-text as="dd" size="xs">{{
-                  format.currency(order.shippingCosts)
-                }}</mt-text>
+                <mt-divider class="order-detail__totals-divider" />
 
-                <mt-text as="dt" size="xs">{{
-                  t("orders.summary.totalNet")
-                }}</mt-text>
-                <mt-text as="dd" size="xs">{{
-                  format.currency(order.amountNet)
-                }}</mt-text>
+                <dt>{{ t("orders.summary.totalNet") }}</dt>
+                <dd>{{ format.currency(order.amountNet) }}</dd>
 
                 <template v-for="tax in order.taxes" :key="tax.rate">
-                  <mt-text as="dt" size="xs">
+                  <dt>
                     {{
                       t("orders.summary.tax", {
                         rate: format.percent(tax.rate),
                       })
                     }}
-                  </mt-text>
-                  <mt-text as="dd" size="xs">{{
-                    format.currency(tax.amount)
-                  }}</mt-text>
+                  </dt>
+                  <dd>{{ format.currency(tax.amount) }}</dd>
                 </template>
-              </dl>
 
-              <mt-divider />
+                <mt-divider class="order-detail__totals-divider" />
 
-              <dl class="order-detail__values">
-                <mt-text as="dt" size="xs" weight="semibold">
+                <dt class="order-detail__grand-total">
                   {{ t("orders.summary.total") }}
-                </mt-text>
-                <mt-text as="dd" size="xs" weight="semibold">
+                </dt>
+                <dd class="order-detail__grand-total">
                   {{ format.currency(order.amountTotal) }}
-                </mt-text>
+                </dd>
               </dl>
+            </template>
+          </mt-card>
+
+          <mt-card :title="t('orders.promotions.title')">
+            <div class="stack">
+              <mt-text-field
+                :label="t('orders.promotions.code')"
+                :placeholder="t('orders.promotions.codePlaceholder')"
+              />
+              <div class="order-detail__promotion-update">
+                <div>
+                  <mt-text size="xs" weight="semibold">
+                    {{ t("orders.promotions.update") }}
+                  </mt-text>
+                  <p class="card-text">
+                    {{ t("orders.promotions.updateText") }}
+                  </p>
+                </div>
+                <mt-button variant="secondary" size="small">
+                  {{ t("orders.promotions.update") }}
+                </mt-button>
+              </div>
             </div>
           </mt-card>
         </template>
 
-        <mt-card v-else>
-          <mt-empty-state
-            v-if="order.documents.length === 0"
-            icon="regular-file-text"
-            :headline="t('orders.documents.empty')"
-            :description="t('orders.documents.emptyDescription')"
-          />
+        <template v-else-if="activeTab === 'details'">
+          <mt-card :title="t('orders.details.payment')">
+            <div class="stack">
+              <mt-select
+                v-model="order.paymentState"
+                :label="t('orders.columns.paymentState')"
+                :options="states.options('payment')"
+                :enable-search="false"
+                hide-clearable-button
+              >
+                <template #prefix>
+                  <mt-status-dot
+                    :variant="states.variant('payment', order.paymentState)"
+                  />
+                </template>
+              </mt-select>
 
-          <ul v-else class="stack">
-            <li
-              v-for="document in order.documents"
-              :key="document.id"
-              class="cluster"
-            >
-              <mt-icon name="regular-file-text" size="var(--scale-size-16)" />
+              <mt-divider />
 
-              <div class="order-detail__document-name">
-                <mt-text size="xs" weight="semibold">{{
-                  documentName(document)
-                }}</mt-text>
-                <mt-text size="xs" color="color-text-secondary-default">
-                  {{ format.date(document.createdAt) }}
-                </mt-text>
+              <mt-text-field
+                :model-value="addressLine(order.billingAddress)"
+                :label="t('orders.details.billingAddress')"
+                disabled
+              />
+
+              <mt-divider />
+
+              <div class="grid">
+                <mt-text-field
+                  :model-value="order.paymentMethod"
+                  :label="t('orders.details.paymentMethod')"
+                  disabled
+                />
+              </div>
+            </div>
+          </mt-card>
+
+          <mt-card :title="t('orders.details.shipping')">
+            <div class="stack">
+              <mt-select
+                v-model="order.deliveryState"
+                :label="t('orders.columns.deliveryState')"
+                :options="states.options('delivery')"
+                :enable-search="false"
+                hide-clearable-button
+              >
+                <template #prefix>
+                  <mt-status-dot
+                    :variant="states.variant('delivery', order.deliveryState)"
+                  />
+                </template>
+              </mt-select>
+
+              <mt-divider />
+
+              <mt-text-field
+                :model-value="addressLine(order.shippingAddress)"
+                :label="t('orders.details.shippingAddress')"
+                disabled
+              />
+
+              <mt-divider />
+
+              <div class="grid">
+                <mt-text-field
+                  :model-value="order.shippingMethod"
+                  :label="t('orders.details.shippingMethod')"
+                  disabled
+                />
+                <mt-number-field
+                  v-model="order.shippingCosts"
+                  :label="t('orders.details.shippingCosts')"
+                  :min="0"
+                >
+                  <template #suffix><mt-text size="xs">€</mt-text></template>
+                </mt-number-field>
+                <mt-text-field
+                  :model-value="format.date(order.orderDateTime)"
+                  :label="t('orders.details.deliveryDate')"
+                  disabled
+                />
+                <mt-text-field
+                  :model-value="order.trackingCodes.join(', ')"
+                  :label="t('orders.details.tracking')"
+                  :placeholder="t('orders.details.trackingPlaceholder')"
+                  @update:model-value="
+                    order.trackingCodes = String($event)
+                      .split(',')
+                      .map((code) => code.trim())
+                      .filter(Boolean)
+                  "
+                />
+              </div>
+            </div>
+          </mt-card>
+
+          <mt-card :title="t('orders.details.order')">
+            <div class="stack">
+              <mt-select
+                v-model="order.state"
+                :label="t('orders.columns.state')"
+                :options="states.options('order')"
+                :enable-search="false"
+                hide-clearable-button
+              >
+                <template #prefix>
+                  <mt-status-dot :variant="states.variant('order', order.state)" />
+                </template>
+              </mt-select>
+
+              <mt-divider />
+
+              <div class="grid">
+                <mt-email-field
+                  v-model="order.customer.email"
+                  :label="t('orders.details.email')"
+                  required
+                />
+                <mt-text-field
+                  v-model="order.customer.phone"
+                  :label="t('orders.details.phone')"
+                />
+                <mt-text-field
+                  :model-value="order.salesChannel"
+                  :label="t('orders.details.salesChannel')"
+                  disabled
+                />
+                <mt-text-field
+                  model-value="English"
+                  :label="t('orders.details.language')"
+                  disabled
+                />
+                <mt-text-field :label="t('orders.details.affiliateCode')" />
+                <mt-text-field :label="t('orders.details.campaignCode')" />
               </div>
 
-              <mt-badge :variant="document.sent ? 'positive' : 'neutral'">
-                {{
-                  document.sent
-                    ? t("orders.documents.sent")
-                    : t("orders.documents.notSent")
-                }}
-              </mt-badge>
+              <mt-textarea
+                :model-value="order.customerComment ?? ''"
+                :label="t('orders.details.additionalInformation')"
+                :hint="t('orders.details.additionalInformationHint')"
+                @update:model-value="order.customerComment = $event || null"
+              />
+              <mt-textarea
+                v-model="order.internalComment"
+                :label="t('orders.fields.internalComment')"
+                :hint="t('orders.details.internalCommentHint')"
+              />
+            </div>
+          </mt-card>
+        </template>
 
-              <mt-dropdown-menu-root>
-                <mt-dropdown-menu-trigger as-child>
-                  <mt-button
-                    variant="tertiary"
-                    size="small"
-                    square
-                    :aria-label="
-                      t('orders.documents.actions', {
-                        document: documentName(document),
-                      })
-                    "
-                  >
-                    <mt-icon
-                      name="regular-ellipsis-h-s"
-                      size="var(--scale-size-12)"
-                    />
-                  </mt-button>
-                </mt-dropdown-menu-trigger>
+        <mt-card v-else :title="t('orders.documents.title')">
+          <template #grid>
+            <div class="order-detail__toolbar">
+              <mt-search
+                size="small"
+                :placeholder="t('orders.documents.search')"
+              />
+              <mt-button variant="secondary" size="small">
+                {{ t("orders.documents.create") }}
+              </mt-button>
+            </div>
 
-                <mt-dropdown-menu-portal>
-                  <mt-action-menu>
-                    <mt-action-menu-item
-                      icon="envelope"
-                      @select="toggleSent(document)"
-                    >
-                      {{
-                        document.sent
-                          ? t("orders.documents.markNotSent")
-                          : t("orders.documents.markSent")
-                      }}
-                    </mt-action-menu-item>
-                    <mt-action-menu-item
-                      icon="trash"
-                      variant="critical"
-                      @select="removeDocument(document)"
-                    >
-                      {{ t("common.delete") }}
-                    </mt-action-menu-item>
-                  </mt-action-menu>
-                </mt-dropdown-menu-portal>
-              </mt-dropdown-menu-root>
-            </li>
-          </ul>
+            <app-grid
+
+              plain
+              :caption="t('orders.documents.title')"
+              :columns="documentColumns"
+              :rows="order.documents"
+            >
+              <template #cell-createdAt="{ row }">
+                {{ format.relativeTime(row.createdAt) }}
+              </template>
+
+              <template #cell-type="{ row }">
+                {{ t(`orders.documents.types.${row.type}`) }}
+              </template>
+
+              <template #cell-formats>PDF, HTML</template>
+
+              <template #cell-sent="{ row }">
+                <mt-icon
+                  v-if="row.sent"
+                  class="order-detail__yes"
+                  name="regular-checkmark-xs"
+                  size="var(--scale-size-12)"
+                  :aria-label="t('orders.documents.sent')"
+                />
+                <mt-icon
+                  v-else
+                  class="order-detail__no"
+                  name="regular-times-s"
+                  size="var(--scale-size-12)"
+                  :aria-label="t('orders.documents.notSent')"
+                />
+              </template>
+
+              <template #actions="{ row }">
+                <mt-action-menu-item icon="regular-eye">
+                  {{ t("orders.documents.open") }}
+                </mt-action-menu-item>
+                <mt-action-menu-item icon="regular-download">
+                  {{ t("orders.documents.download") }}
+                </mt-action-menu-item>
+                <mt-action-menu-item icon="regular-envelope">
+                  {{ t("orders.documents.send") }}
+                </mt-action-menu-item>
+                <mt-action-menu-item
+                  icon="regular-checkmark"
+                  @select="toggleSent(row)"
+                >
+                  {{
+                    row.sent
+                      ? t("orders.documents.markNotSent")
+                      : t("orders.documents.markSent")
+                  }}
+                </mt-action-menu-item>
+                <mt-action-menu-item
+                  icon="regular-trash"
+                  variant="critical"
+                  @select="removeDocument(row)"
+                >
+                  {{ t("common.delete") }}
+                </mt-action-menu-item>
+              </template>
+
+              <template #empty>
+                <mt-empty-state
+                  icon="regular-file-text"
+                  :headline="t('orders.documents.empty')"
+                  :description="t('orders.documents.emptyDescription')"
+                />
+              </template>
+            </app-grid>
+          </template>
         </mt-card>
       </template>
     </div>
-
-    <template v-if="order || isLoading" #end>
-      <mt-panel :label="t('orders.details.customer')" resizable>
-        <aside
-          class="stack order-detail__panel"
-          :aria-label="t('orders.details.customer')"
-        >
-          <template v-if="order">
-            <section class="stack">
-              <mt-text
-                as="h2"
-                size="xs"
-                weight="semibold"
-                color="color-text-secondary-default"
-              >
-                {{ t("orders.details.customer") }}
-              </mt-text>
-              <mt-text size="xs">
-                {{ order.customer.firstName }} {{ order.customer.lastName }}
-              </mt-text>
-              <mt-text size="xs">{{ order.customer.email }}</mt-text>
-              <mt-text size="xs">{{ order.customer.phone }}</mt-text>
-            </section>
-
-            <mt-divider />
-
-            <section class="stack">
-              <mt-text
-                as="h2"
-                size="xs"
-                weight="semibold"
-                color="color-text-secondary-default"
-              >
-                {{ t("orders.details.billingAddress") }}
-              </mt-text>
-              <mt-text size="xs">
-                <template
-                  v-for="line in addressLines(order.billingAddress)"
-                  :key="line"
-                >
-                  {{ line }}<br />
-                </template>
-              </mt-text>
-            </section>
-
-            <section class="stack">
-              <mt-text
-                as="h2"
-                size="xs"
-                weight="semibold"
-                color="color-text-secondary-default"
-              >
-                {{ t("orders.details.shippingAddress") }}
-              </mt-text>
-              <mt-text
-                v-if="shipsToBillingAddress"
-                size="xs"
-                color="color-text-secondary-default"
-              >
-                {{ t("orders.details.sameAddress") }}
-              </mt-text>
-              <mt-text v-else size="xs">
-                <template
-                  v-for="line in addressLines(order.shippingAddress)"
-                  :key="line"
-                >
-                  {{ line }}<br />
-                </template>
-              </mt-text>
-            </section>
-
-            <mt-divider />
-
-            <dl class="order-detail__values">
-              <mt-text as="dt" size="xs" color="color-text-secondary-default">
-                {{ t("orders.details.payment") }}
-              </mt-text>
-              <mt-text as="dd" size="xs">{{ order.paymentMethod }}</mt-text>
-
-              <mt-text as="dt" size="xs" color="color-text-secondary-default">
-                {{ t("orders.details.shipping") }}
-              </mt-text>
-              <mt-text as="dd" size="xs">{{ order.shippingMethod }}</mt-text>
-
-              <mt-text as="dt" size="xs" color="color-text-secondary-default">
-                {{ t("orders.details.tracking") }}
-              </mt-text>
-              <mt-text as="dd" size="xs">
-                {{
-                  order.trackingCodes.join(", ") ||
-                  t("orders.details.noTracking")
-                }}
-              </mt-text>
-            </dl>
-
-            <mt-divider />
-
-            <mt-banner
-              v-if="order.customerComment"
-              variant="info"
-              :title="t('orders.customerComment')"
-            >
-              {{ order.customerComment }}
-            </mt-banner>
-
-            <mt-select
-              v-model="order.tags"
-              :label="t('orders.fields.tags')"
-              :options="tagOptions"
-              enable-multi-selection
-            />
-
-            <mt-textarea
-              v-model="order.internalComment"
-              :label="t('orders.fields.internalComment')"
-            />
-          </template>
-          <template v-else>
-            <mt-skeleton-bar v-for="row in 6" :key="row" />
-          </template>
-        </aside>
-      </mt-panel>
-    </template>
   </mt-page>
 </template>
 
 <style scoped>
-.order-detail__values {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--scale-size-8) var(--scale-size-16);
-  font-variant-numeric: tabular-nums;
-}
-
-.order-detail__values dd {
-  text-align: end;
-}
-
-/* Name, quantity and price, total: the totals end on the same edge as the summary's values. */
-.order-detail__items {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: var(--scale-size-16);
-  font-variant-numeric: tabular-nums;
-}
-
-.order-detail__items > li {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
+.order-detail__summary {
+  display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
+  justify-content: space-between;
+  gap: var(--scale-size-8) var(--scale-size-16);
 }
 
-.order-detail__items > li > :last-child {
+.order-detail__email {
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-secondary-default);
+}
+
+.order-detail__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--scale-size-8);
+  padding: var(--scale-size-16) var(--scale-size-24);
+  border-block-end: 1px solid var(--color-border-secondary-default);
+}
+
+.order-detail__toolbar > .mt-search {
+  flex: 0 1 20rem;
+}
+
+.order-detail__totals {
+  display: grid;
+  grid-template-columns: auto minmax(8rem, auto);
+  justify-content: end;
+  gap: var(--scale-size-8) var(--scale-size-32);
+  margin: 0;
+  padding: var(--scale-size-24);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  border-block-start: 1px solid var(--color-border-secondary-default);
+}
+
+.order-detail__totals dt {
+  text-align: end;
+  color: var(--color-text-secondary-default);
+}
+
+.order-detail__totals dd {
+  margin: 0;
   text-align: end;
 }
 
-.order-detail__document-name {
-  flex: 1;
-  min-width: 0;
+.order-detail__totals-divider {
+  grid-column: 1 / -1;
 }
 
-.order-detail__panel {
-  width: 20rem;
+.order-detail__totals .order-detail__grand-total {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary-default);
+}
+
+.order-detail__promotion-update {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--scale-size-16);
   padding: var(--scale-size-16);
+  background-color: var(--color-background-secondary-default);
+  border-radius: var(--border-radius-m);
+}
+
+.order-detail__yes {
+  color: var(--color-icon-positive-default);
+}
+
+.order-detail__no {
+  color: var(--color-icon-critical-default);
 }
 </style>

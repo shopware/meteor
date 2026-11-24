@@ -127,6 +127,19 @@ export interface Customer {
   company: string | null;
 }
 
+/** A customer account, with the figures the customer list and detail show. */
+export interface CustomerAccount extends Customer {
+  group: string;
+  active: boolean;
+  guest: boolean;
+  address: Address;
+  salesChannel: string;
+  createdAt: string;
+  lastLogin: string | null;
+  orderCount: number;
+  turnover: number;
+}
+
 export interface LineItem {
   id: string;
   productId: string | null;
@@ -182,6 +195,7 @@ export interface Order {
 export interface Entities {
   product: Product;
   order: Order;
+  customer: CustomerAccount;
   manufacturer: Manufacturer;
   category: Category;
   salesChannel: SalesChannel;

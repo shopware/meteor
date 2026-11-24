@@ -1,36 +1,33 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import {
+  MtActionMenuItem,
   MtButton,
-  MtDataTable,
   MtEmptyState,
   MtIcon,
   MtLink,
   MtPage,
-  MtText,
   MtTooltip,
   useSnackbar,
-  type Filter,
 } from "@shopware-ag/meteor-component-library";
-import type { Order } from "../../shared/types";
+import type { Address, Order } from "../../shared/types";
+import AppGrid, { type GridColumn } from "../components/AppGrid.vue";
+import AppPagination from "../components/AppPagination.vue";
+import LanguageSwitch from "../components/LanguageSwitch.vue";
 import OrderStatus from "../components/OrderStatus.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useConfirm } from "../composables/useConfirm";
 import { useFormat } from "../composables/useFormat";
-import { useListing, type DataTableColumn } from "../composables/useListing";
-import {
-  useOrderStates,
-  type StateMachine,
-} from "../composables/useOrderStates";
+import { useGlobalSearch } from "../composables/useGlobalSearch";
+import { useListing } from "../composables/useListing";
 import { useRepository } from "../composables/useRepository";
 
 const { t } = useI18n();
 const router = useRouter();
-const breadcrumb = useBreadcrumb(() => t("orders.title"));
 const format = useFormat();
-const states = useOrderStates();
+const { term: searchTerm } = useGlobalSearch();
 const { addSnackbar } = useSnackbar();
 const { confirm } = useConfirm();
 const orderRepository = useRepository("order");
@@ -39,91 +36,70 @@ const {
   items,
   total,
   isLoading,
+  hasLoaded,
   page,
   limit,
-  term,
   sortBy,
   sortDirection,
-  appliedFilters,
   isFiltered,
   load,
   onSortChange,
-} = useListing("order", { sortBy: "orderDateTime", sortDirection: "DESC" });
+} = useListing("order", {
+  sortBy: "orderDateTime",
+  sortDirection: "DESC",
+  term: searchTerm,
+});
 
-const columns = computed<DataTableColumn[]>(() => [
+const breadcrumb = useBreadcrumb(() =>
+  hasLoaded.value
+    ? t("common.titleWithCount", { title: t("orders.title"), n: total.value })
+    : t("orders.title"),
+);
+
+const selection = ref<string[]>([]);
+
+const columns = computed<GridColumn[]>(() => [
   {
+    key: "orderNumber",
     label: t("orders.columns.orderNumber"),
-    property: "orderNumber",
-    renderer: "text",
-    position: 100,
+    sortable: true,
   },
   {
+    key: "customerName",
     label: t("orders.columns.customer"),
-    property: "customerName",
-    renderer: "text",
-    position: 200,
+    sortable: true,
   },
   {
+    key: "shippingAddress",
     label: t("orders.columns.deliveryAddress"),
-    property: "shippingAddress.city",
-    renderer: "text",
-    position: 300,
-    visible: false,
   },
   {
+    key: "amountTotal",
     label: t("orders.columns.total"),
-    property: "amountTotal",
-    renderer: "number",
-    position: 400,
+    align: "end",
+    sortable: true,
   },
+  { key: "state", label: t("orders.columns.state"), sortable: true },
   {
-    label: t("orders.columns.state"),
-    property: "state",
-    renderer: "text",
-    position: 500,
-  },
-  {
+    key: "paymentState",
     label: t("orders.columns.paymentState"),
-    property: "paymentState",
-    renderer: "text",
-    position: 600,
+    sortable: true,
   },
   {
+    key: "deliveryState",
     label: t("orders.columns.deliveryState"),
-    property: "deliveryState",
-    renderer: "text",
-    position: 700,
+    sortable: true,
   },
   {
+    key: "orderDateTime",
     label: t("orders.columns.orderDate"),
-    property: "orderDateTime",
-    renderer: "text",
-    position: 800,
+    sortable: true,
   },
 ]);
 
-const filters = computed<Filter[]>(() =>
-  (
-    [
-      ["state", "order"],
-      ["paymentState", "payment"],
-      ["deliveryState", "delivery"],
-    ] as [string, StateMachine][]
-  ).map(([property, machine]) => ({
-    id: property,
-    label: t(`orders.columns.${property}`),
-    type: {
-      id: "options",
-      options: states.options(machine).map((option) => ({
-        id: option.value,
-        label: option.label,
-      })),
-    },
-  })),
-);
-
-/** The address property contains a dot, which a static slot name would read as a modifier. */
-const addressSlot = "column-shippingAddress.city";
+function address(value: Address) {
+  return `${value.street}, ${value.zipcode} ${value.city}`;
+}
 
 function openOrder(order: Order) {
   router.push({ name: "order-detail", params: { id: order.id } });
@@ -131,7 +107,7 @@ function openOrder(order: Order) {
 
 async function deleteOrder(order: Order) {
   const confirmed = await confirm({
-    title: t("orders.deleteTitle"),
+    title: t("common.warning"),
     text: t("orders.deleteText", { number: order.orderNumber }),
     confirmLabel: t("common.delete"),
     cancelLabel: t("common.cancel"),
@@ -147,99 +123,132 @@ async function deleteOrder(order: Order) {
 </script>
 
 <template>
-  <mt-page :breadcrumb="breadcrumb">
-    <mt-data-table
-      :caption="t('orders.title')"
-      layout="full"
-      :data-source="items"
-      :columns="columns"
-      :is-loading="isLoading"
-      :current-page="page"
-      :pagination-limit="limit"
-      :pagination-total-items="total"
-      :sort-by="sortBy"
-      :sort-direction="sortDirection"
-      :search-value="term"
-      :filters="filters"
-      v-model:applied-filters="appliedFilters"
-      :number-of-results="total"
-      @pagination-current-page-change="page = $event"
-      @pagination-limit-change="limit = $event"
-      @search-value-change="term = $event"
-      @sort-change="onSortChange"
-      @open-details="openOrder"
-      @item-delete="deleteOrder"
-    >
-      <template #column-orderNumber="{ data }">
-        <span class="cluster">
-          <mt-link :to="{ name: 'order-detail', params: { id: data.id } }">
-            {{ data.orderNumber }}
-          </mt-link>
+  <mt-page inset :breadcrumb="breadcrumb">
+    <template #actions>
+      <language-switch />
+      <mt-button variant="primary" size="default">
+        {{ t("orders.add") }}
+      </mt-button>
+    </template>
 
-          <mt-tooltip
-            v-if="data.customerComment"
-            :content="data.customerComment"
+    <div class="listing">
+      <app-grid
+        v-model:selection="selection"
+        :caption="t('orders.title')"
+        :columns="columns"
+        :rows="items"
+        :is-loading="isLoading"
+        :sort-by="sortBy"
+        :sort-direction="sortDirection"
+        selectable
+        clickable
+        @sort="onSortChange"
+        @open="openOrder"
+      >
+        <template #cell-orderNumber="{ row }">
+          <span class="cluster">
+            <mt-link :to="{ name: 'order-detail', params: { id: row.id } }">
+              {{ row.orderNumber }}
+            </mt-link>
+
+            <mt-tooltip
+              v-if="row.customerComment"
+              :content="
+                t('orders.additionalInformation', {
+                  comment: row.customerComment,
+                })
+              "
+            >
+              <template #default="params">
+                <mt-button
+                  v-bind="params"
+                  variant="secondary"
+                  size="x-small"
+                  square
+                  :aria-label="t('orders.customerComment')"
+                >
+                  <mt-icon
+                    name="regular-comments"
+                    size="var(--scale-size-12)"
+                    decorative
+                  />
+                </mt-button>
+              </template>
+            </mt-tooltip>
+          </span>
+        </template>
+
+        <template #cell-customerName="{ row }">
+          <mt-link
+            :to="{ name: 'customer-detail', params: { id: row.customer.id } }"
           >
-            <template #default="params">
-              <mt-button
-                v-bind="params"
-                variant="tertiary"
-                size="x-small"
-                square
-                :aria-label="t('orders.customerComment')"
-              >
-                <mt-icon name="regular-comment" size="var(--scale-size-12)" />
-              </mt-button>
-            </template>
-          </mt-tooltip>
-        </span>
-      </template>
+            {{ row.customerName }}
+          </mt-link>
+        </template>
 
-      <template #[addressSlot]="{ data }">
-        <mt-text size="xs">
-          {{ data.shippingAddress.street }},
-          {{ data.shippingAddress.zipcode }}
-          {{ data.shippingAddress.city }}
-        </mt-text>
-      </template>
+        <template #cell-shippingAddress="{ row }">
+          {{ address(row.shippingAddress) }}
+        </template>
 
-      <template #column-amountTotal="{ data }">
-        <mt-text size="xs">{{ format.currency(data.amountTotal) }}</mt-text>
-      </template>
+        <template #cell-amountTotal="{ row }">
+          {{ format.currency(row.amountTotal) }}
+        </template>
 
-      <template #column-state="{ data }">
-        <order-status machine="order" :state="data.state" />
-      </template>
+        <template #cell-state="{ row }">
+          <order-status machine="order" :state="row.state" />
+        </template>
 
-      <template #column-paymentState="{ data }">
-        <order-status machine="payment" :state="data.paymentState" />
-      </template>
+        <template #cell-paymentState="{ row }">
+          <order-status machine="payment" :state="row.paymentState" />
+        </template>
 
-      <template #column-deliveryState="{ data }">
-        <order-status machine="delivery" :state="data.deliveryState" />
-      </template>
+        <template #cell-deliveryState="{ row }">
+          <order-status machine="delivery" :state="row.deliveryState" />
+        </template>
 
-      <template #column-orderDateTime="{ data }">
-        <mt-text size="xs">{{
-          format.relativeTime(data.orderDateTime)
-        }}</mt-text>
-      </template>
+        <template #cell-orderDateTime="{ row }">
+          {{ format.relativeTime(row.orderDateTime) }}
+        </template>
 
-      <template #empty-state>
-        <mt-empty-state
-          icon="regular-shopping-bag"
-          :headline="
-            isFiltered
-              ? t('orders.empty.filteredHeadline')
-              : t('orders.empty.headline')
-          "
-          :description="
-            isFiltered
-              ? t('orders.empty.filteredDescription')
-              : t('orders.empty.description')
-          "
-        />
-      </template>
-    </mt-data-table>
+        <template #actions="{ row }">
+          <mt-action-menu-item icon="regular-eye" @select="openOrder(row)">
+            {{ t("common.view") }}
+          </mt-action-menu-item>
+          <mt-action-menu-item
+            icon="regular-trash"
+            variant="critical"
+            :disabled="row.documents.length > 0"
+            @select="deleteOrder(row)"
+          >
+            {{ t("common.delete") }}
+          </mt-action-menu-item>
+        </template>
+
+        <template #bulk>
+          <mt-button variant="tertiary" size="small" @click="selection = []">
+            {{ t("grid.deselectAll") }}
+          </mt-button>
+          <mt-button variant="secondary" size="small">
+            {{ t("grid.bulkEdit") }}
+          </mt-button>
+        </template>
+
+        <template #empty>
+          <mt-empty-state
+            icon="regular-shopping-bag"
+            :headline="
+              isFiltered ? t('common.nothingFound') : t('orders.empty.headline')
+            "
+            :description="
+              isFiltered
+                ? t('common.nothingFoundDescription')
+                : t('orders.empty.description')
+            "
+          />
+        </template>
+      </app-grid>
+
+      <app-pagination v-model:page="page" v-model:limit="limit" :total="total" />
+    </div>
   </mt-page>
 </template>

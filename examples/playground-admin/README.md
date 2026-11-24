@@ -1,16 +1,23 @@
 # Playground: admin
 
-A Vue 3 + Vite + TypeScript application that rebuilds views of the Shopware Administration with Meteor,
-on the `<mt-app>` application shell and `<mt-page>`, set up the way a production app would use it:
+A Vue 3 + Vite + TypeScript application that rebuilds the Shopware Administration with Meteor, on the
+`<mt-app>` application shell and `<mt-page>`. It is made for demos: it looks like the real product, with
+its menu, top bar, pages and labels, and works just enough to click through. It shows:
 
-- a dashboard, products (list, detail, create), nested categories, and orders (list, detail), on mock
-  data;
+- the full menu of the Administration, with its Sales Channels, and the top bar with the search, help
+  and notifications;
+- the dashboard, products (list, detail with all tabs, create), categories with their tree, orders (list,
+  detail with General, Details and Documents), customers (list, detail), the Shopping Experiences layouts
+  and editor, the settings and the profile, on mock data;
+- the other modules of the menu, such as reviews, properties, promotions and the Rule Builder, as lists
+  of mock rows, and the media, themes and store as empty pages;
+- light tables in the look of the Administration's data grid, without `mt-data-table`;
 - navigation and sidebar, which become drawers on small screens;
 - lazy-loaded routes with a page title each, which the shell announces to screen readers, plus the
   optional loading bar;
 - a full-screen route that hides the shell's regions with `meta.mtAppRegions`;
 - a confirmation before leaving a page with unsaved changes, delete confirmations and snackbars;
-- a not-found page and the theme and language settings.
+- a not-found page, and the theme and language in the profile.
 
 The app consumes the component library from its sources, so library changes show up immediately and no
 library build is needed.
@@ -19,6 +26,9 @@ library build is needed.
 pnpm --filter playground-admin dev        # http://localhost:3002
 pnpm --filter playground-admin lint:types # type check (uses the library's built types)
 ```
+
+The type check reads the library's built types, so run `pnpm --filter @shopware-ag/meteor-component-library build-only`
+first when the library has new components.
 
 ## Structure
 
@@ -31,14 +41,22 @@ server/              the mock Admin API: seeded data and an in-memory repository
 src/
   components/
     AppConfirmModal.vue  the confirm modal of useConfirm()
+    AppGrid.vue          the table, in the look of the Administration's data grid
     AppNav.vue           the navigation
+    AppPagination.vue    the page numbers and page size below a table
     AppSidebar.vue       the sidebar
+    AppTopBar.vue        the search, help and notifications above every page
+    CategoryTree.vue     the category tree
+    LanguageSwitch.vue   the content language next to a page's actions
+    ModuleCell.vue       a cell of a module list, by its column type
     OrderStatus.vue      an order, payment or delivery state
-  composables/       requests, repositories, list state, breadcrumbs, confirmations, formatting
-  views/             the route views
+  composables/       requests, repositories, list state, search, breadcrumbs, confirmations, formatting
+  views/             the route views; ModuleListView shows the modules of src/modules.ts
+  modules.ts         the columns and mock rows of the modules shown as plain lists
+  cmsLayouts.ts      the Shopping Experiences layouts
   router/            routes and page titles
   i18n/              translations and the remembered language
-  assets/main.css    the layout classes: stack, cluster, grid, actions
+  assets/main.css    the layout classes, and the top bar and page header of the Administration
 ```
 
 The mock server answers after a short delay, so loading states and the shell's loading bar show as they

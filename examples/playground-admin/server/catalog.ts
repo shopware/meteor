@@ -204,7 +204,7 @@ function createProduct(index: number): Product {
     id: random.id(),
     name,
     productNumber: `SW${10000 + index}`,
-    description: `<p>The ${name.toLowerCase()} from ${manufacturer.name}, made to last and easy to care for.</p>`,
+    description: `<p>The ${name.toLowerCase()} from ${manufacturer.name.replace("&", "&amp;")}, made to last and easy to care for.</p>`,
     manufacturerId: manufacturer.id,
     manufacturerName: manufacturer.name,
     active: random.chance(0.85),

@@ -1,6 +1,7 @@
 import type {
   Address,
   Customer,
+  CustomerAccount,
   DeliveryState,
   LineItem,
   Order,
@@ -102,7 +103,7 @@ function createAddress(
   };
 }
 
-const customers = Array.from({ length: 40 }, (_, index) => {
+export const customers = Array.from({ length: 40 }, (_, index) => {
   const firstName = random.pick(firstNames);
   const lastName = random.pick(lastNames);
   const company = random.chance(0.25) ? random.pick(companies) : null;
@@ -347,3 +348,34 @@ function createOrders(): Order[] {
 }
 
 export const orders: Order[] = createOrders();
+
+const customerGroups = ["Standard customer group", "Net customer group", "VIP"];
+
+/** The customer accounts with their orders' figures. */
+export const customerAccounts: CustomerAccount[] = customers.map(
+  ({ customer, address }) => {
+    const own = orders.filter((order) => order.customer.id === customer.id);
+    const first = own[0]?.orderDateTime;
+    const createdAt = new Date(
+      (first ? new Date(first).getTime() : Date.now()) -
+        random.int(1, 400) * 86_400_000,
+    ).toISOString();
+
+    return {
+      ...customer,
+      group: customer.company
+        ? customerGroups[1]
+        : random.chance(0.1)
+          ? customerGroups[2]
+          : customerGroups[0],
+      active: random.chance(0.95),
+      guest: random.chance(0.1),
+      address,
+      salesChannel: salesChannels[0].name,
+      createdAt,
+      lastLogin: own.at(-1)?.orderDateTime ?? null,
+      orderCount: own.length,
+      turnover: round(own.reduce((sum, order) => sum + order.amountTotal, 0)),
+    };
+  },
+);

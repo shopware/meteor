@@ -1,15 +1,6 @@
-import { computed, ref, shallowRef, watch } from "vue";
-import type {
-  Filter,
-  MtDataTable,
-} from "@shopware-ag/meteor-component-library";
+import { computed, ref, shallowRef, watch, type Ref } from "vue";
 import type { Criteria, Entities, EntityName } from "../../shared/types";
 import { useRepository } from "./useRepository";
-
-/** A column of `mt-data-table`. */
-export type DataTableColumn = InstanceType<
-  typeof MtDataTable
->["$props"]["columns"][number];
 
 interface ListingOptions {
   sortBy: string;
@@ -17,11 +8,13 @@ interface ListingOptions {
   limit?: number;
   /** Filters the list always applies, on top of the ones the user picks. */
   filters?: () => Record<string, string[]>;
+  /** The search term, such as the one of the top bar. Defaults to a term of the list's own. */
+  term?: Ref<string>;
 }
 
 /**
- * The state of a list page, wired to the events of `mt-data-table`: search, sort, filters,
- * pagination and selection. Every change loads the matching page from the server.
+ * The state of a list page: search, sort, filters and pagination. Every change loads the matching
+ * page from the server.
  */
 export function useListing<Name extends EntityName>(
   name: Name,
@@ -32,14 +25,14 @@ export function useListing<Name extends EntityName>(
   const items = shallowRef<Entities[Name][]>([]);
   const total = ref(0);
   const isLoading = ref(true);
+  /** Whether the first page arrived, after which the title shows the number of results. */
+  const hasLoaded = ref(false);
 
   const page = ref(1);
   const limit = ref(options.limit ?? 25);
-  const term = ref("");
+  const term = options.term ?? ref("");
   const sortBy = ref(options.sortBy);
   const sortDirection = ref<"ASC" | "DESC">(options.sortDirection ?? "ASC");
-  const appliedFilters = ref<Filter[]>([]);
-  const selection = ref<string[]>([]);
 
   const criteria = computed<Criteria>(() => ({
     page: page.value,
@@ -47,20 +40,12 @@ export function useListing<Name extends EntityName>(
     term: term.value,
     sortBy: sortBy.value,
     sortDirection: sortDirection.value,
-    filters: {
-      ...options.filters?.(),
-      ...Object.fromEntries(
-        appliedFilters.value.map((filter) => [
-          filter.id,
-          filter.type.options.map((option) => option.id),
-        ]),
-      ),
-    },
+    filters: options.filters?.(),
   }));
 
   // A new search, filter or page size starts on the first page.
   watch(
-    [term, appliedFilters, limit, () => JSON.stringify(options.filters?.())],
+    [term, limit, () => JSON.stringify(options.filters?.())],
     () => {
       page.value = 1;
     },
@@ -80,6 +65,7 @@ export function useListing<Name extends EntityName>(
     items.value = result.data;
     total.value = result.total;
     isLoading.value = false;
+    hasLoaded.value = true;
   }
 
   watch(criteria, load, { immediate: true });
@@ -89,41 +75,18 @@ export function useListing<Name extends EntityName>(
     sortDirection.value = direction;
   }
 
-  function onSelectionChange({ id, value }: { id: string; value: boolean }) {
-    selection.value = value
-      ? [...selection.value, id]
-      : selection.value.filter((selected) => selected !== id);
-  }
-
-  function onMultipleSelectionChange({
-    selections,
-    value,
-  }: {
-    selections: string[];
-    value: boolean;
-  }) {
-    selection.value = value
-      ? [...new Set([...selection.value, ...selections])]
-      : selection.value.filter((selected) => !selections.includes(selected));
-  }
-
   return {
     items,
     total,
     isLoading,
+    hasLoaded,
     page,
     limit,
     term,
     sortBy,
     sortDirection,
-    appliedFilters,
-    selection,
-    isFiltered: computed(
-      () => term.value !== "" || appliedFilters.value.length > 0,
-    ),
+    isFiltered: computed(() => term.value !== ""),
     load,
     onSortChange,
-    onSelectionChange,
-    onMultipleSelectionChange,
   };
 }

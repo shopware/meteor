@@ -15,8 +15,17 @@ const { variant, label } = useOrderStates();
 </script>
 
 <template>
-  <div class="cluster">
+  <span class="order-status">
     <mt-status-dot :variant="variant(machine, state)" />
     <mt-text size="xs">{{ label(machine, state) }}</mt-text>
-  </div>
+  </span>
 </template>
+
+<style scoped>
+.order-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--scale-size-8);
+  white-space: nowrap;
+}
+</style>

@@ -3,11 +3,13 @@ import { computed, ref, shallowRef, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import {
+  MtActionMenuItem,
+  MtButton,
   MtCard,
   MtChart,
-  MtDataTable,
-  MtEmptyState,
   MtHelpText,
+  MtIcon,
+  MtLink,
   MtPage,
   MtSelect,
   MtText,
@@ -15,11 +17,10 @@ import {
 } from "@shopware-ag/meteor-component-library";
 import type { Order, OrderStatistics } from "../../shared/types";
 import { orderStatistics } from "../../server/repository";
-import OrderStatus from "../components/OrderStatus.vue";
-import { useBreadcrumb } from "../composables/useBreadcrumb";
+import AppGrid, { type GridColumn } from "../components/AppGrid.vue";
+import OrderBadge from "../components/OrderBadge.vue";
 import { useCurrentUser } from "../composables/useCurrentUser";
 import { useFormat } from "../composables/useFormat";
-import type { DataTableColumn } from "../composables/useListing";
 import { useRepository } from "../composables/useRepository";
 import { useRequest } from "../composables/useRequest";
 
@@ -30,14 +31,24 @@ const { request } = useRequest();
 const orderRepository = useRepository("order");
 const user = useCurrentUser();
 
-const greeting = computed(() => {
+/** The part of the day, which picks the greeting and its subline, as in the Administration. */
+const daytime = computed(() => {
   const hour = new Date().getHours();
-  const time = hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
 
-  return t(`dashboard.greeting.${time}`, { name: user.firstName });
+  if (hour >= 23 || hour < 5) return "night";
+  if (hour < 11) return "morning";
+  if (hour < 18) return "day";
+
+  return "evening";
 });
 
-const breadcrumb = useBreadcrumb(() => greeting.value);
+const greeting = computed(() =>
+  t(`dashboard.greeting.${daytime.value}`, { name: user.firstName }),
+);
+
+
+/** The help links of the "Get ready to sell" card. */
+const getReadyLinks = ["helpCenter", "firstSale", "salesChannels"] as const;
 
 const isLoading = ref(true);
 const statistics = shallowRef<OrderStatistics | null>(null);
@@ -65,44 +76,17 @@ async function load() {
 
 load();
 
-const orderColumns = computed<DataTableColumn[]>(() => [
-  {
-    label: t("dashboard.columns.orderNumber"),
-    property: "orderNumber",
-    renderer: "text",
-    position: 100,
-    clickable: true,
-    sortable: false,
-  },
-  {
-    label: t("dashboard.columns.time"),
-    property: "orderDateTime",
-    renderer: "text",
-    position: 200,
-    sortable: false,
-  },
-  {
-    label: t("dashboard.columns.customer"),
-    property: "customerName",
-    renderer: "text",
-    position: 300,
-    sortable: false,
-  },
-  {
-    label: t("dashboard.columns.state"),
-    property: "state",
-    renderer: "text",
-    position: 400,
-    sortable: false,
-  },
-  {
-    label: t("dashboard.columns.total"),
-    property: "amountTotal",
-    renderer: "number",
-    position: 500,
-    sortable: false,
-  },
+const orderColumns = computed<GridColumn[]>(() => [
+  { key: "orderNumber", label: t("dashboard.columns.orderNumber") },
+  { key: "orderDateTime", label: t("dashboard.columns.time") },
+  { key: "customerName", label: t("dashboard.columns.customer") },
+  { key: "state", label: t("dashboard.columns.state") },
+  { key: "amountTotal", label: t("dashboard.columns.total"), align: "end" },
 ]);
+
+const today = computed(() =>
+  format.shortDate(new Date().toISOString()),
+);
 
 function openOrder(order: Order) {
   router.push({ name: "order-detail", params: { id: order.id } });
@@ -157,14 +141,14 @@ const {
 
 const ordersSeries = computed(() => [
   {
-    name: t("dashboard.ordersChart"),
+    name: t("dashboard.ordersSeries"),
     data: ordersDays.value.map((day) => day.orders),
   },
 ]);
 
 const turnoverSeries = computed(() => [
   {
-    name: t("dashboard.turnoverChart"),
+    name: t("dashboard.turnoverSeries"),
     data: turnoverDays.value.map((day) => Math.round(day.turnover * 100) / 100),
   },
 ]);
@@ -183,115 +167,248 @@ const turnoverOptions = computed<ChartOptions>(() => ({
 </script>
 
 <template>
-  <mt-page width="l" :breadcrumb="breadcrumb">
-    <div class="stack">
-      <div class="grid" style="--grid-min: 20rem">
-        <mt-card :title="t('dashboard.ordersToday')" :is-loading="isLoading">
-          <mt-text size="2xl" weight="semibold">
-            {{ format.number(statistics?.today.orders ?? 0) }}
-          </mt-text>
+  <!-- Like the Administration's dashboard, the page has no header: the greeting is its title. -->
+  <mt-page width="m">
+    <div class="stack dashboard">
+      <header class="dashboard__welcome">
+        <mt-text as="h1" size="2xl" weight="semibold">{{ greeting }}</mt-text>
+        <mt-text size="s" color="color-text-secondary-default">
+          {{ t(`dashboard.subline.${daytime}`) }}
+        </mt-text>
+      </header>
+
+      <div class="grid" style="--grid-min: 18rem">
+        <mt-card :title="t('dashboard.getReady.title')">
+          <ul class="dashboard__links">
+            <li v-for="entry in getReadyLinks" :key="entry">
+              <a
+                class="dashboard__link"
+                href="https://docs.shopware.com/en"
+                target="_blank"
+                rel="noopener"
+              >
+                {{ t(`dashboard.getReady.${entry}`) }}
+                <mt-icon
+                  name="regular-external-link-s"
+                  size="var(--scale-size-12)"
+                  decorative
+                />
+              </a>
+            </li>
+          </ul>
         </mt-card>
 
-        <mt-card :title="t('dashboard.totalToday')" :is-loading="isLoading">
-          <mt-text size="2xl" weight="semibold">
-            {{ format.currency(statistics?.today.total ?? 0) }}
-          </mt-text>
-        </mt-card>
-      </div>
-
-      <mt-data-table
-        :title="t('dashboard.todaysOrders')"
-        :caption="t('dashboard.todaysOrders')"
-        layout="full"
-        :data-source="todaysOrders"
-        :columns="orderColumns"
-        :is-loading="isLoading"
-        :current-page="1"
-        :pagination-limit="10"
-        :pagination-options="[10]"
-        :pagination-total-items="todaysOrders.length"
-        disable-search
-        disable-settings-table
-        disable-delete
-        @open-details="openOrder"
-      >
-        <template #column-orderDateTime="{ data }">
-          <mt-text size="xs">{{ format.time(data.orderDateTime) }}</mt-text>
-        </template>
-
-        <template #column-state="{ data }">
-          <order-status machine="order" :state="data.state" />
-        </template>
-
-        <template #column-amountTotal="{ data }">
-          <mt-text size="xs">{{ format.currency(data.amountTotal) }}</mt-text>
-        </template>
-
-        <template #empty-state>
-          <mt-empty-state
-            icon="regular-shopping-bag"
-            :headline="t('dashboard.noOrders')"
-            :description="t('dashboard.noOrdersDescription')"
-          />
-        </template>
-      </mt-data-table>
-
-      <div class="grid" style="--grid-min: 20rem">
-        <mt-card
-          :title="t('dashboard.ordersChart')"
-          :subtitle="ordersSubtitle"
-          :is-loading="isLoading"
-        >
-          <template #headerRight>
-            <mt-select
-              v-model="ordersRange"
-              :aria-label="t('dashboard.range')"
-              :options="rangeOptions"
-              :enable-search="false"
-              hide-clearable-button
-              small
-            />
-          </template>
-
-          <mt-chart
-            v-if="statistics"
-            :series="ordersSeries"
-            :options="ordersOptions"
-          />
-        </mt-card>
-
-        <mt-card
-          :title="t('dashboard.turnoverChart')"
-          :subtitle="turnoverSubtitle"
-          :is-loading="isLoading"
-        >
-          <template #title>
-            <div class="cluster">
-              <mt-text as="h3" size="m" weight="semibold">
-                {{ t("dashboard.turnoverChart") }}
-              </mt-text>
-              <mt-help-text :text="t('dashboard.turnoverHelp')" />
+        <mt-card :title="t('dashboard.feedback.title')">
+          <div class="stack">
+            <mt-text size="xs" color="color-text-secondary-default">
+              {{ t("dashboard.feedback.text") }}
+            </mt-text>
+            <div>
+              <mt-button variant="secondary" size="small">
+                {{ t("dashboard.feedback.button") }}
+                <template #iconBack>
+                  <mt-icon
+                    name="regular-external-link-s"
+                    size="var(--scale-size-12)"
+                    decorative
+                  />
+                </template>
+              </mt-button>
             </div>
-          </template>
-
-          <template #headerRight>
-            <mt-select
-              v-model="turnoverRange"
-              :aria-label="t('dashboard.range')"
-              :options="rangeOptions"
-              :enable-search="false"
-              hide-clearable-button
-              small
-            />
-          </template>
-
-          <mt-chart
-            v-if="statistics"
-            :series="turnoverSeries"
-            :options="turnoverOptions"
-          />
+          </div>
         </mt-card>
       </div>
+
+      <template v-if="isLoading || todaysOrders.length > 0">
+        <div class="dashboard__section-title">
+          <mt-text as="h2" size="l" weight="semibold">
+            {{ t("dashboard.todaysStatistics") }}
+          </mt-text>
+          <mt-text size="s" color="color-text-secondary-default">
+            {{ today }}
+          </mt-text>
+        </div>
+
+        <mt-card :is-loading="isLoading">
+          <template #grid>
+            <div class="dashboard__kpis">
+              <div>
+                <mt-text size="xs" color="color-text-secondary-default">
+                  {{ t("dashboard.ordersToday") }}
+                </mt-text>
+                <mt-text size="2xl" weight="semibold">
+                  {{ format.number(statistics?.today.orders ?? 0) }}
+                </mt-text>
+              </div>
+              <div>
+                <mt-text size="xs" color="color-text-secondary-default">
+                  {{ t("dashboard.totalToday") }}
+                </mt-text>
+                <mt-text size="2xl" weight="semibold">
+                  {{ format.currency(statistics?.today.total ?? 0) }}
+                </mt-text>
+              </div>
+            </div>
+
+            <app-grid
+
+              plain
+              :caption="t('dashboard.todaysOrders')"
+              :columns="orderColumns"
+              :rows="todaysOrders"
+              :is-loading="isLoading"
+              :skeleton-rows="3"
+              clickable
+              @open="openOrder"
+            >
+              <template #cell-orderNumber="{ row }">
+                <mt-link :to="{ name: 'order-detail', params: { id: row.id } }">
+                  {{ row.orderNumber }}
+                </mt-link>
+              </template>
+
+              <template #cell-orderDateTime="{ row }">
+                {{ format.relativeTime(row.orderDateTime) }}
+              </template>
+
+              <template #cell-customerName="{ row }">
+                <mt-link
+                  :to="{
+                    name: 'customer-detail',
+                    params: { id: row.customer.id },
+                  }"
+                >
+                  {{ row.customer.firstName }} {{ row.customer.lastName }}
+                </mt-link>
+              </template>
+
+              <template #cell-state="{ row }">
+                <order-badge machine="order" :state="row.state" />
+              </template>
+
+              <template #cell-amountTotal="{ row }">
+                {{ format.currency(row.amountTotal) }}
+              </template>
+
+              <template #actions="{ row }">
+                <mt-action-menu-item icon="regular-eye" @select="openOrder(row)">
+                  {{ t("common.view") }}
+                </mt-action-menu-item>
+              </template>
+            </app-grid>
+          </template>
+        </mt-card>
+      </template>
+
+      <mt-card
+        :title="t('dashboard.ordersChart')"
+        :subtitle="ordersSubtitle"
+        :is-loading="isLoading"
+      >
+        <template #headerRight>
+          <mt-select
+            v-model="ordersRange"
+            :aria-label="t('dashboard.range')"
+            :options="rangeOptions"
+            :enable-search="false"
+            hide-clearable-button
+            small
+          />
+        </template>
+
+        <mt-chart
+          v-if="statistics"
+          type="line"
+          :series="ordersSeries"
+          :options="ordersOptions"
+        />
+      </mt-card>
+
+      <mt-card
+        :title="t('dashboard.turnoverChart')"
+        :subtitle="turnoverSubtitle"
+        :is-loading="isLoading"
+      >
+        <template #title>
+          <div class="cluster">
+            <mt-text as="h3" size="m" weight="semibold">
+              {{ t("dashboard.turnoverChart") }}
+            </mt-text>
+            <mt-help-text :text="t('dashboard.turnoverHelp')" />
+          </div>
+        </template>
+
+        <template #headerRight>
+          <mt-select
+            v-model="turnoverRange"
+            :aria-label="t('dashboard.range')"
+            :options="rangeOptions"
+            :enable-search="false"
+            hide-clearable-button
+            small
+          />
+        </template>
+
+        <mt-chart
+          v-if="statistics"
+          type="line"
+          :series="turnoverSeries"
+          :options="turnoverOptions"
+        />
+      </mt-card>
     </div>
   </mt-page>
 </template>
+
+<style scoped>
+.dashboard {
+  gap: var(--scale-size-24);
+}
+
+.dashboard__welcome {
+  display: grid;
+  gap: var(--scale-size-4);
+  padding-block: var(--scale-size-8);
+}
+
+.dashboard__links {
+  display: grid;
+  gap: var(--scale-size-12);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-xs);
+}
+
+.dashboard__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--scale-size-4);
+  color: var(--color-text-brand-default);
+  text-decoration: none;
+}
+
+.dashboard__link:hover {
+  text-decoration: underline;
+}
+
+.dashboard__section-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--scale-size-12);
+  margin-block-start: var(--scale-size-8);
+}
+
+.dashboard__kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--scale-size-24);
+  padding: var(--scale-size-24);
+  border-block-end: 1px solid var(--color-border-secondary-default);
+}
+
+.dashboard__kpis > div {
+  display: grid;
+  gap: var(--scale-size-4);
+}
+</style>
