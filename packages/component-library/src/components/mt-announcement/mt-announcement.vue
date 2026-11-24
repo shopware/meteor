@@ -75,8 +75,6 @@ const { t } = useI18n({
 /* The variants tint the background, keep the regular text color and draw a light line in their
    color along the bottom edge. */
 .mt-announcement {
-  --mt-announcement-color: var(--color-text-primary-default);
-
   display: flex;
   align-items: flex-start;
   gap: var(--scale-size-8);
@@ -85,7 +83,7 @@ const { t } = useI18n({
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   line-height: var(--font-line-height-xs);
-  color: var(--mt-announcement-color);
+  color: var(--color-text-primary-default);
   background-color: var(--mt-announcement-background);
   border-block-end: 1px solid var(--mt-announcement-border-color);
 }
