@@ -9,6 +9,44 @@ describe("resolveFileIcon", () => {
     });
   });
 
+  it.each([
+    ["pdf", "pdf"],
+    ["doc", "word"],
+    ["docx", "word"],
+    ["odt", "word"],
+    ["xls", "excel"],
+    ["xlsx", "excel"],
+    ["xlsm", "excel"],
+    ["ods", "excel"],
+    ["ppt", "powerpoint"],
+    ["pptx", "powerpoint"],
+    ["pps", "powerpoint"],
+    ["ppsx", "powerpoint"],
+    ["odp", "powerpoint"],
+  ])("resolves the brand of the format %s", (format, brand) => {
+    expect(resolveFileIcon({ format }).brand).toBe(brand);
+  });
+
+  it.each([
+    "txt",
+    "rtf",
+    "csv",
+    "numbers",
+    "key",
+    "pages",
+    "svg",
+    "fig",
+    "ai",
+    "psd",
+    "sketch",
+    "js",
+    "mjs",
+    "cjs",
+    "zip",
+  ])("resolves no brand for the format %s", (format) => {
+    expect(resolveFileIcon({ format }).brand).toBeUndefined();
+  });
+
   it("uses the last extension of a file name", () => {
     expect(resolveFileIcon({ fileName: "backup.tar.gz" })).toEqual({
       category: "archive",

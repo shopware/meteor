@@ -13,8 +13,11 @@ export type MtFileIconCategory =
   | "font"
   | "executable";
 
-/** Format families whose label uses the color of their brand */
-export type MtFileIconBrand = "pdf" | "word" | "excel";
+/**
+ * Format families whose label uses the color of their brand. OpenDocument formats share the color
+ * of their Office counterpart, as the suites use the same color for the same kind of file.
+ */
+export type MtFileIconBrand = "pdf" | "word" | "excel" | "powerpoint";
 
 /** The icon of each category. The zipper of archives hangs from the top edge of the page. */
 export const categoryIcons: Record<MtFileIconCategory, { icon: string; align?: "top" }> = {
@@ -120,9 +123,16 @@ const brands: Record<string, MtFileIconBrand> = {
   pdf: "pdf",
   doc: "word",
   docx: "word",
+  odt: "word",
   xls: "excel",
   xlsx: "excel",
   xlsm: "excel",
+  ods: "excel",
+  ppt: "powerpoint",
+  pptx: "powerpoint",
+  pps: "powerpoint",
+  ppsx: "powerpoint",
+  odp: "powerpoint",
 };
 
 /** The extension of each MIME type whose subtype does not already name it */

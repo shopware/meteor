@@ -159,6 +159,7 @@ const iconStyle = computed(() => {
   --mt-file-icon--color-format-pdf: var(--color-red-600);
   --mt-file-icon--color-format-word: var(--color-blue-700);
   --mt-file-icon--color-format-excel: var(--color-green-700);
+  --mt-file-icon--color-format-powerpoint: var(--color-pumpkin-600);
   /* stylelint-enable meteor/no-primitive-token */
 
   position: relative;
@@ -180,6 +181,7 @@ const iconStyle = computed(() => {
   --mt-file-icon--color-format-pdf: var(--color-red-300);
   --mt-file-icon--color-format-word: var(--color-blue-500);
   --mt-file-icon--color-format-excel: var(--color-green-500);
+  --mt-file-icon--color-format-powerpoint: var(--color-pumpkin-500);
   /* stylelint-enable meteor/no-primitive-token */
 }
 
@@ -281,6 +283,10 @@ const iconStyle = computed(() => {
 
 .mt-file-icon__format--excel {
   color: var(--mt-file-icon--color-format-excel);
+}
+
+.mt-file-icon__format--powerpoint {
+  color: var(--mt-file-icon--color-format-powerpoint);
 }
 
 /* A label this small can't be read, so the icon moves back to the position it has without one */

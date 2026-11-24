@@ -9,6 +9,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
   <mt-file-icon format="docx" />
   <mt-file-icon format="xls" />
   <mt-file-icon format="xlsx" />
+  <mt-file-icon format="pptx" />
   <mt-file-icon format="mov" />
   <mt-file-icon format="zip" />
   <mt-file-icon format="rar" />
