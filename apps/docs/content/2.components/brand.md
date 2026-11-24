@@ -26,14 +26,14 @@ The default logo is the Shopware logo. The `variant` prop shows the logo of anot
 
 Each variant shows the logo of one Shopware product.
 
-::component-example{name="brand-variants-example"}
+::component-example{name="brand-variants-example" class="flex-col items-start!"}
 ::
 
 ### Appearances
 
-The dark appearance shows a white mark on a blue box, the light appearance a blue mark on a white box.
+The dark appearance shows a white mark on a blue box, the light appearance a blue mark on a white box. Use the light appearance on dark backgrounds.
 
-::component-example{name="brand-appearances-example"}
+::component-example{name="brand-appearances-example" fullWidth inset}
 ::
 
 ### Compact
