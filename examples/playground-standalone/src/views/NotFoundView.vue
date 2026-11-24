@@ -12,7 +12,7 @@ const router = useRouter();
 </script>
 
 <template>
-  <mt-page width="m" :breadcrumb="[{ label: t('notFound.title') }]">
+  <mt-page width="m">
     <mt-empty-state
       icon="regular-map"
       :headline="t('notFound.title')"
@@ -22,7 +22,7 @@ const router = useRouter();
         <mt-button
           variant="secondary"
           size="default"
-          @click="router.push({ name: 'home' })"
+          @click="router.push({ name: 'overview' })"
         >
           {{ t("notFound.home") }}
         </mt-button>

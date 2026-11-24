@@ -1,5 +1,7 @@
 import { watch } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
+import { settingsSections } from "../data/settings";
+import { templates, workflows } from "../data/workflows";
 import { i18n } from "../i18n";
 
 declare module "vue-router" {
@@ -14,40 +16,64 @@ export const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "home",
-      component: () => import("../views/HomeView.vue"),
-      meta: { title: "home.title" },
+      name: "overview",
+      component: () => import("../views/OverviewView.vue"),
+      meta: { title: "overview.title" },
     },
     {
-      path: "/settings/:section?",
+      path: "/workflows/:id",
+      name: "workflow",
+      component: () => import("../views/WorkflowView.vue"),
+      props: true,
+      // A full-screen editor: the shell hides its header with the navigation before the page renders.
+      meta: {
+        title: "workflow.title",
+        mtAppRegions: { header: false, contentFrame: false },
+      },
+      // Opens a workflow, or a new one from a template. Unknown ids show the 404 page.
+      beforeEnter: (to) =>
+        [...workflows, ...templates].some(({ id }) => id === to.params.id) || {
+          name: "not-found",
+          params: { pathMatch: to.path.slice(1).split("/") },
+          query: to.query,
+          hash: to.hash,
+        },
+    },
+    {
+      // Groups the pages of the marketplace, and opens the first of them.
+      path: "/marketplace",
+      children: [
+        { path: "", redirect: { name: "integrations" } },
+        {
+          path: "integrations",
+          name: "integrations",
+          component: () => import("../views/IntegrationsView.vue"),
+          meta: { title: "integrations.title" },
+        },
+        {
+          path: "templates",
+          name: "templates",
+          component: () => import("../views/TemplatesView.vue"),
+          meta: { title: "templates.title" },
+        },
+      ],
+    },
+    {
+      path: "/settings",
       name: "settings",
       component: () => import("../views/SettingsView.vue"),
-      props: true,
       meta: { title: "settings.title" },
-    },
-    {
-      path: "/editor",
-      name: "editor",
-      component: () => import("../views/EditorView.vue"),
-      meta: { title: "editor.title" },
-    },
-    {
-      path: "/editor/full-screen",
-      name: "editor-full-screen",
-      component: () => import("../views/EditorView.vue"),
-      props: { fullScreen: true },
-      // The shell hides its regions before the page renders.
-      meta: {
-        title: "editor.title",
-        mtAppRegions: { header: false, sidebar: false },
-      },
-    },
-    {
-      path: "/pages/:id",
-      name: "page",
-      component: () => import("../views/PageView.vue"),
-      props: true,
-      meta: { title: "page.title" },
+      // The settings open with their first section.
+      redirect: { name: "settings-section", params: { section: "general" } },
+      children: [
+        {
+          // Only known sections match, others show the 404 page.
+          path: `:section(${settingsSections.map(({ id }) => id).join("|")})`,
+          name: "settings-section",
+          component: () => import("../views/SettingsSectionView.vue"),
+          props: true,
+        },
+      ],
     },
     {
       path: "/:pathMatch(.*)*",

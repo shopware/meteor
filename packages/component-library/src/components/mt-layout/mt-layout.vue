@@ -61,7 +61,7 @@ function hasSlot(name: "start" | "end") {
 .mt-layout__content {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--scale-size-16);
+  gap: var(--scale-size-64);
 }
 
 .mt-layout__grid {
