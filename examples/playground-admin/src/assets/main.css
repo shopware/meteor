@@ -43,6 +43,18 @@
   flex: 1 0 auto;
 }
 
+/* The search above a grid. */
+.listing__toolbar {
+  display: flex;
+  align-items: center;
+  padding: var(--scale-size-12) var(--scale-size-20);
+  border-block-end: 1px solid var(--color-border-secondary-default);
+}
+
+.listing__toolbar > .mt-search {
+  flex: 0 1 28rem;
+}
+
 /* A grid cell with an image or icon in front of its text. */
 .cell-media {
   display: flex;
@@ -125,44 +137,4 @@
 .grid .mt-field,
 .form-row .mt-field {
   margin-block-end: 0;
-}
-
-/* The top bar and the page below it fill the shell's content. */
-.app-frame {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  height: 100%;
-}
-
-/*
- * The header of a page lines up with the content column, like the Administration's smart bar:
- * the title at the start of the column, the actions at its end.
- */
-.app-frame .mt-page__header {
-  height: var(--scale-size-72);
-  padding-inline: max(var(--scale-size-8), calc((100% - 60rem) / 2 - var(--scale-size-8)));
-}
-
-.app-frame .mt-page__header .mt-breadcrumb {
-  font-size: var(--font-size-m);
-  line-height: var(--font-line-height-m);
-}
-
-/* The top bar has the shell's panel buttons, so the page headers leave them out. */
-.app-frame .mt-page__header .mt-app-panel-trigger {
-  display: none;
-}
-
-/* A page without a title or actions, such as the dashboard, has no header, as in the Administration. */
-.app-frame
-  .mt-page__header:not(
-    :has(
-      .mt-page__breadcrumb,
-      .mt-page__actions,
-      .mt-page__close,
-      .mt-page__title-skeleton,
-      .mt-page__panel-trigger
-    )
-  ) {
-  display: none;
 }

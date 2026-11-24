@@ -5,10 +5,6 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 import type { ModuleKey } from "../modules";
-import {
-  searchTypes,
-  type SearchType,
-} from "../composables/useGlobalSearch";
 import { i18n } from "../i18n";
 
 declare module "vue-router" {
@@ -24,10 +20,6 @@ declare module "vue-router" {
     icon?: string;
     /** The key of a module page in `src/modules.ts`, or of an empty module. */
     module?: string;
-    /** The type the top bar's search looks for on the pages of a module. */
-    search?: SearchType;
-    /** `false` hides the top bar, for full-screen views. */
-    topBar?: boolean;
   }
 }
 
@@ -44,12 +36,7 @@ function moduleList(
     path,
     name: module,
     component: () => import("../views/ModuleListView.vue"),
-    meta: {
-      title: `nav.${module}`,
-      icon,
-      module,
-      search: searchTypes.find((type) => type === module),
-    },
+    meta: { title: `nav.${module}`, icon, module },
   };
 }
 
@@ -78,7 +65,7 @@ export const router = createRouter({
     },
     {
       path: "/products",
-      meta: { search: "products", breadcrumb: "nav.products", icon: "products" },
+      meta: { breadcrumb: "nav.products", icon: "products" },
       children: [
         {
           path: "",
@@ -103,7 +90,7 @@ export const router = createRouter({
     moduleList("reviews", "products"),
     {
       path: "/categories",
-      meta: { search: "categories", breadcrumb: "nav.categories", icon: "products" },
+      meta: { breadcrumb: "nav.categories", icon: "products" },
       children: [
         {
           // The tree without a selection without an id, and the selected category with one.
@@ -119,7 +106,7 @@ export const router = createRouter({
     moduleList("manufacturers", "products"),
     {
       path: "/orders",
-      meta: { search: "orders", breadcrumb: "nav.orders", icon: "shopping-bag" },
+      meta: { breadcrumb: "nav.orders", icon: "shopping-bag" },
       children: [
         {
           path: "",
@@ -137,7 +124,7 @@ export const router = createRouter({
     },
     {
       path: "/customers",
-      meta: { search: "customers", breadcrumb: "nav.customers", icon: "users" },
+      meta: { breadcrumb: "nav.customers", icon: "users" },
       children: [
         {
           path: "",
@@ -155,7 +142,7 @@ export const router = createRouter({
     },
     {
       path: "/cms",
-      meta: { search: "cms", breadcrumb: "nav.cms", icon: "image-text" },
+      meta: { breadcrumb: "nav.cms", icon: "image-text" },
       children: [
         {
           path: "",
@@ -170,7 +157,6 @@ export const router = createRouter({
           // A full-screen editor: the shell hides its regions before the page renders.
           meta: {
             title: "nav.cms",
-            topBar: false,
             mtAppRegions: { header: false, navigation: false, sidebar: false },
           },
         },
@@ -183,12 +169,6 @@ export const router = createRouter({
     moduleList("rules", "rule"),
     moduleList("flows", "rule"),
     moduleList("myExtensions", "plug", "/extensions"),
-    {
-      path: "/sales-channels/:id",
-      name: "sales-channel",
-      component: () => import("../views/ModulePlaceholderView.vue"),
-      meta: { title: "nav.salesChannels", icon: "storefront", module: "salesChannel" },
-    },
     modulePlaceholder("store", "plug"),
     {
       path: "/settings",

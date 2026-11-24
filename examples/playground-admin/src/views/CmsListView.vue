@@ -11,20 +11,21 @@ import {
   MtDropdownMenuTrigger,
   MtIcon,
   MtPage,
+  MtSearch,
   MtTabs,
   MtText,
 } from "@shopware-ag/meteor-component-library";
+import AppHeaderActions from "../components/AppHeaderActions.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useFormat } from "../composables/useFormat";
 import { layouts } from "../cmsLayouts";
-import { useGlobalSearch } from "../composables/useGlobalSearch";
 
 const { t } = useI18n();
 const format = useFormat();
 const breadcrumb = useBreadcrumb(() => t("cms.title"));
 
 const activeType = ref("all");
-const { term } = useGlobalSearch();
+const term = ref("");
 
 const tabs = computed(() =>
   (["all", "page", "landingpage", "product_list", "product_detail"] as const).map(
@@ -49,6 +50,7 @@ const visibleLayouts = computed(() => {
       <mt-button variant="primary" size="default">
         {{ t("cms.create") }}
       </mt-button>
+      <app-header-actions />
     </template>
 
     <div class="stack">
@@ -57,6 +59,12 @@ const visibleLayouts = computed(() => {
           :items="tabs"
           :default-item="activeType"
           @new-item-active="activeType = $event"
+        />
+        <mt-search
+          v-model="term"
+          class="cms-list__search"
+          size="small"
+          :placeholder="t('cms.search')"
         />
       </div>
 

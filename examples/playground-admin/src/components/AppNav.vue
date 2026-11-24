@@ -7,6 +7,7 @@ import {
   MtActionMenuItem,
   MtAppSidebar,
   MtBrand,
+  MtIcon,
   MtText,
   MtUserMenu,
   type NavItem,
@@ -123,23 +124,6 @@ const sections = computed<NavSection[]>(() => [
       },
     ],
   },
-  {
-    header: t("nav.salesChannels"),
-    items: [
-      {
-        id: "headless",
-        label: "Headless",
-        icon: "regular-shopping-basket",
-        to: "/sales-channels/headless",
-      },
-      {
-        id: "storefront",
-        label: "Storefront",
-        icon: "regular-storefront",
-        to: "/sales-channels/storefront",
-      },
-    ],
-  },
 ]);
 
 /** A row is active on its own page and on the pages below it, such as a product's detail page. */
@@ -155,6 +139,15 @@ function isActive(item: NavItem) {
   <mt-app-sidebar :sections="sections" :is-active="isActive">
     <template #start>
       <mt-brand title="Demostore" :subtitle="t('nav.administration')" />
+    </template>
+
+    <template #actions>
+      <!-- Shows where a search of the whole Administration would open; it has no function here. -->
+      <button type="button" class="app-nav__search">
+        <mt-icon name="regular-search" size="var(--scale-size-16)" decorative />
+        <span class="app-nav__search-label">{{ t("nav.search") }}</span>
+        <kbd class="app-nav__search-shortcut">⌘K</kbd>
+      </button>
     </template>
 
     <template #end>
@@ -189,6 +182,45 @@ function isActive(item: NavItem) {
 </template>
 
 <style scoped>
+.app-nav__search {
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
+  flex: 1 1 auto;
+  height: var(--scale-size-36);
+  padding-inline: var(--scale-size-12) var(--scale-size-8);
+  font: inherit;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary-default);
+  background-color: var(--color-elevation-surface-default);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  cursor: pointer;
+}
+
+.app-nav__search:hover {
+  border-color: var(--color-border-brand-default);
+}
+
+.app-nav__search:focus-visible {
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  outline-offset: var(--scale-size-2);
+}
+
+.app-nav__search-label {
+  flex: 1;
+  text-align: start;
+}
+
+.app-nav__search-shortcut {
+  padding: 0 var(--scale-size-4);
+  font-family: inherit;
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-secondary-default);
+  border: 1px solid var(--color-border-secondary-default);
+  border-radius: var(--border-radius-2xs);
+}
+
 .app-nav__version {
   padding: var(--scale-size-4) var(--scale-size-8);
 }

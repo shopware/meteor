@@ -24,6 +24,7 @@ import {
   useSnackbar,
   useTheme,
 } from "@shopware-ag/meteor-component-library";
+import AppHeaderActions from "../components/AppHeaderActions.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useCurrentUser } from "../composables/useCurrentUser";
 import {
@@ -115,6 +116,7 @@ function reset(close: () => void) {
       <mt-button variant="primary" size="default" @click="save">
         {{ t("common.save") }}
       </mt-button>
+      <app-header-actions />
     </template>
 
     <div class="stack">

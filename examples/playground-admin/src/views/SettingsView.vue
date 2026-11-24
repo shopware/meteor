@@ -10,6 +10,8 @@ import {
   MtSearch,
   MtText,
 } from "@shopware-ag/meteor-component-library";
+import AppHeaderActions from "../components/AppHeaderActions.vue";
+import { useBreadcrumb } from "../composables/useBreadcrumb";
 
 /** The settings of the Administration by group, each with its icon. Labels are below `settings.items`. */
 const groups = {
@@ -76,6 +78,7 @@ const groups = {
 } as const;
 
 const { t, locale } = useI18n();
+const breadcrumb = useBreadcrumb(() => t("settings.title"));
 
 const term = ref("");
 const isNoticeVisible = ref(true);
@@ -97,12 +100,15 @@ const visibleGroups = computed(() => {
 </script>
 
 <template>
-  <!-- Like the Administration's settings, the page has no header: the card has the title. -->
-  <mt-page width="l">
+  <mt-page width="l" :breadcrumb="breadcrumb">
+    <template #actions>
+      <app-header-actions />
+    </template>
+
     <mt-card>
       <div class="stack settings">
         <div class="settings__header">
-          <mt-text as="h1" size="xl" weight="semibold">
+          <mt-text as="h2" size="xl" weight="semibold">
             {{ t("settings.title") }}
           </mt-text>
           <mt-search

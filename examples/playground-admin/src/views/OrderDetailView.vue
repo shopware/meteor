@@ -27,9 +27,9 @@ import {
   MtTextarea,
   useSnackbar,
 } from "@shopware-ag/meteor-component-library";
-import type { Address, Order, OrderDocument } from "../../shared/types";
+import type { Address, Order } from "../../shared/types";
 import AppGrid, { type GridColumn } from "../components/AppGrid.vue";
-import LanguageSwitch from "../components/LanguageSwitch.vue";
+import AppHeaderActions from "../components/AppHeaderActions.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useFormat } from "../composables/useFormat";
 import { useOrderStates } from "../composables/useOrderStates";
@@ -175,31 +175,13 @@ const documentColumns = computed<GridColumn[]>(() => [
   },
 ]);
 
-function removeItem(id: string) {
-  if (!order.value) return;
 
-  order.value.lineItems = order.value.lineItems.filter(
-    (item) => item.id !== id,
-  );
-}
 
-function toggleSent(document: OrderDocument) {
-  document.sent = !document.sent;
-}
-
-function removeDocument(document: OrderDocument) {
-  if (!order.value) return;
-
-  order.value.documents = order.value.documents.filter(
-    (entry) => entry.id !== document.id,
-  );
-}
 </script>
 
 <template>
   <mt-page width="m" :is-loading="isLoading" :breadcrumb="breadcrumb">
     <template #actions>
-      <language-switch />
       <mt-button variant="secondary" size="default" @click="cancel">
         {{ t("common.cancel") }}
       </mt-button>
@@ -212,6 +194,7 @@ function removeDocument(document: OrderDocument) {
       >
         {{ t("common.save") }}
       </mt-button>
+      <app-header-actions />
     </template>
 
     <div class="stack">
@@ -356,63 +339,12 @@ function removeDocument(document: OrderDocument) {
               </div>
 
               <app-grid
-
                 plain
                 :caption="t('orders.items.title')"
                 :columns="itemColumns"
                 :rows="lineItems"
-              >
-                <template #cell-quantity="{ row }">
-                  {{ t("orders.items.quantityValue", { n: row.quantity }) }}
-                </template>
-
-                <template #cell-label="{ row }">
-                  <mt-link
-                    v-if="row.productId"
-                    :to="{
-                      name: 'product-detail',
-                      params: { id: row.productId },
-                    }"
-                  >
-                    {{ row.label }}
-                  </mt-link>
-                  <template v-else>{{ row.label }}</template>
-                </template>
-
-                <template #cell-unitPrice="{ row }">
-                  {{ format.currency(row.unitPrice) }}
-                </template>
-
-                <template #cell-taxRate="{ row }">
-                  {{ format.percent(row.taxRate) }}
-                </template>
-
-                <template #cell-totalPrice="{ row }">
-                  {{ format.currency(row.totalPrice) }}
-                </template>
-
-                <template #actions="{ row }">
-                  <mt-action-menu-item
-                    v-if="row.productId"
-                    icon="regular-products"
-                    @select="
-                      router.push({
-                        name: 'product-detail',
-                        params: { id: row.productId },
-                      })
-                    "
-                  >
-                    {{ t("orders.items.showProduct") }}
-                  </mt-action-menu-item>
-                  <mt-action-menu-item
-                    icon="regular-trash"
-                    variant="critical"
-                    @select="removeItem(row.id)"
-                  >
-                    {{ t("orders.items.remove") }}
-                  </mt-action-menu-item>
-                </template>
-              </app-grid>
+                actions
+              ></app-grid>
 
               <dl class="order-detail__totals">
                 <dt>{{ t("orders.summary.subtotal") }}</dt>
@@ -636,68 +568,12 @@ function removeDocument(document: OrderDocument) {
             </div>
 
             <app-grid
-
               plain
               :caption="t('orders.documents.title')"
               :columns="documentColumns"
               :rows="order.documents"
+              actions
             >
-              <template #cell-createdAt="{ row }">
-                {{ format.relativeTime(row.createdAt) }}
-              </template>
-
-              <template #cell-type="{ row }">
-                {{ t(`orders.documents.types.${row.type}`) }}
-              </template>
-
-              <template #cell-formats>PDF, HTML</template>
-
-              <template #cell-sent="{ row }">
-                <mt-icon
-                  v-if="row.sent"
-                  class="order-detail__yes"
-                  name="regular-checkmark-xs"
-                  size="var(--scale-size-12)"
-                  :aria-label="t('orders.documents.sent')"
-                />
-                <mt-icon
-                  v-else
-                  class="order-detail__no"
-                  name="regular-times-s"
-                  size="var(--scale-size-12)"
-                  :aria-label="t('orders.documents.notSent')"
-                />
-              </template>
-
-              <template #actions="{ row }">
-                <mt-action-menu-item icon="regular-eye">
-                  {{ t("orders.documents.open") }}
-                </mt-action-menu-item>
-                <mt-action-menu-item icon="regular-download">
-                  {{ t("orders.documents.download") }}
-                </mt-action-menu-item>
-                <mt-action-menu-item icon="regular-envelope">
-                  {{ t("orders.documents.send") }}
-                </mt-action-menu-item>
-                <mt-action-menu-item
-                  icon="regular-checkmark"
-                  @select="toggleSent(row)"
-                >
-                  {{
-                    row.sent
-                      ? t("orders.documents.markNotSent")
-                      : t("orders.documents.markSent")
-                  }}
-                </mt-action-menu-item>
-                <mt-action-menu-item
-                  icon="regular-trash"
-                  variant="critical"
-                  @select="removeDocument(row)"
-                >
-                  {{ t("common.delete") }}
-                </mt-action-menu-item>
-              </template>
-
               <template #empty>
                 <mt-empty-state
                   icon="regular-file-text"

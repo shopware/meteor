@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, shallowRef, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
 import {
-  MtActionMenuItem,
   MtButton,
   MtCard,
   MtChart,
   MtHelpText,
   MtIcon,
-  MtLink,
   MtPage,
   MtSelect,
   MtText,
@@ -18,14 +15,14 @@ import {
 import type { Order, OrderStatistics } from "../../shared/types";
 import { orderStatistics } from "../../server/repository";
 import AppGrid, { type GridColumn } from "../components/AppGrid.vue";
-import OrderBadge from "../components/OrderBadge.vue";
+import AppHeaderActions from "../components/AppHeaderActions.vue";
+import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useCurrentUser } from "../composables/useCurrentUser";
 import { useFormat } from "../composables/useFormat";
 import { useRepository } from "../composables/useRepository";
 import { useRequest } from "../composables/useRequest";
 
 const { t } = useI18n();
-const router = useRouter();
 const format = useFormat();
 const { request } = useRequest();
 const orderRepository = useRepository("order");
@@ -46,6 +43,8 @@ const greeting = computed(() =>
   t(`dashboard.greeting.${daytime.value}`, { name: user.firstName }),
 );
 
+
+const breadcrumb = useBreadcrumb(() => t("nav.dashboard"));
 
 /** The help links of the "Get ready to sell" card. */
 const getReadyLinks = ["helpCenter", "firstSale", "salesChannels"] as const;
@@ -87,10 +86,6 @@ const orderColumns = computed<GridColumn[]>(() => [
 const today = computed(() =>
   format.shortDate(new Date().toISOString()),
 );
-
-function openOrder(order: Order) {
-  router.push({ name: "order-detail", params: { id: order.id } });
-}
 
 const rangeOptions = computed(() =>
   [30, 14, 7].map((days) => ({
@@ -167,11 +162,14 @@ const turnoverOptions = computed<ChartOptions>(() => ({
 </script>
 
 <template>
-  <!-- Like the Administration's dashboard, the page has no header: the greeting is its title. -->
-  <mt-page width="m">
+  <mt-page width="m" :breadcrumb="breadcrumb">
+    <template #actions>
+      <app-header-actions />
+    </template>
+
     <div class="stack dashboard">
       <header class="dashboard__welcome">
-        <mt-text as="h1" size="2xl" weight="semibold">{{ greeting }}</mt-text>
+        <mt-text as="h2" size="2xl" weight="semibold">{{ greeting }}</mt-text>
         <mt-text size="s" color="color-text-secondary-default">
           {{ t(`dashboard.subline.${daytime}`) }}
         </mt-text>
@@ -251,51 +249,14 @@ const turnoverOptions = computed<ChartOptions>(() => ({
             </div>
 
             <app-grid
-
               plain
               :caption="t('dashboard.todaysOrders')"
               :columns="orderColumns"
               :rows="todaysOrders"
               :is-loading="isLoading"
               :skeleton-rows="3"
-              clickable
-              @open="openOrder"
-            >
-              <template #cell-orderNumber="{ row }">
-                <mt-link :to="{ name: 'order-detail', params: { id: row.id } }">
-                  {{ row.orderNumber }}
-                </mt-link>
-              </template>
-
-              <template #cell-orderDateTime="{ row }">
-                {{ format.relativeTime(row.orderDateTime) }}
-              </template>
-
-              <template #cell-customerName="{ row }">
-                <mt-link
-                  :to="{
-                    name: 'customer-detail',
-                    params: { id: row.customer.id },
-                  }"
-                >
-                  {{ row.customer.firstName }} {{ row.customer.lastName }}
-                </mt-link>
-              </template>
-
-              <template #cell-state="{ row }">
-                <order-badge machine="order" :state="row.state" />
-              </template>
-
-              <template #cell-amountTotal="{ row }">
-                {{ format.currency(row.amountTotal) }}
-              </template>
-
-              <template #actions="{ row }">
-                <mt-action-menu-item icon="regular-eye" @select="openOrder(row)">
-                  {{ t("common.view") }}
-                </mt-action-menu-item>
-              </template>
-            </app-grid>
+              actions
+            ></app-grid>
           </template>
         </mt-card>
       </template>

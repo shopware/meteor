@@ -6,7 +6,8 @@ import type { BreadcrumbItem } from "@shopware-ag/meteor-component-library";
 /**
  * The breadcrumb of the current page for `mt-page`: the sections from the `breadcrumb` meta of the
  * matched routes, then `parents`, the levels only the page knows, such as the parents of a
- * category, then the page itself labelled with `title`.
+ * category, then the page itself labelled with `title`. The first item shows the section's `icon`
+ * meta.
  */
 export function useBreadcrumb(
   title: () => string,
@@ -27,7 +28,8 @@ export function useBreadcrumb(
       return [{ label: t(label), to: record.path }];
     });
 
-    // Like the Administration's smart bar, the title has no section icon.
-    return [...sections, ...parents(), { label: title() }];
+    const [first, ...rest] = [...sections, ...parents(), { label: title() }];
+
+    return [{ ...first, icon: route.meta.icon }, ...rest];
   });
 }

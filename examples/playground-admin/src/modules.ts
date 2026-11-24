@@ -1,4 +1,3 @@
-import type { BadgeVariant } from "./components/ModuleCell.vue";
 import { manufacturers, products, salesChannels } from "../server/catalog";
 import { customerAccounts } from "../server/orders";
 import { createRandom } from "../server/random";
@@ -8,23 +7,9 @@ import { createRandom } from "../server/random";
  * the header and the rows. Labels are i18n keys below `modules.<key>`.
  */
 
-export type CellType =
-  | "link"
-  | "text"
-  | "number"
-  | "boolean"
-  | "stars"
-  | "relative"
-  | "date"
-  | "badge"
-  | "media";
-
 export interface ModuleColumn {
   key: string;
-  type?: CellType;
   align?: "start" | "end" | "center";
-  /** The badge variant per value, for `badge` cells. */
-  variants?: Record<string, BadgeVariant>;
 }
 
 export interface ModuleConfig {
@@ -212,90 +197,78 @@ export const modules = {
   reviews: {
     add: false,
     columns: [
-      { key: "title", type: "link" },
-      { key: "points", type: "stars" },
+      { key: "title" },
+      { key: "points" },
       { key: "product" },
       { key: "customer" },
-      { key: "createdAt", type: "relative" },
-      { key: "status", type: "boolean", align: "center" },
-      { key: "comment", type: "boolean", align: "center" },
+      { key: "createdAt" },
+      { key: "status", align: "center" },
+      { key: "comment", align: "center" },
     ],
     rows: reviews,
   },
   productStreams: {
     add: true,
     columns: [
-      { key: "name", type: "link" },
+      { key: "name" },
       { key: "description" },
-      { key: "updatedAt", type: "relative", align: "end" },
-      {
-        key: "status",
-        type: "badge",
-        variants: { Valid: "positive", Invalid: "critical" },
-      },
+      { key: "updatedAt", align: "end" },
+      { key: "status" },
     ],
     rows: productStreams,
   },
   properties: {
     add: true,
     columns: [
-      { key: "name", type: "link" },
+      { key: "name" },
       { key: "values" },
       { key: "description" },
-      { key: "filterable", type: "boolean", align: "center" },
+      { key: "filterable", align: "center" },
     ],
     rows: properties,
   },
   manufacturers: {
     add: true,
-    columns: [{ key: "name", type: "media" }, { key: "website" }],
+    columns: [{ key: "name" }, { key: "website" }],
     rows: manufacturerRows,
   },
   promotions: {
     add: true,
     columns: [
-      { key: "name", type: "link" },
-      { key: "active", type: "boolean", align: "center" },
-      { key: "validFrom", type: "date" },
-      { key: "validUntil", type: "date" },
+      { key: "name" },
+      { key: "active", align: "center" },
+      { key: "validFrom" },
+      { key: "validUntil" },
     ],
     rows: promotions,
   },
   newsletter: {
     add: false,
     columns: [
-      { key: "email", type: "link" },
+      { key: "email" },
       { key: "firstName" },
       { key: "lastName" },
-      {
-        key: "status",
-        type: "badge",
-        variants: {
-          Subscribed: "positive",
-          "Not yet confirmed": "attention",
-          Unsubscribed: "neutral",
-        },
-      },
+      { key: "status" },
       { key: "salesChannel" },
-      { key: "createdAt", type: "relative" },
+      { key: "createdAt" },
     ],
     rows: newsletter,
   },
   rules: {
     add: true,
     columns: [
-      { key: "name", type: "link" },
-      { key: "priority", type: "number", align: "end" },
+      { key: "name" },
+      { key: "priority", align: "end" },
       { key: "description" },
-      { key: "updatedAt", type: "relative" },
+      { key: "updatedAt" },
     ],
     rows: rules,
   },
   flows: {
     add: true,
     columns: [
-      { key: "name", type: "link" },
-      { key: "active", type: "boolean", align: "center" },
+      { key: "name" },
+      { key: "active", align: "center" },
       { key: "trigger" },
       { key: "description" },
     ],
@@ -304,11 +277,11 @@ export const modules = {
   myExtensions: {
     add: false,
     columns: [
-      { key: "name", type: "media" },
+      { key: "name" },
       { key: "producer" },
       { key: "version", align: "end" },
-      { key: "active", type: "boolean", align: "center" },
-      { key: "installedAt", type: "relative" },
+      { key: "active", align: "center" },
+      { key: "installedAt" },
     ],
     rows: extensions,
   },

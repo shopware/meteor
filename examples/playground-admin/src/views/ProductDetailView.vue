@@ -31,7 +31,7 @@ import {
 } from "@shopware-ag/meteor-component-library";
 import type { Product } from "../../shared/types";
 import AppGrid, { type GridColumn } from "../components/AppGrid.vue";
-import LanguageSwitch from "../components/LanguageSwitch.vue";
+import AppHeaderActions from "../components/AppHeaderActions.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useDuplicateProduct } from "../composables/useDuplicateProduct";
 import { useFormat } from "../composables/useFormat";
@@ -323,7 +323,6 @@ const properties = computed(() => {
 <template>
   <mt-page width="m" :is-loading="isLoading" :breadcrumb="breadcrumb">
     <template #actions>
-      <language-switch />
       <mt-button variant="secondary" size="default" @click="cancel">
         {{ t("common.cancel") }}
       </mt-button>
@@ -364,6 +363,7 @@ const properties = computed(() => {
           </mt-dropdown-menu-portal>
         </mt-dropdown-menu-root>
       </div>
+      <app-header-actions />
     </template>
 
     <div class="stack">
@@ -801,13 +801,8 @@ const properties = computed(() => {
                 :caption="t('products.cards.properties')"
                 :columns="propertyColumns"
                 :rows="properties"
-              >
-                <template #actions>
-                  <mt-action-menu-item icon="regular-trash" variant="critical">
-                    {{ t("common.delete") }}
-                  </mt-action-menu-item>
-                </template>
-              </app-grid>
+                actions
+              ></app-grid>
             </template>
           </mt-card>
 

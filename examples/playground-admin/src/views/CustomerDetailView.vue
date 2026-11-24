@@ -16,8 +16,7 @@ import {
 } from "@shopware-ag/meteor-component-library";
 import type { Address, CustomerAccount, Order } from "../../shared/types";
 import AppGrid, { type GridColumn } from "../components/AppGrid.vue";
-import LanguageSwitch from "../components/LanguageSwitch.vue";
-import OrderStatus from "../components/OrderStatus.vue";
+import AppHeaderActions from "../components/AppHeaderActions.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useFormat } from "../composables/useFormat";
 import { useRepository } from "../composables/useRepository";
@@ -96,10 +95,10 @@ function addressLines(address: Address) {
 <template>
   <mt-page width="m" :is-loading="isLoading" :breadcrumb="breadcrumb">
     <template #actions>
-      <language-switch />
       <mt-button variant="primary" size="default" :disabled="!customer">
         {{ t("common.edit") }}
       </mt-button>
+      <app-header-actions />
     </template>
 
     <div class="stack">
@@ -278,30 +277,7 @@ function addressLines(address: Address) {
               :caption="t('customers.cards.orders')"
               :columns="orderColumns"
               :rows="orders"
-              clickable
-              @open="
-                router.push({ name: 'order-detail', params: { id: $event.id } })
-              "
             >
-              <template #cell-orderNumber="{ row }">
-                <mt-link
-                  :to="{ name: 'order-detail', params: { id: row.id } }"
-                >
-                  {{ row.orderNumber }}
-                </mt-link>
-              </template>
-              <template #cell-amountTotal="{ row }">
-                {{ format.currency(row.amountTotal) }}
-              </template>
-              <template #cell-state="{ row }">
-                <order-status machine="order" :state="row.state" />
-              </template>
-              <template #cell-paymentState="{ row }">
-                <order-status machine="payment" :state="row.paymentState" />
-              </template>
-              <template #cell-orderDateTime="{ row }">
-                {{ format.date(row.orderDateTime) }}
-              </template>
               <template #empty>
                 <mt-empty-state
                   icon="regular-shopping-bag"

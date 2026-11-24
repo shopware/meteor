@@ -3,17 +3,15 @@ import { computed, ref, shallowRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import {
-  MtActionMenuItem,
   MtButton,
   MtEmptyState,
   MtPage,
+  MtSearch,
 } from "@shopware-ag/meteor-component-library";
 import AppGrid, { type GridColumn } from "../components/AppGrid.vue";
 import AppPagination from "../components/AppPagination.vue";
-import LanguageSwitch from "../components/LanguageSwitch.vue";
-import ModuleCell from "../components/ModuleCell.vue";
+import AppHeaderActions from "../components/AppHeaderActions.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
-import { useGlobalSearch } from "../composables/useGlobalSearch";
 import { useRequest } from "../composables/useRequest";
 import { modules, type ModuleKey, type ModuleConfig } from "../modules";
 
@@ -31,20 +29,16 @@ const config = computed<ModuleConfig>(() => modules[key.value]);
 
 const rows = shallowRef<Record<string, unknown>[]>([]);
 const isLoading = ref(true);
-const { term } = useGlobalSearch();
+const term = ref("");
 const page = ref(1);
 const limit = ref(25);
-const sortBy = ref<string>();
-const sortDirection = ref<"ASC" | "DESC">("ASC");
-const selection = ref<string[]>([]);
 
 watch(
   key,
   async () => {
     isLoading.value = true;
+    term.value = "";
     page.value = 1;
-    sortBy.value = undefined;
-    selection.value = [];
     rows.value = await request(() => config.value.rows());
     isLoading.value = false;
   },
@@ -64,100 +58,51 @@ const columns = computed<GridColumn[]>(() =>
     key: column.key,
     label: t(`modules.${key.value}.columns.${column.key}`),
     align: column.align,
-    sortable: true,
   })),
 );
 
+/** The rows matching the search, which the grid shows as skeleton rows. */
 const filtered = computed(() => {
   const search = term.value.trim().toLowerCase();
-  const matching = search
+
+  return search
     ? rows.value.filter((row) =>
         Object.values(row).some((value) =>
           String(value ?? "").toLowerCase().includes(search),
         ),
       )
     : rows.value;
-
-  if (!sortBy.value) return matching;
-
-  const property = sortBy.value;
-  const direction = sortDirection.value === "ASC" ? 1 : -1;
-
-  return [...matching].sort(
-    (a, b) =>
-      String(a[property] ?? "").localeCompare(String(b[property] ?? ""), undefined, {
-        numeric: true,
-      }) * direction,
-  );
 });
 
-const visibleRows = computed(
-  () =>
-    filtered.value.slice(
-      (page.value - 1) * limit.value,
-      page.value * limit.value,
-    ) as { id: string }[],
+const visibleRows = computed(() =>
+  filtered.value.slice((page.value - 1) * limit.value, page.value * limit.value),
 );
 
 watch([term, limit], () => (page.value = 1));
-
-function onSort(property: string, direction: "ASC" | "DESC") {
-  sortBy.value = property;
-  sortDirection.value = direction;
-}
-
-function cell(row: unknown, property: string) {
-  return (row as Record<string, unknown>)[property];
-}
 </script>
 
 <template>
   <mt-page inset :breadcrumb="breadcrumb">
     <template #actions>
-      <language-switch v-if="key !== 'reviews'" />
       <mt-button v-if="config.add" variant="primary" size="default">
         {{ t(`modules.${key}.add`) }}
       </mt-button>
+      <app-header-actions />
     </template>
 
     <div class="listing">
+      <div class="listing__toolbar">
+        <mt-search v-model="term" size="small" :placeholder="t('common.searchIn', { title })" />
+      </div>
+
       <app-grid
-        v-model:selection="selection"
         :caption="title"
         :columns="columns"
         :rows="visibleRows"
         :is-loading="isLoading"
-        :sort-by="sortBy"
-        :sort-direction="sortDirection"
         selectable
-        @sort="onSort"
+        actions
       >
-        <template
-          v-for="column in config.columns"
-          :key="column.key"
-          #[`cell-${column.key}`]="{ row }"
-        >
-          <module-cell :column="column" :value="cell(row, column.key)" />
-        </template>
-
-        <template #actions>
-          <mt-action-menu-item icon="regular-pencil-s">
-            {{ t("common.edit") }}
-          </mt-action-menu-item>
-          <mt-action-menu-item icon="regular-trash" variant="critical">
-            {{ t("common.delete") }}
-          </mt-action-menu-item>
-        </template>
-
-        <template #bulk>
-          <mt-button variant="tertiary" size="small" @click="selection = []">
-            {{ t("grid.deselectAll") }}
-          </mt-button>
-          <mt-button variant="critical" size="small">
-            {{ t("common.delete") }}
-          </mt-button>
-        </template>
-
         <template #empty>
           <mt-empty-state
             icon="regular-search"

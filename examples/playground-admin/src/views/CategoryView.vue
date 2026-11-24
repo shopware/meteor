@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, shallowRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import {
   MtButton,
   MtCard,
   MtEmptyState,
   MtIcon,
-  MtLink,
   MtPage,
   MtPanel,
   MtSelect,
@@ -20,21 +19,18 @@ import {
   MtTextarea,
   useSnackbar,
 } from "@shopware-ag/meteor-component-library";
-import type { Category, Product } from "../../shared/types";
+import type { Category } from "../../shared/types";
 import AppGrid, { type GridColumn } from "../components/AppGrid.vue";
-import LanguageSwitch from "../components/LanguageSwitch.vue";
 import AppPagination from "../components/AppPagination.vue";
 import CategoryTree from "../components/CategoryTree.vue";
 import MediaThumbnail from "../components/MediaThumbnail.vue";
+import AppHeaderActions from "../components/AppHeaderActions.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
-import { useFormat } from "../composables/useFormat";
 import { useListing } from "../composables/useListing";
 import { useRepository } from "../composables/useRepository";
 
 const { t } = useI18n();
 const route = useRoute();
-const router = useRouter();
-const format = useFormat();
 const { addSnackbar } = useSnackbar();
 const categoryRepository = useRepository("category");
 const salesChannelRepository = useRepository("salesChannel");
@@ -195,9 +191,6 @@ const {
   isLoading: isLoadingProducts,
   page,
   limit,
-  sortBy,
-  sortDirection,
-  onSortChange,
 } = useListing("product", {
   sortBy: "name",
   limit: 10,
@@ -205,48 +198,42 @@ const {
 });
 
 const productColumns = computed<GridColumn[]>(() => [
-  { key: "name", label: t("products.columns.name"), sortable: true },
+  { key: "name", label: t("products.columns.name") },
   {
     key: "productNumber",
-    label: t("products.columns.productNumber"),
-    sortable: true,
+    label: t("products.columns.productNumber")
   },
   {
     key: "price.gross",
     label: t("products.columns.price"),
-    align: "end",
-    sortable: true,
+    align: "end"
   },
 ]);
 
-/** The property contains a dot, which a static slot name would read as a modifier. */
-const priceSlot = "cell-price.gross";
-
-function openProduct(product: Product) {
-  router.push({ name: "product-detail", params: { id: product.id } });
-}
 </script>
 
 <template>
   <mt-page width="m" :is-loading="isLoading" :breadcrumb="breadcrumb">
-    <template v-if="category" #actions>
-      <language-switch />
-      <mt-button
-        variant="secondary"
-        size="default"
-        :disabled="!isDirty"
-        @click="resetDraft"
-      >
-        {{ t("common.cancel") }}
-      </mt-button>
-      <mt-button
-        variant="primary"
-        size="default"
-        :disabled="!isDirty"
-        @click="save"
-      >
-        {{ t("common.save") }}
-      </mt-button>
+    <template #actions>
+      <template v-if="category">
+        <mt-button
+          variant="secondary"
+          size="default"
+          :disabled="!isDirty"
+          @click="resetDraft"
+        >
+          {{ t("common.cancel") }}
+        </mt-button>
+        <mt-button
+          variant="primary"
+          size="default"
+          :disabled="!isDirty"
+          @click="save"
+        >
+          {{ t("common.save") }}
+        </mt-button>
+      </template>
+      <app-header-actions />
     </template>
 
     <template #start>
@@ -428,28 +415,8 @@ function openProduct(product: Product) {
             :columns="productColumns"
             :rows="products"
             :is-loading="isLoadingProducts"
-            :sort-by="sortBy"
-            :sort-direction="sortDirection"
             :skeleton-rows="5"
-            clickable
-            @sort="onSortChange"
-            @open="openProduct"
           >
-            <template #cell-name="{ row }">
-              <div class="cell-media">
-                <media-thumbnail />
-                <mt-link
-                  :to="{ name: 'product-detail', params: { id: row.id } }"
-                >
-                  {{ row.name }}
-                </mt-link>
-              </div>
-            </template>
-
-            <template #[priceSlot]="{ row }">
-              {{ format.currency(row.price.gross) }}
-            </template>
-
             <template #empty>
               <mt-empty-state
                 icon="regular-products"

@@ -6,6 +6,7 @@ import {
   MtEmptyState,
   MtPage,
 } from "@shopware-ag/meteor-component-library";
+import AppHeaderActions from "../components/AppHeaderActions.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 
 const { t } = useI18n();
@@ -15,6 +16,10 @@ const breadcrumb = useBreadcrumb(() => t("notFound.title"));
 
 <template>
   <mt-page width="m" :breadcrumb="breadcrumb">
+    <template #actions>
+      <app-header-actions />
+    </template>
+
     <mt-empty-state
       icon="regular-map"
       :headline="t('notFound.title')"
