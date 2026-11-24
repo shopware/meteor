@@ -66,13 +66,8 @@ const nestedItems: NavItem[] = [
     label: "Products",
     icon: "products",
     children: [
-      {
-        label: "Catalogue",
-        children: [
-          { label: "Overview", to: { name: "product.index" } },
-          { label: "Reviews", to: { name: "review.index" } },
-        ],
-      },
+      { label: "Overview", to: { name: "product.index" } },
+      { label: "Reviews", to: { name: "review.index" } },
       {
         label: "Categories",
         children: [
