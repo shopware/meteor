@@ -102,9 +102,8 @@ const hasIcon = computed(() => !!props.icon || !!resolved.value.category);
 const variant = computed<"broken" | "format" | "icon" | "empty">(() => {
   if (props.broken) return "broken";
   if (!hasIcon.value) return "empty";
-  // A fluid icon hides a label that gets too small with a container query instead
-  const isLargeEnough = props.size === "fluid" || props.size >= 40;
-  if (props.showFormat && resolved.value.format && isLargeEnough) return "format";
+  // A container query hides a label that gets too small, whatever sets the width of the icon
+  if (props.showFormat && resolved.value.format) return "format";
 
   return "icon";
 });
@@ -273,6 +272,8 @@ const iconStyle = computed(() => {
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .mt-file-icon__format--pdf {

@@ -91,13 +91,13 @@ describe("mt-file-icon", () => {
     expect(getFormat(container)).not.toBeInTheDocument();
   });
 
-  it("hides the format label below a size of 40", () => {
+  it("leaves hiding the format label of a small icon to its container query", () => {
     // ARRANGE
     const { container } = render(MtFileIcon, { props: { fileName: "sheet.xlsx", size: 32 } });
 
     // ASSERT
-    expect(getRoot(container)).toHaveClass("mt-file-icon--icon");
-    expect(getFormat(container)).not.toBeInTheDocument();
+    expect(getRoot(container)).toHaveClass("mt-file-icon--format");
+    expect(getFormat(container)).toHaveTextContent("XLSX");
   });
 
   it("shows the broken preview over everything else", () => {
