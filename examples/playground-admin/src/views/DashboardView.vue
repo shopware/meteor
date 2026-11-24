@@ -12,20 +12,17 @@ import {
   MtText,
   type ChartOptions,
 } from "@shopware-ag/meteor-component-library";
-import type { Order, OrderStatistics } from "../../shared/types";
+import type { OrderStatistics } from "../../shared/types";
 import { orderStatistics } from "../../server/repository";
-import AppGrid, { type GridColumn } from "../components/AppGrid.vue";
 import AppHeaderActions from "../components/AppHeaderActions.vue";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useCurrentUser } from "../composables/useCurrentUser";
 import { useFormat } from "../composables/useFormat";
-import { useRepository } from "../composables/useRepository";
 import { useRequest } from "../composables/useRequest";
 
 const { t } = useI18n();
 const format = useFormat();
 const { request } = useRequest();
-const orderRepository = useRepository("order");
 const user = useCurrentUser();
 
 /** The part of the day, which picks the greeting and its subline, as in the Administration. */
@@ -43,7 +40,6 @@ const greeting = computed(() =>
   t(`dashboard.greeting.${daytime.value}`, { name: user.firstName }),
 );
 
-
 const breadcrumb = useBreadcrumb(() => t("nav.dashboard"));
 
 /** The help links of the "Get ready to sell" card. */
@@ -51,41 +47,12 @@ const getReadyLinks = ["helpCenter", "firstSale", "salesChannels"] as const;
 
 const isLoading = ref(true);
 const statistics = shallowRef<OrderStatistics | null>(null);
-const todaysOrders = shallowRef<Order[]>([]);
-
 async function load() {
-  const [loadedStatistics, latestOrders] = await Promise.all([
-    request(() => orderStatistics(30)),
-    orderRepository.search({
-      page: 1,
-      limit: 10,
-      sortBy: "orderDateTime",
-      sortDirection: "DESC",
-    }),
-  ]);
-
-  const today = new Date().toDateString();
-
-  statistics.value = loadedStatistics;
-  todaysOrders.value = latestOrders.data.filter(
-    (order) => new Date(order.orderDateTime).toDateString() === today,
-  );
+  statistics.value = await request(() => orderStatistics(30));
   isLoading.value = false;
 }
 
 load();
-
-const orderColumns = computed<GridColumn[]>(() => [
-  { key: "orderNumber", label: t("dashboard.columns.orderNumber") },
-  { key: "orderDateTime", label: t("dashboard.columns.time") },
-  { key: "customerName", label: t("dashboard.columns.customer") },
-  { key: "state", label: t("dashboard.columns.state") },
-  { key: "amountTotal", label: t("dashboard.columns.total"), align: "end" },
-]);
-
-const today = computed(() =>
-  format.shortDate(new Date().toISOString()),
-);
 
 const rangeOptions = computed(() =>
   [30, 14, 7].map((days) => ({
@@ -149,6 +116,7 @@ const turnoverSeries = computed(() => [
 ]);
 
 const ordersOptions = computed<ChartOptions>(() => ({
+  stroke: { curve: "smooth" },
   xaxis: ordersAxis.value,
   yaxis: {
     labels: { formatter: (value: number) => format.number(Math.round(value)) },
@@ -156,6 +124,7 @@ const ordersOptions = computed<ChartOptions>(() => ({
 }));
 
 const turnoverOptions = computed<ChartOptions>(() => ({
+  stroke: { curve: "smooth" },
   xaxis: turnoverAxis.value,
   yaxis: { labels: { formatter: (value: number) => format.currency(value) } },
 }));
@@ -217,50 +186,6 @@ const turnoverOptions = computed<ChartOptions>(() => ({
         </mt-card>
       </div>
 
-      <template v-if="isLoading || todaysOrders.length > 0">
-        <div class="dashboard__section-title">
-          <mt-text as="h2" size="l" weight="semibold">
-            {{ t("dashboard.todaysStatistics") }}
-          </mt-text>
-          <mt-text size="s" color="color-text-secondary-default">
-            {{ today }}
-          </mt-text>
-        </div>
-
-        <mt-card :is-loading="isLoading">
-          <template #grid>
-            <div class="dashboard__kpis">
-              <div>
-                <mt-text size="xs" color="color-text-secondary-default">
-                  {{ t("dashboard.ordersToday") }}
-                </mt-text>
-                <mt-text size="2xl" weight="semibold">
-                  {{ format.number(statistics?.today.orders ?? 0) }}
-                </mt-text>
-              </div>
-              <div>
-                <mt-text size="xs" color="color-text-secondary-default">
-                  {{ t("dashboard.totalToday") }}
-                </mt-text>
-                <mt-text size="2xl" weight="semibold">
-                  {{ format.currency(statistics?.today.total ?? 0) }}
-                </mt-text>
-              </div>
-            </div>
-
-            <app-grid
-              plain
-              :caption="t('dashboard.todaysOrders')"
-              :columns="orderColumns"
-              :rows="todaysOrders"
-              :is-loading="isLoading"
-              :skeleton-rows="3"
-              actions
-            ></app-grid>
-          </template>
-        </mt-card>
-      </template>
-
       <mt-card
         :title="t('dashboard.ordersChart')"
         :subtitle="ordersSubtitle"
@@ -279,7 +204,6 @@ const turnoverOptions = computed<ChartOptions>(() => ({
 
         <mt-chart
           v-if="statistics"
-          type="line"
           :series="ordersSeries"
           :options="ordersOptions"
         />
@@ -312,7 +236,6 @@ const turnoverOptions = computed<ChartOptions>(() => ({
 
         <mt-chart
           v-if="statistics"
-          type="line"
           :series="turnoverSeries"
           :options="turnoverOptions"
         />
@@ -353,23 +276,6 @@ const turnoverOptions = computed<ChartOptions>(() => ({
   text-decoration: underline;
 }
 
-.dashboard__section-title {
-  display: flex;
-  align-items: baseline;
-  gap: var(--scale-size-12);
-  margin-block-start: var(--scale-size-8);
-}
 
-.dashboard__kpis {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--scale-size-24);
-  padding: var(--scale-size-24);
-  border-block-end: 1px solid var(--color-border-secondary-default);
-}
 
-.dashboard__kpis > div {
-  display: grid;
-  gap: var(--scale-size-4);
-}
 </style>

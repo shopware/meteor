@@ -107,10 +107,6 @@ export const de: Messages = {
       text: "Teile deine ersten Eindrücke und hilf uns, das Shopware-Erlebnis zu verbessern.",
       button: "Feedback geben",
     },
-    todaysStatistics: "Heutige Statistiken",
-    ordersToday: "Bestellungen",
-    totalToday: "Gesamtwert",
-    todaysOrders: "Heutige Bestellungen",
     ordersChart: "Bestellungen",
     ordersSeries: "Anzahl",
     turnoverChart: "Umsatz",
@@ -120,13 +116,6 @@ export const de: Messages = {
     range: "Zeitraum",
     ranges: {
       days: "Letzte {n} Tage",
-    },
-    columns: {
-      orderNumber: "Bestellnummer",
-      time: "Uhrzeit",
-      customer: "Kundenname",
-      state: "Bestellstatus",
-      total: "Gesamt",
     },
   },
   products: {

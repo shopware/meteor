@@ -105,10 +105,6 @@ export const en = {
       text: "Share your first impressions and help us improve the overall Shopware experience.",
       button: "Give feedback",
     },
-    todaysStatistics: "Today's statistics",
-    ordersToday: "Orders",
-    totalToday: "Total value",
-    todaysOrders: "Today's orders",
     ordersChart: "Orders",
     ordersSeries: "Count",
     turnoverChart: "Turnover",
@@ -118,13 +114,6 @@ export const en = {
     range: "Time range",
     ranges: {
       days: "Last {n} days",
-    },
-    columns: {
-      orderNumber: "Order number",
-      time: "Time",
-      customer: "Customer name",
-      state: "Order status",
-      total: "Total",
     },
   },
   products: {
