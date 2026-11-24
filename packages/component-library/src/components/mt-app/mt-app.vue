@@ -356,7 +356,6 @@ function focusContent() {
   mainElement.value?.focus({ preventScroll: true });
 }
 
-/** Moves the focus to the region below the announcement: the header while it shows, or the content. */
 function focusBelowAnnouncement() {
   if (headerElement.value && !hiddenRegions.value.header) {
     headerElement.value.focus({ preventScroll: true });

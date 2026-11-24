@@ -72,8 +72,6 @@ const { t } = useI18n({
 </script>
 
 <style scoped>
-/* The variants tint the background, keep the regular text color and draw a light line in their
-   color along the bottom edge. */
 .mt-announcement {
   display: flex;
   align-items: flex-start;
@@ -92,7 +90,6 @@ const { t } = useI18n({
   flex: 1;
   min-width: 0;
   text-align: center;
-  /* Long words and URLs break instead of making the page wider. */
   overflow-wrap: anywhere;
 }
 
@@ -164,7 +161,6 @@ const { t } = useI18n({
   outline-offset: var(--scale-size-2);
 }
 
-/* Links run with the text and take its color, which stays readable on every variant. */
 .mt-announcement :deep(a) {
   display: inline;
   color: inherit;
