@@ -2,8 +2,9 @@ import MtModal from "./mt-modal.vue";
 import MtModalRoot from "./sub-components/mt-modal-root.vue";
 import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtModalAction from "./sub-components/mt-modal-action.vue";
+import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
 import { render, screen, fireEvent, waitFor } from "@testing-library/vue";
-import { ref } from "vue";
+import { nextTick, ref, type Ref } from "vue";
 
 describe("mt-modal", () => {
   it("the modal is hidden by default", () => {
@@ -81,6 +82,75 @@ describe("mt-modal", () => {
     await waitFor(() => {
       expect(screen.getByRole("dialog")).toHaveFocus();
     });
+  });
+
+  async function renderModalWithFloatingUi(isOpened: Ref<boolean>) {
+    render({
+      components: { MtModal, MtModalRoot, MtModalTrigger, MtFloatingUi },
+      setup() {
+        return { isOpened };
+      },
+      template: `
+<button>Outside</button>
+<mt-modal-root>
+  <mt-modal-trigger as="button">Open modal</mt-modal-trigger>
+  <mt-modal title="title">
+    <mt-floating-ui :is-opened="isOpened">
+      <template #trigger><button>Popover trigger</button></template>
+      <input aria-label="Search" />
+    </mt-floating-ui>
+  </mt-modal>
+</mt-modal-root>`,
+    });
+
+    await fireEvent.click(screen.getByRole("button", { name: "Open modal" }));
+    await waitFor(() => {
+      expect(screen.getByRole("dialog")).toHaveFocus();
+    });
+  }
+
+  it("lets an input inside an open mt-floating-ui keep focus although the content is teleported out of the modal", async () => {
+    // ARRANGE
+    await renderModalWithFloatingUi(ref(true));
+    const input = screen.getByRole("textbox", { name: "Search" });
+
+    // ACT
+    input.focus();
+
+    // ASSERT
+    expect(screen.getByRole("dialog")).not.toContainElement(input);
+    expect(input).toHaveFocus();
+  });
+
+  it("lets an input inside an mt-floating-ui that opens after the modal keep focus", async () => {
+    // ARRANGE
+    const isOpened = ref(false);
+    await renderModalWithFloatingUi(isOpened);
+    isOpened.value = true;
+    const input = await screen.findByRole("textbox", { name: "Search" });
+    await nextTick();
+
+    // ACT
+    input.focus();
+
+    // ASSERT
+    expect(input).toHaveFocus();
+  });
+
+  it("still keeps focus out of the page when an mt-floating-ui opens after the modal", async () => {
+    // ARRANGE
+    const isOpened = ref(false);
+    await renderModalWithFloatingUi(isOpened);
+    isOpened.value = true;
+    await screen.findByRole("textbox", { name: "Search" });
+    await nextTick();
+    const outside = screen.getByRole("button", { name: "Outside" });
+
+    // ACT
+    outside.focus();
+
+    // ASSERT
+    expect(outside).not.toHaveFocus();
   });
 
   it("opens the modal when clicking the trigger when 'isOpen' gets changed", async () => {

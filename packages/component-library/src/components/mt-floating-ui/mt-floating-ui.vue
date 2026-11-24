@@ -46,6 +46,7 @@ import {
   hide,
 } from "@floating-ui/dom";
 import { vOnClickOutside } from "@vueuse/components";
+import { useModalFocusTrapContainer } from "@/components/mt-modal/composables/useModalFocusTrapContainer";
 
 export type MtFloatingUiProps = {
   isOpened: boolean;
@@ -83,6 +84,8 @@ const floatingUi = ref<HTMLElement | null>(null);
 const referenceElementHeight = ref<number>(0);
 const referenceElementWidth = ref<number>(0);
 let cleanup: () => void;
+
+useModalFocusTrapContainer(floatingUiContent);
 
 const originalParentContainer = floatingUiContent.value?.parentElement;
 
