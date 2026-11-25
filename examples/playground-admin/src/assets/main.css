@@ -138,3 +138,11 @@
 .form-row .mt-field {
   margin-block-end: 0;
 }
+
+/* A still placeholder line, in the color and shape of mt-skeleton-bar without its shimmer. */
+.skeleton-line {
+  display: block;
+  height: var(--scale-size-12);
+  background-color: var(--color-background-tertiary-default);
+  border-radius: var(--border-radius-xs);
+}

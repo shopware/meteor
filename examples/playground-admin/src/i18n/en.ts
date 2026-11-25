@@ -35,22 +35,17 @@ export const en = {
     settings: "Settings",
   },
   sidebar: {
+    message: "Message",
+    placeholder: "Ask something",
+    send: "Send",
     label: "Copilot",
     user: "You",
     assistant: "Copilot",
     messages: {
+      placeholder: "This chat is a placeholder, so there is no assistant yet.",
       sales: "How did sales develop this week?",
       salesAnswer:
         "Revenue is up 12% compared to last week. Most of the growth comes from the new summer collection, and 3 orders are still waiting for payment.",
-      stock: "Which products are running low?",
-      stockAnswer:
-        "Five products are below their minimum stock. The Leather Weekender and the Linen Shirt in size M are sold out.",
-      description: "Write a description for the Leather Weekender.",
-      descriptionAnswer:
-        "A roomy weekend bag of full-grain leather, with a padded laptop sleeve, a separate shoe compartment and brass fittings that age beautifully.",
-      shorter: "Make it a bit shorter.",
-      shorterAnswer:
-        "A full-grain leather weekend bag with a padded laptop sleeve and brass fittings.",
     },
   },
   common: {
@@ -96,14 +91,9 @@ export const en = {
     },
     getReady: {
       title: "Get ready to sell your products.",
-      helpCenter: "Shopware Help Center",
-      firstSale: "Learn how to make your first sale",
-      salesChannels: "Get to know Sales Channels",
     },
     feedback: {
       title: "First impressions count.",
-      text: "Share your first impressions and help us improve the overall Shopware experience.",
-      button: "Give feedback",
     },
     ordersChart: "Orders",
     ordersSeries: "Count",
@@ -111,10 +101,6 @@ export const en = {
     turnoverSeries: "Total",
     turnoverHelp:
       'The turnover graph only displays orders in payment status "paid".',
-    range: "Time range",
-    ranges: {
-      days: "Last {n} days",
-    },
   },
   products: {
     title: "Products",

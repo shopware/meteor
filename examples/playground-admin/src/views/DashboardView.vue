@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, shallowRef, type Ref } from "vue";
+import { computed, ref, shallowRef } from "vue";
 import { useI18n } from "vue-i18n";
 import {
-  MtButton,
   MtCard,
   MtChart,
   MtHelpText,
-  MtIcon,
   MtPage,
-  MtSelect,
   MtText,
   type ChartOptions,
 } from "@shopware-ag/meteor-component-library";
@@ -42,9 +39,6 @@ const greeting = computed(() =>
 
 const breadcrumb = useBreadcrumb(() => t("nav.dashboard"));
 
-/** The help links of the "Get ready to sell" card. */
-const getReadyLinks = ["helpCenter", "firstSale", "salesChannels"] as const;
-
 const isLoading = ref(true);
 const statistics = shallowRef<OrderStatistics | null>(null);
 async function load() {
@@ -54,70 +48,38 @@ async function load() {
 
 load();
 
-const rangeOptions = computed(() =>
-  [30, 14, 7].map((days) => ({
-    value: days,
-    label: t("dashboard.ranges.days", { n: days }),
-  })),
-);
+/** The last 30 days, which both charts show. */
+const days = computed(() => statistics.value?.days.slice(-30) ?? []);
 
-/** The days of one chart card's range, its subtitle and its x-axis. */
-function createChartRange(range: Ref<number>) {
-  const days = computed(() => statistics.value?.days.slice(-range.value) ?? []);
+// About six evenly spaced, horizontal date labels instead of one per day. The days are local
+// dates, so they are read as local midnight.
+const xaxis = computed(() => {
+  const labels = days.value.map((day) => format.shortDate(`${day.date}T00:00:00`));
 
-  // The days are local dates, so they are read as local midnight.
-  const labels = computed(() =>
-    days.value.map((day) => format.shortDate(`${day.date}T00:00:00`)),
-  );
-
-  const subtitle = computed(() =>
-    labels.value.length > 0
-      ? `${labels.value[0]} – ${labels.value[labels.value.length - 1]}`
-      : "",
-  );
-
-  // About six evenly spaced, horizontal labels instead of one per day.
-  const xaxis = computed(() => ({
-    categories: labels.value,
-    tickAmount: Math.min(6, Math.max(labels.value.length - 1, 1)),
+  return {
+    categories: labels,
+    tickAmount: Math.min(6, Math.max(labels.length - 1, 1)),
     labels: { rotate: 0 },
-  }));
-
-  return { days, subtitle, xaxis };
-}
-
-const ordersRange = ref(30);
-const turnoverRange = ref(30);
-
-const {
-  days: ordersDays,
-  subtitle: ordersSubtitle,
-  xaxis: ordersAxis,
-} = createChartRange(ordersRange);
-
-const {
-  days: turnoverDays,
-  subtitle: turnoverSubtitle,
-  xaxis: turnoverAxis,
-} = createChartRange(turnoverRange);
+  };
+});
 
 const ordersSeries = computed(() => [
   {
     name: t("dashboard.ordersSeries"),
-    data: ordersDays.value.map((day) => day.orders),
+    data: days.value.map((day) => day.orders),
   },
 ]);
 
 const turnoverSeries = computed(() => [
   {
     name: t("dashboard.turnoverSeries"),
-    data: turnoverDays.value.map((day) => Math.round(day.turnover * 100) / 100),
+    data: days.value.map((day) => Math.round(day.turnover * 100) / 100),
   },
 ]);
 
 const ordersOptions = computed<ChartOptions>(() => ({
   stroke: { curve: "smooth" },
-  xaxis: ordersAxis.value,
+  xaxis: xaxis.value,
   yaxis: {
     labels: { formatter: (value: number) => format.number(Math.round(value)) },
   },
@@ -125,7 +87,7 @@ const ordersOptions = computed<ChartOptions>(() => ({
 
 const turnoverOptions = computed<ChartOptions>(() => ({
   stroke: { curve: "smooth" },
-  xaxis: turnoverAxis.value,
+  xaxis: xaxis.value,
   yaxis: { labels: { formatter: (value: number) => format.currency(value) } },
 }));
 </script>
@@ -146,60 +108,38 @@ const turnoverOptions = computed<ChartOptions>(() => ({
 
       <div class="grid" style="--grid-min: 18rem">
         <mt-card :title="t('dashboard.getReady.title')">
-          <ul class="dashboard__links">
-            <li v-for="entry in getReadyLinks" :key="entry">
-              <a
-                class="dashboard__link"
-                href="https://docs.shopware.com/en"
-                target="_blank"
-                rel="noopener"
-              >
-                {{ t(`dashboard.getReady.${entry}`) }}
-                <mt-icon
-                  name="regular-external-link-s"
-                  size="var(--scale-size-12)"
-                  decorative
-                />
-              </a>
-            </li>
-          </ul>
+          <!-- Placeholder lines where the help links would be. -->
+          <div class="dashboard__lines" aria-hidden="true">
+            <span class="skeleton-line" style="width: 45%" />
+            <span class="skeleton-line" style="width: 60%" />
+            <span class="skeleton-line" style="width: 50%" />
+          </div>
         </mt-card>
 
         <mt-card :title="t('dashboard.feedback.title')">
           <div class="stack">
-            <mt-text size="xs" color="color-text-secondary-default">
-              {{ t("dashboard.feedback.text") }}
-            </mt-text>
-            <div>
-              <mt-button variant="secondary" size="small">
-                {{ t("dashboard.feedback.button") }}
-                <template #iconBack>
-                  <mt-icon
-                    name="regular-external-link-s"
-                    size="var(--scale-size-12)"
-                    decorative
-                  />
-                </template>
-              </mt-button>
+            <!-- Placeholder lines where the text would be. -->
+            <div class="dashboard__lines" aria-hidden="true">
+              <span class="skeleton-line" style="width: 90%" />
+              <span class="skeleton-line" style="width: 65%" />
             </div>
+            <!-- Placeholder where the feedback button would be. -->
+            <span class="skeleton-line dashboard__button" aria-hidden="true" />
           </div>
         </mt-card>
       </div>
 
       <mt-card
         :title="t('dashboard.ordersChart')"
-        :subtitle="ordersSubtitle"
         :is-loading="isLoading"
       >
+        <!-- Placeholders where the date range and the range select would be. -->
+        <template #subtitle>
+          <span class="skeleton-line dashboard__subtitle" aria-hidden="true" />
+        </template>
+
         <template #headerRight>
-          <mt-select
-            v-model="ordersRange"
-            :aria-label="t('dashboard.range')"
-            :options="rangeOptions"
-            :enable-search="false"
-            hide-clearable-button
-            small
-          />
+          <span class="skeleton-line dashboard__range" aria-hidden="true" />
         </template>
 
         <mt-chart
@@ -211,7 +151,6 @@ const turnoverOptions = computed<ChartOptions>(() => ({
 
       <mt-card
         :title="t('dashboard.turnoverChart')"
-        :subtitle="turnoverSubtitle"
         :is-loading="isLoading"
       >
         <template #title>
@@ -223,15 +162,12 @@ const turnoverOptions = computed<ChartOptions>(() => ({
           </div>
         </template>
 
+        <template #subtitle>
+          <span class="skeleton-line dashboard__subtitle" aria-hidden="true" />
+        </template>
+
         <template #headerRight>
-          <mt-select
-            v-model="turnoverRange"
-            :aria-label="t('dashboard.range')"
-            :options="rangeOptions"
-            :enable-search="false"
-            hide-clearable-button
-            small
-          />
+          <span class="skeleton-line dashboard__range" aria-hidden="true" />
         </template>
 
         <mt-chart
@@ -245,6 +181,26 @@ const turnoverOptions = computed<ChartOptions>(() => ({
 </template>
 
 <style scoped>
+.dashboard__subtitle {
+  width: 7rem;
+  margin-block-start: var(--scale-size-8);
+}
+
+.dashboard__range {
+  width: 12.75rem;
+  height: var(--scale-size-32);
+}
+
+.dashboard__button {
+  width: 8rem;
+  height: var(--scale-size-32);
+}
+
+.dashboard__lines {
+  display: grid;
+  gap: var(--scale-size-12);
+}
+
 .dashboard {
   gap: var(--scale-size-24);
 }
@@ -255,26 +211,8 @@ const turnoverOptions = computed<ChartOptions>(() => ({
   padding-block: var(--scale-size-8);
 }
 
-.dashboard__links {
-  display: grid;
-  gap: var(--scale-size-12);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: var(--font-size-xs);
-}
 
-.dashboard__link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--scale-size-4);
-  color: var(--color-text-brand-default);
-  text-decoration: none;
-}
 
-.dashboard__link:hover {
-  text-decoration: underline;
-}
 
 
 

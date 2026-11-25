@@ -37,22 +37,17 @@ export const de: Messages = {
     settings: "Einstellungen",
   },
   sidebar: {
+    message: "Nachricht",
+    placeholder: "Frag etwas",
+    send: "Senden",
     label: "Copilot",
     user: "Du",
     assistant: "Copilot",
     messages: {
+      placeholder: "Dieser Chat ist ein Platzhalter, es gibt noch keinen Assistenten.",
       sales: "Wie haben sich die Verkäufe diese Woche entwickelt?",
       salesAnswer:
         "Der Umsatz liegt 12 % über der Vorwoche. Das meiste Wachstum kommt von der neuen Sommerkollektion, und 3 Bestellungen warten noch auf die Zahlung.",
-      stock: "Welche Produkte werden knapp?",
-      stockAnswer:
-        "Fünf Produkte liegen unter ihrem Mindestbestand. Die Leder-Reisetasche und das Leinenhemd in Größe M sind ausverkauft.",
-      description: "Schreib eine Beschreibung für die Leder-Reisetasche.",
-      descriptionAnswer:
-        "Eine geräumige Reisetasche aus Vollnarbenleder, mit gepolstertem Laptopfach, separatem Schuhfach und Messingbeschlägen, die schön altern.",
-      shorter: "Mach sie etwas kürzer.",
-      shorterAnswer:
-        "Eine Reisetasche aus Vollnarbenleder mit gepolstertem Laptopfach und Messingbeschlägen.",
     },
   },
   common: {
@@ -98,14 +93,9 @@ export const de: Messages = {
     },
     getReady: {
       title: "Mach dich bereit, deine Produkte zu verkaufen.",
-      helpCenter: "Shopware Help Center",
-      firstSale: "So machst du deinen ersten Verkauf",
-      salesChannels: "Lerne Verkaufskanäle kennen",
     },
     feedback: {
       title: "Der erste Eindruck zählt.",
-      text: "Teile deine ersten Eindrücke und hilf uns, das Shopware-Erlebnis zu verbessern.",
-      button: "Feedback geben",
     },
     ordersChart: "Bestellungen",
     ordersSeries: "Anzahl",
@@ -113,10 +103,6 @@ export const de: Messages = {
     turnoverSeries: "Gesamt",
     turnoverHelp:
       'Die Umsatzgrafik zeigt nur Bestellungen mit dem Zahlungsstatus "Bezahlt".',
-    range: "Zeitraum",
-    ranges: {
-      days: "Letzte {n} Tage",
-    },
   },
   products: {
     title: "Produkte",

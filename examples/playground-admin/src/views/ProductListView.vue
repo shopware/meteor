@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
 import {
-  MtActionMenu,
-  MtActionMenuItem,
-  MtButton,
-  MtDropdownMenuPortal,
-  MtDropdownMenuRoot,
-  MtDropdownMenuTrigger,
   MtEmptyState,
-  MtIcon,
   MtPage,
   MtSearch,
 } from "@shopware-ag/meteor-component-library";
@@ -21,7 +13,6 @@ import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useListing } from "../composables/useListing";
 
 const { t } = useI18n();
-const router = useRouter();
 
 const { items, total, isLoading, hasLoaded, page, limit, term, isFiltered } =
   useListing("product", { sortBy: "createdAt", sortDirection: "DESC" });
@@ -57,41 +48,6 @@ const columns = computed<GridColumn[]>(() => [
 <template>
   <mt-page inset :breadcrumb="breadcrumb">
     <template #actions>
-      <div class="split-button">
-        <mt-button
-          variant="primary"
-          size="default"
-          @click="router.push({ name: 'product-create' })"
-        >
-          {{ t("products.add") }}
-        </mt-button>
-
-        <mt-dropdown-menu-root>
-          <mt-dropdown-menu-trigger as-child>
-            <mt-button
-              variant="primary"
-              size="default"
-              square
-              :aria-label="t('common.moreActions')"
-            >
-              <mt-icon
-                name="regular-chevron-down-xs"
-                size="var(--scale-size-12)"
-                decorative
-              />
-            </mt-button>
-          </mt-dropdown-menu-trigger>
-          <mt-dropdown-menu-portal>
-            <mt-action-menu>
-              <mt-action-menu-item
-                @select="router.push({ name: 'product-create' })"
-              >
-                {{ t("products.addDigital") }}
-              </mt-action-menu-item>
-            </mt-action-menu>
-          </mt-dropdown-menu-portal>
-        </mt-dropdown-menu-root>
-      </div>
       <app-header-actions />
     </template>
 
