@@ -501,12 +501,11 @@ describe("mt-app", () => {
       // ARRANGE
       const onUpdate = vi.fn();
       await renderApp({
-        props: { "onUpdate:sidebarOpen": onUpdate },
         slots: {
           navigation: allSlots.navigation,
           default: allSlots.default,
           sidebar: () =>
-            h(MtPanel, { closable: true }, () =>
+            h(MtPanel, { closable: true, "onUpdate:open": onUpdate }, () =>
               h("aside", { "aria-label": "Details" }, [h("button", "End action")]),
             ),
         },
@@ -957,25 +956,62 @@ describe("mt-app", () => {
       expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
     });
 
-    it("binds the desktop state with v-model", async () => {
+    it("starts a panel closed with default-open, and its trigger opens it", async () => {
       // ARRANGE
-      const onUpdate = vi.fn();
-      const { rerender } = await renderApp({
-        props: { "onUpdate:navigationOpen": onUpdate },
-        slots: { ...allSlots, default: () => [h(Probe)] },
+      await renderApp({
+        slots: {
+          ...allSlots,
+          sidebar: () =>
+            h(MtPanel, { closable: true, defaultOpen: false }, () =>
+              h("aside", { "aria-label": "Details" }, "Tools"),
+            ),
+        },
+      });
+      const trigger = screen.getByRole("button", { name: sidebarTriggerName });
+
+      // ASSERT
+      expect(trigger).toHaveAttribute("aria-expanded", "false");
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+
+      // ACT
+      await userEvent.click(trigger);
+
+      // ASSERT
+      expect(screen.getByRole("complementary", { name: "Details" })).toBeInTheDocument();
+    });
+
+    it("binds the open state of a panel with v-model:open", async () => {
+      // ARRANGE
+      const open = ref(true);
+      await renderApp({
+        slots: {
+          ...allSlots,
+          default: () => [h(Probe)],
+          sidebar: () =>
+            h(
+              MtPanel,
+              {
+                open: open.value,
+                "onUpdate:open": (value: boolean) => (open.value = value),
+              },
+              () => h("aside", { "aria-label": "Details" }, "Tools"),
+            ),
+        },
       });
 
       // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Close navigation" }));
+      await userEvent.click(screen.getByRole("button", { name: "Toggle sidebar" }));
 
       // ASSERT
-      expect(onUpdate).toHaveBeenCalledWith(false);
+      expect(open.value).toBe(false);
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
 
       // ACT
-      await rerender({ sidebarOpen: false });
+      open.value = true;
+      await nextTick();
 
       // ASSERT
-      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+      expect(screen.getByRole("complementary", { name: "Details" })).toBeInTheDocument();
     });
   });
 

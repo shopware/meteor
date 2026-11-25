@@ -195,12 +195,6 @@ const props = withDefaults(
   },
 );
 
-/** Whether the navigation is shown in the desktop layout. */
-const navigationOpen = defineModel<boolean>("navigationOpen", { default: true });
-
-/** Whether the sidebar is shown in the desktop layout. */
-const sidebarOpen = defineModel<boolean>("sidebarOpen", { default: true });
-
 type HeaderSlotProps = Omit<MtAppContext, "isMobile"> & { isMobile: boolean };
 
 const slots = defineSlots<{
@@ -278,14 +272,14 @@ const {
   answerLeave,
 } = createAppUnsavedChanges();
 
-const inlineOpen = { navigation: navigationOpen, sidebar: sidebarOpen };
-const panels = createPanelState({ isDrawer: isMobile, canOpenDrawer: isAvailable, inlineOpen });
+const { panelSlot, panelSettings, hasPanel, registerPanelOptions, inlineOpen, registerPanelOpen } =
+  usePanelSlots(
+    PANELS,
+    (panel) => slots[panel]?.(),
+    (panel) => t(panel),
+  );
 
-const { panelSlot, panelSettings, hasPanel, registerPanelOptions } = usePanelSlots(
-  PANELS,
-  (panel) => slots[panel]?.(),
-  (panel) => t(panel),
-);
+const panels = createPanelState({ isDrawer: isMobile, canOpenDrawer: isAvailable, inlineOpen });
 
 const api: MtAppContext = {
   isMobile,
@@ -467,6 +461,7 @@ const regionController: PanelController<MtAppPanel> = {
   close: panels.close,
   focusContent,
   registerPanelOptions,
+  registerPanelOpen,
   setResizing(resizing) {
     isResizing.value = resizing;
   },

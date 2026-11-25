@@ -158,6 +158,39 @@ describe("mt-page", () => {
       expect(screen.queryByRole("complementary", { name: "Properties" })).not.toBeInTheDocument();
     });
 
+    it("starts a panel closed with default-open, and its trigger opens it", async () => {
+      // ARRANGE
+      render(
+        {
+          components: { MtPage, MtPanel },
+          data: () => ({ breadcrumb }),
+          template: `
+            <mt-page :breadcrumb="breadcrumb">
+              <p>Canvas</p>
+              <template #end>
+                <mt-panel label="Properties" closable :default-open="false">
+                  <aside aria-label="Properties">Fields</aside>
+                </mt-panel>
+              </template>
+            </mt-page>
+          `,
+        },
+        { global: { components: { "router-link": RouterLinkStub } } },
+      );
+      const trigger = screen.getByRole("button", { name: "Toggle Properties" });
+
+      // ASSERT
+      expect(trigger).toHaveAttribute("aria-expanded", "false");
+      expect(screen.queryByRole("complementary", { name: "Properties" })).not.toBeInTheDocument();
+
+      // ACT
+      await userEvent.click(trigger);
+
+      // ASSERT
+      expect(trigger).toHaveAttribute("aria-expanded", "true");
+      expect(screen.getByRole("complementary", { name: "Properties" })).toBeInTheDocument();
+    });
+
     it("borders its panels by default and leaves them plain with appearance plain", () => {
       // ACT
       render(MtPage, {

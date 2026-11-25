@@ -94,6 +94,27 @@ describe("mt-app server-side rendering", () => {
     expect(container.querySelectorAll('.mt-page__header [aria-label^="Toggle"]')).toHaveLength(2);
   });
 
+  it("renders a panel that starts closed as closed, and hydrates it without mismatches", async () => {
+    // ACT
+    const { html, hydrationMessages } = await hydrate(1440, {
+      content: () => h(MtPage, { breadcrumb: [{ label: "Orders" }] }),
+      sidebar: () =>
+        h(MtPanel, { closable: true, label: "Assistant", defaultOpen: false }, () =>
+          h("div", "Tools"),
+        ),
+    });
+
+    // ASSERT
+    const server = document.createElement("div");
+    server.innerHTML = html;
+    expect(server.querySelector(".mt-panel-region--sidebar")).toHaveStyle({ display: "none" });
+    expect(server.querySelector('[aria-label="Toggle Assistant"]')).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+    expect(hydrationMessages).toEqual([]);
+  });
+
   it("hydrates an app header that shows the triggers instead of the page without mismatches", async () => {
     // ACT
     const { html, container, hydrationMessages } = await hydrate(1440, {

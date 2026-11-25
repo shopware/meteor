@@ -12,6 +12,8 @@ export interface PanelController<Place extends PanelPlace = PanelPlace> {
   focusContent(): void;
   /** Reports the options of the `MtPanel` in the place until the returned function is called. */
   registerPanelOptions(place: Place, options: () => PanelOptions): () => void;
+  /** Reports the open state of the `MtPanel` in the place until the returned function is called. */
+  registerPanelOpen(place: Place, open: Ref<boolean>): () => void;
   /** Reports that a panel is being resized. */
   setResizing(resizing: boolean): void;
 }

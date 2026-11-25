@@ -187,6 +187,7 @@ provide(panelContextKey, {
   label: () => props.label,
   layoutWidth: () => inline.value?.parentElement?.clientWidth || window.innerWidth,
   registerOptions: (options) => props.controller.registerPanelOptions(props.place, options),
+  registerOpen: (open) => props.controller.registerPanelOpen(props.place, open),
   setResizing: (resizing) => props.controller.setResizing(resizing),
   isOpen: () => props.controller.isOpen(props.place),
   slideOut,

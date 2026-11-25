@@ -1,4 +1,4 @@
-import { shallowReactive, type VNodeChild } from "vue";
+import { customRef, ref, shallowReactive, type Ref, type VNodeChild } from "vue";
 import {
   readPanelSlot,
   resolvePanelSettings,
@@ -12,9 +12,9 @@ let hasWarnedOnServer = false;
 
 /**
  * The panel slots of a layout, read once per render. Reading a slot shows the options of the
- * `MtPanel` at its top before anything inside renders, so the layout knows its label, icon and
- * closable setting in the same render, also on the server. An `MtPanel` inside another component
- * is only known once it sets up, from the options it registers.
+ * `MtPanel` at its top before anything inside renders, so the layout knows its label, icon,
+ * closable setting and whether it starts open in the same render, also on the server. An `MtPanel`
+ * inside another component is only known once it sets up, from the options it registers.
  */
 export function usePanelSlots<Place extends PanelPlace>(
   places: readonly Place[],
@@ -56,7 +56,50 @@ export function usePanelSlots<Place extends PanelPlace>(
     return panelSlot(place).options !== undefined || registeredOptions.has(place);
   }
 
-  return { panelSlot, panelSettings, hasPanel, registerPanelOptions };
+  const registeredOpen = shallowReactive(new Map<Place, Ref<boolean>>());
+
+  function registerPanelOpen(place: Place, open: Ref<boolean>) {
+    registeredOpen.set(place, open);
+
+    return () => {
+      if (registeredOpen.get(place) === open) registeredOpen.delete(place);
+    };
+  }
+
+  /** Whether the panel is open: the `MtPanel`'s state, its props in the slot, or the layout's own. */
+  function openState(place: Place) {
+    const ownOpen = ref(true);
+
+    return customRef<boolean>(() => ({
+      get() {
+        const options = panelSlot(place).options;
+
+        return (
+          registeredOpen.get(place)?.value ?? options?.open ?? options?.defaultOpen ?? ownOpen.value
+        );
+      },
+      set(open) {
+        const panelOpen = registeredOpen.get(place);
+
+        if (panelOpen) panelOpen.value = open;
+        else ownOpen.value = open;
+      },
+    }));
+  }
+
+  const inlineOpen = Object.fromEntries(places.map((place) => [place, openState(place)])) as Record<
+    Place,
+    Ref<boolean>
+  >;
+
+  return {
+    panelSlot,
+    panelSettings,
+    hasPanel,
+    registerPanelOptions,
+    inlineOpen,
+    registerPanelOpen,
+  };
 }
 
 /**

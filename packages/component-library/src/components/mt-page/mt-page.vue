@@ -268,7 +268,6 @@ const pageWidth = ref<number | null>(null);
 const narrowWhileResizing = shallowRef<boolean | null>(null);
 const heading = shallowRef<HTMLElement | null>(null);
 const isHeadingVisible = ref(false);
-const inlineOpen = { start: ref(true), end: ref(true) };
 
 const isMeasured = computed(() => pageWidth.value !== null);
 const isMeasuredNarrow = computed(
@@ -285,17 +284,18 @@ const headerCrumbs = computed(() =>
   isCompact.value ? props.breadcrumb.slice(-1) : props.breadcrumb,
 );
 
+const { panelSlot, panelSettings, hasPanel, registerPanelOptions, inlineOpen, registerPanelOpen } =
+  usePanelSlots(
+    PANELS,
+    (panel) => slots[panel]?.(),
+    (panel) => t(panel),
+  );
+
 const panels = createPanelState<PagePanel>({
   isDrawer: isNarrow,
   canOpenDrawer: hasSlot,
   inlineOpen,
 });
-
-const { panelSlot, panelSettings, hasPanel, registerPanelOptions } = usePanelSlots(
-  PANELS,
-  (panel) => slots[panel]?.(),
-  (panel) => t(panel),
-);
 
 const renderedSlots = useRenderCache(() => ({ actions: hasSlotContent(slots.actions) }));
 
@@ -446,6 +446,7 @@ const regionController: PanelController<PagePanel> = {
   close: panels.close,
   focusContent,
   registerPanelOptions,
+  registerPanelOpen,
   // Resizing a panel of the page doesn't change the page's own width, so nothing waits for it.
   setResizing: () => undefined,
 };
