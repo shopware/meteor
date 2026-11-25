@@ -33,8 +33,8 @@ defineProps<{
   /** The sections of the navigation, each holding its items, as for `mt-nav`. */
   sections: NavSection[];
   /**
-   * Tells whether an item is the current page, e.g. by comparing its route with the current
-   * route. Lets the sections stay static instead of setting `active` on every route change.
+   * Tells whether an item is the current page, for apps with their own rule. Without it, the
+   * item linking most closely to the current page is active, as in `mt-nav`.
    */
   isActive?: NavActiveMatcher;
 }>();
