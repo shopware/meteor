@@ -33,14 +33,7 @@
 
 <script lang="ts">
 export interface StepperStep {
-  /**
-   * The text shown next to the marker.
-   */
   label: string;
-  /**
-   * Whether the step shows as completed. By default every step before the current step is
-   * completed.
-   */
   completed?: boolean;
 }
 </script>
@@ -52,28 +45,13 @@ import MtIcon from "../mt-icon/mt-icon.vue";
 
 const props = withDefaults(
   defineProps<{
-    /**
-     * The steps in order. Each step has a `label`. Set `completed` on a step to decide
-     * yourself whether it shows as completed, for example to keep a step checked while the
-     * user goes back to it.
-     */
+    /** The steps in order, each with a `label` and an optional `completed`. */
     steps: StepperStep[];
-    /**
-     * The zero-based index of the current step. Steps before it show as completed and steps
-     * after it as upcoming. An index outside of the steps marks no step as current: a
-     * negative index leaves every step upcoming, and an index of `steps.length` or more
-     * completes every step.
-     */
+    /** The zero-based index of the current step. Steps before it show as completed. */
     currentStep?: number;
-    /**
-     * The direction the steps are laid out in.
-     *
-     * @values vertical, horizontal
-     */
+    /** The direction the steps are laid out in. */
     orientation?: "vertical" | "horizontal";
-    /**
-     * The accessible name of the list of steps. Defaults to a translated "Progress".
-     */
+    /** The accessible name of the list of steps. Defaults to a translated "Progress". */
     ariaLabel?: string;
   }>(),
   {
@@ -109,7 +87,6 @@ const stepStates = computed(() =>
 .mt-stepper {
   --mt-stepper-marker-size: var(--scale-size-32);
   --mt-stepper-connector-width: 1px;
-  /* Centers the connector on the markers */
   --mt-stepper-connector-offset: calc(
     (var(--mt-stepper-marker-size) - var(--mt-stepper-connector-width)) / 2
   );
@@ -138,7 +115,6 @@ const stepStates = computed(() =>
 
   display: grid;
   grid-auto-flow: column;
-  /* Equal columns keep the markers evenly spaced, whatever the length of the labels */
   grid-auto-columns: minmax(0, 1fr);
   column-gap: var(--mt-stepper-gap);
 }
@@ -162,7 +138,6 @@ const stepStates = computed(() =>
   text-align: center;
 }
 
-/* The connector to the next step, drawn from the edge of this marker to the edge of the next */
 .mt-stepper__step:not(:last-child)::after {
   content: "";
   position: absolute;
@@ -211,12 +186,9 @@ const stepStates = computed(() =>
 }
 
 .mt-stepper--vertical .mt-stepper__label {
-  /* Centers the first line on the marker, further lines grow downwards */
   padding-block: calc((var(--mt-stepper-marker-size) - var(--font-line-height-xs)) / 2);
 }
 
-/* Read by assistive technology only. Kept in the component so that it also applies when the
-   component is imported on its own, without the global utility classes. */
 .mt-stepper__status {
   position: absolute;
   width: var(--scale-size-1);
