@@ -283,7 +283,7 @@ describe("mt-grant-permission-service-banner", () => {
 
     // ASSERT
     expect(consoleError).toHaveBeenCalledWith(
-      "Error granting permission:",
+      "[Meteor] useServicePermission: Could not grant the permission.",
       new Error("unknown route"),
     );
     expect(grant).not.toHaveBeenCalled();

@@ -8,6 +8,7 @@ import { routerPush } from "@shopware-ag/meteor-admin-sdk/es/window";
 import { asyncComputed } from "@vueuse/core";
 import { computed, ref } from "vue";
 import type { ComputedRef, Ref } from "vue";
+import { logError } from "@/utils/log";
 
 const shopwareServicePagePath = "/sw/settings/services/index";
 
@@ -101,7 +102,7 @@ export function useServicePermission(): UseServicePermissionReturn {
       try {
         await routerPush({ path: shopwareServicePagePath });
       } catch (error) {
-        console.error("Error granting permission:", error);
+        logError("useServicePermission", "Could not grant the permission.", error);
         throw error;
       }
 
@@ -115,7 +116,7 @@ export function useServicePermission(): UseServicePermissionReturn {
     try {
       await grantPermission();
     } catch (error) {
-      console.error("Error granting permission:", error);
+      logError("useServicePermission", "Could not grant the permission.", error);
       throw error;
     } finally {
       isGranting.value = false;

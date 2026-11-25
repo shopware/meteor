@@ -1,4 +1,5 @@
 import { createId } from "../utils/id";
+import { warn } from "../utils/log";
 import type { ObjectDirective } from "vue";
 
 /**
@@ -380,9 +381,9 @@ class Tooltip {
 
   static validatePlacement<P extends Placements>(placement: P): Placements {
     if (!availableTooltipPlacements.includes(placement)) {
-      console.warn(
-        "Tooltip Directive",
-        `The modifier has to be one of these "${availableTooltipPlacements.join(",")}"`,
+      warn(
+        "v-tooltip",
+        `The placement must be one of "${availableTooltipPlacements.join('", "')}".`,
       );
 
       return "top";
@@ -392,7 +393,7 @@ class Tooltip {
 
   static validateMessage(message?: string): string {
     if (typeof message !== "string") {
-      console.warn("Tooltip Directive", "The tooltip needs a message with type string");
+      warn("v-tooltip", "The message must be a string.");
     }
 
     return message ?? "";
@@ -404,7 +405,7 @@ class Tooltip {
     }
 
     if (typeof width !== "number" || width < 1) {
-      console.warn("Tooltip Directive", "The tooltip width has to be a number greater 0");
+      warn("v-tooltip", 'The width must be a number greater than 0 or "auto".');
       return 200;
     }
 
@@ -413,7 +414,7 @@ class Tooltip {
 
   static validateDelay(delay: number): number {
     if (typeof delay !== "number" || delay < 1) {
-      console.warn("Tooltip Directive", "The tooltip delay has to be a number greater 0");
+      warn("v-tooltip", "The delay must be a number greater than 0.");
       return 100;
     }
 
