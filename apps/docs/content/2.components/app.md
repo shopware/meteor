@@ -52,7 +52,7 @@ const app = createApp(App).use(router);
 router.isReady().then(() => app.mount("#app"));
 ```
 
-A [**Panel**](/components/panel) in the `navigation` or `sidebar` slot sets the panel's label, the icon of its trigger, whether it can be hidden on desktop, and its width.
+A [**Panel**](/components/panel) in the `navigation` or `sidebar` slot sets the panel's label, the icon of its trigger, whether it can be hidden on desktop, whether it starts open, and its width.
 
 ### Announcement
 
@@ -134,7 +134,7 @@ import { MtAppPanelTrigger, MtText } from "@shopware-ag/meteor-component-library
 
 - **App** fills the viewport by default, and the document itself never scrolls while it is mounted: the content and the panels scroll on their own. Set `--mt-app-height` to give it another height.
 - Below `breakpoint` (1280px of viewport width by default), the navigation and the sidebar become drawers that open from their triggers and close with Escape, by clicking next to them or by swiping them out. In the mobile layout, at most one drawer is open, and switching the layout closes it.
-- In the desktop layout, `v-model:navigation-open` and `v-model:sidebar-open` show and hide the panels. A [**Panel**](/components/panel) with `closable` also shows its trigger in the desktop layout.
+- In the desktop layout, the [**Panel**](/components/panel) in each slot sets whether its panel starts open with `default-open`, and `v-model:open` controls it. A Panel with `closable` also shows its trigger in the desktop layout. `useApp()` opens and closes the panels from anywhere inside the shell.
 - In the desktop layout, a panel slides in and out over its outer edge when it opens or closes, also when a view hides or shows it, while the content grows into its place. Switching between the desktop and the mobile layout doesn't slide. With reduced motion, the panels show and hide at once.
 - An announcement that appears after the page has loaded slides down from the top edge and pushes the header down. When it is removed, for example after it was closed, it slides back up and the header takes over its focus, or the content when no header shows. An announcement that is there when the page loads, or that a view hides or shows, doesn't slide. With reduced motion, it shows and hides at once.
 - Views can hide the announcement, the header, the navigation and the sidebar with [**useAppRegions**](/utilities/composables/use-app-regions). The announcement and the header are not printed.

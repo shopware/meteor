@@ -1,6 +1,6 @@
 ---
 title: Panel
-description: The settings of a panel of the app shell or of a page, with its label, the icon of its trigger, its width and resizing.
+description: The settings of a panel of the app shell or of a page, with its label, the icon of its trigger, whether it is open, its width and resizing.
 ---
 
 ::warning
@@ -9,7 +9,7 @@ description: The settings of a panel of the app shell or of a page, with its lab
 
 ## Usage
 
-**Panel** sets up one of the panels next to the content: the navigation and the sidebar of [**App**](/components/app), and the start and end panels of [**Page**](/components/page). It holds the panel's content, names its drawer and trigger, sets the icon of the trigger and the panel's width, and makes the panel resizable or closable.
+**Panel** sets up one of the panels next to the content: the navigation and the sidebar of [**App**](/components/app), and the start and end panels of [**Page**](/components/page). It holds the panel's content, names its drawer and trigger, sets the icon of the trigger, whether the panel is open and its width, and makes the panel resizable or closable.
 
 ```ts
 import { MtPanel } from "@shopware-ag/meteor-component-library";
@@ -74,9 +74,10 @@ The panels of a page work the same way:
 ::do-dont{vertical}
 #do
 
-- Put **Panel** directly into the slot, so the shell and the page know its label, icon and closable setting before anything inside renders.
+- Put **Panel** directly into the slot, so the shell and the page know its label, icon, closable setting and whether it starts open before anything inside renders.
+- Make a panel that starts closed `closable`, so its trigger can open it, unless the app opens it with `v-model:open`.
 - Give the panel a `label` that names its content, and use the same name for the `<aside>` of the content.
-- Keep the default width and limits, and only set `width`, `min-width` and `max-width` when the content needs other ones.
+- Keep the default width and limits, and only set `default-width`, `min-width` and `max-width` when the content needs other ones.
 
 #dont
 
@@ -87,19 +88,20 @@ The panels of a page work the same way:
 
 ## Behavior
 
-- By default, the navigation is 280px wide and the start panel 240px, both at least 200px and at most 400px. The sidebar and the end panel are 320px wide, at least 240px and at most 480px. `width`, `min-width` and `max-width` change this. Next to the content, a panel never takes more than half of the layout: of the page in **Page**, of the viewport in **App**.
+- By default, the navigation is 280px wide and the start panel 240px, both at least 200px and at most 400px. The sidebar and the end panel are 320px wide, at least 240px and at most 480px. `default-width`, `min-width` and `max-width` change this. Next to the content, a panel never takes more than half of the layout: of the page in **Page**, of the viewport in **App**.
 - `closable` shows the panel's trigger also on desktop, where it shows and hides the panel. On small screens, panels are drawers that always have a trigger.
+- A panel starts open next to the content. With `default-open` set to `false`, it starts closed. `v-model:open` follows whether it is open, when the trigger, `useApp()` or a drag opens or closes it, and opens or closes it when the app changes the value. Drawers on small screens always start closed. A panel that is swapped for another one in its slot starts with the new panel's `default-open`.
 - On desktop, the panel slides in and out over its outer edge when it opens or closes.
 - `appearance` sets the panel off from the content. `bordered` draws a frame in **App**, where the panel sits on the app's background next to the content, and a line on the panel's inner edge in **Page**, where it sits inside the content's frame. `plain` draws no border. The navigation is `plain` by default, the other panels are `bordered`. Drawers on small screens have no border.
 - With `resizable`, a handle on the inner edge resizes the panel on desktop: on the end edge for the navigation and the start panel, on the start edge for the sidebar and the end panel. The handle's grab area is 16px wide: 4px over the side of the edge with a scrollbar next to it, and 12px over the other side. When the pointer is on the handle or it is dragged, a line that fades out towards the top and the bottom marks the edge: the panel's border, or for a `plain` panel in **App** the border of the content next to it. With the keyboard focus, the line is solid and in the brand color. The cursor changes right away, the line follows after a moment. Double-clicking the handle eases the panel back to its starting width.
 - A panel that is `closable` and `resizable` also closes by dragging its handle to its outer edge. Past its smallest width, the panel slides out with the pointer, and back in when the handle is dragged back. Releasing the pointer once half of the smallest width has slid out closes the panel from where it is. Releasing it earlier slides the panel back in at its smallest width. A drag that the browser cuts off before the pointer is released ends as the panel shows it. A closed panel opens again with the width it had before the drag.
 - The panel scrolls its content itself.
 - A resized panel remembers its width in the browser, one width per use: the navigation and the sidebar of the app, and the start and end panel of each page. Pages are told apart by the route that renders them, such as `/orders/:id`, so all orders share one width, also across the child routes of a page, or by their URL path without Vue Router. A remembered width is kept within the panel's limits.
-- `v-model:width` follows the width the user chose: at the end of a drag, on every key press and when a reset returns to the starting width, which is the default width of the panel's place without a `width`. With `v-model:width`, the app keeps the width, and the panel doesn't remember it in the browser.
+- `v-model:width` follows the width the user chose: at the end of a drag, on every key press and when a reset returns to the starting width, which is `default-width`, or the default width of the panel's place. With `v-model:width`, the app keeps the width, and the panel doesn't remember it in the browser.
 - A click on the handle without moving it leaves the width as it is.
-- In a drawer, the panel takes the `width` it started with, not the width it was resized to on desktop, never gets wider than the drawer, and has no resize handle.
+- In a drawer, the panel takes the width it started with, not the width it was resized to on desktop, never gets wider than the drawer, and has no resize handle.
 - With server rendering, a remembered width applies once the app has loaded, so the page first shows the panel's starting width.
-- A **Panel** inside another component still works, but on the server its label, icon and closable setting are only known once it renders, after the triggers of the page header. Server rendering then logs a warning.
+- A **Panel** inside another component still works, but on the server its label, icon, closable setting and whether it starts open are only known once it renders, after the triggers of the page header. Server rendering then logs a warning.
 
 ## Accessibility
 
