@@ -39,6 +39,7 @@ import MtAvatar from "./components/mt-avatar/mt-avatar.vue";
 import MtExtensionIcon from "./components/mt-extension-icon/mt-extension-icon.vue";
 import MtNav from "./components/mt-nav/mt-nav.vue";
 import MtScrollArea from "./components/mt-scroll-area/mt-scroll-area.vue";
+import MtStepper, { type StepperStep } from "./components/mt-stepper/mt-stepper.vue";
 import type {
   NavActiveMatcher,
   NavItem,
@@ -174,6 +175,7 @@ export {
   MtExtensionIcon,
   MtNav,
   MtScrollArea,
+  MtStepper,
   type NavActiveMatcher,
   type NavItem,
   type NavLinkComponent,
@@ -237,7 +239,16 @@ export {
 };
 
 // Exporting types
-export type { Filter, Option, Toast, Snackbar, SnackbarLink, ChartOptions, BreadcrumbItem };
+export type {
+  Filter,
+  Option,
+  Toast,
+  Snackbar,
+  SnackbarLink,
+  ChartOptions,
+  BreadcrumbItem,
+  StepperStep,
+};
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
