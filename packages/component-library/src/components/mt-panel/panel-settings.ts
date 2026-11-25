@@ -14,7 +14,6 @@ export interface PanelOptions {
   closable?: boolean;
   appearance?: PanelAppearance;
   open?: boolean;
-  defaultOpen?: boolean;
 }
 
 /** The options of a panel with the defaults of its place filled in. */
@@ -118,7 +117,6 @@ function optionsFromProps(panel: VNode): PanelOptions {
     closable: booleanProp(props.closable) ?? false,
     appearance: props.appearance ?? undefined,
     open: booleanProp(props.open),
-    defaultOpen: booleanProp(props["default-open"] ?? props.defaultOpen),
   };
 }
 

@@ -1,4 +1,4 @@
-import { customRef, ref, shallowReactive, type Ref, type VNodeChild } from "vue";
+import { customRef, shallowReactive, type Ref, type VNodeChild } from "vue";
 import {
   readPanelSlot,
   resolvePanelSettings,
@@ -57,8 +57,17 @@ export function usePanelSlots<Place extends PanelPlace>(
   }
 
   const registeredOpen = shallowReactive(new Map<Place, Ref<boolean>>());
+  const ownOpen = shallowReactive(new Map<Place, boolean>());
 
   function registerPanelOpen(place: Place, open: Ref<boolean>) {
+    // The `MtPanel` takes over whether the layout opened or closed the panel before it set up.
+    const layoutOpen = ownOpen.get(place);
+
+    if (layoutOpen !== undefined) {
+      ownOpen.delete(place);
+      open.value = layoutOpen;
+    }
+
     registeredOpen.set(place, open);
 
     return () => {
@@ -66,23 +75,22 @@ export function usePanelSlots<Place extends PanelPlace>(
     };
   }
 
-  /** Whether the panel is open: the `MtPanel`'s state, its props in the slot, or the layout's own. */
+  /** Whether the panel is open: the `MtPanel`'s state, the layout's own, or its props in the slot. */
   function openState(place: Place) {
-    const ownOpen = ref(true);
-
     return customRef<boolean>(() => ({
       get() {
-        const options = panelSlot(place).options;
-
         return (
-          registeredOpen.get(place)?.value ?? options?.open ?? options?.defaultOpen ?? ownOpen.value
+          registeredOpen.get(place)?.value ??
+          ownOpen.get(place) ??
+          panelSlot(place).options?.open ??
+          true
         );
       },
       set(open) {
         const panelOpen = registeredOpen.get(place);
 
         if (panelOpen) panelOpen.value = open;
-        else ownOpen.value = open;
+        else ownOpen.set(place, open);
       },
     }));
   }
@@ -111,6 +119,6 @@ function warnOnServer() {
 
   hasWarnedOnServer = true;
   console.warn(
-    "[MtPanel] Put <mt-panel> directly into the panel slot, so its label, icon and closable setting are part of the server-rendered page.",
+    "[MtPanel] Put <mt-panel> directly into the panel slot, so its label, icon, closable setting and whether it starts open are part of the server-rendered page.",
   );
 }

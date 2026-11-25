@@ -158,7 +158,7 @@ describe("mt-page", () => {
       expect(screen.queryByRole("complementary", { name: "Properties" })).not.toBeInTheDocument();
     });
 
-    it("starts a panel closed with default-open, and its trigger opens it", async () => {
+    it("starts a panel closed with open, and its trigger opens it", async () => {
       // ARRANGE
       render(
         {
@@ -168,7 +168,7 @@ describe("mt-page", () => {
             <mt-page :breadcrumb="breadcrumb">
               <p>Canvas</p>
               <template #end>
-                <mt-panel label="Properties" closable :default-open="false">
+                <mt-panel label="Properties" closable :open="false">
                   <aside aria-label="Properties">Fields</aside>
                 </mt-panel>
               </template>

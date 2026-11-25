@@ -35,7 +35,7 @@ function renderPageWithEndPanel(router?: unknown) {
   return render(MtPage, {
     slots: {
       default: "<p>Content</p>",
-      end: () => h(MtPanel, { resizable: true, defaultWidth: 300 }, () => h("p", "Customer")),
+      end: () => h(MtPanel, { resizable: true, width: 300 }, () => h("p", "Customer")),
     },
     global: { plugins: router ? [routerPlugin(router)] : [] },
   });
@@ -135,7 +135,7 @@ describe("mt-panel", () => {
     it("sets its starting width and its limits", async () => {
       // ACT
       await renderSidebar(
-        `<mt-panel :default-width="320" :min-width="200" :max-width="480"><p>Tools</p></mt-panel>`,
+        `<mt-panel :width="320" :min-width="200" :max-width="480"><p>Tools</p></mt-panel>`,
       );
 
       // ASSERT
@@ -204,7 +204,7 @@ describe("mt-panel", () => {
     it("resizes with the keyboard and remembers the width for its slot", async () => {
       // ARRANGE
       await renderSidebar(
-        `<mt-panel resizable :default-width="300" :max-width="800"><p>Tools</p></mt-panel>`,
+        `<mt-panel resizable :width="300" :max-width="800"><p>Tools</p></mt-panel>`,
       );
       const handle = screen.getByRole("separator");
 
@@ -327,7 +327,7 @@ describe("mt-panel", () => {
         render: () =>
           h(MtPage, null, {
             default: () => h("p", "Specifications"),
-            end: () => h(MtPanel, { resizable: true, defaultWidth: 300 }, () => h("p", "Variants")),
+            end: () => h(MtPanel, { resizable: true, width: 300 }, () => h("p", "Variants")),
           }),
       });
       render(
@@ -365,7 +365,7 @@ describe("mt-panel", () => {
 
     it("returns to its starting width on double click", async () => {
       // ARRANGE
-      await renderSidebar(`<mt-panel resizable :default-width="300"><p>Tools</p></mt-panel>`);
+      await renderSidebar(`<mt-panel resizable :width="300"><p>Tools</p></mt-panel>`);
       const handle = screen.getByRole("separator");
       await fireEvent.keyDown(handle, { key: "ArrowLeft" });
 
@@ -416,7 +416,7 @@ describe("mt-panel", () => {
       it("slides a closable panel out with the pointer past its smallest width, and back in", async () => {
         // ARRANGE
         const { handle } = await renderDraggableSidebar(
-          `<mt-panel closable resizable :default-width="300" @update:open="onUpdateOpen"><p>Tools</p></mt-panel>`,
+          `<mt-panel closable resizable :width="300" @update:open="onUpdateOpen"><p>Tools</p></mt-panel>`,
         );
         await fireEvent.pointerDown(handle, { button: 0, clientX: 700 });
 
@@ -485,7 +485,7 @@ describe("mt-panel", () => {
       it("ends a drag that is cut off as the panel shows it", async () => {
         // ARRANGE
         const { handle, onUpdateOpen } = await renderDraggableSidebar(
-          `<mt-panel closable resizable :default-width="300" @update:open="onUpdateOpen"><p>Tools</p></mt-panel>`,
+          `<mt-panel closable resizable :width="300" @update:open="onUpdateOpen"><p>Tools</p></mt-panel>`,
         );
 
         // ACT

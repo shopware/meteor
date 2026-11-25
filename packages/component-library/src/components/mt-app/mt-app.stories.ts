@@ -64,7 +64,7 @@ const meta: MtAppMeta = {
         </mt-page>
 
         <template #sidebar>
-          <mt-panel label="Details" :default-width="320" closable resizable>
+          <mt-panel label="Details" :width="320" closable resizable>
             <aside aria-label="Details" style="padding: var(--scale-size-16);">
               <mt-text size="xs">A panel next to the content.</mt-text>
             </aside>

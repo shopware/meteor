@@ -956,13 +956,13 @@ describe("mt-app", () => {
       expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
     });
 
-    it("starts a panel closed with default-open, and its trigger opens it", async () => {
+    it("starts a panel closed with open, and its trigger opens it", async () => {
       // ARRANGE
       await renderApp({
         slots: {
           ...allSlots,
           sidebar: () =>
-            h(MtPanel, { closable: true, defaultOpen: false }, () =>
+            h(MtPanel, { closable: true, open: false }, () =>
               h("aside", { "aria-label": "Details" }, "Tools"),
             ),
         },
@@ -1012,6 +1012,34 @@ describe("mt-app", () => {
 
       // ASSERT
       expect(screen.getByRole("complementary", { name: "Details" })).toBeInTheDocument();
+    });
+
+    it("keeps a panel closed that is closed before its panel sets up", async () => {
+      // ARRANGE
+      const ClosingHeader: Component = {
+        setup() {
+          useApp().close("sidebar");
+
+          return () => h("span", "Header content");
+        },
+      };
+
+      // ACT
+      await renderApp({
+        slots: {
+          ...allSlots,
+          header: () => h(ClosingHeader),
+          sidebar: () =>
+            h(MtPanel, { closable: true }, () => h("aside", { "aria-label": "Details" }, "Tools")),
+        },
+      });
+
+      // ASSERT
+      expect(screen.getByRole("button", { name: sidebarTriggerName })).toHaveAttribute(
+        "aria-expanded",
+        "false",
+      );
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
     });
   });
 

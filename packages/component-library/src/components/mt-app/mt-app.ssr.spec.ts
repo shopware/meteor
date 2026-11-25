@@ -99,9 +99,7 @@ describe("mt-app server-side rendering", () => {
     const { html, hydrationMessages } = await hydrate(1440, {
       content: () => h(MtPage, { breadcrumb: [{ label: "Orders" }] }),
       sidebar: () =>
-        h(MtPanel, { closable: true, label: "Assistant", defaultOpen: false }, () =>
-          h("div", "Tools"),
-        ),
+        h(MtPanel, { closable: true, label: "Assistant", open: false }, () => h("div", "Tools")),
     });
 
     // ASSERT

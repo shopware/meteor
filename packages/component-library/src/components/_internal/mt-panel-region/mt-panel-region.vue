@@ -1,6 +1,7 @@
 <template>
   <Transition
     name="mt-panel-region-slide"
+    :css="slides"
     @enter="setSlideDistance"
     @before-leave="setSlideDistance"
     @after-leave="endSettling"
@@ -52,7 +53,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, provide, ref, useTemplateRef, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  ref,
+  useTemplateRef,
+  watch,
+} from "vue";
 import MtDrawer from "@/components/_internal/mt-drawer/mt-drawer.vue";
 import {
   PANEL_SLIDE_DURATION,
@@ -108,6 +118,9 @@ const dragOffset = ref(0);
 // While set, the panel settles after such a drag, from where the pointer left it.
 const settleDuration = ref<number | null>(null);
 let settleTimeout: ReturnType<typeof setTimeout> | undefined;
+// No slide while the layout mounts: an `MtPanel` inside another component only tells whether it
+// starts open once it has set up, after the panel rendered open.
+const slides = ref(false);
 
 /** Whether the panel holds the focus: its content, or its drawer, which takes the focus when it opens. */
 function containsFocus() {
@@ -221,6 +234,8 @@ watch(
     if (hidden && !isDrawer.value && containsFocus()) nextTick(props.controller.focusContent);
   },
 );
+
+onMounted(() => nextTick(() => (slides.value = true)));
 
 onBeforeUnmount(() => {
   clearTimeout(settleTimeout);
