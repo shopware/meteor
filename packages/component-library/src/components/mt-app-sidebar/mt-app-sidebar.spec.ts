@@ -30,6 +30,27 @@ describe("mt-app-sidebar", () => {
     expect(navigation).toContainElement(screen.getByRole("link", { name: "Dashboard" }));
   });
 
+  it("marks the item that isActive matches as the current page", () => {
+    // ACT
+    render(MtAppSidebar, {
+      props: {
+        sections: [
+          {
+            items: [
+              { label: "Dashboard", href: "#dashboard" },
+              { label: "Orders", href: "#orders" },
+            ],
+          },
+        ],
+        isActive: (item: { label: string }) => item.label === "Orders",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("link", { name: "Orders" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Dashboard" })).not.toHaveAttribute("aria-current");
+  });
+
   it("renders the start slot inside a header element", () => {
     // ACT
     const { container } = render(MtAppSidebar, {

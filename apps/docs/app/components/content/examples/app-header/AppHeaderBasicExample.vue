@@ -16,10 +16,10 @@ const sections: NavSection[] = [
       { label: "Dashboard", icon: "regular-home", href: "#", active: true },
       { label: "Orders", icon: "regular-shopping-bag", href: "#" },
       {
-        label: "Catalogues",
+        label: "Products",
         icon: "regular-products",
         children: [
-          { label: "Products", href: "#" },
+          { label: "Overview", href: "#" },
           { label: "Categories", href: "#" },
         ],
       },

@@ -17,10 +17,10 @@ const shopItems: NavItem[] = [
   { label: "Dashboard", icon: "regular-home", href: "#dashboard", active: true },
   { label: "Orders", icon: "regular-shopping-bag", href: "#orders" },
   {
-    label: "Catalogues",
+    label: "Products",
     icon: "regular-products",
     children: [
-      { label: "Products", href: "#products" },
+      { label: "Overview", href: "#products" },
       { label: "Categories", href: "#categories" },
       { label: "Manufacturers", href: "#manufacturers" },
     ],

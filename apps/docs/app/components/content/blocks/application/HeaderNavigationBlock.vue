@@ -1,16 +1,36 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import {
+  MtActionMenuGroup,
+  MtActionMenuItem,
   MtApp,
-  MtAvatar,
+  MtAppHeader,
+  MtBrand,
   MtButton,
   MtIcon,
   MtPage,
-  MtSearch,
+  MtUserMenu,
   type BreadcrumbItem,
+  type NavSection,
 } from "@shopware-ag/meteor-component-library";
 
-const term = ref("");
+// The main navigation of the application. Mark the current page with `active`.
+const sections: NavSection[] = [
+  {
+    items: [
+      { label: "Dashboard", icon: "regular-dashboard", to: "/", active: true },
+      { label: "Orders", icon: "regular-shopping-bag", to: "/orders" },
+      {
+        label: "Products",
+        icon: "regular-products",
+        children: [
+          { label: "Overview", to: "/products" },
+          { label: "Categories", to: "/categories" },
+        ],
+      },
+      { label: "Customers", icon: "regular-users", to: "/customers" },
+    ],
+  },
+];
 
 const breadcrumb: BreadcrumbItem[] = [{ label: "Dashboard", icon: "dashboard" }];
 </script>
@@ -18,27 +38,35 @@ const breadcrumb: BreadcrumbItem[] = [{ label: "Dashboard", icon: "dashboard" }]
 <template>
   <mt-app>
     <template #header>
-      <div class="header">
-        <mt-icon
-          name="regular-shopware"
-          size="var(--scale-size-24)"
-          color="var(--color-icon-brand-default)"
-          role="img"
-          aria-label="Shop admin"
-        />
+      <mt-app-header :sections="sections">
+        <template #start>
+          <mt-brand title="Shopware" subtitle="Meteor" />
+        </template>
 
-        <mt-search v-model="term" size="small" placeholder="Search" />
-
-        <div class="header__actions">
+        <template #actions>
           <mt-button variant="tertiary" size="default" square aria-label="Help">
-            <mt-icon name="regular-question-circle" size="var(--scale-size-16)" decorative />
+            <template #iconFront>
+              <mt-icon name="regular-question-circle" size="var(--scale-size-16)" decorative />
+            </template>
           </mt-button>
+
           <mt-button variant="tertiary" size="default" square aria-label="Notifications">
-            <mt-icon name="regular-bell" size="var(--scale-size-16)" decorative />
+            <template #iconFront>
+              <mt-icon name="regular-bell" size="var(--scale-size-16)" decorative />
+            </template>
           </mt-button>
-          <mt-avatar first-name="Mila" last-name="Hoffmann" size="s" aria-label="Mila Hoffmann" />
-        </div>
-      </div>
+        </template>
+
+        <template #end="{ isMobile }">
+          <mt-user-menu name="Max Mustermann" subtitle="Administrator" :compact="!isMobile">
+            <mt-action-menu-group>
+              <mt-action-menu-item icon="regular-sign-out" variant="critical">
+                Log out
+              </mt-action-menu-item>
+            </mt-action-menu-group>
+          </mt-user-menu>
+        </template>
+      </mt-app-header>
     </template>
 
     <mt-page width="l" :breadcrumb="breadcrumb">
@@ -46,21 +74,3 @@ const breadcrumb: BreadcrumbItem[] = [{ label: "Dashboard", icon: "dashboard" }]
     </mt-page>
   </mt-app>
 </template>
-
-<style scoped>
-/* The brand, the search in the center and the actions at the end. */
-.header {
-  display: grid;
-  grid-template-columns: 1fr minmax(0, 24rem) 1fr;
-  align-items: center;
-  gap: var(--scale-size-16);
-  padding-block: var(--scale-size-8);
-}
-
-.header__actions {
-  display: flex;
-  justify-self: end;
-  align-items: center;
-  gap: var(--scale-size-4);
-}
-</style>

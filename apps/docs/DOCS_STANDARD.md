@@ -224,10 +224,14 @@ Block pages have no table of contents, so the preview can take the whole width. 
 
 ### Code
 
-- A page block shows the structure of a page: the shell, the page header, tabs and cards. Fill the cards with `placeholder-slot` instead of real content such as form fields, so the structure stays easy to read. Leave the placeholders without a `name`, and give each a height that suggests the size of its content. Pass `name` only where the label helps, such as in a component example that shows which slot holds what.
+- An application block shows the shell with real components in its regions, such as **App Sidebar** or **App Header**, and a page with a `placeholder-slot` as its content. Variants of a shell, such as one with a sidebar or an announcement, are examples on the page of that shell, not pages of their own.
+- A page block shows the structure of a page: the shell, the page header, tabs and cards. Stand in for the navigation of the shell with `<placeholder-slot name="App: navigation" style="width: 280px" />`, and mark where the page starts with the comment `The page: copy it into a route of your application, without the shell around it.` Fill the cards with `placeholder-slot` instead of real content such as form fields, so the structure stays easy to read. Leave the placeholders without a `name`, and give each a height that suggests the size of its content. Pass `name` only where the label helps, such as in a component example that shows which slot holds what.
 - Other blocks, such as the login, show complete content. Keep them ready to copy: import from `@shopware-ag/meteor-component-library`, keep the sample data in the file, and do not use i18n or composables of the docs app.
 - Style only with Meteor tokens, in a `<style scoped>` block. Small layout classes such as `.stack` or `.grid` belong into the block itself.
 - Mark the places to replace, such as a timeout that stands in for a request, with a short comment.
+- Leave no control without a purpose: a button either does something in the template, such as saving with a timeout, or is a `placeholder-slot`.
+- Use the same sample data in all blocks: the brand "Shopware" with the subtitle "Meteor", the user "Max Mustermann" with the subtitle "Administrator", and the navigation Dashboard, Orders, Products (Overview, Categories), Customers and Settings. A block may differ where the difference is its point, such as the workspaces of the custom header.
+- Give a second **Nav** on a page, such as the groups of a settings page, its own `label`, as the navigation of the shell is already named "Main".
 
 ## Prose rules
 

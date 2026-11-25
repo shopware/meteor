@@ -9,7 +9,7 @@
     </div>
 
     <mt-scroll-area class="mt-app-sidebar__body" :fade-size="48">
-      <mt-nav :sections="sections" />
+      <mt-nav :sections="sections" :is-active="isActive" />
     </mt-scroll-area>
 
     <footer v-if="hasSlotContent($slots.end)" class="mt-app-sidebar__end">
@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import MtNav, { type NavSection } from "@/components/mt-nav/mt-nav.vue";
+import MtNav, { type NavActiveMatcher, type NavSection } from "@/components/mt-nav/mt-nav.vue";
 import MtScrollArea from "@/components/mt-scroll-area/mt-scroll-area.vue";
 import { hasSlotContent } from "@/utils/slot";
 
@@ -32,6 +32,11 @@ import { hasSlotContent } from "@/utils/slot";
 defineProps<{
   /** The sections of the navigation, each holding its items, as for `mt-nav`. */
   sections: NavSection[];
+  /**
+   * Tells whether an item is the current page, e.g. by comparing its route with the current
+   * route. Lets the sections stay static instead of setting `active` on every route change.
+   */
+  isActive?: NavActiveMatcher;
 }>();
 
 defineSlots<{
@@ -49,7 +54,7 @@ defineSlots<{
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  gap: var(--scale-size-8);
+  gap: var(--scale-size-16);
   /* Fills an mt-panel that sets a width, and is 300px wide otherwise. */
   width: var(--mt-panel-width, 300px);
   max-width: 100%;

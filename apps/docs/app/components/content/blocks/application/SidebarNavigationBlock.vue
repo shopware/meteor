@@ -1,18 +1,23 @@
 <script setup lang="ts">
 import {
+  MtActionMenuGroup,
+  MtActionMenuItem,
   MtApp,
-  MtNav,
+  MtAppSidebar,
+  MtBrand,
   MtPage,
+  MtPanel,
+  MtUserMenu,
   type BreadcrumbItem,
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
 
-// The main navigation of the application. Mark the current page as active, or
-// pass `is-active` to mt-nav to compare the rows with the current route.
-const navigation: NavSection[] = [
+// The main navigation of the application. Mark the current page with `active`.
+const sections: NavSection[] = [
   {
     items: [
-      { label: "Dashboard", icon: "regular-home", to: "/", active: true },
+      { label: "Dashboard", icon: "regular-dashboard", to: "/", active: true },
+      { label: "Orders", icon: "regular-shopping-bag", to: "/orders" },
       {
         label: "Products",
         icon: "regular-products",
@@ -21,7 +26,7 @@ const navigation: NavSection[] = [
           { label: "Categories", to: "/categories" },
         ],
       },
-      { label: "Orders", icon: "regular-shopping-bag", to: "/orders" },
+      { label: "Customers", icon: "regular-users", to: "/customers" },
       { label: "Settings", icon: "regular-cog", to: "/settings" },
     ],
   },
@@ -33,7 +38,23 @@ const breadcrumb: BreadcrumbItem[] = [{ label: "Dashboard", icon: "dashboard" }]
 <template>
   <mt-app>
     <template #navigation>
-      <mt-nav class="navigation" :sections="navigation" />
+      <mt-panel label="Navigation" resizable :min-width="200" :max-width="320">
+        <mt-app-sidebar :sections="sections">
+          <template #start>
+            <mt-brand title="Shopware" subtitle="Meteor" />
+          </template>
+
+          <template #end>
+            <mt-user-menu name="Max Mustermann" subtitle="Administrator">
+              <mt-action-menu-group>
+                <mt-action-menu-item icon="regular-sign-out" variant="critical">
+                  Log out
+                </mt-action-menu-item>
+              </mt-action-menu-group>
+            </mt-user-menu>
+          </template>
+        </mt-app-sidebar>
+      </mt-panel>
     </template>
 
     <mt-page width="l" :breadcrumb="breadcrumb">
@@ -41,9 +62,3 @@ const breadcrumb: BreadcrumbItem[] = [{ label: "Dashboard", icon: "dashboard" }]
     </mt-page>
   </mt-app>
 </template>
-
-<style scoped>
-.navigation {
-  width: 15rem;
-}
-</style>

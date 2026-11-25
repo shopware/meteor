@@ -84,7 +84,7 @@ const productLogos = {
   justify-content: center;
   width: var(--scale-size-36);
   height: var(--scale-size-36);
-  border-radius: 25%;
+  border-radius: var(--border-radius-m);
 }
 
 .mt-brand__image--dark {

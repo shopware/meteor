@@ -16,9 +16,10 @@ const breadcrumb: BreadcrumbItem[] = [
 <template>
   <mt-app>
     <template #navigation>
-      <placeholder-slot name="App: navigation" style="width: 15rem" />
+      <placeholder-slot name="App: navigation" style="width: 280px" />
     </template>
 
+    <!-- The page: copy it into a route of your application, without the shell around it. -->
     <mt-page width="l" :breadcrumb="breadcrumb">
       <template #actions>
         <placeholder-slot name="Page: actions" />

@@ -18,7 +18,7 @@ description: The main navigation of an application in its header, which moves in
 import { MtAppHeader } from "@shopware-ag/meteor-component-library";
 ```
 
-Pass the navigation as `sections` with their `items`, the same way as for [**Nav**](/components/nav), and mark the current page with `active` on its item. The `start` slot suits a [**Brand**](/components/brand), the `actions` slot buttons such as the notifications, and the `end` slot a [**User Menu**](/components/user-menu).
+Pass the navigation as `sections` with their `items`, the same way as for [**Nav**](/components/nav). Mark the current page with `active` on its item, or pass `is-active` to compare the items with the current route, so the sections can stay static. The `start` slot suits a [**Brand**](/components/brand), the `actions` slot buttons such as the notifications, and the `end` slot a [**User Menu**](/components/user-menu).
 
 When the header is narrower than `breakpoint` (1024px by default), it switches to the mobile layout: it shows a button at its start and the actions. The start, the navigation and the end move into a drawer that the button opens.
 
