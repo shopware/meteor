@@ -35,10 +35,8 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           commit-message: Update icons
-          committer: Dennis Mader <${{ secrets.ICON_KIT__COMMITTER }}>
-          author: Dennis Mader <${{ secrets.ICON_KIT__COMMITTER }}>
           branch: update-icons
           delete-branch: true
           branch-suffix: timestamp
           title: Update icons
-          assignees: Weltraumakustik
+          assignees: ${{ github.actor }}
