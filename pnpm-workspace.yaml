@@ -10,6 +10,8 @@ onlyBuiltDependencies:
   - esbuild
 
 overrides:
+  # Force a patched axios for transitive deps (wait-on, apisauce, ...) flagged by Defender
+  "axios": ^1.21.1
   "parse-url>@types/parse-path": "-"
   "vue@^3.0.0": 3.5.13
   "@vue/compiler-core@^3.0.0": 3.5.13
