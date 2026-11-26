@@ -25,14 +25,14 @@ The icon shows as much as it knows about the file. A known format shows its icon
 
 ### Categories
 
-Set `category` to show the icon of a category without a format label, or to override the category derived from the file. The categories are `document`, `presentation`, `vector`, `archive`, `table`, `image`, `video`, `audio`, `subtitle`, `3d`, `markup`, `font`, and `executable`.
+Set `category` to show the icon of a category without a format label, or to override the category derived from the file.
 
 ::component-example{name="file-icon-categories-example"}
 ::
 
 ### Formats
 
-Set `format` to show a format label, without a leading dot, such as `pdf`. PDF, Word, and Excel formats show their label in the color of their brand, adjusted for dark mode. OpenDocument formats use the color of their Office counterpart.
+Set `format` to show a format label, without a leading dot, such as `pdf`.
 
 ::component-example{name="file-icon-formats-example"}
 ::
@@ -53,7 +53,7 @@ Set `icon` to any icon from the icon kit and `format` to any label to show forma
 
 ### Broken preview
 
-Set `broken` when a file failed to load. It replaces the icon and label with a red cross.
+Set `broken` when a file failed to load.
 
 ::component-example{name="file-icon-broken-example"}
 ::
@@ -99,10 +99,7 @@ Set `size` to `fluid` to size the icon with CSS instead, for example in containe
 - A MIME type without a known format, such as `video/x-unknown`, still resolves its category from the type before the slash.
 - A format label needs an icon. A format the component doesn't know shows the empty page unless you also set `icon` or `category`.
 - `:show-format="false"` hides the label and shows the category icon alone.
-- Archives show a zipper that hangs from the top edge of the page, with or without a label.
-- The label keeps a small gap to the outline on both sides. A label that does not fit, usually one with more than four letters, is cut off with an ellipsis.
-- The page, icon, and label are sized in container query units of the icon's own width, so they stay in proportion at any width. The outline stays 1 pixel wide.
-- Icons always show in the regular style.
+- An `icon` in the solid style, such as `solid-star`, shows in the regular style.
 
 ## Accessibility
 

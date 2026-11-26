@@ -4,7 +4,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
 
 <template>
   <div class="formats">
-    <span class="formats__category">document</span>
+    <span class="formats__category">Documents</span>
     <mt-file-icon format="txt" />
     <mt-file-icon format="pdf" />
     <mt-file-icon format="doc" />
@@ -16,7 +16,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="log" />
   </div>
   <div class="formats">
-    <span class="formats__category">presentation</span>
+    <span class="formats__category">Presentations</span>
     <mt-file-icon format="ppt" />
     <mt-file-icon format="pptx" />
     <mt-file-icon format="pps" />
@@ -25,7 +25,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="odp" />
   </div>
   <div class="formats">
-    <span class="formats__category">vector</span>
+    <span class="formats__category">Vectors</span>
     <mt-file-icon format="svg" />
     <mt-file-icon format="eps" />
     <mt-file-icon format="ai" />
@@ -34,7 +34,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="fig" />
   </div>
   <div class="formats">
-    <span class="formats__category">archive</span>
+    <span class="formats__category">Archives</span>
     <mt-file-icon format="zip" />
     <mt-file-icon format="rar" />
     <mt-file-icon format="7z" />
@@ -48,7 +48,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="iso" />
   </div>
   <div class="formats">
-    <span class="formats__category">table</span>
+    <span class="formats__category">Tables</span>
     <mt-file-icon format="xls" />
     <mt-file-icon format="xlsx" />
     <mt-file-icon format="xlsm" />
@@ -58,7 +58,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="numbers" />
   </div>
   <div class="formats">
-    <span class="formats__category">image</span>
+    <span class="formats__category">Images</span>
     <mt-file-icon format="jpg" />
     <mt-file-icon format="jpeg" />
     <mt-file-icon format="png" />
@@ -74,7 +74,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="psd" />
   </div>
   <div class="formats">
-    <span class="formats__category">video</span>
+    <span class="formats__category">Videos</span>
     <mt-file-icon format="mov" />
     <mt-file-icon format="mp4" />
     <mt-file-icon format="m4v" />
@@ -89,7 +89,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="ogv" />
   </div>
   <div class="formats">
-    <span class="formats__category">audio</span>
+    <span class="formats__category">Audio</span>
     <mt-file-icon format="mp3" />
     <mt-file-icon format="wav" />
     <mt-file-icon format="ogg" />
@@ -104,7 +104,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="midi" />
   </div>
   <div class="formats">
-    <span class="formats__category">subtitle</span>
+    <span class="formats__category">Subtitles</span>
     <mt-file-icon format="srt" />
     <mt-file-icon format="vtt" />
     <mt-file-icon format="ass" />
@@ -112,7 +112,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="sub" />
   </div>
   <div class="formats">
-    <span class="formats__category">3d</span>
+    <span class="formats__category">3D</span>
     <mt-file-icon format="glb" />
     <mt-file-icon format="gltf" />
     <mt-file-icon format="obj" />
@@ -130,7 +130,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="stp" />
   </div>
   <div class="formats">
-    <span class="formats__category">markup</span>
+    <span class="formats__category">Markup</span>
     <mt-file-icon format="html" />
     <mt-file-icon format="htm" />
     <mt-file-icon format="xml" />
@@ -166,7 +166,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="sh" />
   </div>
   <div class="formats">
-    <span class="formats__category">font</span>
+    <span class="formats__category">Fonts</span>
     <mt-file-icon format="ttf" />
     <mt-file-icon format="otf" />
     <mt-file-icon format="woff" />
@@ -174,7 +174,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
     <mt-file-icon format="eot" />
   </div>
   <div class="formats">
-    <span class="formats__category">executable</span>
+    <span class="formats__category">Executables</span>
     <mt-file-icon format="exe" />
     <mt-file-icon format="msi" />
     <mt-file-icon format="bat" />
