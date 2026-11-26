@@ -21,6 +21,13 @@ import { MtDatepicker } from "@shopware-ag/meteor-component-library";
 ::component-example{name="datepicker-date-only-example" fullWidth}
 ::
 
+### Calendar date
+
+Set `value-format="date"` when the value is a day that does not depend on a place, such as a birthday. The picker then reads and emits the plain day, for example `2000-01-15`, and ignores the time zone.
+
+::component-example{name="datepicker-calendar-date-example" fullWidth}
+::
+
 ### Time only
 
 ::component-example{name="datepicker-time-only-example" fullWidth}
@@ -43,12 +50,14 @@ import { MtDatepicker } from "@shopware-ag/meteor-component-library";
 - Match the `dateType` to the value users actually need, such as `date`, `time`, or `datetime`.
 - Use a clear label so users know what event, deadline, or schedule the value belongs to.
 - Set the timezone intentionally when the chosen value is shared across regions or systems.
+- Use `value-format="date"` for days that are the same everywhere, such as birthdays.
 
 #dont
 
 - Do not use **Datepicker** when a plain text field is enough for a non-date value.
 - Do not expose time selection if the feature only needs a date.
 - Do not leave timezone behavior implicit when it affects saved values.
+- Do not store a date-only value as a date and time if only the day matters, because the day can shift between time zones.
 
 ::
 
@@ -56,7 +65,12 @@ import { MtDatepicker } from "@shopware-ag/meteor-component-library";
 
 - `dateType` controls whether the picker behaves as a date, time, or datetime input.
 - `range` lets one field hold a start and end value.
-- `timeZone` affects how values are interpreted and displayed.
+- `timeZone` affects how values are interpreted and displayed. A time zone the browser does not know is treated as `UTC`, with a warning in the console.
+- With `dateType="date"`, the value is midnight of the picked day in `timeZone` as a UTC date and time, so the same day is a different value in each time zone. January 15 in `Europe/Berlin` is `2000-01-14T23:00:00.000Z`. A plain day given as the value, such as `2000-01-15`, is shown as that day.
+- `valueFormat="date"` turns the value of a date-only picker into the plain day, such as `2000-01-15`. It is the same in every time zone and `timeZone` is ignored. A `Date` is read as its own calendar day, so `new Date(2000, 0, 15)` is January 15.
+- `textInput` lets users type a value. It is saved when they press Enter or Tab, or leave the field, not while they are typing.
+- `is24` set to `false` shows a 12-hour clock in the time picker and in the input. A custom `format` takes precedence in the input.
+- `required` shows the error "This field is required" while the value is empty. This built-in error is deprecated and will be removed in the next major version. `required` will then only mark the input as required, so show your own message with `error` instead.
 - `helpText`, `required`, `disabled`, `error`, and `size` integrate with the shared field styling.
 
 ## Accessibility

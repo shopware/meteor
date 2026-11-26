@@ -42,6 +42,10 @@ export default {
       control: { type: "select" },
       options: ["datetime", "date", "time"],
     },
+    valueFormat: {
+      control: { type: "select" },
+      options: ["datetime", "date"],
+    },
     timeZone: {
       control: { type: "select" },
       options: [
@@ -99,6 +103,28 @@ export const DateOnly: MtDatepickerStory = {
   label="Publish date"
   date-type="date"
   model-value="2024-11-13T00:00:00.000Z"
+/>`,
+      },
+    },
+  },
+};
+
+export const CalendarDate: MtDatepickerStory = {
+  name: "Calendar date",
+  args: {
+    label: "Birthday",
+    dateType: "date",
+    valueFormat: "date",
+    modelValue: "2000-01-15",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-datepicker
+  label="Birthday"
+  date-type="date"
+  value-format="date"
+  model-value="2000-01-15"
 />`,
       },
     },
