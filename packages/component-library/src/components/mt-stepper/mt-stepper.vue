@@ -24,7 +24,7 @@
       </span>
 
       <span class="mt-stepper__label" :data-text="step.label">
-        <span v-if="step.isCompleted" class="mt-stepper__status">{{ t("completed") }}: </span>
+        <span v-if="step.isCompleted" class="visually-hidden">{{ t("completed") }}: </span>
         <span class="mt-stepper__text">{{ step.label }}</span>
       </span>
     </li>
@@ -212,17 +212,5 @@ const stepStates = computed(() =>
 
 .mt-stepper--vertical .mt-stepper__label {
   padding-block: calc((var(--mt-stepper-marker-size) - var(--font-line-height-xs)) / 2);
-}
-
-.mt-stepper__status {
-  position: absolute;
-  width: var(--scale-size-1);
-  height: var(--scale-size-1);
-  margin: calc(-1 * var(--scale-size-1));
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 </style>
