@@ -171,6 +171,8 @@ const iconStyle = computed(() => {
   display: inline-block;
   flex-shrink: 0;
   vertical-align: middle;
+  /* Keeps the height at the aspect ratio when a flex or grid parent would stretch an auto height */
+  height: fit-content;
   aspect-ratio: 1;
   /* Everything inside is sized in container query units of the icon's own width */
   container: mt-file-icon / inline-size;
