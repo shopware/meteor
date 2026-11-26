@@ -3,6 +3,6 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
 </script>
 
 <template>
-  <mt-file-icon icon="square" format="TXT" />
-  <mt-file-icon icon="square" />
+  <mt-file-icon icon="party-horn" format="yay" />
+  <mt-file-icon icon="party-horn" />
 </template>

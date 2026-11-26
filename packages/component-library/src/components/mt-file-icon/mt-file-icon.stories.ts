@@ -153,14 +153,14 @@ export const CustomIconAndFormat: MtFileIconStory = {
     docs: {
       source: {
         language: "html",
-        code: `<mt-file-icon icon="square" format="TXT" />`,
+        code: `<mt-file-icon icon="party-horn" format="yay" />`,
       },
     },
   },
   args: {
     fileName: undefined,
-    icon: "square",
-    format: "TXT",
+    icon: "party-horn",
+    format: "yay",
     label: undefined,
   },
 };
