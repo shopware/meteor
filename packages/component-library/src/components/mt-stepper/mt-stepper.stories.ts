@@ -90,7 +90,7 @@ export const CompletedCurrentStep: MtStepperStory = {
     steps: [
       { label: "Account" },
       { label: "Shipping", completed: true },
-      { label: "Payment", completed: true },
+      { label: "Payment" },
       { label: "Review" },
     ],
   },

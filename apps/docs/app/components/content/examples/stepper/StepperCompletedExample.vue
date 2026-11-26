@@ -4,7 +4,7 @@ import MtStepper from "@shopware-ag/meteor-component-library/MtStepper";
 const steps = [
   { label: "Account" },
   { label: "Shipping", completed: true },
-  { label: "Payment", completed: true },
+  { label: "Payment" },
   { label: "Review" },
 ];
 </script>

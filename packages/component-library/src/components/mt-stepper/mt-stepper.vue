@@ -23,9 +23,9 @@
         />
       </span>
 
-      <span class="mt-stepper__label">
-        <span v-if="step.isCompleted" class="mt-stepper__status">{{ t("completed") }}: </span
-        >{{ step.label }}
+      <span class="mt-stepper__label" :data-text="step.label">
+        <span v-if="step.isCompleted" class="mt-stepper__status">{{ t("completed") }}: </span>
+        <span class="mt-stepper__text">{{ step.label }}</span>
       </span>
     </li>
   </ol>
@@ -86,6 +86,7 @@ const stepStates = computed(() =>
 <style scoped>
 .mt-stepper {
   --mt-stepper-marker-size: var(--scale-size-32);
+  --mt-stepper-gap: var(--scale-size-16);
   --mt-stepper-connector-width: 1px;
   --mt-stepper-connector-offset: calc(
     (var(--mt-stepper-marker-size) - var(--mt-stepper-connector-width)) / 2
@@ -102,17 +103,12 @@ const stepStates = computed(() =>
 }
 
 .mt-stepper--vertical {
-  --mt-stepper-gap: var(--scale-size-16);
-
   display: flex;
   flex-direction: column;
   row-gap: var(--mt-stepper-gap);
 }
 
 .mt-stepper--horizontal {
-  /* The designed distance between two steps, which is not a step of the size scale */
-  --mt-stepper-gap: 50px;
-
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
@@ -164,7 +160,7 @@ const stepStates = computed(() =>
   justify-content: center;
   width: var(--mt-stepper-marker-size);
   height: var(--mt-stepper-marker-size);
-  border-radius: var(--border-radius-round);
+  border-radius: var(--border-radius-m);
   background: var(--color-background-tertiary-default);
   color: var(--color-icon-primary-disabled);
 }
@@ -180,9 +176,38 @@ const stepStates = computed(() =>
 }
 
 .mt-stepper__label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   min-width: 0;
   max-width: 100%;
   overflow-wrap: anywhere;
+  hyphens: auto;
+  color: var(--color-text-secondary-default);
+}
+
+.mt-stepper__text,
+.mt-stepper__label::after {
+  grid-area: 1 / 1;
+}
+
+/* A hidden copy of the label in the weight of the current step. It reserves the
+ * space of that weight, so the steps do not shift when the current step changes.
+ * Same idea as in mt-tabs, but stacked in a grid, as labels can wrap here.
+ */
+.mt-stepper__label::after {
+  content: attr(data-text);
+  visibility: hidden;
+  font-weight: var(--font-weight-medium);
+  user-select: none;
+  pointer-events: none;
+}
+
+.mt-stepper__step--current .mt-stepper__label {
+  color: var(--color-text-primary-default);
+}
+
+.mt-stepper__step--current .mt-stepper__text {
+  font-weight: var(--font-weight-medium);
 }
 
 .mt-stepper--vertical .mt-stepper__label {
