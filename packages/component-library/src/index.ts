@@ -15,6 +15,9 @@ import MtRadioGroupCardItem from "./components/mt-radio-group/mt-radio-group-car
 import MtRadioGroupCustomItem from "./components/mt-radio-group/mt-radio-group-custom-item.vue";
 import MtColorpicker from "./components/mt-colorpicker/mt-colorpicker.vue";
 import MtDivider from "./components/mt-divider/mt-divider.vue";
+import MtGrid from "./components/mt-grid/mt-grid.vue";
+import MtGridItem from "./components/mt-grid/mt-grid-item.vue";
+import MtStack from "./components/mt-stack/mt-stack.vue";
 import MtEmailField from "./components/mt-email-field/mt-email-field.vue";
 import MtHelpText from "./components/mt-help-text/mt-help-text.vue";
 import MtLink from "./components/mt-link/mt-link.vue";
@@ -123,6 +126,9 @@ export {
   MtColorpicker,
   MtDatepicker,
   MtDivider,
+  MtGrid,
+  MtGridItem,
+  MtStack,
   MtEmailField,
   MtChart,
   MtLink,
@@ -250,5 +256,6 @@ export type {
   StepperStep,
 };
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
+export type { SpacingSize } from "./utils/spacing";
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
