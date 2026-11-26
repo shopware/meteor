@@ -2,12 +2,9 @@ import { defineComponent, h, nextTick } from "vue";
 import { fireEvent, render, screen } from "@testing-library/vue";
 import MtApp from "../mt-app/mt-app.vue";
 import MtAppPanelTrigger from "../mt-app/mt-app-panel-trigger.vue";
-import MtPage from "../mt-page/mt-page.vue";
 import MtPanel from "./mt-panel.vue";
 import {
-  createLocalStorageMock,
   flushPromises,
-  routerPlugin,
   stubMatchMedia,
   stubPointerEvents,
 } from "../mt-app/__tests__/shell-test-utils";
@@ -25,20 +22,9 @@ async function renderSidebar(panel: string, data: Record<string, unknown> = {}) 
     `,
   });
 
-  // The remembered width applies a tick after the panel has mounted.
   await flushPromises();
 
   return result;
-}
-
-function renderPageWithEndPanel(router?: unknown) {
-  return render(MtPage, {
-    slots: {
-      default: "<p>Content</p>",
-      end: () => h(MtPanel, { resizable: true, width: 300 }, () => h("p", "Customer")),
-    },
-    global: { plugins: router ? [routerPlugin(router)] : [] },
-  });
 }
 
 function panelElement() {
@@ -51,7 +37,6 @@ function panelWidth() {
 
 describe("mt-panel", () => {
   beforeEach(() => {
-    vi.stubGlobal("localStorage", createLocalStorageMock());
     stubMatchMedia(1440);
     stubPointerEvents();
   });
@@ -201,7 +186,7 @@ describe("mt-panel", () => {
       expect(screen.queryByRole("separator", { hidden: true })).not.toBeInTheDocument();
     });
 
-    it("resizes with the keyboard and remembers the width for its slot", async () => {
+    it("resizes with the keyboard", async () => {
       // ARRANGE
       await renderSidebar(
         `<mt-panel resizable :width="300" :max-width="800"><p>Tools</p></mt-panel>`,
@@ -213,7 +198,6 @@ describe("mt-panel", () => {
 
       // ASSERT
       expect(panelWidth()).toBe("310px");
-      expect(localStorage.getItem("mt-panel-width:sidebar")).toBe("310");
 
       // ACT
       await fireEvent.keyDown(handle, { key: "Home" });
@@ -241,7 +225,6 @@ describe("mt-panel", () => {
 
       // ASSERT
       expect(onUpdate).toHaveBeenLastCalledWith(310);
-      expect(localStorage.getItem("mt-panel-width:sidebar")).toBeNull();
     });
 
     it("emits the width when a drag ends", async () => {
@@ -282,85 +265,6 @@ describe("mt-panel", () => {
 
       // ASSERT
       expect(panelWidth()).toBe("320px");
-      expect(localStorage.getItem("mt-panel-width:sidebar")).toBeNull();
-    });
-
-    it("applies the remembered width when it mounts, within its limits", async () => {
-      // ARRANGE
-      localStorage.setItem("mt-panel-width:sidebar", "900");
-
-      // ACT
-      await renderSidebar(`<mt-panel resizable :max-width="480"><p>Tools</p></mt-panel>`);
-
-      // ASSERT
-      expect(panelWidth()).toBe("480px");
-    });
-
-    it("remembers the width of a page's panel for that page only", async () => {
-      // ARRANGE
-      const routeOf = (path: string) => ({
-        currentRoute: { value: { path: "/", hash: "", matched: [{ path }] } },
-      });
-      const cms = renderPageWithEndPanel(routeOf("/cms"));
-      await flushPromises();
-
-      // ACT: the end panel's handle is on its start edge, so the left arrow makes it wider
-      await fireEvent.keyDown(screen.getByRole("separator"), { key: "ArrowLeft" });
-      cms.unmount();
-      renderPageWithEndPanel(routeOf("/orders/:id"));
-      await flushPromises();
-
-      // ASSERT
-      expect(localStorage.getItem("mt-panel-width:/cms:end")).toBe("310");
-      expect(panelWidth()).toBe("300px");
-    });
-
-    it("names the page after the route record that renders it, not after a child route", async () => {
-      // ARRANGE
-      const record = { path: "/products/:id", instances: {} as Record<string, unknown> };
-      const router = {
-        currentRoute: {
-          value: { path: "/products/1/specs", hash: "", matched: [record, { path: "specs" }] },
-        },
-      };
-      const ProductPage = defineComponent({
-        render: () =>
-          h(MtPage, null, {
-            default: () => h("p", "Specifications"),
-            end: () => h(MtPanel, { resizable: true, width: 300 }, () => h("p", "Variants")),
-          }),
-      });
-      render(
-        {
-          // Like RouterView, which registers the page it renders in the route record.
-          render: () =>
-            h(ProductPage, {
-              ref: (instance: unknown) => {
-                if (instance) record.instances.default = instance;
-              },
-            }),
-        },
-        { global: { plugins: [routerPlugin(router)] } },
-      );
-      await flushPromises();
-
-      // ACT
-      await fireEvent.keyDown(screen.getByRole("separator"), { key: "ArrowLeft" });
-
-      // ASSERT
-      expect(localStorage.getItem("mt-panel-width:/products/:id:end")).toBe("310");
-    });
-
-    it("names the page by its URL path without a router", async () => {
-      // ARRANGE
-      renderPageWithEndPanel();
-      await flushPromises();
-
-      // ACT
-      await fireEvent.keyDown(screen.getByRole("separator"), { key: "ArrowLeft" });
-
-      // ASSERT
-      expect(localStorage.getItem(`mt-panel-width:${location.pathname}:end`)).toBe("310");
     });
 
     it("returns to its starting width on double click", async () => {
@@ -374,7 +278,29 @@ describe("mt-panel", () => {
 
       // ASSERT
       expect(panelWidth()).toBe("300px");
-      expect(localStorage.getItem("mt-panel-width:sidebar")).toBeNull();
+    });
+
+    it("has its default width until it is resized", async () => {
+      // ACT
+      await renderSidebar(`<mt-panel resizable :default-width="400"><p>Tools</p></mt-panel>`);
+
+      // ASSERT
+      expect(panelWidth()).toBe("400px");
+    });
+
+    it("returns a width the app keeps to the default width on double click", async () => {
+      // ARRANGE
+      const onUpdate = vi.fn();
+      await renderSidebar(
+        `<mt-panel resizable :default-width="400" :width="300" @update:width="onUpdate"><p>Tools</p></mt-panel>`,
+        { onUpdate },
+      );
+
+      // ACT
+      await fireEvent.dblClick(screen.getByRole("separator"));
+
+      // ASSERT
+      expect(onUpdate).toHaveBeenLastCalledWith(400);
     });
 
     describe("closing by drag", () => {

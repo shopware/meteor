@@ -138,14 +138,3 @@ export function resolvePanelSettings(
     appearance: options?.appearance ?? defaultAppearances[place],
   };
 }
-
-/**
- * The key under which a resizable panel remembers its width. The shell's navigation and sidebar
- * exist once per app, so their place names them. A page's panels are named by their place on that
- * page, so each page keeps its own widths.
- */
-export function panelWidthStorageKey(place: PanelPlace, page: string) {
-  return place === "start" || place === "end"
-    ? `mt-panel-width:${page}:${place}`
-    : `mt-panel-width:${place}`;
-}
