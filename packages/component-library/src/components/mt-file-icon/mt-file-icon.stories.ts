@@ -33,7 +33,7 @@ const meta: MtFileIconMeta = {
     broken: { control: { type: "boolean" } },
     size: {
       control: { type: "select" },
-      options: sizes,
+      options: [...sizes, "fluid"],
     },
     label: { control: { type: "text" } },
   },
