@@ -96,8 +96,9 @@ const props = withDefaults(
     /** The sections of the navigation, each holding its items, as for `mt-nav`. */
     sections: NavSection[];
     /**
-     * Tells whether an item is the current page, for apps with their own rule. Without it, the
-     * item linking most closely to the current page is active, as in `mt-nav`.
+     * Tells whether an item is the current page, for pages the navigation can't find on its own:
+     * `true` if it is, `false` if it isn't, and `undefined` to leave the item to the navigation,
+     * as in `mt-nav`.
      */
     isActive?: NavActiveMatcher;
     /**

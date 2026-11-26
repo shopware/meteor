@@ -11,9 +11,10 @@ export type NavLinkComponent = string | Component;
 export type NavLinkTarget = string | object;
 
 /**
- * Tells whether an item is the current page, for apps with their own rule.
+ * Tells whether an item is the current page, for apps with their own rule: `true` if it is, `false`
+ * if it isn't, and `undefined` to leave the item to the rule of `mt-nav`.
  */
-export type NavActiveMatcher = (item: NavItem) => boolean;
+export type NavActiveMatcher = (item: NavItem) => boolean | undefined;
 
 /**
  * Direction the top-level items run in. Horizontal items open their nested items in a floating
@@ -32,7 +33,7 @@ interface NavItemBase {
    */
   icon?: string;
   /**
-   * Marks the item as the current page, in place of the item `mt-nav` finds from the current page.
+   * Marks the item as the current page, in place of the item `mt-nav` finds from the current route.
    * Its ancestors open and highlight accordingly.
    */
   active?: boolean;

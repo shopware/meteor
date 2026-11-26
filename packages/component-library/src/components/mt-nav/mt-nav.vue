@@ -69,9 +69,10 @@ const props = withDefaults(
      */
     label?: string;
     /**
-     * Tells whether an item is the current page, for apps with their own rule. Without it, the
-     * navigation picks the item whose `to` points to the current route of Vue Router or to a page
-     * above it, the most specific one when several do.
+     * Tells whether an item is the current page, for pages that the navigation can't find on its
+     * own: `true` if it is, `false` if it isn't, and `undefined` to leave the item to the navigation.
+     * The navigation picks the item whose `to` points to the current route of Vue Router or to a
+     * page above it, the most specific one when several do.
      */
     isActive?: NavActiveMatcher;
     /**
@@ -136,13 +137,20 @@ const allItems = computed(() => {
   return flatten(props.sections.flatMap((section) => section.items));
 });
 
-// The item linking to the current route, unless `isActive` or an `active` item decides
+// Whether an `active` flag or a `true` from `isActive` already names the current page
+const isCurrentPageSet = computed(() =>
+  allItems.value.some((item) => item.active || props.isActive?.(item) === true),
+);
+
+// The item linking to the current route, among the items `isActive` leaves to the navigation
 const currentItem = useCurrentItem(() =>
-  props.isActive || allItems.value.some((item) => item.active) ? [] : allItems.value,
+  isCurrentPageSet.value
+    ? []
+    : allItems.value.filter((item) => props.isActive?.(item) === undefined),
 );
 
 function matchesCurrentPage(item: NavItem) {
-  return props.isActive ? props.isActive(item) : item === currentItem.value;
+  return props.isActive?.(item) === true || item === currentItem.value;
 }
 
 function isActiveItem(item: NavItem) {
