@@ -3,19 +3,15 @@ import {
   getCurrentInstance,
   onBeforeUnmount,
   onMounted,
-  shallowRef,
   type ComponentInternalInstance,
   type ComputedRef,
 } from "vue";
-import { defaultWindow, useEventListener } from "@vueuse/core";
 import { logError } from "./log";
 
 /** The part of a Vue Router route that the library uses. */
 export interface RouteLike {
   path: string;
   hash: string;
-  /** The path with the query and the hash. */
-  fullPath?: string;
   params?: Record<string, unknown>;
   /** The route records of the route, from the root to the deepest child. */
   matched?: RouteRecordLike[];
@@ -35,10 +31,14 @@ export type RouteGuardResult = boolean | void | Promise<boolean | void>;
 /** The part of a Vue Router instance that the library uses. */
 interface RouterLike {
   currentRoute: { value: RouteLike };
-  options: { history: { state: Record<string, unknown> } };
+  options: {
+    history: { state: Record<string, unknown> };
+    /** Whether paths are compared with their case. Vue Router ignores the case by default. */
+    sensitive?: boolean;
+  };
   back(): void;
   push(to: unknown): Promise<unknown>;
-  resolve(to: unknown): { fullPath: string };
+  resolve(to: unknown): { path: string };
   beforeEach(guard: (to: RouteLike, from: RouteLike) => RouteGuardResult): () => void;
   afterEach(hook: (to: RouteLike, from: RouteLike, failure?: unknown) => void): () => void;
   onError(handler: (error: unknown) => void): () => void;
@@ -206,66 +206,64 @@ export function scrollToRoute(scrollArea: HTMLElement | null, to: RouteLike, fro
   else if (to.path !== from.path) scrollArea.scrollTop = 0;
 }
 
-/** A link of a component: a route location for Vue Router, or a URL. */
-export interface LinkTarget {
-  to?: unknown;
-  href?: string;
-}
-
 /**
- * Returns a function that tells how closely a link points to the current page: `-1` when it
- * doesn't, otherwise a higher number for a more specific link. A link points to its own page and to
- * the pages below it, `/` only to itself, and the query and hash of the link have to match. The
- * current page is the route of the app's Vue Router, or the browser's address without one, which
- * is known once the component has mounted.
+ * The item whose `to` points to the current route of the app's Vue Router, or to a page above it,
+ * such as `/products` for `/products/1`. A `to` of `/` only points to `/` itself. When several
+ * items do, the one with the longest path wins, and the first one on a tie. Only the paths are
+ * compared, not the query or the hash. Without a router, there is no current item.
  */
-export function useLinkMatch(): (link: LinkTarget) => number {
+export function useCurrentItem<T extends { to?: unknown }>(
+  items: () => T[],
+): ComputedRef<T | undefined> {
   const router = findRouter();
-  const browserUrl = shallowRef<string>();
 
-  if (!router?.currentRoute) {
-    const update = () => {
-      browserUrl.value = defaultWindow?.location.href;
-    };
+  return computed(() => {
+    const route = router?.currentRoute?.value;
 
-    onMounted(update);
-    useEventListener(defaultWindow, ["popstate", "hashchange"], update);
-    // Also follows other routers, which change the address with `history.pushState()`.
-    useEventListener(
-      () => (defaultWindow as { navigation?: EventTarget } | undefined)?.navigation,
-      "currententrychange",
-      update,
-    );
-  }
+    if (!route || typeof router?.resolve !== "function") return undefined;
 
-  const currentUrl = computed(() => {
-    const url = router?.currentRoute?.value.fullPath ?? browserUrl.value;
+    const caseSensitive = !!router.options?.sensitive;
+    const currentPath = normalizePath(route.path, caseSensitive);
+    let currentItem: T | undefined;
+    let longestPath = -1;
 
-    return url === undefined ? undefined : new URL(url, "http://localhost");
+    for (const item of items()) {
+      const path = resolvePath(router.resolve, item.to, caseSensitive);
+
+      if (path === undefined || !isOnPath(path, currentPath)) continue;
+      if (path.length > longestPath) {
+        currentItem = item;
+        longestPath = path.length;
+      }
+    }
+
+    return currentItem;
   });
-
-  return ({ to, href }) => {
-    const target =
-      to !== undefined && typeof router?.resolve === "function"
-        ? router.resolve(to).fullPath
-        : href ?? to;
-
-    if (!currentUrl.value || typeof target !== "string" || target.startsWith("#")) return -1;
-
-    return matchScore(new URL(target, currentUrl.value), currentUrl.value);
-  };
 }
 
-function matchScore(link: URL, current: URL) {
-  const path = link.pathname.replace(/\/+$/, "");
-  const currentPath = current.pathname.replace(/\/+$/, "");
-  const isOnPath = currentPath === path || (path !== "" && currentPath.startsWith(`${path}/`));
-  const hasQuery = [...link.searchParams].every(([key, value]) =>
-    current.searchParams.getAll(key).includes(value),
-  );
+function resolvePath(
+  resolve: RouterLike["resolve"],
+  to: unknown,
+  caseSensitive: boolean,
+): string | undefined {
+  if (to === undefined) return undefined;
 
-  if (link.origin !== current.origin || !isOnPath || !hasQuery) return -1;
-  if (link.hash && link.hash !== current.hash) return -1;
+  try {
+    return normalizePath(resolve(to).path, caseSensitive);
+  } catch {
+    // An unknown route name or a missing param: the item points nowhere
+    return undefined;
+  }
+}
 
-  return path.length + link.search.length + link.hash.length;
+function normalizePath(path: string, caseSensitive: boolean) {
+  // Vue Router ignores trailing slashes and, unless told otherwise, the case of paths
+  const trimmed = path.replace(/\/+$/, "");
+
+  return caseSensitive ? trimmed : trimmed.toLowerCase();
+}
+
+function isOnPath(path: string, currentPath: string) {
+  // Whether the current path is the path or a page below it. `/`, trimmed to "", only matches itself
+  return currentPath === path || (path !== "" && currentPath.startsWith(`${path}/`));
 }

@@ -42,7 +42,7 @@ import {
   type NavSlots,
 } from "./_internal/mt-nav-context";
 import { moveLinkFocus } from "./_internal/mt-nav-focus";
-import { useLinkMatch } from "@/utils/router";
+import { useCurrentItem } from "@/utils/router";
 
 export type {
   NavActiveMatcher,
@@ -69,9 +69,9 @@ const props = withDefaults(
      */
     label?: string;
     /**
-     * Tells whether an item is the current page, for apps with their own rule. Without it, the item
-     * linking most closely to the current page is active: through Vue Router, or the browser's
-     * address without it.
+     * Tells whether an item is the current page, for apps with their own rule. Without it, the
+     * navigation picks the item whose `to` points to the current route of Vue Router or to a page
+     * above it, the most specific one when several do.
      */
     isActive?: NavActiveMatcher;
     /**
@@ -128,28 +128,21 @@ const branches = computed(() =>
   ),
 );
 
-const matchLink = useLinkMatch();
-
 // Every item of the navigation, nested items included
-const rows = computed(() => {
+const allItems = computed(() => {
   const flatten = (items: NavItem[]): NavItem[] =>
     items.flatMap((item) => [item, ...flatten(item.children ?? [])]);
 
   return flatten(props.sections.flatMap((section) => section.items));
 });
 
-// The item linking most closely to the current page, unless `isActive` or an `active` item decides
-const matchedRow = computed(() => {
-  if (props.isActive || rows.value.some((row) => row.active)) return undefined;
-
-  const scores = rows.value.map((row) => matchLink(row));
-  const bestScore = Math.max(...scores);
-
-  return bestScore < 0 ? undefined : rows.value[scores.indexOf(bestScore)];
-});
+// The item linking to the current route, unless `isActive` or an `active` item decides
+const currentItem = useCurrentItem(() =>
+  props.isActive || allItems.value.some((item) => item.active) ? [] : allItems.value,
+);
 
 function matchesCurrentPage(item: NavItem) {
-  return props.isActive ? props.isActive(item) : item === matchedRow.value;
+  return props.isActive ? props.isActive(item) : item === currentItem.value;
 }
 
 function isActiveItem(item: NavItem) {
