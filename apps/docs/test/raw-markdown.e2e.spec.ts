@@ -105,4 +105,13 @@ describe("raw markdown export — button", async () => {
     expect(md).not.toContain("::component-example");
     expect(md).not.toContain(":component-api");
   });
+
+  it("embeds the block source on block pages", async () => {
+    const blockMd = await $fetch<string>("/raw/blocks/pages/detail-page.md");
+    const block = await $fetch<{ code: string }>(
+      "/api/component-example/detail-page-block.json",
+    );
+    expect(blockMd).toContain(["```vue", block.code.trim(), "```"].join("\n"));
+    expect(blockMd).not.toContain("::block-preview");
+  });
 });

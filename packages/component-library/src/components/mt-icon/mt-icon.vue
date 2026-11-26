@@ -21,6 +21,7 @@
 <script setup lang="ts">
 import { computed, ref, watch, type CSSProperties } from "vue";
 import { parseIconName } from "@/utils/icon";
+import { logError } from "@/utils/log";
 
 const props = withDefaults(
   defineProps<{
@@ -63,13 +64,11 @@ const styles = computed(() => {
 const iconInformation = computed(() => parseIconName(props.name, props.mode));
 
 function handleFailedImport(detail: string = "") {
-  console.error(
-    `The SVG file for the icon "${iconInformation.value.mode}-${iconInformation.value.name}" could not be found and loaded.`,
+  logError(
+    "mt-icon",
+    `Could not find or load the SVG file for the icon "${iconInformation.value.mode}-${iconInformation.value.name}".`,
+    detail || undefined,
   );
-
-  if (detail) {
-    console.error(detail);
-  }
 
   iconSvgData.value = "";
 }

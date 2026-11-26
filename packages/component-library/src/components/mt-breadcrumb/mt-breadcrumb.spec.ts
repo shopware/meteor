@@ -123,7 +123,10 @@ describe("mt-breadcrumb", () => {
 
     // ASSERT
     expect(screen.queryByRole("link", { name: "Shoes" })).not.toBeInTheDocument();
-    expect(screen.getByText("Shoes")).toHaveAttribute("aria-current", "page");
+    expect(screen.getByText("Shoes").closest(".mt-breadcrumb__label")).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   });
 
   it("renders a crumb without a destination as plain text", () => {
@@ -134,8 +137,28 @@ describe("mt-breadcrumb", () => {
 
     // ASSERT
     expect(screen.queryByRole("link", { name: "Catalog" })).not.toBeInTheDocument();
-    expect(screen.getByText("Catalog")).not.toHaveAttribute("aria-current");
-    expect(screen.getByText("Shoes")).toHaveAttribute("aria-current", "page");
+    expect(screen.getByText("Catalog").closest(".mt-breadcrumb__label")).not.toHaveAttribute(
+      "aria-current",
+    );
+    expect(screen.getByText("Shoes").closest(".mt-breadcrumb__label")).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+  });
+
+  it("renders the icon of an item in the regular variant in front of its label", () => {
+    // ARRANGE
+    renderBreadcrumb({
+      items: [
+        { label: "Products", to: "#products", as: "a", icon: "products" },
+        { label: "Shoes" },
+      ],
+    });
+
+    // ASSERT
+    const icon = screen.getByRole("link", { name: "Products" }).firstElementChild;
+    expect(icon).toHaveAttribute("data-testid", "mt-icon__regular-products");
+    expect(icon).toHaveAttribute("aria-hidden", "true");
   });
 
   it("emits the clicked item", async () => {
@@ -357,5 +380,30 @@ describe("mt-breadcrumb", () => {
 
     // ASSERT
     expect(screen.getByRole("navigation")).toHaveClass("mt-breadcrumb--overflow-wrap");
+  });
+
+  it("applies a new trail without fading the current page", async () => {
+    // ARRANGE
+    const { rerender } = renderBreadcrumb({ items: items.slice(0, 2), hideCurrent: true });
+
+    // ACT
+    await nextFrame();
+    await nextFrame();
+
+    // ASSERT
+    expect(screen.getByRole("navigation")).toHaveClass("mt-breadcrumb--settled");
+
+    // ACT
+    await rerender({ items });
+
+    // ASSERT
+    expect(screen.getByRole("navigation")).not.toHaveClass("mt-breadcrumb--settled");
+
+    // ACT
+    await nextFrame();
+    await nextFrame();
+
+    // ASSERT
+    expect(screen.getByRole("navigation")).toHaveClass("mt-breadcrumb--settled");
   });
 });

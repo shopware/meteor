@@ -282,7 +282,7 @@ describe("mt-modal", () => {
 
   describe("modal stacking", () => {
     const STACKING_WARNING =
-      "[MtModal] It is not recommended to stack multiple modals on top of each other.";
+      "[Meteor] mt-modal: Avoid stacking multiple modals on top of each other.";
 
     /**
      * Returns the order of backdrops and modals in the body as 'backdrop' | 'modal'.

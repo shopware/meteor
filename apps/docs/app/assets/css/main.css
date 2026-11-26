@@ -73,18 +73,18 @@
   --ui-error: var(--color-red-400);
 }
 
-/* Cap the docs prose column. Docus nests two UPages (layout + page), both with a
- * grid-cols-10 col-span-8 center, so target only the page UPage's center: the
- * one whose grid also holds the TOC (data-slot="right"). */
+/* Cap the docs prose column. Docus nests two UPages (layout + page), so target
+ * only the page UPage's center: the one whose grid also holds the TOC
+ * (data-slot="right"). */
 [data-slot="root"]:has(> [data-slot="right"]) > [data-slot="center"] {
   max-width: 52rem;
   margin-inline: auto;
 }
 
-/* Cap the docs left sidebar (filter + nav). It's an <aside>, unlike the navbar's
- * left slot (a <div>), so the header is left untouched. */
-aside[data-slot="left"] {
-  max-width: 15rem;
+/* Docs pages span the whole window, so the sidebar sits at its left edge (see
+ * layouts/docs.vue). The header and the footer follow, to stay aligned with it. */
+:root:has(.docs-layout) {
+  --ui-container: none;
 }
 
 /* Drop the right TOC column one breakpoint earlier. Nuxt UI's UPage grid turns
@@ -100,4 +100,56 @@ aside[data-slot="left"] {
   [data-slot="root"]:has(> [data-slot="right"]) > [data-slot="center"] {
     grid-column: span 10 / span 10;
   }
+}
+
+/* From xl on, the TOC sits right next to the prose, and both are centered in the
+ * space next to the sidebar. */
+@media (min-width: 1280px) {
+  [data-slot="root"]:has(> [data-slot="right"]) {
+    grid-template-columns: minmax(0, 52rem) 15rem;
+    justify-content: center;
+    column-gap: 3rem;
+  }
+
+  [data-slot="root"]:has(> [data-slot="right"]) > [data-slot="center"],
+  [data-slot="root"]:has(> [data-slot="right"]) > [data-slot="right"] {
+    grid-column: auto;
+  }
+}
+
+/* Block pages show previews as wide as an application, so they drop the 52rem cap
+ * of the prose and, from lg on, the TOC, and let the content fill the inner grid. */
+[data-slot="root"]:has(> [data-slot="right"]):has(.block-preview)
+  > [data-slot="center"] {
+  min-width: 0;
+  max-width: none;
+  margin-inline: 0;
+}
+
+@media (min-width: 1024px) {
+  [data-slot="root"]:has(> [data-slot="right"]):has(.block-preview) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-slot="root"]:has(> [data-slot="right"]):has(.block-preview)
+    > [data-slot="right"] {
+    display: none;
+  }
+
+  [data-slot="root"]:has(> [data-slot="right"]):has(.block-preview)
+    > [data-slot="center"] {
+    grid-column: 1 / -1;
+  }
+}
+
+/* The text below a block preview keeps the width of the prose, at the left. */
+.block-preview ~ :not(.block-preview) {
+  max-width: 52rem;
+}
+
+/* App examples render mt-app, which locks the scrolling and the background of its document. The
+ * block previews (pages/block-preview) are documents of their own and keep that behavior. */
+html:root:not(.block-preview-document):has(.mt-app) {
+  overflow: revert-layer;
+  background-color: revert-layer;
 }

@@ -18,11 +18,8 @@ const shopItems: NavItem[] = [
     label: "Products",
     icon: "products",
     children: [
-      {
-        label: "Overview",
-        to: { name: "product.index" },
-        children: [{ label: "Reviews", to: { name: "review.index" } }],
-      },
+      { label: "Overview", to: { name: "product.index" } },
+      { label: "Reviews", to: { name: "review.index" } },
       { label: "Categories", to: { name: "category.index" } },
       { label: "Manufacturers", to: { name: "manufacturer.index" } },
     ],
@@ -69,15 +66,14 @@ const nestedItems: NavItem[] = [
     label: "Products",
     icon: "products",
     children: [
-      {
-        label: "Overview",
-        to: { name: "product.index" },
-        children: [{ label: "Reviews", to: { name: "review.index" } }],
-      },
+      { label: "Overview", to: { name: "product.index" } },
+      { label: "Reviews", to: { name: "review.index" } },
       {
         label: "Categories",
-        to: { name: "category.index" },
-        children: [{ label: "Dynamic product groups", to: { name: "product-stream.index" } }],
+        children: [
+          { label: "All categories", to: { name: "category.index" } },
+          { label: "Dynamic product groups", to: { name: "product-stream.index" } },
+        ],
       },
       { label: "Manufacturers", to: { name: "manufacturer.index" } },
     ],
@@ -106,12 +102,12 @@ const nestedItems: NavItem[] = [
 ];
 
 function routeName(item: NavItem) {
-  // Reads the route name of a row, if it links to a route
+  // Reads the route name of an item, if it links to a route
   return (item.to as { name?: string } | undefined)?.name;
 }
 
 /**
- * Renders the navigation with a fake current route that follows the clicked row, so the active
+ * Renders the navigation with a fake current route that follows the clicked item, so the active
  * state changes like in an application. `sourceCode` is what the docs show, `slotContent` is
  * rendered inside the navigation and `initialRoute` is the route the story starts on.
  */
@@ -129,12 +125,12 @@ function createStory(
         const current = ref(initialRoute);
 
         function isActive(item: NavItem) {
-          // Matches the row against the fake current route, like an application would
+          // Matches the item against the fake current route, like an application would
           return routeName(item) === current.value;
         }
 
         function onNavigate(item: NavItem) {
-          // Moves the fake current route to the clicked row
+          // Moves the fake current route to the clicked item
           const name = routeName(item);
 
           if (name) {
@@ -190,11 +186,8 @@ const sections: NavSection[] = [
         label: "Products",
         icon: "products",
         children: [
-          {
-            label: "Overview",
-            to: { name: "product.index" },
-            children: [{ label: "Reviews", to: { name: "review.index" } }],
-          },
+          { label: "Overview", to: { name: "product.index" } },
+          { label: "Reviews", to: { name: "review.index" } },
           { label: "Categories", to: { name: "category.index" } },
         ],
       },
@@ -293,7 +286,7 @@ const badges = {
 </script>`;
 
 /**
- * Badges shown in the `suffix` slot of the badge story, keyed by row label.
+ * Badges shown in the `suffix` slot of the badge story, keyed by item label.
  */
 const badges: Record<string, { text: string; variant: "critical" | "attention" | "info" }> = {
   Orders: { text: "12", variant: "critical" },
@@ -321,6 +314,10 @@ const meta: MtNavMeta = {
     sections: { control: false },
     linkComponent: { control: false },
     isActive: { control: false },
+    orientation: {
+      control: { type: "inline-radio" },
+      options: ["vertical", "horizontal"],
+    },
   },
   ...createStory([{ items: [...shopItems, ...systemItems] }], defaultSource),
 };
@@ -330,7 +327,7 @@ export default meta;
 export type MtNavStory = StoryObj<MtNavMeta>;
 
 /**
- * A single section without a header holds all rows. The row matched by `isActive` opens its ancestors.
+ * A single section without a header holds all items. The item matched by `isActive` opens its ancestors.
  */
 export const Default: MtNavStory = {
   args: {
@@ -339,7 +336,7 @@ export const Default: MtNavStory = {
 };
 
 /**
- * Several sections, each with a `header` above its rows.
+ * Several sections, each with a `header` above its items.
  */
 export const Sections: MtNavStory = createStory(
   [
@@ -350,8 +347,8 @@ export const Sections: MtNavStory = createStory(
 );
 
 /**
- * The `suffix` slot renders after the label of every row and receives the row as `item`, e.g. to
- * show an `mt-badge` with a counter or a hint on chosen rows.
+ * The `suffix` slot renders after the label of every item and receives the item as `item`, e.g. to
+ * show an `mt-badge` with a counter or a hint on chosen items.
  */
 export const Badges: MtNavStory = createStory(
   [
@@ -367,8 +364,8 @@ export const Badges: MtNavStory = createStory(
 );
 
 /**
- * Submenus can hold submenus of their own, up to three levels in total. A nested row without a
- * `to` only toggles its rows; one with a `to` is a link and opens its rows when clicked.
+ * Submenus can hold submenus of their own, up to three levels in total. An item with nested items
+ * opens and closes them and isn't a link itself.
  */
 export const NestedSubmenus: MtNavStory = createStory(
   [{ items: nestedItems }],
@@ -376,3 +373,63 @@ export const NestedSubmenus: MtNavStory = createStory(
   "",
   "language.index",
 );
+
+const horizontalSource = `
+<mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" @navigate="onNavigate" />`;
+
+/**
+ * The shop navigation, ending in an external link.
+ */
+const flatShopItems: NavItem[] = [
+  ...shopItems,
+  { label: "Docs", icon: "regular-books", href: "https://docs.shopware.com", target: "_blank" },
+];
+
+/**
+ * With `orientation="horizontal"` the top-level items run in a line. An item with nested items opens
+ * them in a floating panel when hovered, or when clicked with the keyboard or touch.
+ */
+export const Horizontal: MtNavStory = {
+  ...createStory([{ items: flatShopItems }], horizontalSource),
+  args: {
+    orientation: "horizontal",
+  },
+};
+
+/**
+ * Submenus inside the floating panel open and close inline, up to three levels in total.
+ */
+export const HorizontalNestedSubmenus: MtNavStory = {
+  ...createStory([{ items: nestedItems }], horizontalSource, "", "language.index"),
+  args: {
+    orientation: "horizontal",
+  },
+};
+
+const horizontalBadgesSource = `
+<mt-nav orientation="horizontal" :sections="sections" :is-active="isActive" @navigate="onNavigate">
+  <template #suffix="{ item }">
+    <mt-badge v-if="badges[item.label]" :variant="badges[item.label].variant">
+      {{ badges[item.label].text }}
+    </mt-badge>
+  </template>
+</mt-nav>`;
+
+/**
+ * The `suffix` slot works the same in a horizontal navigation, on the top-level items and on the
+ * items inside their floating panels.
+ */
+export const HorizontalBadges: MtNavStory = {
+  ...createStory(
+    [{ items: shopItems }],
+    horizontalBadgesSource,
+    `<template #suffix="{ item }">
+    <mt-badge v-if="badges[item.label]" :variant="badges[item.label].variant">
+      {{ badges[item.label].text }}
+    </mt-badge>
+  </template>`,
+  ),
+  args: {
+    orientation: "horizontal",
+  },
+};

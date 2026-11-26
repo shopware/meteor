@@ -68,7 +68,10 @@ export const TestCurrentItemHasAriaCurrent: MtBreadcrumbStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("Shoes")).toHaveAttribute("aria-current", "page");
+    expect(canvas.getByText("Shoes").closest(".mt-breadcrumb__label")).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
     expect(canvas.getAllByRole("listitem")).toHaveLength(3);
   },
 };
