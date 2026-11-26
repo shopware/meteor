@@ -72,7 +72,7 @@ import {
 
 /**
  * A panel of `mt-app` or `mt-page`: it names the panel and its trigger, and sets its width, whether
- * it can be resized, whether it can be closed on desktop and whether it is open.
+ * it can be resized, whether it can be closed in the desktop layout and whether it is open.
  *
  * @experimental The API may still change in a future release.
  */
@@ -120,9 +120,9 @@ const props = withDefaults(
 );
 
 /**
- * Whether the panel is open next to the content. Alone, it sets whether the panel starts open, and
- * the panel opens and closes itself. With `v-model:open`, the app keeps the state. Drawers on small
- * screens always start closed.
+ * Whether the panel is open in the desktop layout. Alone, it sets whether the panel starts open, and
+ * the panel opens and closes itself. With `v-model:open`, the app keeps the state. It doesn't apply
+ * to the drawer in the mobile layout, which always starts closed.
  */
 const open = defineModel<boolean>("open", { default: true });
 
@@ -160,15 +160,39 @@ const panelId = useId();
 const isMounted = useMounted();
 const renderingRoutePath = useRenderingRoutePath();
 
+const vnodeProps = getCurrentInstance()?.vnode.props ?? {};
+const isWidthControlled = "width" in vnodeProps && "onUpdate:width" in vnodeProps;
+
+const startingWidth = width.value ?? defaults?.width;
+const renderedWidth = ref<number | null>(null);
+const dragWidth = ref<number | null>(null);
+// Keeps the dragged width while a panel closed by a drag slides out.
+const closingWidth = ref<number | null>(null);
+const isDragging = ref(false);
+const isResetting = ref(false);
+
 const isInDrawer = computed(() => context?.isDrawer.value ?? false);
 const hasHandle = computed(() => props.resizable && context !== null && !isInDrawer.value);
+const canCloseByDrag = computed(() => hasHandle.value && props.closable);
+const smallestWidth = computed(() => props.minWidth ?? defaults?.minWidth ?? 0);
+const maxWidth = computed(() => props.maxWidth ?? defaults?.maxWidth);
 
 const handleEdge = computed(() =>
   context?.place === "navigation" || context?.place === "start" ? "end" : "start",
 );
 
-const smallestWidth = computed(() => props.minWidth ?? defaults?.minWidth ?? 0);
-const maxWidth = computed(() => props.maxWidth ?? defaults?.maxWidth);
+const panelStyle = computed(() => {
+  // A drawer takes the width the panel started with, not one the user resized it to on desktop.
+  const shownWidth = isInDrawer.value
+    ? startingWidth
+    : dragWidth.value ?? closingWidth.value ?? width.value ?? startingWidth;
+
+  return {
+    "--mt-panel-width": shownWidth === undefined ? undefined : `${shownWidth}px`,
+    "--mt-panel-min-width": `${smallestWidth.value}px`,
+    "--mt-panel-max-width": maxWidth.value === undefined ? undefined : `${maxWidth.value}px`,
+  };
+});
 
 /** The largest width: `max-width`, and never more than half of the layout next to the panel. */
 function largestWidth() {
@@ -179,17 +203,6 @@ function largestWidth() {
 
 function clamp(next: number) {
   return Math.round(Math.min(Math.max(next, smallestWidth.value), largestWidth()));
-}
-
-const startingWidth = width.value ?? defaults?.width;
-
-const vnodeProps = getCurrentInstance()?.vnode.props ?? {};
-const isWidthControlled = "width" in vnodeProps && "onUpdate:width" in vnodeProps;
-
-const desktopWidth = computed(() => width.value ?? startingWidth);
-
-function setWidth(next: number) {
-  if (next !== desktopWidth.value) width.value = next;
 }
 
 let storageKey: string | null = null;
@@ -217,24 +230,10 @@ function storeWidth(next: number | undefined) {
 }
 
 function commit(next: number) {
-  setWidth(next);
+  width.value = next;
   storeWidth(next);
 }
 
-// The route that names the stored width is known once the page has mounted.
-onMounted(async () => {
-  if (!context || isWidthControlled) return;
-
-  await nextTick();
-
-  storageKey = panelWidthStorageKey(context.place, renderingRoutePath() ?? location.pathname);
-  if (!props.resizable) return;
-
-  const stored = readStoredWidth();
-  if (stored !== undefined) setWidth(clamp(stored));
-});
-
-const isResetting = ref(false);
 let resetTimeout: ReturnType<typeof setTimeout> | undefined;
 
 function stopResetting() {
@@ -248,15 +247,9 @@ function reset() {
   isResetting.value = true;
   resetTimeout = setTimeout(stopResetting, PANEL_SLIDE_DURATION);
 
-  if (startingWidth !== undefined) setWidth(startingWidth);
+  width.value = startingWidth;
   storeWidth(undefined);
 }
-
-const dragWidth = ref<number | null>(null);
-// Keeps the dragged width while a panel closed by a drag slides out.
-const closingWidth = ref<number | null>(null);
-const isDragging = ref(false);
-const canCloseByDrag = computed(() => hasHandle.value && props.closable);
 
 let dragStart: {
   pointerId: number;
@@ -367,23 +360,6 @@ function endDrag(closes: boolean) {
   }
 }
 
-watch(
-  () => context?.isOpen(),
-  (isOpen) => {
-    if (isOpen) closingWidth.value = null;
-  },
-);
-
-const renderedWidth = ref<number | null>(null);
-
-useResizeObserver(root, ([entry]) => {
-  if (entry) {
-    renderedWidth.value = Math.round(
-      entry.borderBoxSize?.[0]?.inlineSize ?? entry.contentRect.width,
-    );
-  }
-});
-
 function resizeWithKeyboard(event: KeyboardEvent) {
   const current = width.value ?? renderedWidth.value ?? smallestWidth.value;
   const grow = handleEdge.value === "end" ? "ArrowRight" : "ArrowLeft";
@@ -412,19 +388,36 @@ function resizeWithKeyboard(event: KeyboardEvent) {
   commit(clamp(next));
 }
 
-// A drawer takes the width the panel started with, not one the user resized it to on desktop.
-const shownWidth = computed(() =>
-  isInDrawer.value ? startingWidth : dragWidth.value ?? closingWidth.value ?? desktopWidth.value,
+useResizeObserver(root, ([entry]) => {
+  if (entry) {
+    renderedWidth.value = Math.round(
+      entry.borderBoxSize?.[0]?.inlineSize ?? entry.contentRect.width,
+    );
+  }
+});
+
+watch(
+  () => context?.isOpen(),
+  (isOpen) => {
+    if (isOpen) closingWidth.value = null;
+  },
 );
 
-const panelStyle = computed(() => ({
-  "--mt-panel-width": shownWidth.value === undefined ? undefined : `${shownWidth.value}px`,
-  "--mt-panel-min-width": `${smallestWidth.value}px`,
-  "--mt-panel-max-width": maxWidth.value === undefined ? undefined : `${maxWidth.value}px`,
-}));
+// The route that names the stored width is known once the page has mounted.
+onMounted(async () => {
+  if (!context || isWidthControlled) return;
 
+  await nextTick();
+
+  storageKey = panelWidthStorageKey(context.place, renderingRoutePath() ?? location.pathname);
+  if (!props.resizable) return;
+
+  const stored = readStoredWidth();
+  if (stored !== undefined) width.value = clamp(stored);
+});
+
+// A panel inside another component reports its options from here.
 if (context) {
-  // A panel inside another component reports its options from here.
   onScopeDispose(
     context.registerOptions(() => ({
       label: props.label,

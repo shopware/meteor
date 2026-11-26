@@ -1,7 +1,8 @@
-import { defineComponent, h, nextTick } from "vue";
+import { defineComponent, h, nextTick, ref } from "vue";
 import { render, screen, waitFor, within } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtPage from "./mt-page.vue";
+import { usePage } from "./composables/usePage";
 import MtApp from "../mt-app/mt-app.vue";
 import MtPanel from "../mt-panel/mt-panel.vue";
 import { useAppRegions } from "../mt-app/composables/useAppRegions";
@@ -131,7 +132,7 @@ describe("mt-page", () => {
   });
 
   describe("panels", () => {
-    it("shows the trigger of a closable panel on a wide page, named after its mt-panel", async () => {
+    it("shows the trigger of a closable panel in the desktop layout, named after its mt-panel", async () => {
       // ARRANGE
       render(MtPage, {
         props: { breadcrumb },
@@ -212,7 +213,7 @@ describe("mt-page", () => {
       );
     });
 
-    it("shows no panel triggers on a wide page without closable panels", () => {
+    it("shows no panel triggers in the desktop layout without closable panels", () => {
       // ACT
       render(MtPage, {
         props: { breadcrumb },
@@ -253,6 +254,69 @@ describe("mt-page", () => {
 
       // ASSERT
       expect(trigger).toHaveAttribute("aria-expanded", "false");
+    });
+  });
+
+  describe("usePage", () => {
+    const ShowProperties = defineComponent({
+      setup() {
+        const page = usePage();
+
+        return () => h("button", { onClick: () => page.open("end") }, "Show properties");
+      },
+    });
+
+    function renderPageWithProperties() {
+      return render(MtPage, {
+        props: { breadcrumb },
+        slots: {
+          default: () => h(ShowProperties),
+          end: () =>
+            h(MtPanel, { label: "Properties", open: false }, () =>
+              h("aside", { "aria-label": "Properties" }, "Fields"),
+            ),
+        },
+        global: { components: { "router-link": RouterLinkStub } },
+      });
+    }
+
+    it("opens a panel next to the content from a component inside the page", async () => {
+      // ARRANGE
+      renderPageWithProperties();
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Show properties" }));
+
+      // ASSERT
+      expect(screen.getByRole("complementary", { name: "Properties" })).toBeInTheDocument();
+    });
+
+    it("exposes the controls through a template ref", async () => {
+      // ARRANGE
+      const page = ref<InstanceType<typeof MtPage> | null>(null);
+      render(
+        () =>
+          h(
+            MtPage,
+            { ref: page, breadcrumb },
+            {
+              default: () => h("p", "Canvas"),
+              end: () =>
+                h(MtPanel, { label: "Properties", open: false }, () =>
+                  h("aside", { "aria-label": "Properties" }, "Fields"),
+                ),
+            },
+          ),
+        { global: { components: { "router-link": RouterLinkStub } } },
+      );
+      await nextTick();
+
+      // ACT
+      page.value?.open("end");
+      await nextTick();
+
+      // ASSERT
+      expect(screen.getByRole("complementary", { name: "Properties" })).toBeInTheDocument();
     });
   });
 

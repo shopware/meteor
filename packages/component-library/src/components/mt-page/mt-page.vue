@@ -6,7 +6,7 @@
       'mt-page--responsive': breakpoint > 0,
       'mt-page--header-border': closable || hasSlot('start') || hasSlot('end') || hasAppTriggers(),
     }"
-    :data-layout="isMeasured ? (isNarrow ? 'narrow' : 'wide') : undefined"
+    :data-layout="isMeasured ? (isMobile ? 'mobile' : 'desktop') : undefined"
   >
     <header v-if="hasHeader()" class="mt-page__header">
       <template v-if="navigationTrigger">
@@ -92,7 +92,7 @@
         side="start"
         :controller="regionController"
         :label="panelSettings('start').label"
-        :hidden-inline="!inlineOpen.start.value"
+        :hidden-inline="!panels.isInlineOpen('start')"
         :bordered="panelSettings('start').appearance === 'bordered'"
         :has-panel="hasPanel('start')"
       >
@@ -119,7 +119,7 @@
         side="end"
         :controller="regionController"
         :label="panelSettings('end').label"
-        :hidden-inline="!inlineOpen.end.value"
+        :hidden-inline="!panels.isInlineOpen('end')"
         :bordered="panelSettings('end').appearance === 'bordered'"
         :has-panel="hasPanel('end')"
       >
@@ -162,12 +162,11 @@ import { usePanelSlots } from "@/components/_internal/mt-panel-region/usePanelSl
 import { scrollToRoute, useRouteChange, useRouterBack } from "@/utils/router";
 import { hasSlotContent, useRenderCache } from "@/utils/slot";
 import { pageContextKey } from "./_internal/mt-page-context";
-
-type PagePanel = "start" | "end";
+import type { MtPageContext, MtPagePanel } from "./composables/usePage";
 
 /**
  * The frame of a page in the content of `mt-app`: a header with the breadcrumb and the actions, the
- * content, and up to two panels next to it, which become drawers on a narrow page.
+ * content, and up to two panels next to it, which become drawers in the mobile layout.
  *
  * @experimental The API may still change in a future release.
  */
@@ -223,9 +222,9 @@ const slots = defineSlots<{
   default?(): unknown;
   /** Buttons at the end of the page header. */
   actions?(): unknown;
-  /** A panel before the content, for example a list. Becomes a drawer on a narrow page. */
+  /** A panel before the content, for example a list. Becomes a drawer in the mobile layout. */
   start?(): unknown;
-  /** A panel after the content, for example properties. Becomes a drawer on a narrow page. */
+  /** A panel after the content, for example properties. Becomes a drawer in the mobile layout. */
   end?(): unknown;
 }>();
 
@@ -258,22 +257,22 @@ const goBack = useRouterBack();
 
 const rootElement = useTemplateRef<HTMLElement>("root");
 const contentElement = useTemplateRef<HTMLElement>("content");
-const panelIds: Record<PagePanel, string> = { start: useId(), end: useId() };
+const panelIds: Record<MtPagePanel, string> = { start: useId(), end: useId() };
 
-// The page width is unknown on the server and until the first measurement, so the narrow layout
+// The page width is unknown on the server and until the first measurement, so the mobile layout
 // only applies after it: the server markup and the first client render then agree.
 const pageWidth = ref<number | null>(null);
 // While a panel of the shell is resized, the page keeps its layout, so its panels don't turn into
 // drawers and back during the drag.
-const narrowWhileResizing = shallowRef<boolean | null>(null);
+const mobileWhileResizing = shallowRef<boolean | null>(null);
 const heading = shallowRef<HTMLElement | null>(null);
 const isHeadingVisible = ref(false);
 
 const isMeasured = computed(() => pageWidth.value !== null);
-const isMeasuredNarrow = computed(
+const isMeasuredMobile = computed(
   () => pageWidth.value !== null && props.breakpoint > 0 && pageWidth.value < props.breakpoint,
 );
-const isNarrow = computed(() => narrowWhileResizing.value ?? isMeasuredNarrow.value);
+const isMobile = computed(() => mobileWhileResizing.value ?? isMeasuredMobile.value);
 const isCompact = computed(() => pageWidth.value !== null && pageWidth.value < COMPACT_WIDTH);
 
 /** The label of the current page, the last item of the breadcrumb. */
@@ -284,28 +283,36 @@ const headerCrumbs = computed(() =>
   isCompact.value ? props.breadcrumb.slice(-1) : props.breadcrumb,
 );
 
-const { panelSlot, panelSettings, hasPanel, registerPanelOptions, inlineOpen, registerPanelOpen } =
-  usePanelSlots(
-    PANELS,
-    (panel) => slots[panel]?.(),
-    (panel) => t(panel),
-  );
+const { panelSlot, panelSettings, hasPanel, registerPanelOptions } = usePanelSlots(
+  PANELS,
+  (panel) => slots[panel]?.(),
+  (panel) => t(panel),
+);
 
-const panels = createPanelState<PagePanel>({
-  isDrawer: isNarrow,
+const panels = createPanelState<MtPagePanel>({
+  isDrawer: isMobile,
+  hasContent: hasSlot,
   canOpenDrawer: hasSlot,
-  inlineOpen,
+  startsOpen: (panel) => panelSlot(panel).options?.open,
 });
+
+const api: MtPageContext = {
+  isMobile,
+  isOpen: panels.isOpen,
+  open: panels.open,
+  close: panels.close,
+  toggle: panels.toggle,
+};
 
 const renderedSlots = useRenderCache(() => ({ actions: hasSlotContent(slots.actions) }));
 
-function hasSlot(name: PagePanel | "actions") {
+function hasSlot(name: MtPagePanel | "actions") {
   return name === "actions" ? renderedSlots().actions : panelSlot(name).isFilled;
 }
 
-/** A panel's trigger shows on a narrow page, and on a wide page when the panel is closable. */
-function hasTrigger(panel: PagePanel) {
-  return hasSlot(panel) && (isNarrow.value || panelSettings(panel).closable);
+/** A panel's trigger shows in the mobile layout, and in the desktop layout for a closable panel. */
+function hasTrigger(panel: MtPagePanel) {
+  return hasSlot(panel) && (isMobile.value || panelSettings(panel).closable);
 }
 
 /**
@@ -399,7 +406,7 @@ onBeforeUnmount(() => cancelAnimationFrame(headerBorderFrame));
 watch(
   () => app?.isResizing.value ?? false,
   (isResizing) => {
-    narrowWhileResizing.value = isResizing ? isMeasuredNarrow.value : null;
+    mobileWhileResizing.value = isResizing ? isMeasuredMobile.value : null;
   },
   { flush: "sync" },
 );
@@ -439,19 +446,21 @@ useRouteChange({
   },
 });
 
-const regionController: PanelController<PagePanel> = {
-  isDrawer: isNarrow,
+const regionController: PanelController<MtPagePanel> = {
+  isDrawer: isMobile,
   isOpen: panels.isOpen,
   open: panels.open,
   close: panels.close,
   focusContent,
   registerPanelOptions,
-  registerPanelOpen,
+  registerPanelOpen: panels.registerPanelOpen,
   // Resizing a panel of the page doesn't change the page's own width, so nothing waits for it.
   setResizing: () => undefined,
 };
 
-provide(pageContextKey, { registerHeading });
+provide(pageContextKey, { ...api, registerHeading });
+
+defineExpose(api);
 </script>
 
 <style scoped>
@@ -584,7 +593,7 @@ provide(pageContextKey, { registerHeading });
 
 /*
  * Until the page is measured, its layout is unknown (see isMeasured). Below the default breakpoint,
- * the panels stay hidden so narrow pages don't show them before the drawers take over.
+ * the panels stay hidden so pages in the mobile layout don't show them before the drawers take over.
  */
 @container (width < 960px) {
   .mt-page--responsive:not([data-layout]) .mt-page__body > .mt-panel-region {

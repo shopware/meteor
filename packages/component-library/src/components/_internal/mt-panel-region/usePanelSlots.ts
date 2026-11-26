@@ -1,4 +1,4 @@
-import { customRef, shallowReactive, type Ref, type VNodeChild } from "vue";
+import { shallowReactive, type VNodeChild } from "vue";
 import {
   readPanelSlot,
   resolvePanelSettings,
@@ -55,58 +55,7 @@ export function usePanelSlots<Place extends PanelPlace>(
     return panelSlot(place).options !== undefined || registeredOptions.has(place);
   }
 
-  const registeredOpen = shallowReactive(new Map<Place, Ref<boolean>>());
-  const ownOpen = shallowReactive(new Map<Place, boolean>());
-
-  function registerPanelOpen(place: Place, open: Ref<boolean>) {
-    // The `MtPanel` takes over whether the layout opened or closed the panel before it set up.
-    const layoutOpen = ownOpen.get(place);
-
-    if (layoutOpen !== undefined) {
-      ownOpen.delete(place);
-      open.value = layoutOpen;
-    }
-
-    registeredOpen.set(place, open);
-
-    return () => {
-      if (registeredOpen.get(place) === open) registeredOpen.delete(place);
-    };
-  }
-
-  /** Whether the panel is open: the `MtPanel`'s state, the layout's own, or its props in the slot. */
-  function openState(place: Place) {
-    return customRef<boolean>(() => ({
-      get() {
-        return (
-          registeredOpen.get(place)?.value ??
-          ownOpen.get(place) ??
-          panelSlot(place).options?.open ??
-          true
-        );
-      },
-      set(open) {
-        const panelOpen = registeredOpen.get(place);
-
-        if (panelOpen) panelOpen.value = open;
-        else ownOpen.set(place, open);
-      },
-    }));
-  }
-
-  const inlineOpen = Object.fromEntries(places.map((place) => [place, openState(place)])) as Record<
-    Place,
-    Ref<boolean>
-  >;
-
-  return {
-    panelSlot,
-    panelSettings,
-    hasPanel,
-    registerPanelOptions,
-    inlineOpen,
-    registerPanelOpen,
-  };
+  return { panelSlot, panelSettings, hasPanel, registerPanelOptions };
 }
 
 /**

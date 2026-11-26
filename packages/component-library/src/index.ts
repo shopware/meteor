@@ -113,6 +113,11 @@ import { useApp, type MtAppContext, type MtAppPanel } from "./components/mt-app/
 import { useAppRegions, type MtAppRegions } from "./components/mt-app/composables/useAppRegions";
 import { useAppLoading } from "./components/mt-app/composables/useAppLoading";
 import { useUnsavedChanges } from "./components/mt-app/composables/useUnsavedChanges";
+import {
+  usePage,
+  type MtPageContext,
+  type MtPagePanel,
+} from "./components/mt-page/composables/usePage";
 import MtContainer from "./components/mt-container/mt-container.vue";
 import MtPage from "./components/mt-page/mt-page.vue";
 import MtContentHeader from "./components/mt-content-header/mt-content-header.vue";
@@ -228,6 +233,7 @@ export {
   useAppRegions,
   useAppLoading,
   useUnsavedChanges,
+  usePage,
   useServicePermission,
   type UseServicePermissionReturn,
   // @deprecated
@@ -277,4 +283,4 @@ export type { Filter, Option, Toast, Snackbar, SnackbarLink, ChartOptions, Bread
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
-export type { MtAppContext, MtAppPanel, MtAppRegions };
+export type { MtAppContext, MtAppPanel, MtAppRegions, MtPageContext, MtPagePanel };

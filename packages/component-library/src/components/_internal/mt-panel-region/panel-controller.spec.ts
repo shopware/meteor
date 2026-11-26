@@ -3,23 +3,23 @@ import { createPanelState } from "./panel-controller";
 
 type Place = "navigation" | "sidebar";
 
-function setup(options: { isDrawer?: boolean; unavailable?: Place[] } = {}) {
+function setup(options: { isDrawer?: boolean; unavailable?: Place[]; empty?: Place[] } = {}) {
   const isDrawer = ref(options.isDrawer ?? false);
-  const inlineOpen = { navigation: ref(true), sidebar: ref(true) };
   const panels = createPanelState<Place>({
     isDrawer,
+    hasContent: (place) => !options.empty?.includes(place),
     canOpenDrawer: (place) => !options.unavailable?.includes(place),
-    inlineOpen,
+    startsOpen: () => undefined,
   });
 
-  return { isDrawer, inlineOpen, panels };
+  return { isDrawer, panels };
 }
 
 describe("createPanelState", () => {
   describe("next to the content", () => {
     it("shows the panels until they are closed", () => {
       // ARRANGE
-      const { inlineOpen, panels } = setup();
+      const { panels } = setup();
 
       // ACT
       panels.close("sidebar");
@@ -27,7 +27,19 @@ describe("createPanelState", () => {
       // ASSERT
       expect(panels.isOpen("navigation")).toBe(true);
       expect(panels.isOpen("sidebar")).toBe(false);
-      expect(inlineOpen.sidebar.value).toBe(false);
+    });
+
+    it("starts a panel with its own state when its place was closed while empty", () => {
+      // ARRANGE
+      const { panels } = setup({ empty: ["sidebar"] });
+      const open = ref(true);
+      panels.close("sidebar");
+
+      // ACT
+      panels.registerPanelOpen("sidebar", open);
+
+      // ASSERT
+      expect(open.value).toBe(true);
     });
 
     it("toggles a panel", () => {
@@ -46,7 +58,7 @@ describe("createPanelState", () => {
   describe("as drawers", () => {
     it("opens one drawer at a time", () => {
       // ARRANGE
-      const { inlineOpen, panels } = setup({ isDrawer: true });
+      const { panels } = setup({ isDrawer: true });
 
       // ACT
       panels.open("navigation");
@@ -55,7 +67,7 @@ describe("createPanelState", () => {
       // ASSERT
       expect(panels.isOpen("navigation")).toBe(false);
       expect(panels.isOpen("sidebar")).toBe(true);
-      expect(inlineOpen.navigation.value).toBe(true);
+      expect(panels.isInlineOpen("navigation")).toBe(true);
     });
 
     it("doesn't open the drawer of an unavailable panel", () => {

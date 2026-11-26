@@ -276,14 +276,18 @@ const {
   answerLeave,
 } = createAppUnsavedChanges();
 
-const { panelSlot, panelSettings, hasPanel, registerPanelOptions, inlineOpen, registerPanelOpen } =
-  usePanelSlots(
-    PANELS,
-    (panel) => slots[panel]?.(),
-    (panel) => t(panel),
-  );
+const { panelSlot, panelSettings, hasPanel, registerPanelOptions } = usePanelSlots(
+  PANELS,
+  (panel) => slots[panel]?.(),
+  (panel) => t(panel),
+);
 
-const panels = createPanelState({ isDrawer: isMobile, canOpenDrawer: isAvailable, inlineOpen });
+const panels = createPanelState<MtAppPanel>({
+  isDrawer: isMobile,
+  hasContent: hasSlot,
+  canOpenDrawer: isAvailable,
+  startsOpen: (panel) => panelSlot(panel).options?.open,
+});
 
 const api: MtAppContext = {
   isMobile,
@@ -319,7 +323,7 @@ function isAvailable(panel: MtAppPanel) {
 
 /** Whether the panel is closed or a view hides it, which doesn't depend on the layout. */
 function isHiddenInline(panel: MtAppPanel) {
-  return hiddenRegions.value[panel] || !inlineOpen[panel].value;
+  return hiddenRegions.value[panel] || !panels.isInlineOpen(panel);
 }
 
 function triggerOf(panel: MtAppPanel) {
@@ -475,7 +479,7 @@ const regionController: PanelController<MtAppPanel> = {
   close: panels.close,
   focusContent,
   registerPanelOptions,
-  registerPanelOpen,
+  registerPanelOpen: panels.registerPanelOpen,
   setResizing(resizing) {
     isResizing.value = resizing;
   },
