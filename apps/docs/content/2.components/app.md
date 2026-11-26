@@ -52,7 +52,7 @@ const app = createApp(App).use(router);
 router.isReady().then(() => app.mount("#app"));
 ```
 
-A [**Panel**](/components/panel) in the `navigation` or `sidebar` slot sets the panel's label, the icon of its trigger, whether it can be hidden on desktop, whether it starts open, and its width.
+A [**Panel**](/components/panel) in the `navigation` or `sidebar` slot sets the panel's label, the icon of its trigger, whether it can be hidden in the desktop layout, whether it starts open, and its width.
 
 ### Announcement
 

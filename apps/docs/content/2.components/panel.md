@@ -65,6 +65,36 @@ The panels of a page work the same way:
 </template>
 ```
 
+`open` sets whether a panel starts open next to the content. With `v-model:open`, the app keeps that state:
+
+```vue
+<template>
+  <mt-page :breadcrumb="breadcrumb">
+    <WorkflowCanvas />
+
+    <template #end>
+      <mt-panel label="Settings" icon="regular-cog" closable :open="false">
+        <WorkflowSettings />
+      </mt-panel>
+    </template>
+  </mt-page>
+</template>
+```
+
+```vue
+<template>
+  <mt-app>
+    <RouterView />
+
+    <template #sidebar>
+      <mt-panel label="Assistant" closable v-model:open="isAssistantOpen">
+        <AppAssistant />
+      </mt-panel>
+    </template>
+  </mt-app>
+</template>
+```
+
 ## API reference
 
 :component-api
@@ -89,17 +119,20 @@ The panels of a page work the same way:
 ## Behavior
 
 - By default, the navigation is 280px wide and the start panel 240px, both at least 200px and at most 400px. The sidebar and the end panel are 320px wide, at least 240px and at most 480px. `width`, `min-width` and `max-width` change this. Next to the content, a panel never takes more than half of the layout: of the page in **Page**, of the viewport in **App**.
-- `closable` shows the panel's trigger also on desktop, where it shows and hides the panel. On small screens, panels are drawers that always have a trigger.
-- A panel starts open next to the content, or closed with `open` set to `false`. After that, the user and `useApp()` open and close it. With `v-model:open`, the app keeps whether the panel is open: the value follows these changes, and the app opens or closes the panel by changing it. Without `v-model`, `open` only applies again when its value changes, so to open a panel from code, use `v-model:open` or `useApp()`. Drawers on small screens always start closed. A panel that is swapped for another one in its slot starts with the new panel's `open`.
-- On desktop, the panel slides in and out over its outer edge when it opens or closes. A panel that opens or closes as it appears doesn't slide.
-- `appearance` sets the panel off from the content. `bordered` draws a frame in **App**, where the panel sits on the app's background next to the content, and a line on the panel's inner edge in **Page**, where it sits inside the content's frame. `plain` draws no border. The navigation is `plain` by default, the other panels are `bordered`. Drawers on small screens have no border.
-- With `resizable`, a handle on the inner edge resizes the panel on desktop: on the end edge for the navigation and the start panel, on the start edge for the sidebar and the end panel. The handle's grab area is 16px wide: 4px over the side of the edge with a scrollbar next to it, and 12px over the other side. When the pointer is on the handle or it is dragged, a line that fades out towards the top and the bottom marks the edge: the panel's border, or for a `plain` panel in **App** the border of the content next to it. With the keyboard focus, the line is solid and in the brand color. The cursor changes right away, the line follows after a moment. Double-clicking the handle eases the panel back to its starting width.
+- `closable` shows the panel's trigger also in the desktop layout, where it shows and hides the panel. In the mobile layout, panels are drawers that always have a trigger.
+- A panel starts open in the desktop layout, or closed with `open` set to `false`. After that, the user opens and closes it, and so do [**useApp**](/utilities/composables/use-app) for the navigation and the sidebar of **App** and [**usePage**](/utilities/composables/use-page) for the start and end panels of **Page**. With `v-model:open`, the app keeps whether the panel is open: the value follows these changes, and the app opens or closes the panel by changing it. Without `v-model`, `open` only applies again when its value changes, so to open a panel from code, use `v-model:open`, `useApp()` or `usePage()`.
+- `open` is the state in the desktop layout. Drawers in the mobile layout always start closed and open from their trigger, or with `useApp()` and `usePage()`. Opening or closing a drawer doesn't change `v-model:open`, and changing its value doesn't open the drawer.
+- A panel that is swapped for another one in its slot starts with the new panel's `open`. Opening or closing a panel while its slot is empty does nothing.
+- The panel doesn't remember whether it is open. To remember it, bind `v-model:open` and store the value in the app. With server rendering, apply a stored value once the app has loaded, so the page matches what the server rendered.
+- In the desktop layout, the panel slides in and out over its outer edge when it opens or closes. A panel that opens or closes as it appears doesn't slide.
+- `appearance` sets the panel off from the content. `bordered` draws a frame in **App**, where the panel sits on the app's background next to the content, and a line on the panel's inner edge in **Page**, where it sits inside the content's frame. `plain` draws no border. The navigation is `plain` by default, the other panels are `bordered`. Drawers in the mobile layout have no border.
+- With `resizable`, a handle on the inner edge resizes the panel in the desktop layout: on the end edge for the navigation and the start panel, on the start edge for the sidebar and the end panel. The handle's grab area is 16px wide: 4px over the side of the edge with a scrollbar next to it, and 12px over the other side. When the pointer is on the handle or it is dragged, a line that fades out towards the top and the bottom marks the edge: the panel's border, or for a `plain` panel in **App** the border of the content next to it. With the keyboard focus, the line is solid and in the brand color. The cursor changes right away, the line follows after a moment. Double-clicking the handle eases the panel back to its starting width.
 - A panel that is `closable` and `resizable` also closes by dragging its handle to its outer edge. Past its smallest width, the panel slides out with the pointer, and back in when the handle is dragged back. Releasing the pointer once half of the smallest width has slid out closes the panel from where it is. Releasing it earlier slides the panel back in at its smallest width. A drag that the browser cuts off before the pointer is released ends as the panel shows it. A closed panel opens again with the width it had before the drag.
 - The panel scrolls its content itself.
 - A resized panel remembers its width in the browser, one width per use: the navigation and the sidebar of the app, and the start and end panel of each page. Pages are told apart by the route that renders them, such as `/orders/:id`, so all orders share one width, also across the child routes of a page, or by their URL path without Vue Router. A remembered width is kept within the panel's limits.
 - `v-model:width` follows the width the user chose: at the end of a drag, on every key press and when a reset returns to the starting width, which is the default width of the panel's place without a `width`. With `v-model:width`, the app keeps the width, and the panel doesn't remember it in the browser.
 - A click on the handle without moving it leaves the width as it is.
-- In a drawer, the panel takes the `width` it started with, not the width it was resized to on desktop, never gets wider than the drawer, and has no resize handle.
+- In a drawer, the panel takes the `width` it started with, not the width it was resized to in the desktop layout, never gets wider than the drawer, and has no resize handle.
 - With server rendering, a remembered width applies once the app has loaded, so the page first shows the panel's starting width.
 - A **Panel** inside another component still works, but on the server its label, icon, closable setting and whether it starts open are only known once it renders, after the triggers of the page header. Server rendering then logs a warning, and a panel that starts closed shows open until the app has loaded.
 
