@@ -62,3 +62,4 @@ import { MtProgressBar } from "@shopware-ag/meteor-component-library";
 ## Related components
 
 - [**Loader**](/components/loader): when work is in progress but the exact completion amount is unknown.
+- [**Stepper**](/components/stepper): when progress is a set of named steps instead of a measurable value.
