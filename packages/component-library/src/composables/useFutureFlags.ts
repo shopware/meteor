@@ -3,9 +3,7 @@ import { inject, provide } from "vue";
 const defaultFutureFlags = {
   removeCardWidth: false,
   removeDefaultMargin: false,
-  removeSwitchMinHeight: false,
   bannerFullWidth: false,
-  consistentLabelLineHeight: false,
 };
 
 export type FutureFlags = typeof defaultFutureFlags;

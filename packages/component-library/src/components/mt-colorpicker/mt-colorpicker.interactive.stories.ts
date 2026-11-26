@@ -649,3 +649,15 @@ export const VisualTestHintSlot: MtColorpickerStory = {
     expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };
+
+export const VisualTestFieldIsRequired: MtColorpickerStory = {
+  name: "Should display an indicator that the field is required",
+  args: {
+    required: true,
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-field-label")).toHaveClass(
+      "mt-field-label--is-required",
+    );
+  },
+};

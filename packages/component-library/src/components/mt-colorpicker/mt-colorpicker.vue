@@ -1,39 +1,59 @@
 <template>
-  <mt-base-field
-    :class="componentClasses"
-    :disabled="disabled"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
+  <div
+    :class="[
+      componentClasses,
+      `mt-colorpicker--${size}`,
+      {
+        'mt-colorpicker--error': hasError,
+        'mt-colorpicker--disabled': disabled,
+        'mt-colorpicker--inherited': isInherited,
+        'mt-colorpicker--focus': hasFocus,
+      },
+    ]"
   >
-    <template #label>
+    <mt-field-label
+      v-if="label"
+      class="mt-colorpicker__label"
+      :for="identification"
+      :required="required"
+      :has-error="hasError"
+      :disabled="disableInheritanceToggle"
+      :inheritance="inheritanceState"
+      :style="labelStyle"
+      @update:inheritance="onInheritanceUpdate"
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #field-prefix>
-      <div
-        class="mt-colorpicker__previewWrapper"
-        role="button"
-        :aria-pressed="visible"
-        aria-label="colorpicker-toggle"
-        @click="toggleColorPicker"
-      >
+    <mt-help-text
+      v-if="helpText"
+      class="mt-colorpicker__help-text"
+      :text="helpText"
+      placement="right"
+      :style="{ gridArea: 'help-text' }"
+    />
+
+    <div class="mt-colorpicker__block">
+      <mt-field-affix type="prefix" class="mt-colorpicker__addition" :has-error="hasError">
         <div
-          class="mt-colorpicker__previewColor"
-          :class="{ active: visible }"
-          :style="{ background: previewColorValue }"
-        />
-        <div class="mt-colorpicker__previewBackground" :class="{ 'is--invalid': !isColorValid }" />
-      </div>
-    </template>
+          class="mt-colorpicker__previewWrapper"
+          role="button"
+          :aria-pressed="visible"
+          aria-label="colorpicker-toggle"
+          @click="toggleColorPicker"
+        >
+          <div
+            class="mt-colorpicker__previewColor"
+            :class="{ active: visible }"
+            :style="{ background: previewColorValue }"
+          />
+          <div
+            class="mt-colorpicker__previewBackground"
+            :class="{ 'is--invalid': !isColorValid }"
+          />
+        </div>
+      </mt-field-affix>
 
-    <template #element="{ identification }">
       <input
         :id="identification"
         v-model="colorValue"
@@ -230,29 +250,32 @@
           </div>
         </div>
       </mt-floating-ui>
-    </template>
+    </div>
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
+    <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />
 
-    <template #field-hint>
-      <mt-field-hint v-if="showFieldHint()" :hide-icon="!!$slots.hint">
-        <slot name="hint">
-          {{ hint }}
-        </slot>
-      </mt-field-hint>
-    </template>
-  </mt-base-field>
+    <div v-if="showFieldHint()" class="mt-colorpicker__hint-row">
+      <div class="mt-colorpicker__hint">
+        <mt-field-hint :hide-icon="!!$slots.hint">
+          <slot name="hint">
+            {{ hint }}
+          </slot>
+        </mt-field-hint>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
+import { createId } from "../../utils/id";
 import { debounce } from "@/utils/debounce";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import { createFocusTrap } from "focus-trap";
@@ -260,18 +283,23 @@ import type { FocusTrap } from "focus-trap";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import { useI18n } from "vue-i18n";
+import MtValidationMixin from "../../mixins/validation.mixin";
 
 export default defineComponent({
   name: "MtColorpicker",
 
   components: {
-    "mt-base-field": MtBaseField,
     "mt-field-hint": MtFieldHint,
+    "mt-field-label": MtFieldLabel,
+    "mt-field-affix": MtFieldAffix,
+    "mt-help-text": MtHelpText,
     "mt-text": MtText,
     "mt-floating-ui": MtFloatingUi,
     "mt-button": MtButton,
     "mt-field-error": mtFieldError,
   },
+
+  mixins: [MtValidationMixin],
 
   props: {
     /**
@@ -433,6 +461,20 @@ export default defineComponent({
     },
 
     /**
+     * The size of the colorpicker.
+     *
+     * @values small, default
+     */
+    size: {
+      type: String as PropType<"small" | "default">,
+      required: false,
+      default: "default",
+      validator(value: string) {
+        return ["small", "default"].includes(value);
+      },
+    },
+
+    /**
      * Use apply-mode to apply the color value on button click
      */
     applyMode: {
@@ -478,6 +520,7 @@ export default defineComponent({
     trap: FocusTrap | null;
     hueStep: number;
     alphaStep: number;
+    id: string | undefined;
   } {
     return {
       localValue: this.modelValue || "",
@@ -492,7 +535,12 @@ export default defineComponent({
       trap: null,
       hueStep: 1,
       alphaStep: 0.01,
+      id: undefined,
     };
+  },
+
+  mounted() {
+    this.id = createId();
   },
 
   computed: {
@@ -755,6 +803,28 @@ export default defineComponent({
         "mt-colorpicker--compact": this.compact,
       };
     },
+
+    identification(): string {
+      return this.name ?? `mt-field--${this.id}`;
+    },
+
+    hasError(): boolean {
+      return !!this.error;
+    },
+
+    inheritanceState(): "linked" | "unlinked" | "none" {
+      if (!this.isInheritanceField) return "none";
+
+      return this.isInherited ? "linked" : "unlinked";
+    },
+
+    labelStyle(): Record<string, string> {
+      return {
+        gridArea: "label",
+        marginBottom: "var(--scale-size-2)",
+        lineHeight: "var(--font-line-height-xs)",
+      };
+    },
   },
 
   watch: {
@@ -837,6 +907,14 @@ export default defineComponent({
   },
 
   methods: {
+    onInheritanceUpdate(value: "linked" | "unlinked"): void {
+      if (value === "unlinked") {
+        this.$emit("inheritance-remove");
+      } else {
+        this.$emit("inheritance-restore");
+      }
+    },
+
     showFieldHint(): boolean {
       return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
     },
@@ -1467,10 +1545,105 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .mt-colorpicker {
   position: relative;
   transition: all 0.3s ease;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label help-text"
+    "input input"
+    "error error"
+    "hint hint";
+  width: 100%;
+}
+
+.mt-colorpicker--disabled {
+  cursor: not-allowed;
+}
+
+.mt-colorpicker__block {
+  grid-area: input;
+  display: flex;
+  min-height: var(--scale-size-48);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  overflow: hidden;
+  background: var(--color-background-primary-default);
+}
+
+.mt-colorpicker--small .mt-colorpicker__block {
+  min-height: var(--scale-size-32);
+}
+
+.mt-colorpicker--focus .mt-colorpicker__block {
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  outline-offset: var(--scale-size-2);
+}
+
+.mt-colorpicker--error .mt-colorpicker__block {
+  background: var(--color-background-critical-default);
+  border-color: var(--color-border-critical-default);
+}
+
+.mt-colorpicker--disabled .mt-colorpicker__block {
+  background: var(--color-background-tertiary-default);
+}
+
+.mt-colorpicker .mt-colorpicker__input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 13px var(--scale-size-16);
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-body);
+  line-height: 1;
+  color: var(--color-text-primary-default);
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.mt-colorpicker--small .mt-colorpicker__input {
+  padding: var(--scale-size-4) var(--scale-size-16);
+}
+
+.mt-colorpicker .mt-colorpicker__input::placeholder {
+  color: var(--color-text-secondary-default);
+}
+
+.mt-colorpicker .mt-colorpicker__input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-background-primary-default) inset;
+  -webkit-text-fill-color: var(--color-text-primary-default);
+  caret-color: var(--color-text-primary-default);
+}
+
+.mt-colorpicker--error .mt-colorpicker__input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-background-critical-default) inset;
+}
+
+.mt-colorpicker .mt-colorpicker__input:disabled {
+  cursor: default;
+}
+
+.mt-colorpicker .mt-colorpicker__hint-row {
+  grid-area: hint;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mt-colorpicker .mt-colorpicker__hint {
+  margin-top: var(--scale-size-4);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  color: var(--color-text-secondary-default);
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
 }
 
 .mt-colorpicker__previewWrapper {
@@ -1577,17 +1750,6 @@ export default defineComponent({
   border-right: none;
   background: var(--color-background-primary-default);
   transform: rotate(45deg);
-}
-
-.mt-colorpicker__colorpicker--compact {
-  position: absolute;
-  top: var(--scale-size-30);
-  left: -20px;
-  z-index: 10;
-}
-
-.mt-colorpicker__colorpicker--compact::before {
-  top: -7px;
 }
 
 .mt-colorpicker__colorpicker-selection {
@@ -1802,31 +1964,26 @@ export default defineComponent({
   border-radius: var(--border-radius-checkbox);
 }
 
-.is--disabled .mt-colorpicker__previewWrapper {
-  cursor: default;
-}
-
 .mt-colorpicker--compact {
   display: inline-block;
   width: auto;
   margin-bottom: 0;
 }
 
-.mt-colorpicker--compact .mt-field__label,
-.mt-colorpicker--compact .mt-field__hint-wrapper,
+.mt-colorpicker--compact .mt-colorpicker__label,
+.mt-colorpicker--compact .mt-colorpicker__hint-row,
 .mt-colorpicker--compact .mt-colorpicker__input {
   display: none;
 }
 
-.mt-colorpicker--compact .mt-block-field__block {
+.mt-colorpicker--compact .mt-colorpicker__block {
   width: fit-content;
   border: none;
 }
 
-.mt-colorpicker--compact .mt-field__addition.is--prefix {
-  border-right: none;
+.mt-colorpicker--compact .mt-colorpicker__addition {
+  border-inline-end: none;
   padding: 0;
-  min-width: auto;
 }
 
 .mt-colorpicker--compact .mt-colorpicker__previewWrapper {
@@ -1839,43 +1996,19 @@ export default defineComponent({
   top: calc(100% + 2px);
 }
 
-.mt-colorpicker--compact.is--disabled {
+.mt-colorpicker--compact.mt-colorpicker--disabled {
   opacity: 0.5;
 }
 
-.is--disabled .mt-colorpicker__previewWrapper {
+.mt-colorpicker--disabled .mt-colorpicker__previewWrapper {
   cursor: not-allowed;
 }
 
-.mt-field__addition {
+/* The extra `.mt-colorpicker` keeps this ahead of the addition's own scoped styles. */
+.mt-colorpicker .mt-colorpicker__addition {
   position: relative;
-  padding: 0;
-}
-
-.mt-field__addition.is--prefix {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.mt-field__addition .mt-colorpicker__trigger {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.mt-field__addition .mt-colorpicker__trigger .mt-icon {
-  line-height: 16px;
-}
-
-.mt-popover-deprecated__wrapper.--placement-bottom-outside .mt-colorpicker__colorpicker::before {
-  top: calc(100% - 7px);
-  transform: rotate(225deg);
 }
 </style>

@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="mt-radio-group-root"
-    :class="{
-      'mt-radio-group-root--future-remove-default-margin': future.removeDefaultMargin,
-    }"
-  >
+  <div class="mt-radio-group-root">
     <mt-field-label
       v-if="label"
       :id="labelId"
@@ -50,7 +45,6 @@ import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
-import { useFutureFlags } from "@/composables/useFutureFlags";
 
 const props = withDefaults(
   defineProps<{
@@ -88,8 +82,6 @@ const showFieldHint = () =>
 const emit = defineEmits<{
   "update:modelValue": [value: string | number | boolean | null];
 }>();
-
-const future = useFutureFlags();
 
 const id = useId();
 const labelId = useId();
@@ -137,16 +129,11 @@ provide("radioGroupContext", {
   grid-template-columns: 1fr auto;
   align-content: start;
   width: 100%;
-  margin-bottom: var(--scale-size-32);
-}
-
-.mt-radio-group-root--future-remove-default-margin {
-  margin-bottom: 0;
 }
 
 .mt-radio-group-root__label {
   line-height: var(--font-line-height-xs) !important;
-  margin-bottom: var(--scale-size-2);
+  margin-bottom: var(--scale-size-4);
   font-size: var(--font-size-xs);
 }
 
@@ -161,6 +148,6 @@ provide("radioGroupContext", {
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   color: var(--color-text-secondary-default);
-  margin-top: 0.1875rem;
+  margin-top: var(--scale-size-4);
 }
 </style>

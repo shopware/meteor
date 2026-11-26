@@ -146,7 +146,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .mt-select-result {
   padding: var(--scale-size-10) var(--scale-size-12);
   cursor: pointer;
@@ -190,7 +190,7 @@ export default defineComponent({
       cursor: default;
     }
 
-    .mt-highlight-text__highlight {
+    :deep(.mt-highlight-text__highlight) {
       color: var(--color-text-primary-disabled);
     }
 

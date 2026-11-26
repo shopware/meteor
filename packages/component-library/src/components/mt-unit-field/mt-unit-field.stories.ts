@@ -1,5 +1,5 @@
 import MtUnitField from "./mt-unit-field.vue";
-import baseFieldArgTypes from "../_internal/mt-base-field/arg-types";
+import baseFieldArgTypes from "../_internal/form-field/arg-types";
 import type { Meta, StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { fn } from "@storybook/test";
