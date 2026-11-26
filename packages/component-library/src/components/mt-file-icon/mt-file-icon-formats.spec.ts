@@ -63,6 +63,21 @@ describe("resolveFileIcon", () => {
     });
   });
 
+  it("ignores the query and hash of a relative URL", () => {
+    expect(resolveFileIcon({ fileName: "/media/sheet.xlsx?v=2#top" }).format).toBe("XLSX");
+  });
+
+  it.each(["Invoice #42.pdf", "what?.pdf", "C:\\files\\Invoice #42.pdf"])(
+    "keeps the extension of the file name %j",
+    (fileName) => {
+      expect(resolveFileIcon({ fileName })).toEqual({
+        category: "document",
+        format: "PDF",
+        brand: "pdf",
+      });
+    },
+  );
+
   it.each(["README", ".env", "folder.name/README", ""])(
     "finds no extension in the file name %j",
     (fileName) => {
@@ -102,12 +117,38 @@ describe("resolveFileIcon", () => {
     expect(resolveFileIcon({ fileName: "clip.mov", mimeType: "video/mp4" }).format).toBe("MOV");
   });
 
-  it("uses the category of the MIME type when the extension is unknown", () => {
-    expect(resolveFileIcon({ fileName: "scan.xyz", mimeType: "application/pdf" })).toEqual({
-      category: "document",
+  it.each(["scan.xyz", "Report v1.2", "report.PDF.download"])(
+    "uses the format of the MIME type when the extension of %j is unknown",
+    (fileName) => {
+      expect(resolveFileIcon({ fileName, mimeType: "application/pdf" })).toEqual({
+        category: "document",
+        format: "PDF",
+        brand: "pdf",
+      });
+    },
+  );
+
+  it("keeps an unknown extension when the MIME type only names a category", () => {
+    expect(resolveFileIcon({ fileName: "clip.xyz", mimeType: "video/x-unknown" })).toEqual({
+      category: "video",
       format: "XYZ",
       brand: undefined,
     });
+  });
+
+  it("keeps the category of the file when the format is a custom label", () => {
+    expect(resolveFileIcon({ fileName: "report.pdf", format: "invoice" })).toEqual({
+      category: "document",
+      format: "INVOICE",
+      brand: undefined,
+    });
+  });
+
+  it("ignores a category it has no icon for", () => {
+    // @ts-expect-error -- a value from outside of the type, such as one from an API
+    expect(resolveFileIcon({ fileName: "report.pdf", category: "other" }).category).toBe(
+      "document",
+    );
   });
 
   it("lets an explicit format override the file name", () => {

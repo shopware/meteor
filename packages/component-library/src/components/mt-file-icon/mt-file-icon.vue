@@ -125,10 +125,9 @@ const isIconTopAligned = computed(
 
 const iconName = computed(() => {
   if (variant.value === "broken") return "regular-times";
-  if (variant.value === "empty") return undefined;
   if (props.icon) return resolveIconName(props.icon, "regular");
 
-  return `regular-${categoryIcon.value!.icon}`;
+  return categoryIcon.value ? `regular-${categoryIcon.value.icon}` : undefined;
 });
 
 /*

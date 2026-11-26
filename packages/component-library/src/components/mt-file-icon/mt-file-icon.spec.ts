@@ -54,6 +54,18 @@ describe("mt-file-icon", () => {
     expect(getFormat(container)).not.toBeInTheDocument();
   });
 
+  it("falls back to the empty page when the category is unknown", () => {
+    // ARRANGE
+    const { container } = render(MtFileIcon, {
+      // @ts-expect-error -- a value from outside of the type, such as one from an API
+      props: { category: "other" },
+    });
+
+    // ASSERT
+    expect(getRoot(container)).toHaveClass("mt-file-icon--empty");
+    expect(getIconName(container)).toBeUndefined();
+  });
+
   it("shows a custom icon and format", () => {
     // ARRANGE
     const { container } = render(MtFileIcon, { props: { icon: "solid-square", format: "txt" } });

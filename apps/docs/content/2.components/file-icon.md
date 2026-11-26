@@ -94,7 +94,7 @@ Set `size` to `fluid` to size the icon with CSS instead, for example in containe
 
 ## Behavior
 
-- An explicit `format` or `category` wins over what the file name or MIME type say, and the file name wins over the MIME type.
+- An explicit `format` or `category` wins over what the file name or MIME type say, and the file name wins over the MIME type. A file name without a known extension uses the format of the MIME type.
 - The extension is the part after the last dot of the file name, so `backup.tar.gz` shows `GZ`. Queries and hashes of URLs are ignored.
 - A MIME type without a known format, such as `video/x-unknown`, still resolves its category from the type before the slash.
 - A format label needs an icon. A format the component doesn't know shows the empty page unless you also set `icon` or `category`.

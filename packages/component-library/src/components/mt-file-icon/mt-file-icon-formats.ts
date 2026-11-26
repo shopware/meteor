@@ -130,7 +130,7 @@ const brands: Record<string, MtFileIconBrand> = {
   ods: "excel",
 };
 
-/** The extension of each MIME type whose subtype does not already name it */
+/** The extension of each known MIME type. Any other MIME type only resolves a category, from its type. */
 const mimeTypeExtensions: Record<string, string> = {
   "text/plain": "txt",
   "application/pdf": "pdf",
@@ -282,11 +282,16 @@ function normalizeMimeType(value?: string): string | undefined {
 }
 
 function extensionFromFileName(fileName?: string): string | undefined {
-  // Ignores the query and hash of URLs, and dot files such as `.env` that have no extension
-  const name = fileName?.split(/[?#]/)[0].split(/[\\/]/).pop() ?? "";
+  if (!fileName) return undefined;
+
+  // Only an absolute URL ends at its first `?` or `#`, as a file name may contain both
+  const isUrl = /^[a-z][a-z\d+.-]*:\/\//i.test(fileName);
+  const name = (isUrl ? fileName.split(/[?#]/)[0] : fileName).split(/[\\/]/).pop() ?? "";
+  // Ignores dot files such as `.env` that have no extension
   const dotIndex = name.lastIndexOf(".");
 
-  return dotIndex > 0 ? normalizeExtension(name.slice(dotIndex + 1)) : undefined;
+  // A relative URL still has its query and hash here, which no extension contains
+  return dotIndex > 0 ? normalizeExtension(name.slice(dotIndex + 1).split(/[?#]/)[0]) : undefined;
 }
 
 function categoryFromMimeType(mimeType?: string): MtFileIconCategory | undefined {
@@ -308,7 +313,8 @@ export type ResolvedFileIcon = {
 
 /**
  * Works out the category and format label of a file. An explicit `format` or `category` wins over
- * what the file name or MIME type say, and the file name wins over the MIME type.
+ * what the file name or MIME type say. The file name wins over the MIME type, unless only the MIME
+ * type names a known format.
  */
 export function resolveFileIcon(input: {
   fileName?: string;
@@ -318,16 +324,20 @@ export function resolveFileIcon(input: {
 }): ResolvedFileIcon {
   const mimeType = normalizeMimeType(input.mimeType);
   const mimeTypeExtension = mimeType ? mimeTypeExtensions[mimeType] : undefined;
-  const extension =
-    normalizeExtension(input.format) ?? extensionFromFileName(input.fileName) ?? mimeTypeExtension;
   const known = (value?: string) => (value ? extensionCategories.get(value) : undefined);
+
+  const fileNameExtension = extensionFromFileName(input.fileName);
+  const fileExtension = known(fileNameExtension)
+    ? fileNameExtension
+    : mimeTypeExtension ?? fileNameExtension;
+  const extension = normalizeExtension(input.format) ?? fileExtension;
+  // A category the component has no icon for is ignored
+  const category =
+    input.category && fileIconCategories.includes(input.category) ? input.category : undefined;
 
   return {
     category:
-      input.category ??
-      known(extension) ??
-      known(mimeTypeExtension) ??
-      categoryFromMimeType(mimeType),
+      category ?? known(extension) ?? known(fileExtension) ?? categoryFromMimeType(mimeType),
     format: extension?.toUpperCase(),
     brand: extension ? brands[extension] : undefined,
   };
