@@ -233,6 +233,15 @@ Block pages have no table of contents, so the preview can take the whole width. 
 - Use the same sample data in all blocks: the brand "Shopware" with the subtitle "Meteor", the user "Max Mustermann" with the subtitle "Administrator", and the navigation Dashboard, Orders, Products (Overview, Categories), Customers and Settings. A block may differ where the difference is its point, such as the workspaces of the custom header.
 - Give a second **Nav** on a page, such as the groups of a settings page, its own `label`, as the navigation of the shell is already named "Main".
 
+### Prototypes
+
+Prototypes are blocks under `app/components/content/blocks/prototypes/` that try out a page Meteor can't fully build yet. They show where a component, a slot or a prop is missing, so the gaps can be planned. They have no docs page; open them at `/block-preview/<name>`, for example `/block-preview/dashboard-prototype-block`.
+
+- Use each component only for what its page describes. Where one comes close but lacks something, use it and mark what it lacks. Do not bend a component into something else, such as **Nav** for a list whose rows are not pages.
+- Mark every gap at its place with `<missing-feature title="Icon rail" kind="component">One sentence on what is missing.</missing-feature>`. `kind` is `component`, `slot` or `prop`. Use `inline` for a one-line chip in a header row, a tab row or a toolbar.
+- Where a whole component is missing, build a small stand-in from plain markup and tokens in the `stand-in` slot of `missing-feature`, so every piece of UI that is not a Meteor component stays framed.
+- Once its gaps are closed, a prototype moves into one of the other groups, loses its markers and gets a docs page.
+
 ## Prose rules
 
 - Do not use emojis.
