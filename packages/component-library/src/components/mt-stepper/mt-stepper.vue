@@ -99,7 +99,6 @@ const stepStates = computed(() =>
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-regular);
   line-height: var(--font-line-height-xs);
-  color: var(--color-text-primary-default);
 }
 
 .mt-stepper--vertical {
