@@ -1,9 +1,9 @@
 import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
-import { defineComponent, h, ref, shallowRef, type FunctionalComponent } from "vue";
+import { defineComponent, h, ref, type FunctionalComponent } from "vue";
+import { createMemoryHistory, createRouter } from "vue-router";
 import MtNav from "./mt-nav.vue";
 import type { NavItem, NavSection } from "./mt-nav.vue";
-import { routerPlugin } from "../mt-app/__tests__/shell-test-utils";
 
 // Stands in for `router-link`: the library does not depend on vue-router
 const RouterLinkStub: FunctionalComponent<{ to: { name: string } }> = (props, { slots }) =>
@@ -376,42 +376,85 @@ describe("mt-nav", () => {
   });
 
   describe("current page", () => {
-    function renderWithRoute(fullPath: string, items: NavItem[]) {
-      const router = {
-        currentRoute: shallowRef({ path: fullPath, hash: "", fullPath }),
-        resolve: (to: unknown) => ({ fullPath: to as string }),
-      };
-
-      render(MtNav, {
-        props: { linkComponent: "a", sections: [{ items }] },
-        global: { plugins: [routerPlugin(router)] },
+    async function renderAt(path: string, items: NavItem[], props: Record<string, unknown> = {}) {
+      const router = createRouter({
+        history: createMemoryHistory(),
+        routes: [
+          { path: "/", component: {} },
+          { path: "/products/:id?", name: "products", component: {} },
+          { path: "/categories", component: {} },
+          { path: "/orders", component: {} },
+        ],
       });
+
+      await router.push(path);
+      render(MtNav, {
+        props: { sections: [{ items }], ...props },
+        global: { plugins: [router] },
+      });
+
+      return router;
     }
 
     function link(label: string) {
       return getRowLabel(label).closest(".mt-nav__link");
     }
 
-    it("marks the row linking most closely to the current route as the current page", () => {
-      renderWithRoute("/products/1/edit", [
+    it("marks the item linking most closely to the current route as the current page", async () => {
+      const router = await renderAt("/products/1", [
         { label: "Dashboard", to: "/" },
-        { label: "Products", to: "/products" },
+        { label: "Products", to: { name: "products" } },
         { label: "Product", to: "/products/1" },
       ]);
 
       expect(link("Product")).toHaveAttribute("aria-current", "page");
       expect(link("Products")).not.toHaveAttribute("aria-current");
       expect(link("Dashboard")).not.toHaveAttribute("aria-current");
+
+      await router.push("/");
+
+      await waitFor(() => expect(link("Dashboard")).toHaveAttribute("aria-current", "page"));
+      expect(link("Product")).not.toHaveAttribute("aria-current");
     });
 
-    it("keeps a row marked active as the current page", () => {
-      renderWithRoute("/products/1", [
+    it("opens the group holding the current page", async () => {
+      await renderAt("/categories", [
+        { label: "Dashboard", to: "/" },
+        {
+          label: "Catalog",
+          children: [
+            { label: "Products", to: "/products" },
+            { label: "Categories", to: "/categories" },
+          ],
+        },
+      ]);
+
+      await waitFor(() => expect(getRowLabel("Categories")).toBeVisible());
+      expect(link("Categories")).toHaveAttribute("aria-current", "page");
+    });
+
+    it("keeps an item marked active as the current page", async () => {
+      await renderAt("/products/1", [
         { label: "Dashboard", to: "/", active: true },
         { label: "Products", to: "/products" },
       ]);
 
       expect(link("Dashboard")).toHaveAttribute("aria-current", "page");
       expect(link("Products")).not.toHaveAttribute("aria-current");
+    });
+
+    it("renders when an item's route can't be resolved", async () => {
+      await renderAt(
+        "/products",
+        [
+          { label: "Unknown", to: { name: "unknown" } },
+          { label: "Products", to: "/products" },
+        ],
+        { linkComponent: "a" },
+      );
+
+      expect(link("Products")).toHaveAttribute("aria-current", "page");
+      expect(link("Unknown")).not.toHaveAttribute("aria-current");
     });
   });
 

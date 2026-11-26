@@ -1,14 +1,13 @@
-import { defineComponent, h, shallowRef } from "vue";
+import { defineComponent, h, shallowRef, type ComputedRef } from "vue";
 import { render } from "@testing-library/vue";
-import { NavigationFailureType } from "vue-router";
+import { createMemoryHistory, createRouter, NavigationFailureType } from "vue-router";
 import { routerPlugin } from "@/components/mt-app/__tests__/shell-test-utils";
 import {
-  useLinkMatch,
+  useCurrentItem,
   useMatchedRouteMeta,
   useRouteChange,
   useRouteGuard,
   useRouterBack,
-  type LinkTarget,
   type RouteLike,
 } from "./router";
 
@@ -213,53 +212,110 @@ describe("router", () => {
     });
   });
 
-  describe("useLinkMatch", () => {
-    it("matches a link on its page and below it, higher for a more specific link", () => {
+  describe("useCurrentItem", () => {
+    const routes = [
+      { path: "/", component: {} },
+      { path: "/products", name: "products", component: {} },
+      { path: "/products/:id", name: "product", component: {} },
+      { path: "/products/:id/edit", component: {} },
+      { path: "/orders", component: {} },
+      { path: "/orders/:id", component: {} },
+    ];
+
+    async function renderAt<T extends { to?: unknown }>(
+      path: string,
+      items: T[],
+      options: { sensitive?: boolean } = {},
+    ) {
+      const router = createRouter({ history: createMemoryHistory(), routes, ...options });
+      let currentItem!: ComputedRef<T | undefined>;
+
+      await router.push(path);
+      renderWithRouter(router, () => (currentItem = useCurrentItem(() => items)));
+
+      return { router, currentItem };
+    }
+
+    it("picks the item linking to the current route or a page above it, the most specific one", async () => {
       // ARRANGE
-      let matchLink!: (link: LinkTarget) => number;
-      const router = {
-        currentRoute: shallowRef({
-          path: "/products/1",
-          hash: "",
-          fullPath: "/products/1?tab=info",
-        }),
-        resolve: (to: unknown) => ({ fullPath: to as string }),
-      };
+      const home = { to: "/" };
+      const products = { to: { name: "products" } };
+      const product = { to: { name: "product", params: { id: "1" } } };
 
       // ACT
-      renderWithRouter(router, () => (matchLink = useLinkMatch()));
+      const { router, currentItem } = await renderAt("/products/1/edit", [home, products, product]);
 
       // ASSERT
-      expect(matchLink({ to: "/products" })).toBeGreaterThanOrEqual(0);
-      expect(matchLink({ to: "/products/1" })).toBeGreaterThan(matchLink({ to: "/products" }));
-      expect(matchLink({ to: "/products?tab=info" })).toBeGreaterThan(
-        matchLink({ to: "/products" }),
-      );
+      expect(currentItem.value).toBe(product);
 
-      for (const to of ["/", "/product", "/products?tab=reviews", "/products#reviews"]) {
-        expect(matchLink({ to })).toBe(-1);
-      }
+      await router.push("/products");
+      expect(currentItem.value).toBe(products);
 
-      expect(matchLink({ href: "#top" })).toBe(-1);
-      expect(matchLink({ href: "https://docs.shopware.com/products" })).toBe(-1);
+      await router.push("/");
+      expect(currentItem.value).toBe(home);
     });
 
-    it("follows the browser's address without a router", () => {
+    it("compares only the paths, not the query or the hash", async () => {
       // ARRANGE
-      let matchLink!: (link: LinkTarget) => number;
-      window.history.replaceState(null, "", "/orders");
-      renderWithRouter(undefined, () => (matchLink = useLinkMatch()));
-      expect(matchLink({ href: "/orders" })).toBeGreaterThanOrEqual(0);
+      const openOrders = { to: "/orders?status=open#top" };
+      const order = { to: "/orders/1" };
 
       // ACT
-      window.history.pushState(null, "", "/settings");
-      window.dispatchEvent(new PopStateEvent("popstate"));
+      const { router, currentItem } = await renderAt("/orders/1?status=open", [openOrders, order]);
 
       // ASSERT
-      expect(matchLink({ href: "/orders" })).toBe(-1);
-      expect(matchLink({ href: "/settings" })).toBeGreaterThanOrEqual(0);
+      expect(currentItem.value).toBe(order);
 
-      window.history.replaceState(null, "", "/");
+      await router.push("/orders?status=closed");
+      expect(currentItem.value).toBe(openOrders);
+    });
+
+    it("picks the first one when several items link to the same page", async () => {
+      // ARRANGE
+      const first = { to: "/orders" };
+      const second = { to: "/orders" };
+
+      // ACT
+      const { currentItem } = await renderAt("/orders", [first, second]);
+
+      // ASSERT
+      expect(currentItem.value).toBe(first);
+    });
+
+    it("ignores the case of paths, unless the router compares it", async () => {
+      // ARRANGE
+      const products = { to: "/products" };
+
+      // ACT
+      const insensitive = await renderAt("/PRODUCTS/1", [products]);
+      const sensitive = await renderAt("/PRODUCTS/1", [products], { sensitive: true });
+
+      // ASSERT
+      expect(insensitive.currentItem.value).toBe(products);
+      expect(sensitive.currentItem.value).toBeUndefined();
+    });
+
+    it("skips items without a `to` and items with an unknown route", async () => {
+      // ARRANGE
+      const products = { to: "/products" };
+      const items = [{ href: "/products/1" }, { to: { name: "unknown" } }, products];
+
+      // ACT
+      const { currentItem } = await renderAt("/products/1", items);
+
+      // ASSERT
+      expect(currentItem.value).toBe(products);
+    });
+
+    it("has no current item without a router", () => {
+      // ARRANGE
+      let currentItem!: ComputedRef<{ to: string } | undefined>;
+
+      // ACT
+      renderWithRouter(undefined, () => (currentItem = useCurrentItem(() => [{ to: "/" }])));
+
+      // ASSERT
+      expect(currentItem.value).toBeUndefined();
     });
   });
 });
