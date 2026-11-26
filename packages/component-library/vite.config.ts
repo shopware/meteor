@@ -11,7 +11,13 @@ import { emitInterFontAssets, getAllComponents, libInjectCss, toPascalCase } fro
 // Get all components and their paths
 const allComponents = getAllComponents();
 
-export const external = ["vue", "apexcharts", "vue-i18n"];
+// Not bundled into dist/; a RegExp also matches sub-paths, which the admin SDK needs.
+export const external: (string | RegExp)[] = [
+  "vue",
+  "apexcharts",
+  "vue-i18n",
+  /^@shopware-ag\/meteor-admin-sdk(\/|$)/,
+];
 
 // https://vitejs.dev/config/
 export default defineConfig({

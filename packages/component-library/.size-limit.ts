@@ -1,7 +1,11 @@
 import type { SizeLimitConfig } from "size-limit";
 import { external } from "./vite.config";
 
-const ignore = [...external];
+// esbuild only takes strings here, and a package name also matches its sub-paths.
+const ignore = [
+  ...external.filter((entry): entry is string => typeof entry === "string"),
+  "@shopware-ag/meteor-admin-sdk",
+];
 
 module.exports = [
   {
