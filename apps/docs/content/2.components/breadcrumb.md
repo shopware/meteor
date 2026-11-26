@@ -23,6 +23,13 @@ Pass the trail as `items`, ordered from the root to the current page. Every item
 ::component-example{name="breadcrumb-sizes-example"}
 ::
 
+### Icons
+
+Set `icon` on the first item to mark the section the trail starts in.
+
+::component-example{name="breadcrumb-icon-example"}
+::
+
 ### Truncating long labels
 
 Labels are shown in full as long as the trail fits. As the container gets narrower, long labels shrink with an ellipsis, down to 8 characters, before any crumb is hidden. Drag the corner of the box to try it.
@@ -53,7 +60,7 @@ Build the items from the route segments and mark nothing by hand: the last item 
 
 ## API reference
 
-:component-api
+:component-api{ignore="hideCurrent"}
 
 ## Best practices
 
@@ -82,12 +89,14 @@ Build the items from the route segments and mark nothing by hand: the last item 
 - The ellipsis button opens a menu that lists the hidden levels from the root downwards. Each entry is a link to that level; levels without a destination are listed but disabled.
 - Set `overflow="wrap"` to let the crumbs flow onto additional lines instead of collapsing. Only a label wider than the whole container is truncated in this mode.
 - Hidden crumbs come back as soon as there is enough space again. An open menu closes when its button disappears.
+- An item's `icon` takes an icon name without the variant prefix, such as `home` instead of `regular-home`. It renders in front of the label in the regular variant, as large as the text: 14px for `xs` and 16px for `s`.
 
 ## Accessibility
 
 - The trail is a `nav` landmark that contains an ordered list, so screen readers announce it as breadcrumb navigation and read the levels in order. Use `aria-label` to change the name of the landmark.
 - The current page carries `aria-current="page"`.
 - Separators and the ellipsis are hidden from assistive technology.
+- Icons are decorative and hidden from assistive technology; the label names the crumb.
 - Links can be reached with the Tab key and show a visible focus ring. The current page is plain text and cannot be focused.
 - The ellipsis button is in the tab order, is named "Show n hidden levels", and announces that it opens a menu. Enter or Space opens the menu and focuses its first entry, the arrow keys move between entries, and Escape closes the menu and returns focus to the button.
 - The menu entries are links, so they can also be opened in a new tab.

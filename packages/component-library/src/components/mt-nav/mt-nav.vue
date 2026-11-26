@@ -1,5 +1,9 @@
 <template>
-  <nav class="mt-nav" :aria-labelledby="navigationLabelId">
+  <nav
+    class="mt-nav"
+    :class="{ 'mt-nav--horizontal': orientation === 'horizontal' }"
+    :aria-labelledby="navigationLabelId"
+  >
     <h2 :id="navigationLabelId" class="visually-hidden">
       {{ label ?? t("navigationLabel") }}
     </h2>
@@ -33,22 +37,25 @@ import {
   type NavActiveMatcher,
   type NavItem,
   type NavLinkComponent,
+  type NavOrientation,
   type NavSection,
   type NavSlots,
 } from "./_internal/mt-nav-context";
+import { moveLinkFocus } from "./_internal/mt-nav-focus";
 
 export type {
   NavActiveMatcher,
   NavItem,
   NavLinkComponent,
   NavLinkTarget,
+  NavOrientation,
   NavSection,
 } from "./_internal/mt-nav-context";
 
 const props = withDefaults(
   defineProps<{
     /**
-     * The sections of the navigation, each holding its rows. Rows nest through `children`.
+     * The sections of the navigation, each holding its items. Items nest through `children`.
      */
     sections: NavSection[];
     /**
@@ -56,25 +63,32 @@ const props = withDefaults(
      */
     linkComponent?: NavLinkComponent;
     /**
-     * Accessible name of the navigation. Defaults to the translated "Main navigation".
+     * Accessible name of the navigation. Defaults to the translated "Main". Pass another name when
+     * the page has more than one `mt-nav`, for example "Settings".
      */
     label?: string;
     /**
-     * Tells whether a row is the current page, e.g. by comparing its route with the current route.
-     * Lets the sections stay static instead of setting `active` on every route change.
+     * Tells whether an item is the current page, e.g. by comparing its route with the current
+     * route. Lets the sections stay static instead of setting `active` on every route change.
      */
     isActive?: NavActiveMatcher;
+    /**
+     * Direction the top-level items run in. Horizontal items show their nested items in a floating
+     * panel that opens on hover, or on click with the keyboard or touch.
+     */
+    orientation?: NavOrientation;
   }>(),
   {
     linkComponent: "router-link",
     label: undefined,
     isActive: undefined,
+    orientation: "vertical",
   },
 );
 
 const emit = defineEmits<{
   /**
-   * Emitted when a row with a `to` or `href` is clicked. Rows that only toggle nested rows do not emit it.
+   * Emitted when an item with a `to` or `href` is clicked. Items that only toggle nested items do not emit it.
    */
   (e: "navigate", item: NavItem): void;
 }>();
@@ -84,10 +98,10 @@ const slots = defineSlots<NavSlots>();
 const { t } = useI18n({
   messages: {
     en: {
-      navigationLabel: "Main navigation",
+      navigationLabel: "Main",
     },
     de: {
-      navigationLabel: "Hauptnavigation",
+      navigationLabel: "Hauptmenü",
     },
   },
 });
@@ -96,10 +110,16 @@ const navigationLabelId = `mt-nav-label-${useId()}`;
 
 const navBodyElement = ref<HTMLElement | null>(null);
 
-// Keys of the open top-level rows. Nested rows keep their own open state.
+// Keys of the open top-level items. Nested items keep their own open state.
 const expandedKeys = ref<string[]>([]);
 
-// The top-level rows of every section, with the keys their open state is kept under
+// Key of the top-level item whose floating panel is open, in a horizontal navigation
+const openFlyoutKey = ref<string | null>(null);
+
+// Set when the open panel took over from another open panel instead of opening from closed
+const flyoutSwitched = ref(false);
+
+// The top-level items of every section, with the keys their open state is kept under
 const branches = computed(() =>
   props.sections.flatMap((section, sectionIndex) =>
     section.items.map((item) => ({ key: branchKey(sectionIndex, item), item })),
@@ -107,7 +127,7 @@ const branches = computed(() =>
 );
 
 function isActiveItem(item: NavItem) {
-  // Tells whether the row or one of its descendants is active, through its flag or `isActive`
+  // Tells whether the item or one of its descendants is active, through its flag or `isActive`
   return isItemActive(item, props.isActive);
 }
 
@@ -120,7 +140,7 @@ const activeOwnerKey = computed(
       ?.key ?? null,
 );
 
-// Changes whenever the active row moves, also within the branch already holding it
+// Changes whenever the active item moves, also within the branch already holding it
 const activeRowSignature = computed(() =>
   branches.value
     .filter((branch) => isActiveItem(branch.item))
@@ -134,35 +154,51 @@ const activeRowSignature = computed(() =>
 
 provide(NAV_CONTEXT, {
   linkComponent: computed(() => props.linkComponent),
+  orientation: computed(() => props.orientation),
   isRowActive: (item) => isRowActive(item, props.isActive),
   isItemActive: isActiveItem,
   slots,
   isBranchExpanded,
   onBranchToggle,
-  onNavigate: (item) => emit("navigate", item),
+  isFlyoutOpen: (key) => openFlyoutKey.value === key,
+  onFlyoutToggle,
+  flyoutSwitched: computed(() => flyoutSwitched.value),
+  onNavigate: (item) => {
+    // Choosing a page closes the open floating panel
+    openFlyoutKey.value = null;
+    emit("navigate", item);
+  },
 });
 
 watch(activeRowSignature, openBranchOfActiveItem, { immediate: true });
 
+watch(
+  () => props.orientation,
+  () => {
+    openFlyoutKey.value = null;
+  },
+);
+
 function isBranchExpanded(key: string) {
-  // Tells whether the top-level row with this key is open
+  // Tells whether the top-level item with this key is open
   return expandedKeys.value.includes(key);
 }
 
 function expandBranch(key: string) {
-  // Opens the top-level row with this key
+  // Opens the top-level item with this key
   if (!isBranchExpanded(key)) {
     expandedKeys.value = [...expandedKeys.value, key];
   }
 }
 
 function collapseBranch(key: string) {
-  // Closes the top-level row with this key
+  // Closes the top-level item with this key
   expandedKeys.value = expandedKeys.value.filter((expanded) => expanded !== key);
 }
 
 function onBranchToggle(key: string, open: boolean) {
-  // Applies a user toggle: opening a row closes the others, except the one holding the active item
+  // Applies a user toggle: opening an item closes the others, except the one holding the active
+  // item
   if (!open) {
     collapseBranch(key);
     return;
@@ -172,8 +208,19 @@ function onBranchToggle(key: string, open: boolean) {
   expandBranch(key);
 }
 
+function onFlyoutToggle(key: string, open: boolean) {
+  // Opens the panel with this key in place of any other, or closes it if it is still the open one.
+  // A late close of the previous panel, e.g. from its hover timer, leaves the new one open.
+  if (open) {
+    flyoutSwitched.value = openFlyoutKey.value !== null && openFlyoutKey.value !== key;
+    openFlyoutKey.value = key;
+  } else if (openFlyoutKey.value === key) {
+    openFlyoutKey.value = null;
+  }
+}
+
 function collapseInactiveBranches(exceptKey: string | null) {
-  // Closes every open row that neither holds the active item nor matches the given key
+  // Closes every open item that neither holds the active item nor matches the given key
   expandedKeys.value = expandedKeys.value.filter((key) => {
     if (key === exceptKey) {
       return true;
@@ -186,7 +233,7 @@ function collapseInactiveBranches(exceptKey: string | null) {
 }
 
 function openBranchOfActiveItem() {
-  // Opens the row holding the active item and closes the others; leaves the tree alone if nothing is active
+  // Opens the item holding the active item and closes the others; leaves the tree alone if nothing is active
   if (!hasActiveItem.value) {
     return;
   }
@@ -202,74 +249,35 @@ function openBranchOfActiveItem() {
 }
 
 function onNavigationKeydown(event: KeyboardEvent) {
-  // Moves focus between the visible links with the arrow, Home and End keys, without wrapping
-  const body = navBodyElement.value;
-  const target = event.target;
-
-  // Keys pressed inside slotted content, e.g. a button in a suffix, keep their meaning
-  if (!body || !(target instanceof HTMLElement) || !target.matches(".mt-nav__link")) {
+  // Moves focus between the visible links with the arrow keys of the orientation, Home and End
+  if (!navBodyElement.value) {
     return;
   }
 
-  // Label-only rows render as a span and can't take focus, so they're skipped
-  const links = Array.from(body.querySelectorAll<HTMLElement>(".mt-nav__link")).filter(
-    (link) => link.tabIndex >= 0 && !link.closest("[hidden]"),
+  moveLinkFocus(
+    navBodyElement.value,
+    event,
+    props.orientation === "horizontal"
+      ? { next: "ArrowRight", previous: "ArrowLeft" }
+      : { next: "ArrowDown", previous: "ArrowUp" },
   );
-
-  const currentIndex = links.indexOf(target);
-  let nextIndex: number;
-
-  switch (event.key) {
-    case "ArrowDown":
-      nextIndex = Math.min(currentIndex + 1, links.length - 1);
-      break;
-    case "ArrowUp":
-      nextIndex = Math.max(currentIndex - 1, 0);
-      break;
-    case "Home":
-      nextIndex = 0;
-      break;
-    case "End":
-      nextIndex = links.length - 1;
-      break;
-    default:
-      return;
-  }
-
-  event.preventDefault();
-  links[nextIndex]?.focus();
 }
 </script>
 
 <style>
 .mt-nav {
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
   white-space: nowrap;
-
-  mask-image: linear-gradient(
-    to bottom,
-    transparent var(--scale-size-4),
-    #000 var(--scale-size-20),
-    #000 calc(100% - var(--scale-size-20)),
-    transparent calc(100% - var(--scale-size-4))
-  );
 }
 
 .mt-nav__body {
   position: relative;
-  height: 100%;
   display: flex;
   flex-direction: column;
   gap: var(--scale-size-16);
-  padding: var(--scale-size-20) 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  scrollbar-width: none;
 }
 
-.mt-nav__body::-webkit-scrollbar {
-  display: none;
+.mt-nav--horizontal .mt-nav__body {
+  flex-direction: row;
+  align-items: center;
 }
 </style>

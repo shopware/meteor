@@ -27,7 +27,7 @@
         @click="expand"
         @focus="expand"
         @keydown.tab="collapse"
-        @keydown.esc="collapse"
+        @keydown.esc="collapseOnEscape"
       >
         <slot name="mt-select-selection" v-bind="{ identification, disabled, expand, collapse }" />
       </div>
@@ -260,6 +260,11 @@ export default defineComponent({
       this.expanded = true;
       document.addEventListener("click", this.listenToClickOutside);
       this.$emit("select-expanded");
+    },
+
+    collapseOnEscape(event: KeyboardEvent) {
+      if (this.expanded) event.preventDefault();
+      this.collapse(event);
     },
 
     collapse(event?: Event) {

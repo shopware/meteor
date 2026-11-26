@@ -17,6 +17,11 @@ export function useMainNav() {
       active: route.path.startsWith("/components"),
     },
     {
+      label: "Blocks",
+      to: "/blocks",
+      active: route.path.startsWith("/blocks"),
+    },
+    {
       label: "Utilities",
       to: "/utilities",
       active: route.path.startsWith("/utilities"),

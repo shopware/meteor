@@ -1,0 +1,148 @@
+/* Stacks its children with the default spacing. A wide child, such as an editor toolbar, can't
+   widen it. */
+.stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--scale-size-16);
+  align-content: start;
+}
+
+/* A row of items with a small gap, wrapping when they don't fit. */
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--scale-size-8);
+}
+
+/* As many equal columns as fit, each at least --grid-min wide, and one column on narrow cards. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--grid-min, 16rem)), 1fr)
+  );
+  gap: var(--scale-size-16);
+}
+
+/* A row of buttons at the end of a footer. */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--scale-size-8);
+}
+
+/* A list page: a toolbar, the grid, and the pagination stuck to the bottom of the page. */
+.listing {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.listing > .app-grid {
+  flex: 1 0 auto;
+}
+
+/* The search above a grid. */
+.listing__toolbar {
+  display: flex;
+  align-items: center;
+  padding: var(--scale-size-12) var(--scale-size-20);
+  border-block-end: 1px solid var(--color-border-secondary-default);
+}
+
+.listing__toolbar > .mt-search {
+  flex: 0 1 28rem;
+}
+
+/* A grid cell with an image or icon in front of its text. */
+.cell-media {
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-12);
+}
+
+/* A primary button with a menu button attached, like "Save" and "Save and duplicate". */
+.split-button {
+  display: inline-flex;
+}
+
+.split-button > :first-child {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.split-button > :last-child {
+  margin-inline-start: 1px;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+/* A label and a value per row, as in the Administration's detail cards. */
+.description-list {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) 1fr;
+  align-content: start;
+  gap: var(--scale-size-12) var(--scale-size-24);
+  margin: 0;
+  font-size: var(--font-size-xs);
+}
+
+.description-list dt {
+  color: var(--color-text-secondary-default);
+}
+
+.description-list dd {
+  margin: 0;
+  color: var(--color-text-primary-default);
+}
+
+/* A short paragraph that explains a card or a group of fields. */
+.card-text {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-secondary-default);
+}
+
+/* The bold heading of a group of fields inside a card. */
+.card-heading {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary-default);
+}
+
+/* Fields side by side in fixed proportions, as in the Administration's forms. One column on
+   narrow screens. */
+.form-row {
+  display: grid;
+  grid-template-columns: var(--form-row-columns, 1fr 1fr);
+  gap: var(--scale-size-16) var(--scale-size-24);
+  align-items: start;
+}
+
+.form-row > * {
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The fields of a form keep their spacing in the gaps of the layout classes. */
+.stack .mt-field,
+.grid .mt-field,
+.form-row .mt-field {
+  margin-block-end: 0;
+}
+
+/* A still placeholder line, in the color and shape of mt-skeleton-bar without its shimmer. */
+.skeleton-line {
+  display: block;
+  height: var(--scale-size-12);
+  background-color: var(--color-background-tertiary-default);
+  border-radius: var(--border-radius-xs);
+}
