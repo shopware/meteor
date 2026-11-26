@@ -11,11 +11,14 @@
         <clipPath :id="clipPathId">
           <path :d="pagePath" />
         </clipPath>
+        <clipPath :id="foldClipPathId">
+          <path :d="foldPath" />
+        </clipPath>
       </defs>
       <path class="mt-file-icon__paper" :d="pagePath" />
       <g class="mt-file-icon__lines" :clip-path="`url(#${clipPathId})`">
-        <path :d="pagePath" class="mt-file-icon__outline" />
-        <path d="M30.5 4V11.5C30.5 12.0523 30.9477 12.5 31.5 12.5H39" />
+        <path :d="pagePath" />
+        <path :d="foldPath" :clip-path="`url(#${foldClipPathId})`" />
       </g>
     </svg>
 
@@ -85,7 +88,11 @@ const props = withDefaults(
 const pagePath =
   "M30.5 4C32 4 33.5 5 34.5 6L37 8.5C38 9.5 39 11 39 12.5V41C39 42.6569 37.6569 44 36 44H12C10.3431 44 9 42.6569 9 41V7C9 5.34315 10.3431 4 12 4H30.5Z";
 
+// The area of the folded corner, reaching past the page, which clips it to the corner it covers
+const foldPath = "M30 0V11.5C30 12.3284 30.6716 13 31.5 13H48V0Z";
+
 const clipPathId = `mt-file-icon-${useId()}`;
+const foldClipPathId = `${clipPathId}-fold`;
 
 const resolved = computed(() =>
   resolveFileIcon({
@@ -195,17 +202,15 @@ const iconStyle = computed(() => {
 .mt-file-icon__lines {
   fill: none;
   stroke: var(--color-border-primary-default);
-  stroke-width: 1px;
 }
 
-/* Lets the lines stay 1px wide at every size instead of scaling with the 48 viewBox units */
+/*
+ * Stays 2px wide at every size instead of scaling with the 48 viewBox units. Each line is clipped to
+ * its own shape, so 1px is drawn on the inside of the edge and the page and fold lines look the same.
+ */
 .mt-file-icon__lines > path {
-  vector-effect: non-scaling-stroke;
-}
-
-/* Twice as wide and clipped to the page, so the outline is drawn on the inside of the edge */
-.mt-file-icon__lines > .mt-file-icon__outline {
   stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
 }
 
 /* Positions the icon by its center, or by its top edge, at a point of the 48 by 48 design */

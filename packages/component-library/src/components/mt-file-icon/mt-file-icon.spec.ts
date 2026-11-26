@@ -171,7 +171,7 @@ describe("mt-file-icon", () => {
     expect(screen.getByRole("img", { name: "PDF file" })).not.toHaveAttribute("aria-hidden");
   });
 
-  it("gives every instance its own clip path", () => {
+  it("gives every instance its own clip paths", () => {
     // ARRANGE
     const { container } = render({
       components: { MtFileIcon },
@@ -180,6 +180,7 @@ describe("mt-file-icon", () => {
 
     // ASSERT
     const ids = [...container.querySelectorAll("clipPath")].map((clipPath) => clipPath.id);
-    expect(new Set(ids).size).toBe(2);
+    expect(ids).toHaveLength(4);
+    expect(new Set(ids).size).toBe(4);
   });
 });
