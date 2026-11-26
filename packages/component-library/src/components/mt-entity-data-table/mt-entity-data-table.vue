@@ -107,6 +107,7 @@ import MtModalRoot from "@/components/mt-modal/sub-components/mt-modal-root.vue"
 import MtModal from "@/components/mt-modal/mt-modal.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtLoader from "@/components/mt-loader/mt-loader.vue";
+import { logError } from "@/utils/log";
 
 const props = defineProps<{
   // Props needed for the data handling
@@ -321,7 +322,7 @@ const fetchData = async () => {
       numberOfResults.value = data.total ?? 0;
     }
   } catch (error) {
-    console.error(error);
+    logError("mt-entity-data-table", "Could not load the entities.", error);
   } finally {
     isLoading.value = false;
   }
@@ -465,7 +466,7 @@ const handleItemDeleteConfirm = async () => {
       await repository.value.delete(itemToDelete.value);
     }
   } catch (error) {
-    console.error(error);
+    logError("mt-entity-data-table", "Could not delete the entity.", error);
   } finally {
     isDeleteModalOpen.value = false;
     isDeletingEntity.value = false;

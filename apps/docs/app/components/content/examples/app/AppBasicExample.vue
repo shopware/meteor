@@ -8,13 +8,6 @@ import { MtApp } from "@shopware-ag/meteor-component-library";
       <placeholder-slot name="announcement" />
     </template>
 
-    <template #header>
-      <placeholder-slot
-        name="header"
-        style="margin-block: var(--scale-size-8)"
-      />
-    </template>
-
     <template #navigation>
       <placeholder-slot name="navigation" style="width: 12rem" />
     </template>

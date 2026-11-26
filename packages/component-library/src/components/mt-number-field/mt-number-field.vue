@@ -96,6 +96,7 @@ import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import { useI18n } from "vue-i18n";
+import { deprecate, warn } from "@/utils/log";
 
 export default defineComponent({
   name: "MtNumberField",
@@ -183,7 +184,7 @@ export default defineComponent({
       validator(value: number) {
         const isInt = value === Math.floor(value);
         if (!isInt) {
-          console.warn("mt-number-field", "Provided prop digits must be of type integer");
+          warn("mt-number-field", "The `digits` prop must be a whole number.");
         }
         return isInt;
       },
@@ -350,9 +351,7 @@ export default defineComponent({
           return;
         }
 
-        console.warn(
-          "[MtNumberField] The `allowEmpty` prop is deprecated and will be removed. There will be no replacement.",
-        );
+        deprecate("mt-number-field", "The `allowEmpty` prop");
       },
       immediate: true,
     },

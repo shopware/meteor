@@ -96,6 +96,7 @@ import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-tri
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
 import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
 import { getTabbables } from "@/utils/focus";
+import { warn } from "@/utils/log";
 import {
   MAX_NESTING_LEVEL,
   hasNestedItems,
@@ -129,15 +130,17 @@ const { t } = useI18n({
 const isLeafDepth = props.depth >= MAX_NESTING_LEVEL;
 
 if (isLeafDepth && hasNestedItems(props.item)) {
-  console.error(
-    `[mt-nav] The navigation item "${props.item.label}" has nested items on level ${MAX_NESTING_LEVEL + 1} or higher. ` +
+  warn(
+    "mt-nav",
+    `The navigation item "${props.item.label}" has nested items on level ${MAX_NESTING_LEVEL + 1} or higher. ` +
       `The navigation only supports up to ${MAX_NESTING_LEVEL} levels of nesting.`,
   );
 }
 
 if (hasNestedItems(props.item) && (props.item.to || props.item.href)) {
-  console.error(
-    `[mt-nav] The navigation item "${props.item.label}" has both a link and nested items. ` +
+  warn(
+    "mt-nav",
+    `The navigation item "${props.item.label}" has both a link and nested items. ` +
       "An item either links to a page or holds nested items, so its link is ignored.",
   );
 }

@@ -6,6 +6,7 @@ import {
   type ComponentInternalInstance,
   type ComputedRef,
 } from "vue";
+import { logError } from "./log";
 
 /** The part of a Vue Router route that the library uses. */
 export interface RouteLike {
@@ -85,7 +86,7 @@ export function useRouteChange({ onStart, onEnd, onNavigate }: UseRouteChangeOpt
       onEnd &&
         router.onError?.((error) => {
           onEnd();
-          console.error(error);
+          logError("router", "A navigation failed.", error);
         }),
     ].filter((stop): stop is () => void => typeof stop === "function");
   });

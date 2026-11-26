@@ -79,6 +79,7 @@ import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtModalClose from "./sub-components/mt-modal-close.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import { createId } from "@/utils/id";
+import { warn } from "@/utils/log";
 import * as focusTrap from "focus-trap";
 
 defineProps({
@@ -159,9 +160,7 @@ watch(
         initialFocus: () => modalRef.value ?? undefined,
         onPause: () => {
           // a new modal is being opened, pausing the current trap
-          console.warn(
-            "[MtModal] It is not recommended to stack multiple modals on top of each other.",
-          );
+          warn("mt-modal", "Avoid stacking multiple modals on top of each other.");
         },
         onUnpause: () => {
           // the current trap is being resumed (the newest modal is being closed, we are now in the foreground)

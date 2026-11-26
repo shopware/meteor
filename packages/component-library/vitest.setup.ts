@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom/vitest";
 import { config } from "@vue/test-utils";
 import { createI18n } from "vue-i18n";
+import { resetWarnings } from "@/utils/log";
 
 const i18n = createI18n({
   legacy: false,
@@ -20,4 +21,6 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllEnvs();
+  // Warnings show once per message, so let each test see them again
+  resetWarnings();
 });

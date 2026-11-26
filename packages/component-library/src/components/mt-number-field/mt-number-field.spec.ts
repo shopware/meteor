@@ -798,7 +798,7 @@ describe("mt-number-field", () => {
     // ASSERT
     // @ts-expect-error - mock was set from vitest
     expect(console.warn.mock.calls[0][0]).toContain(
-      "[MtNumberField] The `allowEmpty` prop is deprecated and will be removed. There will be no replacement.",
+      "[Meteor] mt-number-field: The `allowEmpty` prop is deprecated and will be removed. There is no replacement.",
     );
   });
 
@@ -817,7 +817,7 @@ describe("mt-number-field", () => {
     // ASSERT
     // @ts-expect-error - mock was set from vitest
     expect(console.warn.mock.calls[0][0]).toContain(
-      "[MtNumberField] The `allowEmpty` prop is deprecated and will be removed. There will be no replacement.",
+      "[Meteor] mt-number-field: The `allowEmpty` prop is deprecated and will be removed. There is no replacement.",
     );
   });
 

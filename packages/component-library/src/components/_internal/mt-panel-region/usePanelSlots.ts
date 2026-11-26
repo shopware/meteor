@@ -6,9 +6,8 @@ import {
   type PanelPlace,
   type PanelSlot,
 } from "@/components/mt-panel/panel-settings";
+import { warn } from "@/utils/log";
 import { useRenderCache } from "@/utils/slot";
-
-let hasWarnedOnServer = false;
 
 /**
  * The panel slots of a layout, read once per render. Reading a slot shows the options of the
@@ -115,10 +114,8 @@ export function usePanelSlots<Place extends PanelPlace>(
  * registers its options, so the server markup lacks them until the app has loaded.
  */
 function warnOnServer() {
-  if (hasWarnedOnServer) return;
-
-  hasWarnedOnServer = true;
-  console.warn(
-    "[MtPanel] Put <mt-panel> directly into the panel slot, so its label, icon, closable setting and whether it starts open are part of the server-rendered page.",
+  warn(
+    "mt-panel",
+    "Put <mt-panel> directly into the panel slot, so its label, icon, closable setting and whether it starts open are part of the server-rendered page.",
   );
 }

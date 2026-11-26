@@ -69,7 +69,7 @@ function queryRowLabel(text: string) {
 
 describe("mt-nav", () => {
   beforeEach(() => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
   });
 
   describe("label", () => {
@@ -128,7 +128,7 @@ describe("mt-nav", () => {
 
       expect(getRowLabel("Reviews")).toBeInTheDocument();
       expect(queryRowLabel("Too deep")).toBeNull();
-      expect(console.error).toHaveBeenCalledWith(expect.stringContaining('"Reviews"'));
+      expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('"Reviews"'));
     });
 
     it("renders a row with an empty children list as a leaf", () => {
@@ -149,7 +149,7 @@ describe("mt-nav", () => {
       renderNav({ sections: [{ items: [item] }] });
 
       expect(screen.getByRole("button", { name: "Products" })).toBeInTheDocument();
-      expect(console.error).toHaveBeenCalledWith(expect.stringContaining('"Products"'));
+      expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('"Products"'));
     });
 
     it("expands a branch when its row is clicked", async () => {
