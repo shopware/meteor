@@ -443,6 +443,39 @@ describe("mt-nav", () => {
       expect(link("Products")).not.toHaveAttribute("aria-current");
     });
 
+    it("lets isActive name the current page, and leaves the items it returns undefined for", async () => {
+      const items: NavItem[] = [
+        { id: "products", label: "Products", to: "/products" },
+        { id: "orders", label: "Orders", to: "/orders" },
+      ];
+      // The app's own rule for a page that isn't below the link of its item
+      const isOrderPage = ref(false);
+      const isActive = (item: NavItem) => (item.id === "orders" ? isOrderPage.value : undefined);
+
+      await renderAt("/products/1", items, { isActive });
+
+      expect(link("Products")).toHaveAttribute("aria-current", "page");
+
+      isOrderPage.value = true;
+
+      await waitFor(() => expect(link("Orders")).toHaveAttribute("aria-current", "page"));
+      expect(link("Products")).not.toHaveAttribute("aria-current");
+    });
+
+    it("leaves out the items isActive returns false for", async () => {
+      await renderAt(
+        "/products/1",
+        [
+          { label: "Products", to: "/products" },
+          { label: "Product", to: "/products/1" },
+        ],
+        { isActive: (item: NavItem) => (item.label === "Product" ? false : undefined) },
+      );
+
+      expect(link("Products")).toHaveAttribute("aria-current", "page");
+      expect(link("Product")).not.toHaveAttribute("aria-current");
+    });
+
     it("renders when an item's route can't be resolved", async () => {
       await renderAt(
         "/products",
