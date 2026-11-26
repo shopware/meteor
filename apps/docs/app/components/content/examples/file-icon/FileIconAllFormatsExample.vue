@@ -191,7 +191,7 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
 .formats {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--scale-size-8);
+  gap: var(--scale-size-16);
 }
 
 .formats__category {
