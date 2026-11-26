@@ -203,7 +203,7 @@ export const Fluid: MtFileIconStory = {
 }
 
 .media-preview .mt-file-icon {
-  width: 40cqw;
+  width: 25cqw;
 }
 </style>`,
       },
@@ -222,7 +222,7 @@ export const Fluid: MtFileIconStory = {
             :key="width"
             :style="{ width: width + 'px', aspectRatio: '4 / 3', containerType: 'inline-size', display: 'grid', placeItems: 'center', border: '1px solid var(--color-border-secondary-default)', borderRadius: 'var(--border-radius-xs)' }"
           >
-            <mt-file-icon size="fluid" :file-name="file" style="width: 40cqw;" />
+            <mt-file-icon size="fluid" :file-name="file" style="width: 25cqw;" />
           </div>
         </div>
       </div>`,

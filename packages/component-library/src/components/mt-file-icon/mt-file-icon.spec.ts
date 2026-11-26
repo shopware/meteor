@@ -122,13 +122,15 @@ describe("mt-file-icon", () => {
     expect(getFormat(container)).not.toBeInTheDocument();
   });
 
-  it("sets the size from the token scale", () => {
+  it("sets the height from the token scale and the width at three quarters of it", () => {
     // ARRANGE
     const { container } = render(MtFileIcon, { props: { size: 96 } });
 
     // ASSERT
     const root = getRoot(container) as HTMLElement;
-    expect(root.style.getPropertyValue("--mt-file-icon-size")).toBe("var(--scale-size-96)");
+    expect(root.style.getPropertyValue("--mt-file-icon-width")).toBe(
+      "calc(var(--scale-size-96) * 3 / 4)",
+    );
   });
 
   it("leaves the size to its parent when fluid", () => {
@@ -137,7 +139,7 @@ describe("mt-file-icon", () => {
 
     // ASSERT
     const root = getRoot(container) as HTMLElement;
-    expect(root.style.getPropertyValue("--mt-file-icon-size")).toBe("");
+    expect(root.style.getPropertyValue("--mt-file-icon-width")).toBe("");
     expect(getFormat(container)).toHaveTextContent("XLSX");
   });
 

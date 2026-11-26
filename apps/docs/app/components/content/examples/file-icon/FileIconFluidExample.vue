@@ -18,6 +18,6 @@ import MtFileIcon from "@shopware-ag/meteor-component-library/MtFileIcon";
 }
 
 .preview__icon {
-  width: 40cqw;
+  width: 25cqw;
 }
 </style>

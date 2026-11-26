@@ -1,12 +1,17 @@
 <template>
   <span
     :class="['mt-file-icon', `mt-file-icon--${variant}`]"
-    :style="size === 'fluid' ? undefined : { '--mt-file-icon-size': `var(--scale-size-${size})` }"
+    :style="
+      size === 'fluid'
+        ? undefined
+        : { '--mt-file-icon-width': `calc(var(--scale-size-${size}) * 3 / 4)` }
+    "
     :role="label ? 'img' : undefined"
     :aria-label="label || undefined"
     :aria-hidden="label ? undefined : 'true'"
   >
-    <svg class="mt-file-icon__page" viewBox="0 0 48 48" aria-hidden="true">
+    <!-- Crops the 48 by 48 design to the page, which is 30 by 40 of it -->
+    <svg class="mt-file-icon__page" viewBox="9 4 30 40" aria-hidden="true">
       <defs>
         <clipPath :id="clipPathId">
           <path :d="pagePath" />
@@ -58,13 +63,14 @@ const props = withDefaults(
     category?: MtFileIconCategory;
     /** An icon from the icon kit, always in the regular style. Overrides the category icon. */
     icon?: string;
-    /** Shows the format label below the icon. Labels need a width of 40 pixels or more. */
+    /** Shows the format label below the icon. Labels need a size of 40 or more. */
     showFormat?: boolean;
     /** Shows the broken preview for a file that failed to load. */
     broken?: boolean;
     /**
-     * The width and height of the icon, as a step of the `--scale-size-*` token scale. With `fluid`,
-     * the icon fills the width of its parent and everything inside scales with it.
+     * The height of the page, as a step of the `--scale-size-*` token scale. The page is three
+     * quarters as wide as it is high. With `fluid`, the page fills the width of its parent and
+     * everything inside scales with it.
      *
      * @values 24, 32, 40, 48, 56, 64, 72, 80, 96, fluid
      */
@@ -172,14 +178,14 @@ const iconStyle = computed(() => {
   vertical-align: middle;
   /* Keeps the height at the aspect ratio when a flex or grid parent would stretch an auto height */
   height: fit-content;
-  aspect-ratio: 1;
-  /* Everything inside is sized in container query units of the icon's own width */
+  aspect-ratio: 3 / 4;
+  /* Everything inside is sized in container query units of the page's own width */
   container: mt-file-icon / inline-size;
 }
 
 /* Without specificity, so a width set by the parent wins, for example in container query units */
 :where(.mt-file-icon) {
-  width: var(--mt-file-icon-size, 100%);
+  width: var(--mt-file-icon-width, 100%);
 }
 
 [data-theme="dark"] .mt-file-icon {
@@ -214,13 +220,13 @@ const iconStyle = computed(() => {
   vector-effect: non-scaling-stroke;
 }
 
-/* Positions the icon by its center, or by its top edge, at a point of the 48 by 48 design */
+/* Positions the icon by its center, or by its top edge, at a point of the 30 by 40 page */
 .mt-file-icon__icon {
-  /* The size of the 24 pixel icon grid in the design, and where the icon sits as a share of the height */
+  /* The size of the 24 pixel icon grid on the page, and where the icon sits as a share of the height */
   --mt-file-icon-icon-box: 15;
-  --mt-file-icon-icon-top: 56.25%;
+  --mt-file-icon-icon-top: 57.5%;
   /* One pixel of the icon grid, which the icon size is multiplied with */
-  --mt-file-icon-icon-unit: calc(100cqw * var(--mt-file-icon-icon-box) / 1152);
+  --mt-file-icon-icon-unit: calc(100cqw * var(--mt-file-icon-icon-box) / 720);
 
   position: absolute;
   top: var(--mt-file-icon-icon-top);
@@ -239,40 +245,40 @@ const iconStyle = computed(() => {
 
 .mt-file-icon--format .mt-file-icon__icon {
   --mt-file-icon-icon-box: 13;
-  --mt-file-icon-icon-top: 45.83%;
+  --mt-file-icon-icon-top: 45%;
 }
 
 .mt-file-icon--broken .mt-file-icon__icon {
   --mt-file-icon-icon-box: 18;
-  --mt-file-icon-icon-top: 58.33%;
+  --mt-file-icon-icon-top: 60%;
 
   color: var(--color-icon-critical-default);
 }
 
 /*
  * Starts right below the outline at the top of the page, with or without a format label, and sits 3
- * of 48 pixels left of the center to keep its distance from the folded corner
+ * of 30 pixels left of the center to keep its distance from the folded corner
  */
 .mt-file-icon .mt-file-icon__icon--top {
   --mt-file-icon-icon-box: 17;
-  --mt-file-icon-icon-top: 10.42%;
+  --mt-file-icon-icon-top: 2.5%;
 
-  left: 43.75%;
+  left: 40%;
   align-items: flex-start;
 }
 
 .mt-file-icon__format {
   position: absolute;
-  top: 75%;
+  top: 80%;
   left: 50%;
   overflow: hidden;
-  /* Leaves 2 of 48 pixels between the label and the outline on each side */
-  width: 50%;
+  /* Leaves 2 of 30 pixels between the label and the outline on each side */
+  width: 80%;
   transform: translate(-50%, -50%);
   color: var(--color-icon-secondary-default);
   font-family: var(--font-family-body);
   /* stylelint-disable-next-line meteor/prefer-font-token -- scales with the icon, which no fixed token can */
-  font-size: calc(100cqw / 6);
+  font-size: calc(100cqw * 8 / 30);
   font-weight: var(--font-weight-semibold);
   line-height: 1;
   text-align: center;
@@ -294,15 +300,18 @@ const iconStyle = computed(() => {
   color: var(--mt-file-icon--color-format-excel);
 }
 
-/* A label this small can't be read, so the icon moves back to the position it has without one */
-@container mt-file-icon (width < 40px) {
+/*
+ * A label this small can't be read, so the icon moves back to the position it has without one. The
+ * page is 24 pixels wide at size 32 and 30 pixels wide at size 40.
+ */
+@container mt-file-icon (width < 25px) {
   .mt-file-icon__format {
     display: none;
   }
 
   .mt-file-icon--format .mt-file-icon__icon:not(.mt-file-icon__icon--top) {
     --mt-file-icon-icon-box: 15;
-    --mt-file-icon-icon-top: 56.25%;
+    --mt-file-icon-icon-top: 57.5%;
 
     align-items: center;
   }

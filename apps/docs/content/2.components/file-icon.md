@@ -60,7 +60,7 @@ Set `broken` when a file failed to load.
 
 ### Sizes
 
-Set `size` to one of the supported steps of the `--scale-size-*` token scale: 24, 32, 40, 48, 56, 64, 72, 80, or 96. The default is 48. The page, icon, and label scale together, and the format label is shown from a width of 40 pixels up.
+Set `size` to one of the supported steps of the `--scale-size-*` token scale: 24, 32, 40, 48, 56, 64, 72, 80, or 96. The default is 48. The size is the height of the page, which is three quarters as wide, so 48 gives a page of 36 by 48 pixels. The page, icon, and label scale together, and the format label is shown from size 40 up.
 
 ::component-example{name="file-icon-sizes-example"}
 ::
