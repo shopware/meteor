@@ -1,0 +1,4 @@
+build-end:
+  copy-additional-assets:
+    - public/icons/regular
+    - public/icons/solid
