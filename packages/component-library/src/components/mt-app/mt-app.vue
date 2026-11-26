@@ -480,6 +480,7 @@ const regionController: PanelController<MtAppPanel> = {
   focusContent,
   registerPanelOptions,
   registerPanelOpen: panels.registerPanelOpen,
+  forgetPanelOpen: panels.forgetPanelOpen,
   setResizing(resizing) {
     isResizing.value = resizing;
   },

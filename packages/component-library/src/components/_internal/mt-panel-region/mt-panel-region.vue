@@ -253,6 +253,7 @@ onBeforeUnmount(() => {
   const holdsFocus = containsFocus();
   if (isDrawerOpen.value) props.controller.close(props.place);
   if (holdsFocus) props.controller.focusContent();
+  props.controller.forgetPanelOpen(props.place);
 });
 </script>
 

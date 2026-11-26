@@ -1091,6 +1091,73 @@ describe("mt-app", () => {
       expect(screen.getByRole("complementary", { name: "Details" })).toBeInTheDocument();
     });
 
+    it("starts a panel open after other content in its place was closed and removed", async () => {
+      // ARRANGE
+      const content = ref<"plain" | "none" | "panel">("plain");
+      const open = ref(true);
+      await renderApp({
+        slots: {
+          ...allSlots,
+          default: () => [h(Probe)],
+          sidebar: () => {
+            if (content.value === "none") return [];
+            if (content.value === "plain") return h("div", "Tools");
+
+            return h(
+              MtPanel,
+              { open: open.value, "onUpdate:open": (value: boolean) => (open.value = value) },
+              () => h("aside", { "aria-label": "Details" }, "Tools"),
+            );
+          },
+        },
+      });
+      await userEvent.click(screen.getByRole("button", { name: "Toggle sidebar" }));
+
+      // ACT
+      content.value = "none";
+      await nextTick();
+      content.value = "panel";
+      await nextTick();
+
+      // ASSERT
+      expect(open.value).toBe(true);
+      expect(screen.getByRole("complementary", { name: "Details" })).toBeInTheDocument();
+    });
+
+    it("closes the shown panel of several that KeepAlive caches", async () => {
+      // ARRANGE
+      const shown = ref<"a" | "b">("a");
+      const open = { a: ref(true), b: ref(true) };
+      const panel = (key: "a" | "b") =>
+        h(
+          MtPanel,
+          {
+            key,
+            open: open[key].value,
+            "onUpdate:open": (value: boolean) => (open[key].value = value),
+          },
+          () => h("p", "Tools"),
+        );
+      await renderApp({
+        slots: {
+          ...allSlots,
+          default: () => [h(Probe)],
+          sidebar: () => h(KeepAlive, () => panel(shown.value)),
+        },
+      });
+      shown.value = "b";
+      await nextTick();
+      shown.value = "a";
+      await nextTick();
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Toggle sidebar" }));
+
+      // ASSERT
+      expect(open.a.value).toBe(false);
+      expect(open.b.value).toBe(true);
+    });
+
     it("keeps a panel closed that is closed before its panel sets up", async () => {
       // ARRANGE
       const ClosingHeader: Component = {

@@ -1,14 +1,5 @@
-import {
-  computed,
-  getCurrentInstance,
-  inject,
-  onActivated,
-  onDeactivated,
-  onScopeDispose,
-  type ComputedRef,
-  type InjectionKey,
-  type Ref,
-} from "vue";
+import { computed, inject, type ComputedRef, type InjectionKey, type Ref } from "vue";
+import { useRegistration } from "@/utils/registration";
 import type { AppTriggerRegion } from "../composables/createAppTriggers";
 import type { MtAppContext, MtAppPanel } from "../composables/useApp";
 import type { MtAppRegions } from "../composables/useAppRegions";
@@ -67,19 +58,7 @@ export function useAppRegistration(register: (app: AppContext) => () => void): v
   const app = inject(appContextKey, null);
   if (app === null) return;
 
-  let release: (() => void) | undefined = register(app);
-
-  if (getCurrentInstance()) {
-    onDeactivated(() => {
-      release?.();
-      release = undefined;
-    });
-    onActivated(() => {
-      release ??= register(app);
-    });
-  }
-
-  onScopeDispose(() => release?.());
+  useRegistration(() => register(app));
 }
 
 /** A panel's trigger with its state, for a component that shows it. */

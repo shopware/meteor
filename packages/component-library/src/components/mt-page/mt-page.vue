@@ -454,6 +454,7 @@ const regionController: PanelController<MtPagePanel> = {
   focusContent,
   registerPanelOptions,
   registerPanelOpen: panels.registerPanelOpen,
+  forgetPanelOpen: panels.forgetPanelOpen,
   // Resizing a panel of the page doesn't change the page's own width, so nothing waits for it.
   setResizing: () => undefined,
 };

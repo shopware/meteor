@@ -60,6 +60,7 @@ import {
 } from "vue";
 import { useMounted, useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
+import { useRegistration } from "@/utils/registration";
 import {
   PANEL_SLIDE_DURATION,
   defaultPanelSizes,
@@ -382,7 +383,7 @@ watch(
 
 // A panel inside another component reports its options from here.
 if (context) {
-  onScopeDispose(
+  useRegistration(() =>
     context.registerOptions(() => ({
       label: props.label,
       icon: props.icon,
@@ -391,7 +392,7 @@ if (context) {
     })),
   );
 
-  onScopeDispose(context.registerOpen(open));
+  useRegistration(() => context.registerOpen(open));
 }
 
 // Restores the page's selection and cursor when the panel unmounts mid-drag.

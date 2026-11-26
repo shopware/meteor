@@ -14,6 +14,8 @@ export interface PanelController<Place extends PanelPlace = PanelPlace> {
   registerPanelOptions(place: Place, options: () => PanelOptions): () => void;
   /** Reports the open state of the `MtPanel` in the place until the returned function is called. */
   registerPanelOpen(place: Place, open: Ref<boolean>): () => void;
+  /** Forgets whether the layout opened or closed the place, when its content goes away. */
+  forgetPanelOpen(place: Place): void;
   /** Reports that a panel is being resized. */
   setResizing(resizing: boolean): void;
 }
@@ -72,6 +74,10 @@ export function createPanelState<Place extends PanelPlace>({
     };
   }
 
+  function forgetPanelOpen(place: Place) {
+    layoutOpen.delete(place);
+  }
+
   /** Whether the panel is open in the current layout. */
   function isOpen(place: Place) {
     return isDrawer.value ? drawer.value === place : isInlineOpen(place);
@@ -114,6 +120,7 @@ export function createPanelState<Place extends PanelPlace>({
     toggle,
     closeDrawer,
     registerPanelOpen,
+    forgetPanelOpen,
     drawer: readonly(drawer),
   };
 }
