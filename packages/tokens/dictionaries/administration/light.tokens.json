@@ -419,6 +419,16 @@
           "$type": "color",
           "$description": "Use for high-emphasis text like body copy and headlines."
         },
+        "hover": {
+          "$value": "{color.zinc.800}",
+          "$type": "color",
+          "$description": "Use for hovered high-emphasis text like body copy and headlines."
+        },
+        "pressed": {
+          "$value": "{color.zinc.700}",
+          "$type": "color",
+          "$description": "Use for pressed (active) high-emphasis text like body copy and headlines."
+        },
         "disabled": {
           "$value": "{color.zinc.300}",
           "$type": "color",

@@ -68,6 +68,8 @@
   --color-border-positive-default: light-dark(#36d046, #00ab26);
   --color-border-accent-default: light-dark(#a694ff, #886fe9);
   --color-text-primary-default: light-dark(#1e1e24, #e2e3e9);
+  --color-text-primary-hover: light-dark(#2d2e32, #cdced4);
+  --color-text-primary-pressed: light-dark(#3d3e42, #b9babf);
   --color-text-primary-disabled: light-dark(#b9babf, #696a6e);
   --color-text-primary-inverse: light-dark(#e2e3e9, #1e1e24);
   --color-text-secondary-default: light-dark(#696a6e, #a5a6ab);
