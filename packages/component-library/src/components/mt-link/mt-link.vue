@@ -34,7 +34,7 @@ const props = withDefaults(
   defineProps<{
     to?: string | Record<string, unknown>;
     as?: string;
-    variant?: "primary" | "critical";
+    variant?: "primary" | "critical" | "neutral";
     disabled?: boolean;
     type?: "external" | "internal";
   }>(),
@@ -111,5 +111,17 @@ function onClickCapture(event: MouseEvent) {
 
 .mt-link--critical:is(:disabled, .mt-link--disabled) {
   color: var(--color-text-critical-disabled);
+}
+
+.mt-link--neutral {
+  color: var(--color-text-primary-default);
+}
+
+.mt-link--neutral:is(:hover, :active) {
+  color: var(--color-text-primary-hover);
+}
+
+.mt-link--neutral:is(:disabled, .mt-link--disabled) {
+  color: var(--color-text-primary-disabled);
 }
 </style>

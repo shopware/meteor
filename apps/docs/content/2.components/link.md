@@ -16,24 +16,26 @@ import { MtLink } from "@shopware-ag/meteor-component-library";
 
 ## Examples
 
-### Critical
+### Variants
 
-::component-example{name="link-critical-example"}
+The `primary` variant is the default. Use `critical` for links that lead to a destructive or risky destination, and `neutral` when the brand color would compete with the surrounding content, such as in footers, dense lists, or next to a primary action.
+
+::component-example{name="link-variants-example" class="flex-col items-start!"}
 ::
 
 ### Disabled
 
-::component-example{name="link-disabled-example"}
+::component-example{name="link-disabled-example" class="flex-col items-start!"}
 ::
 
 ### External
 
-::component-example{name="link-external-example"}
+::component-example{name="link-external-example" class="flex-col items-start!"}
 ::
 
 ### Internal
 
-::component-example{name="link-internal-example"}
+::component-example{name="link-internal-example" class="flex-col items-start!"}
 ::
 
 ## API reference
