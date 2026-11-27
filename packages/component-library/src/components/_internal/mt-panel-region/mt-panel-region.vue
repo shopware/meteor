@@ -1,6 +1,7 @@
 <template>
   <Transition
     name="mt-panel-region-slide"
+    :css="slides"
     @enter="setSlideDistance"
     @before-leave="setSlideDistance"
     @after-leave="endSettling"
@@ -52,7 +53,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, provide, ref, useTemplateRef, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  ref,
+  useTemplateRef,
+  watch,
+} from "vue";
 import MtDrawer from "@/components/_internal/mt-drawer/mt-drawer.vue";
 import {
   PANEL_SLIDE_DURATION,
@@ -70,7 +80,7 @@ import type { PanelController } from "./panel-controller";
  */
 const props = defineProps<{
   place: PanelPlace;
-  /** The layout the panel belongs to, which owns its open state. */
+  /** The layout the panel belongs to, which opens and closes it. */
   controller: PanelController;
   /** The edge the panel sits on, and its drawer slides in from. */
   side: "start" | "end";
@@ -108,6 +118,14 @@ const dragOffset = ref(0);
 // While set, the panel settles after such a drag, from where the pointer left it.
 const settleDuration = ref<number | null>(null);
 let settleTimeout: ReturnType<typeof setTimeout> | undefined;
+// A panel doesn't slide into the state it starts with: not while the layout mounts, and not when
+// an `MtPanel` sets up, which only then tells whether it starts open.
+const slides = ref(false);
+
+function skipSlide() {
+  slides.value = false;
+  nextTick(() => (slides.value = true));
+}
 
 /** Whether the panel holds the focus: its content, or its drawer, which takes the focus when it opens. */
 function containsFocus() {
@@ -187,6 +205,12 @@ provide(panelContextKey, {
   label: () => props.label,
   layoutWidth: () => inline.value?.parentElement?.clientWidth || window.innerWidth,
   registerOptions: (options) => props.controller.registerPanelOptions(props.place, options),
+  registerOpen(open) {
+    const unregister = props.controller.registerPanelOpen(props.place, open);
+    skipSlide();
+
+    return unregister;
+  },
   setResizing: (resizing) => props.controller.setResizing(resizing),
   isOpen: () => props.controller.isOpen(props.place),
   slideOut,
@@ -221,12 +245,15 @@ watch(
   },
 );
 
+onMounted(skipSlide);
+
 onBeforeUnmount(() => {
   clearTimeout(settleTimeout);
 
   const holdsFocus = containsFocus();
   if (isDrawerOpen.value) props.controller.close(props.place);
   if (holdsFocus) props.controller.focusContent();
+  props.controller.forgetPanelOpen(props.place);
 });
 </script>
 

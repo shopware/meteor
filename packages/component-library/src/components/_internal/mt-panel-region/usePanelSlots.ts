@@ -11,9 +11,9 @@ import { useRenderCache } from "@/utils/slot";
 
 /**
  * The panel slots of a layout, read once per render. Reading a slot shows the options of the
- * `MtPanel` at its top before anything inside renders, so the layout knows its label, icon and
- * closable setting in the same render, also on the server. An `MtPanel` inside another component
- * is only known once it sets up, from the options it registers.
+ * `MtPanel` at its top before anything inside renders, so the layout knows its label, icon,
+ * closable setting and whether it starts open in the same render, also on the server. An `MtPanel`
+ * inside another component is only known once it sets up, from the options it registers.
  */
 export function usePanelSlots<Place extends PanelPlace>(
   places: readonly Place[],
@@ -65,6 +65,6 @@ export function usePanelSlots<Place extends PanelPlace>(
 function warnOnServer() {
   warn(
     "mt-panel",
-    "Put <mt-panel> directly into the panel slot, so its label, icon and closable setting are part of the server-rendered page.",
+    "Put <mt-panel> directly into the panel slot, so its label, icon, closable setting and whether it starts open are part of the server-rendered page.",
   );
 }

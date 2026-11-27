@@ -24,7 +24,7 @@ Pass the trail from the root to the page as `breadcrumb`. The last item is the p
 
 ### Panels
 
-The `start` and `end` slots add panels next to the content. On a page narrower than `breakpoint` (960px by default), the panels become drawers that open from triggers in the header. Drag the corner of the box to try it.
+The `start` and `end` slots add panels next to the content. A page narrower than `breakpoint` (960px by default) uses the mobile layout, in which the panels become drawers that open from triggers in the header. [**usePage**](/utilities/composables/use-page) and a template ref on the page open and close the panels from code. Drag the corner of the box to try it.
 
 ::component-example{name="page-panels-example" fullWidth inset}
 ::
@@ -65,9 +65,9 @@ The `start` and `end` slots add panels next to the content. On a page narrower t
 - On a page narrower than 640px, such as on a phone, the header shows only the current page instead of the whole breadcrumb.
 - Inside [**App**](/components/app), the header also shows the triggers of the navigation and the sidebar of the shell, when they have one: at its very start and end, each separated from the rest of the header by a divider. When [**App Header**](/components/app-header) or an [**App Panel Trigger**](/components/app#triggers-in-a-custom-header) shows a trigger, the page leaves it out.
 - The bottom border of the header fades in as the content starts to scroll. With panels, a close button or the triggers of the shell, the border is always shown.
-- The breakpoint for the panels is measured on the width of the page, not of the viewport, so the panels also become drawers next to an open sidebar. While a panel of the shell is being resized, the page keeps its layout until the drag ends.
-- A [**Panel**](/components/panel) with `closable` also shows its trigger on a wide page, where it shows and hides the panel.
-- On a wide page, a panel slides in and out over the page's edge when it opens or closes, as the panels of [**App**](/components/app) do. A page turning narrow or wide doesn't slide.
+- The breakpoint for the mobile layout is measured on the width of the page, not of the viewport, so the page also uses the mobile layout next to an open sidebar on a large screen. While a panel of the shell is being resized, the page keeps its layout until the drag ends.
+- A [**Panel**](/components/panel) with `closable` also shows its trigger in the desktop layout, where it shows and hides the panel. `open` on the Panel sets whether the panel starts open in the desktop layout, and `v-model:open` keeps it in the app.
+- In the desktop layout, a panel slides in and out over the page's edge when it opens or closes, as the panels of [**App**](/components/app) do. Switching between the desktop and the mobile layout doesn't slide.
 - A drawer closes with Escape, by clicking next to it or by swiping it out.
 - With Vue Router, a navigation to another path closes the open drawer of a panel and shows the content from its top, or from the element of its URL hash. A change of only the query or the hash, such as a filter, keeps the drawer open.
 - A line on the inner edge sets each panel off from the content, unless its [**Panel**](/components/panel) has the `appearance` `plain`.

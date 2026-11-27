@@ -42,7 +42,11 @@ type MtAppPanel = "navigation" | "sidebar";
 
 - Outside of a shell, `useApp` returns inert defaults: `isMobile` is `false`, no panel is open, the controls do nothing, and `confirmLeave` resolves `true`. Components that use it keep working on their own.
 - In the mobile layout, at most one drawer is open: opening one closes the other.
+- In the desktop layout, `open`, `close` and `toggle` also update `v-model:open` of the [**Panel**](/components/panel) in the slot. A panel whose slot is empty can't be opened or closed.
+- Call `open`, `close` and `toggle` from event handlers or after mounting. During setup, the shell has already rendered its panels, so with server rendering the change only shows once the app has loaded. To start a panel closed, set `open` on its [**Panel**](/components/panel).
+- With server rendering, `isMobile` is `false` until the app has loaded in the browser.
 
 ## Related components
 
 - [**App**](/components/app): the shell this composable reads and controls.
+- [**usePage**](/utilities/composables/use-page): the same for the start and end panels of a page.

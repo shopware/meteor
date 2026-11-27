@@ -52,7 +52,6 @@ import {
   getCurrentInstance,
   inject,
   nextTick,
-  onMounted,
   onScopeDispose,
   ref,
   useId,
@@ -61,18 +60,17 @@ import {
 } from "vue";
 import { useMounted, useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
-import { useRenderingRoutePath } from "@/utils/router";
+import { useRegistration } from "@/utils/registration";
 import {
   PANEL_SLIDE_DURATION,
   defaultPanelSizes,
   panelContextKey,
-  panelWidthStorageKey,
   type PanelAppearance,
 } from "./panel-settings";
 
 /**
  * A panel of `mt-app` or `mt-page`: it names the panel and its trigger, and sets its width, whether
- * it can be resized and whether it can be closed on desktop.
+ * it can be resized, whether it can be closed in the desktop layout and whether it is open.
  *
  * @experimental The API may still change in a future release.
  */
@@ -96,6 +94,12 @@ const props = withDefaults(
      */
     appearance?: PanelAppearance;
     /**
+     * The width in pixels that the panel has until it is resized, and that a double click on its
+     * handle returns to. Defaults to 280 for the navigation, to 240 for the start panel, and to 320
+     * for the sidebar and the end panel.
+     */
+    defaultWidth?: number;
+    /**
      * The smallest width in pixels, also when resizing. Defaults to 200 for the navigation and the
      * start panel, and to 240 for the sidebar and the end panel.
      */
@@ -113,6 +117,7 @@ const props = withDefaults(
     icon: undefined,
     closable: false,
     appearance: undefined,
+    defaultWidth: undefined,
     minWidth: undefined,
     maxWidth: undefined,
     resizable: false,
@@ -120,9 +125,16 @@ const props = withDefaults(
 );
 
 /**
- * The width in pixels. Defaults to 280 for the navigation, to 240 for the start panel, and to 320
- * for the sidebar and the end panel. It changes when the user resizes the panel: at the end of a
- * drag, on a key press, or when the handle resets it.
+ * Whether the panel is open in the desktop layout. Alone, it sets whether the panel starts open, and
+ * the panel opens and closes itself. With `v-model:open`, the app keeps the state. It doesn't apply
+ * to the drawer in the mobile layout, which always starts closed.
+ */
+const open = defineModel<boolean>("open", { default: true });
+
+/**
+ * The current width in pixels. Alone, it sets the width the panel starts with. With `v-model:width`,
+ * the app keeps the width, for example to store it. It changes when the user resizes the panel: at
+ * the end of a drag, on a key press, or when a double click on the handle resets it.
  */
 const width = defineModel<number>("width");
 
@@ -150,12 +162,12 @@ const defaults = context ? defaultPanelSizes[context.place] : undefined;
 const root = useTemplateRef<HTMLElement>("root");
 const panelId = useId();
 const isMounted = useMounted();
-const renderingRoutePath = useRenderingRoutePath();
 
 const vnodeProps = getCurrentInstance()?.vnode.props ?? {};
 const isWidthControlled = "width" in vnodeProps && "onUpdate:width" in vnodeProps;
 
-const startingWidth = width.value ?? defaults?.width;
+const defaultWidth = computed(() => props.defaultWidth ?? defaults?.width);
+const startingWidth = width.value;
 const renderedWidth = ref<number | null>(null);
 const dragWidth = ref<number | null>(null);
 // Keeps the dragged width while a panel closed by a drag slides out.
@@ -176,8 +188,8 @@ const handleEdge = computed(() =>
 const panelStyle = computed(() => {
   // A drawer takes the width the panel started with, not one the user resized it to on desktop.
   const shownWidth = isInDrawer.value
-    ? startingWidth
-    : dragWidth.value ?? closingWidth.value ?? width.value ?? startingWidth;
+    ? startingWidth ?? defaultWidth.value
+    : dragWidth.value ?? closingWidth.value ?? width.value ?? defaultWidth.value;
 
   return {
     "--mt-panel-width": shownWidth === undefined ? undefined : `${shownWidth}px`,
@@ -197,35 +209,6 @@ function clamp(next: number) {
   return Math.round(Math.min(Math.max(next, smallestWidth.value), largestWidth()));
 }
 
-let storageKey: string | null = null;
-
-function readStoredWidth() {
-  if (!storageKey) return undefined;
-
-  try {
-    const stored = Number(localStorage.getItem(storageKey));
-    return stored > 0 ? stored : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-function storeWidth(next: number | undefined) {
-  if (!storageKey) return;
-
-  try {
-    if (next === undefined) localStorage.removeItem(storageKey);
-    else localStorage.setItem(storageKey, String(next));
-  } catch {
-    // Blocked storage: the width lasts until the page reloads.
-  }
-}
-
-function commit(next: number) {
-  width.value = next;
-  storeWidth(next);
-}
-
 let resetTimeout: ReturnType<typeof setTimeout> | undefined;
 
 function stopResetting() {
@@ -233,14 +216,17 @@ function stopResetting() {
   isResetting.value = false;
 }
 
-/** Eases the panel back to its starting width and forgets the stored one. */
+/**
+ * Eases the panel back to `default-width`. Without it, a width the app keeps returns to the default
+ * of the panel's place, and the panel's own width to the one it started with.
+ */
 function reset() {
   stopResetting();
   isResetting.value = true;
   resetTimeout = setTimeout(stopResetting, PANEL_SLIDE_DURATION);
 
-  width.value = startingWidth;
-  storeWidth(undefined);
+  width.value =
+    props.defaultWidth ?? (isWidthControlled ? undefined : startingWidth) ?? defaults?.width;
 }
 
 let dragStart: {
@@ -348,7 +334,7 @@ function endDrag(closes: boolean) {
       if (context?.isOpen()) closingWidth.value = null;
     });
   } else if (draggedWidth !== null) {
-    commit(draggedWidth);
+    width.value = draggedWidth;
   }
 }
 
@@ -377,7 +363,7 @@ function resizeWithKeyboard(event: KeyboardEvent) {
   }
 
   event.preventDefault();
-  commit(clamp(next));
+  width.value = clamp(next);
 }
 
 useResizeObserver(root, ([entry]) => {
@@ -395,22 +381,9 @@ watch(
   },
 );
 
-// The route that names the stored width is known once the page has mounted.
-onMounted(async () => {
-  if (!context || isWidthControlled) return;
-
-  await nextTick();
-
-  storageKey = panelWidthStorageKey(context.place, renderingRoutePath() ?? location.pathname);
-  if (!props.resizable) return;
-
-  const stored = readStoredWidth();
-  if (stored !== undefined) width.value = clamp(stored);
-});
-
 // A panel inside another component reports its options from here.
 if (context) {
-  onScopeDispose(
+  useRegistration(() =>
     context.registerOptions(() => ({
       label: props.label,
       icon: props.icon,
@@ -418,6 +391,8 @@ if (context) {
       appearance: props.appearance,
     })),
   );
+
+  useRegistration(() => context.registerOpen(open));
 }
 
 // Restores the page's selection and cursor when the panel unmounts mid-drag.

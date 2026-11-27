@@ -59,6 +59,7 @@ The parts of the shell that a view can hide: its regions and the frame around th
 - When several views hide regions, a region stays hidden until none of them hides it anymore.
 - Nested routes combine their `mtAppRegions`: a child route overrides the regions it names and keeps the others of its parents.
 - Hidden regions stay mounted, so their state, such as the open items of a navigation, survives.
+- A hidden panel keeps whether it is open, also with `v-model:open` on its [**Panel**](/components/panel), and shows that state again when it returns.
 - A view that `<KeepAlive>` keeps gives the regions back while it isn't shown.
 - Hiding a panel closes its open drawer, and when a hidden region held the focus, the focus moves to the content. From the announcement, it moves to the header while one shows.
 - Hiding the header also hides the triggers of the navigation and the sidebar in it. [**Page**](/components/page) then shows them, and a view without Page needs [**App Panel Trigger**](/components/app#triggers-in-a-custom-header).

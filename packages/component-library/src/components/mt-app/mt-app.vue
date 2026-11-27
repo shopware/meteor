@@ -196,12 +196,6 @@ const props = withDefaults(
   },
 );
 
-/** Whether the navigation is shown in the desktop layout. */
-const navigationOpen = defineModel<boolean>("navigationOpen", { default: true });
-
-/** Whether the sidebar is shown in the desktop layout. */
-const sidebarOpen = defineModel<boolean>("sidebarOpen", { default: true });
-
 type HeaderSlotProps = Omit<MtAppContext, "isMobile"> & { isMobile: boolean };
 
 const slots = defineSlots<{
@@ -282,14 +276,18 @@ const {
   answerLeave,
 } = createAppUnsavedChanges();
 
-const inlineOpen = { navigation: navigationOpen, sidebar: sidebarOpen };
-const panels = createPanelState({ isDrawer: isMobile, canOpenDrawer: isAvailable, inlineOpen });
-
 const { panelSlot, panelSettings, hasPanel, registerPanelOptions } = usePanelSlots(
   PANELS,
   (panel) => slots[panel]?.(),
   (panel) => t(panel),
 );
+
+const panels = createPanelState<MtAppPanel>({
+  isDrawer: isMobile,
+  hasContent: hasSlot,
+  canOpenDrawer: isAvailable,
+  startsOpen: (panel) => panelSlot(panel).options?.open,
+});
 
 const api: MtAppContext = {
   isMobile,
@@ -325,7 +323,7 @@ function isAvailable(panel: MtAppPanel) {
 
 /** Whether the panel is closed or a view hides it, which doesn't depend on the layout. */
 function isHiddenInline(panel: MtAppPanel) {
-  return hiddenRegions.value[panel] || !inlineOpen[panel].value;
+  return hiddenRegions.value[panel] || !panels.isInlineOpen(panel);
 }
 
 function triggerOf(panel: MtAppPanel) {
@@ -481,6 +479,8 @@ const regionController: PanelController<MtAppPanel> = {
   close: panels.close,
   focusContent,
   registerPanelOptions,
+  registerPanelOpen: panels.registerPanelOpen,
+  forgetPanelOpen: panels.forgetPanelOpen,
   setResizing(resizing) {
     isResizing.value = resizing;
   },

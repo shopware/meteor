@@ -155,23 +155,6 @@ export function findRenderingRecord(
 }
 
 /**
- * Returns a function that tells the path of the route record that renders the calling component,
- * such as `/orders/:id`: the kind of page, not one of its URLs. Without a record that renders it,
- * the deepest record of the current route counts. Call the function once the component has
- * mounted, when the router knows the component. `undefined` without a router.
- */
-export function useRenderingRoutePath(): () => string | undefined {
-  const component = getCurrentInstance();
-  const router = findRouter();
-
-  return () => {
-    const matched = router?.currentRoute?.value?.matched ?? [];
-
-    return ((component && findRenderingRecord(component, matched)) ?? matched.at(-1))?.path;
-  };
-}
-
-/**
  * Returns a function that goes back to the previous page of the app's Vue Router, or to the
  * fallback when the app has none, for example when the page was opened directly. The returned
  * function does nothing without a router.

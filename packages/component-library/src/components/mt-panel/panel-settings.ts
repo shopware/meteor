@@ -13,6 +13,7 @@ export interface PanelOptions {
   icon?: string;
   closable?: boolean;
   appearance?: PanelAppearance;
+  open?: boolean;
 }
 
 /** The options of a panel with the defaults of its place filled in. */
@@ -42,6 +43,8 @@ export interface PanelContext {
   layoutWidth(): number;
   /** Reports the options of the `MtPanel` until the returned function is called. */
   registerOptions(options: () => PanelOptions): () => void;
+  /** Reports the open state of the `MtPanel` until the returned function is called. */
+  registerOpen(open: Ref<boolean>): () => void;
   /** Reports that the panel is being resized, so layouts can wait with switching layouts. */
   setResizing(resizing: boolean): void;
   /** Whether the panel is open in the current layout. */
@@ -108,13 +111,18 @@ export function readPanelSlot(nodes: VNodeChild): PanelSlot {
 function optionsFromProps(panel: VNode): PanelOptions {
   const props = panel.props ?? {};
 
-  // A boolean attribute without a value, such as `closable`, comes as an empty string.
   return {
     label: props.label ?? undefined,
     icon: props.icon ?? undefined,
-    closable: props.closable === "" || props.closable === true,
+    closable: booleanProp(props.closable) ?? false,
     appearance: props.appearance ?? undefined,
+    open: booleanProp(props.open),
   };
+}
+
+/** A boolean attribute without a value, such as `closable`, comes as an empty string. */
+function booleanProp(value: unknown) {
+  return value === undefined || value === null ? undefined : value === "" || value === true;
 }
 
 /** Fills in the defaults of the panel's place. The default label is translated by the layout. */
@@ -129,15 +137,4 @@ export function resolvePanelSettings(
     closable: options?.closable ?? false,
     appearance: options?.appearance ?? defaultAppearances[place],
   };
-}
-
-/**
- * The key under which a resizable panel remembers its width. The shell's navigation and sidebar
- * exist once per app, so their place names them. A page's panels are named by their place on that
- * page, so each page keeps its own widths.
- */
-export function panelWidthStorageKey(place: PanelPlace, page: string) {
-  return place === "start" || place === "end"
-    ? `mt-panel-width:${page}:${place}`
-    : `mt-panel-width:${place}`;
 }
