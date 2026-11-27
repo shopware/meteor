@@ -10,7 +10,7 @@ export function isObject(value: unknown): value is any {
   return value !== null && typeof value === 'object';
 }
 
-function getSearchParam(name: string): string|null {
+export function getSearchParam(name: string): string|null {
   return new URLSearchParams(window.location.search).get(name);
 }
 
