@@ -222,12 +222,8 @@ describe("router", () => {
       { path: "/orders/:id", component: {} },
     ];
 
-    async function renderAt<T extends { to?: unknown }>(
-      path: string,
-      items: T[],
-      options: { sensitive?: boolean } = {},
-    ) {
-      const router = createRouter({ history: createMemoryHistory(), routes, ...options });
+    async function renderAt<T extends { to?: unknown }>(path: string, items: T[]) {
+      const router = createRouter({ history: createMemoryHistory(), routes });
       let currentItem!: ComputedRef<T | undefined>;
 
       await router.push(path);
@@ -280,19 +276,6 @@ describe("router", () => {
 
       // ASSERT
       expect(currentItem.value).toBe(first);
-    });
-
-    it("ignores the case of paths, unless the router compares it", async () => {
-      // ARRANGE
-      const products = { to: "/products" };
-
-      // ACT
-      const insensitive = await renderAt("/PRODUCTS/1", [products]);
-      const sensitive = await renderAt("/PRODUCTS/1", [products], { sensitive: true });
-
-      // ASSERT
-      expect(insensitive.currentItem.value).toBe(products);
-      expect(sensitive.currentItem.value).toBeUndefined();
     });
 
     it("skips items without a `to` and items with an unknown route", async () => {

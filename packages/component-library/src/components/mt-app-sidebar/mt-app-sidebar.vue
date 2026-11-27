@@ -33,8 +33,7 @@ defineProps<{
   /** The sections of the navigation, each holding its items, as for `mt-nav`. */
   sections: NavSection[];
   /**
-   * Tells whether an item is the current page, for pages the navigation can't find on its own:
-   * `true` if it is, `false` if it isn't, and `undefined` to leave the item to the navigation,
+   * Tells whether an item is the current page, for pages the navigation can't find on its own,
    * as in `mt-nav`.
    */
   isActive?: NavActiveMatcher;

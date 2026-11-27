@@ -11,10 +11,9 @@ export type NavLinkComponent = string | Component;
 export type NavLinkTarget = string | object;
 
 /**
- * Tells whether an item is the current page, for apps with their own rule: `true` if it is, `false`
- * if it isn't, and `undefined` to leave the item to the rule of `mt-nav`.
+ * Tells whether an item is the current page, for pages that `mt-nav` can't find on its own.
  */
-export type NavActiveMatcher = (item: NavItem) => boolean | undefined;
+export type NavActiveMatcher = (item: NavItem) => boolean;
 
 /**
  * Direction the top-level items run in. Horizontal items open their nested items in a floating

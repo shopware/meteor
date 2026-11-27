@@ -70,9 +70,8 @@ const props = withDefaults(
     label?: string;
     /**
      * Tells whether an item is the current page, for pages that the navigation can't find on its
-     * own: `true` if it is, `false` if it isn't, and `undefined` to leave the item to the navigation.
-     * The navigation picks the item whose `to` points to the current route of Vue Router or to a
-     * page above it, the most specific one when several do.
+     * own. On the other pages, the navigation picks the item whose `to` points to the current route
+     * of Vue Router or to a page above it, the most specific one when several do.
      */
     isActive?: NavActiveMatcher;
     /**
@@ -137,20 +136,14 @@ const allItems = computed(() => {
   return flatten(props.sections.flatMap((section) => section.items));
 });
 
-// Whether an `active` flag or a `true` from `isActive` already names the current page
-const isCurrentPageSet = computed(() =>
-  allItems.value.some((item) => item.active || props.isActive?.(item) === true),
-);
+// Whether the app names the item as the current page, through its flag or `isActive`
+const isSetByApp = (item: NavItem) => isRowActive(item, props.isActive);
 
-// The item linking to the current route, among the items `isActive` leaves to the navigation
-const currentItem = useCurrentItem(() =>
-  isCurrentPageSet.value
-    ? []
-    : allItems.value.filter((item) => props.isActive?.(item) === undefined),
-);
+// The item linking to the current route, unless the app names the current page
+const currentItem = useCurrentItem(() => (allItems.value.some(isSetByApp) ? [] : allItems.value));
 
 function matchesCurrentPage(item: NavItem) {
-  return props.isActive?.(item) === true || item === currentItem.value;
+  return isSetByApp(item) || item === currentItem.value;
 }
 
 function isActiveItem(item: NavItem) {
@@ -183,7 +176,7 @@ const activeRowSignature = computed(() =>
 provide(NAV_CONTEXT, {
   linkComponent: computed(() => props.linkComponent),
   orientation: computed(() => props.orientation),
-  isRowActive: (item) => isRowActive(item, matchesCurrentPage),
+  isRowActive: matchesCurrentPage,
   isItemActive: isActiveItem,
   slots,
   isBranchExpanded,

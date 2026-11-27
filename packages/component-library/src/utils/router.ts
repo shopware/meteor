@@ -31,11 +31,7 @@ export type RouteGuardResult = boolean | void | Promise<boolean | void>;
 /** The part of a Vue Router instance that the library uses. */
 interface RouterLike {
   currentRoute: { value: RouteLike };
-  options: {
-    history: { state: Record<string, unknown> };
-    /** Whether paths are compared with their case. Vue Router ignores the case by default. */
-    sensitive?: boolean;
-  };
+  options: { history: { state: Record<string, unknown> } };
   back(): void;
   push(to: unknown): Promise<unknown>;
   resolve(to: unknown): { path: string };
@@ -222,16 +218,23 @@ export function useCurrentItem<T extends { to?: unknown }>(
 
     if (!route || typeof router?.resolve !== "function") return undefined;
 
-    const caseSensitive = !!router.options?.sensitive;
-    const currentPath = normalizePath(route.path, caseSensitive);
+    const currentPath = normalizePath(route.path);
     let currentItem: T | undefined;
     let longestPath = -1;
 
     for (const item of items()) {
-      const path = resolvePath(router.resolve, item.to, caseSensitive);
+      if (item.to === undefined) continue;
 
-      if (path === undefined || !isOnPath(path, currentPath)) continue;
-      if (path.length > longestPath) {
+      let path: string;
+
+      try {
+        path = normalizePath(router.resolve(item.to).path);
+      } catch {
+        // An unknown route name or a missing param: the item points nowhere
+        continue;
+      }
+
+      if (isOnPath(path, currentPath) && path.length > longestPath) {
         currentItem = item;
         longestPath = path.length;
       }
@@ -241,26 +244,9 @@ export function useCurrentItem<T extends { to?: unknown }>(
   });
 }
 
-function resolvePath(
-  resolve: RouterLike["resolve"],
-  to: unknown,
-  caseSensitive: boolean,
-): string | undefined {
-  if (to === undefined) return undefined;
-
-  try {
-    return normalizePath(resolve(to).path, caseSensitive);
-  } catch {
-    // An unknown route name or a missing param: the item points nowhere
-    return undefined;
-  }
-}
-
-function normalizePath(path: string, caseSensitive: boolean) {
-  // Vue Router ignores trailing slashes and, unless told otherwise, the case of paths
-  const trimmed = path.replace(/\/+$/, "");
-
-  return caseSensitive ? trimmed : trimmed.toLowerCase();
+function normalizePath(path: string) {
+  // Vue Router ignores trailing slashes and, by default, the case of paths
+  return path.replace(/\/+$/, "").toLowerCase();
 }
 
 function isOnPath(path: string, currentPath: string) {
