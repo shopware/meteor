@@ -1,5 +1,29 @@
 # Changelog
 
+## 5.12.0
+
+### Minor Changes
+
+- [#1481](https://github.com/shopware/meteor/pull/1481) [`fdfe795`](https://github.com/shopware/meteor/commit/fdfe7955ab08cea34e7b4b023b6185408735313d) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Add the `mt-scroll-area` component, a scroll container that fades its content out at the edges while there is more to scroll, with the scrollbar hidden by default and the native scrollbar available through the `scrollbar` prop
+
+- [#1525](https://github.com/shopware/meteor/pull/1525) [`5416a4d`](https://github.com/shopware/meteor/commit/5416a4d5c5dd818fe813866c5d05d5d6df0fda07) Thanks [@daniel3010](https://github.com/daniel3010)! - Add the `mt-stepper` component, which shows the steps of a multi-step process in a vertical or horizontal list and marks them as completed, current, or upcoming. It only displays progress: the page passes the current step and moves it with its own controls.
+
+- [#1500](https://github.com/shopware/meteor/pull/1500) [`70f2ea7`](https://github.com/shopware/meteor/commit/70f2ea789d96a8592ecebd7b263f4ba250d22cce) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Components now set the style of the icons passed to them: `mt-banner`, `mt-badge` and the field hints always show solid icons, `mt-empty-state` and `mt-action-menu-item` regular ones, and the rows of `mt-nav` regular icons that turn solid while active. Icon names work with or without a style, such as `cog` or `regular-cog`
+
+- [#1470](https://github.com/shopware/meteor/pull/1470) [`666c171`](https://github.com/shopware/meteor/commit/666c17172be5c34f21003c8f83fb83a47b02f721) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Deprecate `mt-toast` and its `Toast` type. They will be removed in the next major version. Use `mt-snackbar` with the `useSnackbar` composable instead. The Toast docs page lists how each Toast field maps to a Snackbar option.
+
+- [#1531](https://github.com/shopware/meteor/pull/1531) [`7f2be11`](https://github.com/shopware/meteor/commit/7f2be1157ce94cf0afc560403cf014c0e6c6189d) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Add a `neutral` variant to `mt-link`. It renders the link in the primary text color for places where the brand color would compete with the surrounding content. The underline stays, and the color changes to the new `--color-text-primary-hover` token on hover and while pressed.
+
+### Patch Changes
+
+- [#1516](https://github.com/shopware/meteor/pull/1516) [`a96d21b`](https://github.com/shopware/meteor/commit/a96d21b2f4c7cfe7fc0ba64ee5dcb7a78700009d) Thanks [@gweiermann](https://github.com/gweiermann)! - Fix `mt-modal` pulling focus away from the content of an `mt-floating-ui` that is opened inside the modal. The floating content is teleported to `<body>`, so the modal's focus trap treated it as outside and inputs in it could not be focused or typed into. An open `mt-floating-ui` now adds its content to the focus trap of the enclosing modal, which also covers `mt-popover` and other components built on it.
+
+- [#1492](https://github.com/shopware/meteor/pull/1492) [`6be2a64`](https://github.com/shopware/meteor/commit/6be2a6402453a42e4650a1983b45975e2349c86d) Thanks [@gweiermann](https://github.com/gweiermann)! - Fix `mt-tabs` throwing a render error when the active item is added to `items` after mount, for example when a tab only appears once the page data has loaded.
+
+- Updated dependencies [[`eb75f0c`](https://github.com/shopware/meteor/commit/eb75f0c58705eb18fb30d19990ab8f1cf626c1ce), [`559ac79`](https://github.com/shopware/meteor/commit/559ac79a13ad32095f006b1187614ff668d4983e), [`ca6bdb0`](https://github.com/shopware/meteor/commit/ca6bdb0127c45a27fea8ea1da26d8ac845507961)]:
+  - @shopware-ag/meteor-admin-sdk@6.19.0
+  - @shopware-ag/meteor-icon-kit@5.13.0
+
 ## 5.11.0
 
 ### Minor Changes

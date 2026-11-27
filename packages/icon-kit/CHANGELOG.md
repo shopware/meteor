@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## 5.13.0
+
+### Minor Changes
+
+- [#1519](https://github.com/shopware/meteor/pull/1519) [`ca6bdb0`](https://github.com/shopware/meteor/commit/ca6bdb0127c45a27fea8ea1da26d8ac845507961) Thanks [@github-actions](https://github.com/apps/github-actions)! - Added multiple icons:
+  `regular-vector-graphics`
+  `regular-zipper`
+  `solid-vector-graphics`
+  `solid-zipper`
+
+### Patch Changes
+
+- [#1517](https://github.com/shopware/meteor/pull/1517) [`559ac79`](https://github.com/shopware/meteor/commit/559ac79a13ad32095f006b1187614ff668d4983e) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Accept Figma personal access tokens with any prefix in `FIGMA_TOKEN`. Newer tokens start with `figp_` and were rejected by the `figd_` check
+
 ## 5.12.0
 
 ### Minor Changes
