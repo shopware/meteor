@@ -68,6 +68,8 @@
   --color-border-positive-default: #00ab26;
   --color-border-accent-default: #886fe9;
   --color-text-primary-default: #e2e3e9;
+  --color-text-primary-hover: #cdced4;
+  --color-text-primary-pressed: #b9babf;
   --color-text-primary-disabled: #696a6e;
   --color-text-primary-inverse: #1e1e24;
   --color-text-secondary-default: #a5a6ab;
