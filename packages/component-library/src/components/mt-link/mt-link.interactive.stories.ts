@@ -22,6 +22,13 @@ export const VisualTestRenderLinkCritical: MtLinkStory = {
   },
 };
 
+export const VisualTestRenderLinkNeutral: MtLinkStory = {
+  name: "Link neutral",
+  args: {
+    variant: "neutral",
+  },
+};
+
 export const VisualTestRenderExternalLinkDisabled: MtLinkStory = {
   name: "Render disabled link",
   args: {
