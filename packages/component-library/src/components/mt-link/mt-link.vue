@@ -93,7 +93,7 @@ function onClickCapture(event: MouseEvent) {
   color: var(--color-text-brand-default);
 }
 
-.mt-link--primary:hover {
+.mt-link--primary:is(:hover, :active) {
   color: var(--color-text-brand-hover);
 }
 
@@ -105,7 +105,7 @@ function onClickCapture(event: MouseEvent) {
   color: var(--color-text-critical-default);
 }
 
-.mt-link--critical:hover {
+.mt-link--critical:is(:hover, :active) {
   color: var(--color-text-critical-hover);
 }
 
@@ -117,7 +117,7 @@ function onClickCapture(event: MouseEvent) {
   color: var(--color-text-primary-default);
 }
 
-.mt-link--neutral:hover {
+.mt-link--neutral:is(:hover, :active) {
   color: var(--color-text-primary-hover);
 }
 
