@@ -18,7 +18,7 @@ description: The main navigation of an application in a sidebar, with a fixed st
 import { MtAppSidebar } from "@shopware-ag/meteor-component-library";
 ```
 
-Pass the navigation as `sections` with their `items`, the same way as for [**Nav**](/components/nav). Mark the current page with `active` on its item, or pass `is-active` to compare the items with the current route, so the sections can stay static. The `start` slot suits a [**Brand**](/components/brand) and the `end` slot a [**User Menu**](/components/user-menu). The `actions` slot sits below the start, for example for a button that opens the notifications.
+Pass the navigation as `sections` with their `items`, the same way as for [**Nav**](/components/nav). Like **Nav**, it highlights the current page on its own. Set `active` on an item or pass `is-active` only for pages it can't find. The `start` slot suits a [**Brand**](/components/brand) and the `end` slot a [**User Menu**](/components/user-menu). The `actions` slot sits below the start, for example for a button that opens the notifications.
 
 A **Brand** in the `start` slot is indented to line up with the icons of the navigation. Other content in the slots gets no inner spacing and decides its own.
 

@@ -34,6 +34,7 @@ interface RouterLike {
   options: { history: { state: Record<string, unknown> } };
   back(): void;
   push(to: unknown): Promise<unknown>;
+  resolve(to: unknown): { path: string };
   beforeEach(guard: (to: RouteLike, from: RouteLike) => RouteGuardResult): () => void;
   afterEach(hook: (to: RouteLike, from: RouteLike, failure?: unknown) => void): () => void;
   onError(handler: (error: unknown) => void): () => void;
@@ -182,4 +183,56 @@ export function scrollToRoute(scrollArea: HTMLElement | null, to: RouteLike, fro
 
   if (target && scrollArea.contains(target)) target.scrollIntoView();
   else if (to.path !== from.path) scrollArea.scrollTop = 0;
+}
+
+/**
+ * The item whose `to` points to the current route of the app's Vue Router, or to a page above it,
+ * such as `/products` for `/products/1`. A `to` of `/` only points to `/` itself. When several
+ * items do, the one with the longest path wins, and the first one on a tie. Only the paths are
+ * compared, not the query or the hash. Without a router, there is no current item.
+ */
+export function useCurrentItem<T extends { to?: unknown }>(
+  items: () => T[],
+): ComputedRef<T | undefined> {
+  const router = findRouter();
+
+  return computed(() => {
+    const route = router?.currentRoute?.value;
+
+    if (!route || typeof router?.resolve !== "function") return undefined;
+
+    const currentPath = normalizePath(route.path);
+    let currentItem: T | undefined;
+    let longestPath = -1;
+
+    for (const item of items()) {
+      if (item.to === undefined) continue;
+
+      let path: string;
+
+      try {
+        path = normalizePath(router.resolve(item.to).path);
+      } catch {
+        // An unknown route name or a missing param: the item points nowhere
+        continue;
+      }
+
+      if (isOnPath(path, currentPath) && path.length > longestPath) {
+        currentItem = item;
+        longestPath = path.length;
+      }
+    }
+
+    return currentItem;
+  });
+}
+
+function normalizePath(path: string) {
+  // Vue Router ignores trailing slashes and, by default, the case of paths
+  return path.replace(/\/+$/, "").toLowerCase();
+}
+
+function isOnPath(path: string, currentPath: string) {
+  // Whether the current path is the path or a page below it. `/`, trimmed to "", only matches itself
+  return currentPath === path || (path !== "" && currentPath.startsWith(`${path}/`));
 }

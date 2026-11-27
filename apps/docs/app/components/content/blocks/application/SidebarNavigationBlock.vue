@@ -12,7 +12,8 @@ import {
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
 
-// The main navigation of the application. Mark the current page with `active`.
+// The main navigation of the application. With Vue Router, leave out `active`: the navigation
+// finds the current page from the route on its own.
 const sections: NavSection[] = [
   {
     items: [

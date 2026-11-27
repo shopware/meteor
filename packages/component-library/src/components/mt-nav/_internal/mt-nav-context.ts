@@ -11,7 +11,7 @@ export type NavLinkComponent = string | Component;
 export type NavLinkTarget = string | object;
 
 /**
- * Tells whether an item is the current page, e.g. by comparing its route with the current route.
+ * Tells whether an item is the current page, for pages that `mt-nav` can't find on its own.
  */
 export type NavActiveMatcher = (item: NavItem) => boolean;
 
@@ -31,7 +31,10 @@ interface NavItemBase {
    * style and in the solid style while the item is active.
    */
   icon?: string;
-  /** Whether the item is the current page. Its ancestors open and highlight accordingly. Alternative to `isActive` on `mt-nav`. */
+  /**
+   * Marks the item as the current page, in place of the item `mt-nav` finds from the current route.
+   * Its ancestors open and highlight accordingly.
+   */
   active?: boolean;
 }
 

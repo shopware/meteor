@@ -42,6 +42,7 @@ import {
   type NavSlots,
 } from "./_internal/mt-nav-context";
 import { moveLinkFocus } from "./_internal/mt-nav-focus";
+import { useCurrentItem } from "@/utils/router";
 
 export type {
   NavActiveMatcher,
@@ -68,8 +69,9 @@ const props = withDefaults(
      */
     label?: string;
     /**
-     * Tells whether an item is the current page, e.g. by comparing its route with the current
-     * route. Lets the sections stay static instead of setting `active` on every route change.
+     * Tells whether an item is the current page, for pages that the navigation can't find on its
+     * own. On the other pages, the navigation picks the item whose `to` points to the current route
+     * of Vue Router or to a page above it, the most specific one when several do.
      */
     isActive?: NavActiveMatcher;
     /**
@@ -126,9 +128,28 @@ const branches = computed(() =>
   ),
 );
 
+// Every item of the navigation, nested items included
+const allItems = computed(() => {
+  const flatten = (items: NavItem[]): NavItem[] =>
+    items.flatMap((item) => [item, ...flatten(item.children ?? [])]);
+
+  return flatten(props.sections.flatMap((section) => section.items));
+});
+
+// Whether the app names the item as the current page, through its flag or `isActive`
+const isSetByApp = (item: NavItem) => isRowActive(item, props.isActive);
+
+// The item linking to the current route, unless the app names the current page
+const currentItem = useCurrentItem(() => (allItems.value.some(isSetByApp) ? [] : allItems.value));
+
+function matchesCurrentPage(item: NavItem) {
+  return isSetByApp(item) || item === currentItem.value;
+}
+
 function isActiveItem(item: NavItem) {
-  // Tells whether the item or one of its descendants is active, through its flag or `isActive`
-  return isItemActive(item, props.isActive);
+  // Tells whether the item or one of its descendants is active, through its flag, `isActive` or
+  // the current page
+  return isItemActive(item, matchesCurrentPage);
 }
 
 const hasActiveItem = computed(() => branches.value.some((branch) => isActiveItem(branch.item)));
@@ -155,7 +176,7 @@ const activeRowSignature = computed(() =>
 provide(NAV_CONTEXT, {
   linkComponent: computed(() => props.linkComponent),
   orientation: computed(() => props.orientation),
-  isRowActive: (item) => isRowActive(item, props.isActive),
+  isRowActive: matchesCurrentPage,
   isItemActive: isActiveItem,
   slots,
   isBranchExpanded,

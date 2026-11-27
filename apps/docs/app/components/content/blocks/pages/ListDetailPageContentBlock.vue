@@ -74,8 +74,8 @@ const breadcrumb = computed<BreadcrumbItem[]>(() => [
   { label: customer.value.name },
 ]);
 
-// With Vue Router, each record is a route: remove `select()` and compare the item with the
-// current route in `isActive` instead.
+// With Vue Router, each record is a route: remove `select()` and `isActive`, and mt-nav finds the
+// current record from the route on its own.
 function isActive(item: NavItem) {
   return item.id === selectedId.value;
 }

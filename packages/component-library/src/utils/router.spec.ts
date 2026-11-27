@@ -1,8 +1,9 @@
-import { defineComponent, h, shallowRef } from "vue";
+import { defineComponent, h, shallowRef, type ComputedRef } from "vue";
 import { render } from "@testing-library/vue";
-import { NavigationFailureType } from "vue-router";
+import { createMemoryHistory, createRouter, NavigationFailureType } from "vue-router";
 import { routerPlugin } from "@/components/mt-app/__tests__/shell-test-utils";
 import {
+  useCurrentItem,
   useMatchedRouteMeta,
   useRouteChange,
   useRouteGuard,
@@ -208,6 +209,96 @@ describe("router", () => {
 
       // ASSERT
       expect(meta?.value).toEqual([]);
+    });
+  });
+
+  describe("useCurrentItem", () => {
+    const routes = [
+      { path: "/", component: {} },
+      { path: "/products", name: "products", component: {} },
+      { path: "/products/:id", name: "product", component: {} },
+      { path: "/products/:id/edit", component: {} },
+      { path: "/orders", component: {} },
+      { path: "/orders/:id", component: {} },
+    ];
+
+    async function renderAt<T extends { to?: unknown }>(path: string, items: T[]) {
+      const router = createRouter({ history: createMemoryHistory(), routes });
+      let currentItem!: ComputedRef<T | undefined>;
+
+      await router.push(path);
+      renderWithRouter(router, () => (currentItem = useCurrentItem(() => items)));
+
+      return { router, currentItem };
+    }
+
+    it("picks the item linking to the current route or a page above it, the most specific one", async () => {
+      // ARRANGE
+      const home = { to: "/" };
+      const products = { to: { name: "products" } };
+      const product = { to: { name: "product", params: { id: "1" } } };
+
+      // ACT
+      const { router, currentItem } = await renderAt("/products/1/edit", [home, products, product]);
+
+      // ASSERT
+      expect(currentItem.value).toBe(product);
+
+      await router.push("/products");
+      expect(currentItem.value).toBe(products);
+
+      await router.push("/");
+      expect(currentItem.value).toBe(home);
+    });
+
+    it("compares only the paths, not the query or the hash", async () => {
+      // ARRANGE
+      const openOrders = { to: "/orders?status=open#top" };
+      const order = { to: "/orders/1" };
+
+      // ACT
+      const { router, currentItem } = await renderAt("/orders/1?status=open", [openOrders, order]);
+
+      // ASSERT
+      expect(currentItem.value).toBe(order);
+
+      await router.push("/orders?status=closed");
+      expect(currentItem.value).toBe(openOrders);
+    });
+
+    it("picks the first one when several items link to the same page", async () => {
+      // ARRANGE
+      const first = { to: "/orders" };
+      const second = { to: "/orders" };
+
+      // ACT
+      const { currentItem } = await renderAt("/orders", [first, second]);
+
+      // ASSERT
+      expect(currentItem.value).toBe(first);
+    });
+
+    it("skips items without a `to` and items with an unknown route", async () => {
+      // ARRANGE
+      const products = { to: "/products" };
+      const items = [{ href: "/products/1" }, { to: { name: "unknown" } }, products];
+
+      // ACT
+      const { currentItem } = await renderAt("/products/1", items);
+
+      // ASSERT
+      expect(currentItem.value).toBe(products);
+    });
+
+    it("has no current item without a router", () => {
+      // ARRANGE
+      let currentItem!: ComputedRef<{ to: string } | undefined>;
+
+      // ACT
+      renderWithRouter(undefined, () => (currentItem = useCurrentItem(() => [{ to: "/" }])));
+
+      // ASSERT
+      expect(currentItem.value).toBeUndefined();
     });
   });
 });

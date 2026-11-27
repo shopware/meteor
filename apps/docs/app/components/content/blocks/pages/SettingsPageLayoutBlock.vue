@@ -16,8 +16,8 @@ import {
   type NavSection,
 } from "@shopware-ag/meteor-component-library";
 
-// The groups of the settings. Mark the current one with `active`, or pass `is-active` to mt-nav
-// to compare the items with the current route.
+// The groups of the settings. With Vue Router, leave out `active`: mt-nav finds the current group
+// from the route on its own.
 const groups: NavSection[] = [
   {
     header: "Shop",
