@@ -194,10 +194,6 @@ useRouteChange({
   align-items: center;
 }
 
-.mt-app-header__start {
-  margin-inline-end: var(--scale-size-32);
-}
-
 .mt-app-header__nav {
   flex: 1 1 auto;
   min-width: 0;

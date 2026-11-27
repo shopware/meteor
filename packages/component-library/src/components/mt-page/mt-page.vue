@@ -8,7 +8,17 @@
     }"
     :data-layout="isMeasured ? (isMobile ? 'mobile' : 'desktop') : undefined"
   >
-    <header v-if="hasHeader()" class="mt-page__header">
+    <!-- Outside the header, so the page keeps its heading when the header is left out. -->
+    <h1 v-if="title" class="visually-hidden">{{ title }}</h1>
+
+    <header
+      v-if="hasHeader()"
+      class="mt-page__header"
+      :class="{
+        'mt-page__header--breadcrumb-only': isBreadcrumbOnly(),
+        'mt-page__header--current-only': isBreadcrumbOnly() && breadcrumb.length === 1,
+      }"
+    >
       <template v-if="navigationTrigger">
         <mt-panel-trigger-button
           class="mt-page__app-trigger"
@@ -45,14 +55,12 @@
         @click="panels.toggle('start')"
       />
 
-      <template v-if="title">
-        <h1 class="visually-hidden">{{ title }}</h1>
-        <mt-breadcrumb
-          class="mt-page__breadcrumb"
-          :items="headerCrumbs"
-          :hide-current="isHeadingVisible"
-        />
-      </template>
+      <mt-breadcrumb
+        v-if="title"
+        class="mt-page__breadcrumb"
+        :items="headerCrumbs"
+        :hide-current="isHeadingVisible"
+      />
       <mt-skeleton-bar v-else-if="isLoading" class="mt-page__title-skeleton" aria-hidden="true" />
 
       <div class="mt-page__header-end">
@@ -324,6 +332,20 @@ function hasAppTriggers() {
   return Boolean(navigationTrigger.value || sidebarTrigger.value);
 }
 
+/**
+ * Whether the header shows the breadcrumb and nothing else. With a content header, which names the
+ * page, the styles leave out such a header when it would only repeat that name.
+ */
+function isBreadcrumbOnly() {
+  return (
+    Boolean(title.value) &&
+    !props.closable &&
+    !hasSlot("actions") &&
+    !PANELS.some(hasTrigger) &&
+    !hasAppTriggers()
+  );
+}
+
 function hasHeader() {
   return (
     props.closable ||
@@ -489,6 +511,25 @@ defineExpose(api);
     );
 }
 
+/*
+ * A content header names the page, so a header that would only repeat that name is left out: with
+ * only the current page in the breadcrumb, and on a compact page, which shows only the current page
+ * of any breadcrumb. Decided here instead of in the script, so server-rendered pages don't show the
+ * header until hydration.
+ */
+.mt-page:has(> .mt-page__body > .mt-page__content .mt-content-header)
+  > .mt-page__header--current-only {
+  display: none;
+}
+
+/* Below COMPACT_WIDTH of the script. */
+@container (width < 640px) {
+  .mt-page:has(> .mt-page__body > .mt-page__content .mt-content-header)
+    > .mt-page__header--breadcrumb-only {
+    display: none;
+  }
+}
+
 /* With panels, a close button or the shell's triggers, the border is always shown. */
 .mt-page--header-border .mt-page__header {
   border-bottom-color: var(--color-border-secondary-default);
@@ -524,7 +565,7 @@ defineExpose(api);
  * After a divider, the title is as far from it as the icon before it, which sits inset in its
  * square button.
  */
-.mt-page__divider + .visually-hidden + .mt-page__breadcrumb {
+.mt-page__divider + .mt-page__breadcrumb {
   padding-inline-start: var(--scale-size-12);
 }
 

@@ -3,19 +3,26 @@
 A playground app built from `examples/playground-template`: Vue 3, Vite, TypeScript and the Meteor
 component library, set up the way the Meteor docs recommend.
 
-- the `mt-app` application shell with placeholder content, built only from what the library
-  provides: `mt-app-header` with the brand, the navigation and the user menu, which move into a
-  drawer on narrow screens, and a Copilot chat in the sidebar
-- one `mt-page` per route: documentation pages with their tree in a panel next to the content, an
-  editor with a panel on each side and a full-screen route, and settings with a vertical `mt-nav`
-- layout settings under Settings > Layout, kept per browser, to try where the triggers of the
-  shell's panels show: `mt-app-header`, a custom header with `mt-app-panel-trigger` or no header,
-  the navigation and the sidebar off, always open or closable, and the settings without `mt-page`,
-  with or without their own `mt-app-panel-trigger`, or with the header hidden
+- the `mt-app` application shell with `mt-app-header`: a company switcher that looks like
+  `mt-brand` with the Nexus logo and switches between two example companies, the navigation,
+  buttons for search, notifications and help, and the user menu with a theme switch (light, dark
+  or system, shared with the shell)
+- pages for the overview (the start page), the marketplace and settings, each framed by `mt-page`;
+  the marketplace groups integrations and templates under `/marketplace` and opens them from a
+  dropdown in the header navigation:
+  the overview shows an `mt-content-header` for workflows with its actions, a toolbar with search,
+  filters and sorting, a table of example workflows built on a plain `<table>`, and `mt-card`s with
+  workflow templates; the integrations show a catalog of `mt-card`s by category, filtered from a
+  search and an `mt-nav` in the start column of `mt-layout`; the settings switch between their
+  sections, each a child route, from an `mt-nav` in the start column of `mt-layout`, and show
+  headlines and cards with switches, `mt-avatar`, `mt-progress-bar` and placeholders; the
+  templates page is empty
+- a full-screen workflow editor at `/workflows/:id`, opened from a workflow or a template: the
+  shell hides its header for the route, and `mt-page` shows the breadcrumb, a close button, the
+  actions, a searchable list of connectors in its start panel and a mocked canvas with the steps
 - Vue Router, mounted after the first route resolves, with a 404 page
-- vue-i18n in English and German, remembered per browser and set on `<html lang>`
+- vue-i18n in English and German, following the browser language and set on `<html lang>`
 - the page title in the browser tab, announced to screen readers by the shell
-- the theme, light, dark or system, shared with the shell
 - ESLint, Prettier and Vitest as [create-vue](https://github.com/vuejs/create-vue) sets them up, and
   instructions plus the Meteor MCP server for coding agents
 
@@ -44,8 +51,8 @@ The app follows the create-vue layout, and the names follow the
 src/
   main.ts              # i18n, router and the mount after the first route
   App.vue              # the mt-app shell
-  components/          # parts of the shell and the views, such as the chat
-  composables/         # state shared by the shell and the views, such as the layout settings
+  components/          # parts of the shell and the views, such as the company switcher
+  data/                # example data that several views share
   views/               # one view per route, each an mt-page
   router/index.ts      # routes, their titles and the page title in the browser tab
   i18n/                # vue-i18n and the app's strings
@@ -59,8 +66,8 @@ components need.
 Already handled:
 
 - **Accessibility:** the shell brings the landmarks, a skip link, focus handling and the
-  announcement of each new page. Every page has an `<h1>` from its breadcrumb, `<html lang>` follows
-  the language, and the browser tab shows the page title.
+  announcement of each new page. `<html lang>` follows the language, and the browser tab shows the
+  page title.
 - **Missing pages:** unknown paths show the 404 page.
 - **Deploys:** when a deploy removes the chunks of the previous build, the app reloads instead of
   failing to load a page.
