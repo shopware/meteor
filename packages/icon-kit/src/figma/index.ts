@@ -1,4 +1,4 @@
-import type { AxiosPromise, AxiosRequestHeaders, AxiosResponse } from "axios";
+import type { AxiosPromise, RawAxiosRequestHeaders, AxiosResponse } from "axios";
 import Axios from "axios";
 import { env } from "../env.js";
 
@@ -56,8 +56,6 @@ export type Meta = {
 };
 
 export default class FigmaApiClient {
-  // @ts-expect-error -- TODO: add types for axios
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
   httpClient = Axios.create({
     baseURL: "https://api.figma.com/v1",
   });
@@ -67,14 +65,12 @@ export default class FigmaApiClient {
       key = env.FIGMA_FILE;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return this.httpClient.get<FigmaFileResponse>(`/files/${key}`, {
       headers: this.getHeaders(),
     });
   }
 
   public getImages(ids: string[]): Promise<AxiosResponse<FigmaImageResponse>> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return this.httpClient.get<FigmaImageResponse>(
       `/images/${env.FIGMA_FILE}?format=svg&ids=${ids.join(",")}`,
       {
@@ -90,8 +86,6 @@ export default class FigmaApiClient {
     let lastError: unknown;
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
-        // @ts-expect-error -- TODO: add types for axios
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return await Axios({
           url,
           method: "GET",
@@ -106,7 +100,6 @@ export default class FigmaApiClient {
   }
 
   public getNodeInfo(ids: string[]): Promise<AxiosPromise<FigmaNodeResponse>> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return this.httpClient.get(
       `/files/${env.FIGMA_FILE}?ids=${ids.join(",")}`,
       {
@@ -115,7 +108,7 @@ export default class FigmaApiClient {
     );
   }
 
-  private getHeaders(): AxiosRequestHeaders {
+  private getHeaders(): RawAxiosRequestHeaders {
     return {
       "X-Figma-Token": env.FIGMA_TOKEN,
     };
