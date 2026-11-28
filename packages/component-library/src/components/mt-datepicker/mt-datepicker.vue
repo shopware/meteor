@@ -23,13 +23,14 @@
 
     <VueDatePicker
       :model-value="dateValue"
+      :model-type="isPlainDate ? PLAIN_DATE_MODEL_TYPE : undefined"
       class="date-picker"
       :style="{ gridArea: 'input' }"
       :floating="datePickerFloating"
       :placeholder="placeholder"
       :disabled="disabled || isInherited"
       :locale="datePickerLocale"
-      :timezone="timeZone"
+      :timezone="isPlainDate ? undefined : timeZone"
       :teleport="true"
       :action-row="{ showCancel: true }"
       :auto-apply="true"
@@ -40,8 +41,8 @@
       :time-config="datePickerTimeConfig"
       :is-24="is24"
       :time-picker="dateType === 'time'"
-      :min-date="minDate"
-      :max-date="maxDate"
+      :min-date="datePickerMinDate"
+      :max-date="datePickerMaxDate"
       @update:model-value="onDateValueChange"
       @closed="onDatepickerClosed"
     >
@@ -126,6 +127,9 @@ interface Time {
   minutes: number;
 }
 
+// Lets the library exchange plain days instead of Date objects
+const PLAIN_DATE_MODEL_TYPE = "yyyy-MM-dd";
+
 const props = withDefaults(
   defineProps<{
     /**
@@ -152,6 +156,11 @@ const props = withDefaults(
      * Useful for adjusting date and time according to a specific timezone.
      */
     timeZone?: string;
+    /**
+     * With `dateType="date"`, reads and emits a plain day ("yyyy-MM-dd") and ignores `timeZone`.
+     * Use it for days that are the same everywhere, such as birthdays.
+     */
+    plainDate?: boolean;
     /**
      * The value of the date picker. Can be a single string or an array of strings.
      * This represents the currently selected date(s).
@@ -244,6 +253,8 @@ const props = withDefaults(
     locale: "de",
     format: undefined,
     timeZone: "UTC",
+    // @deprecated tag:v6 - will default to `true`
+    plainDate: false,
     modelValue: null,
     placeholder: "Y-m-d ...",
     is24: true,
@@ -361,8 +372,63 @@ const datePickerInputAttrs = computed<
   "aria-describedby": errorMessage.value || props.error ? errorId : undefined,
 }));
 
-const dateValue = computed<Date | Date[] | Time | null>(() => {
+const isPlainDate = computed(() => props.dateType === "date" && props.plainDate);
+
+const pad = (value: number, length = 2) => String(value).padStart(length, "0");
+
+// True for a day that exists, such as "2000-01-15"
+const isDateOnlyString = (value: string) => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+
+  const [year, month, day] = match.slice(1).map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  return date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+};
+
+// The plain day a value stands for, or null
+const toPlainDate = (value: string | Date): string | null => {
+  if (typeof value === "string" && isDateOnlyString(value)) return value;
+
+  // A Date counts as its local day, so `new Date(2000, 0, 15)` is January 15
+  if (value instanceof Date) {
+    if (Number.isNaN(value.getTime())) return null;
+
+    return `${pad(value.getFullYear(), 4)}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}`;
+  }
+
+  // A date and time counts as its day in UTC, as backends return stored days
+  const ms = Date.parse(value);
+  return Number.isNaN(ms) ? null : new Date(ms).toISOString().slice(0, 10);
+};
+
+// Without a time zone, the library reads limits as local days
+const toDatePickerLimit = (limit: Date | string | undefined) => {
+  if (!isPlainDate.value || limit === undefined) return limit;
+
+  const plainDate = toPlainDate(limit);
+  if (!plainDate) return limit;
+
+  const [year, month, day] = plainDate.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const datePickerMinDate = computed(() => toDatePickerLimit(props.minDate));
+const datePickerMaxDate = computed(() => toDatePickerLimit(props.maxDate));
+
+const dateValue = computed<Date | Date[] | Time | string | string[] | null>(() => {
   if (!props.modelValue) return null;
+
+  if (isPlainDate.value) {
+    if (Array.isArray(props.modelValue)) {
+      return props.modelValue
+        .map((value) => (value === null ? null : toPlainDate(value)))
+        .filter((value): value is string => value !== null);
+    }
+
+    return toPlainDate(props.modelValue);
+  }
 
   if (props.dateType === "time") {
     if (
@@ -436,8 +502,11 @@ const onDateValueChange = (
     return;
   }
 
-  const toUtcIso = (value: Date | string | null) => {
+  const toEmittedValue = (value: Date | string | null) => {
     if (value === null) return null;
+    if (isPlainDate.value && typeof value === "string") {
+      return isDateOnlyString(value) ? value : null;
+    }
     const ms = typeof value === "string" ? Date.parse(value) : value.getTime();
     if (Number.isNaN(ms)) return null;
     return new Date(ms).toISOString();
@@ -446,12 +515,12 @@ const onDateValueChange = (
   if (Array.isArray(newValue)) {
     emit(
       "update:modelValue",
-      newValue.map((value) => toUtcIso(value)),
+      newValue.map((value) => toEmittedValue(value)),
     );
     return;
   }
 
-  emit("update:modelValue", toUtcIso(newValue));
+  emit("update:modelValue", toEmittedValue(newValue));
 };
 
 watch(

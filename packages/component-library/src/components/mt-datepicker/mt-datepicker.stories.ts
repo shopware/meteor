@@ -105,6 +105,28 @@ export const DateOnly: MtDatepickerStory = {
   },
 };
 
+export const PlainDate: MtDatepickerStory = {
+  name: "Plain date",
+  args: {
+    label: "Birthday",
+    dateType: "date",
+    plainDate: true,
+    modelValue: "2000-01-15",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-datepicker
+  label="Birthday"
+  date-type="date"
+  plain-date
+  model-value="2000-01-15"
+/>`,
+      },
+    },
+  },
+};
+
 export const TimeOnly: MtDatepickerStory = {
   name: "Time only",
   args: {
