@@ -37,6 +37,8 @@ import MtToast, { type Toast } from "./components/mt-toast/mt-toast.vue";
 import MtSnackbar from "./components/mt-snackbar/mt-snackbar.vue";
 import MtAvatar from "./components/mt-avatar/mt-avatar.vue";
 import MtExtensionIcon from "./components/mt-extension-icon/mt-extension-icon.vue";
+import MtFileIcon from "./components/mt-file-icon/mt-file-icon.vue";
+import type { MtFileIconCategory } from "./components/mt-file-icon/mt-file-icon-formats";
 import MtNav from "./components/mt-nav/mt-nav.vue";
 import MtScrollArea from "./components/mt-scroll-area/mt-scroll-area.vue";
 import MtStepper, { type StepperStep } from "./components/mt-stepper/mt-stepper.vue";
@@ -173,6 +175,7 @@ export {
   TooltipDirective,
   MtAvatar,
   MtExtensionIcon,
+  MtFileIcon,
   MtNav,
   MtScrollArea,
   MtStepper,
@@ -250,5 +253,6 @@ export type {
   StepperStep,
 };
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
+export type { MtFileIconCategory };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
